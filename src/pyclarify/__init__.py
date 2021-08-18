@@ -1,1 +1,1 @@
-from interface import ServiceInterface
+from pyclarify.interface import ServiceInterface
