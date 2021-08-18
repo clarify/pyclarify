@@ -5,6 +5,8 @@ name: Build status
 on:
   push:
     branches: 
+      - main
+      - staging
       - dev
   pull_request:
     branches: 
