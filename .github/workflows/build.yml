@@ -4,9 +4,14 @@ name: Build status
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
+      - staging
+      - dev
   pull_request:
-    branches: [ main ]
+    branches: 
+      - main
+      - staging
 
 jobs:
   build:
