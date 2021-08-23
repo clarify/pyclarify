@@ -10,14 +10,16 @@ import requests
 import json
 import logging
 
-# create logger
-logger = logging.getLogger('ServiceInterface')
-logger.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
+logging.basicConfig(format="%(asctime)s %(message)s ", level=logging.INFO)
+
 
 class ServiceInterface:
-    def __init__(self, endpoint):
+    def __init__(
+        self, endpoint,
+    ):
         self.endpoint = endpoint
-        self.headers = { "content-type": "application/json" }
+        self.headers = {"content-type": "application/json"}
         self.current_id = 0
 
     def send_request(self, payload):
@@ -25,25 +27,23 @@ class ServiceInterface:
         Returns json dict of JSONPRC request.
         
         Parameters:
-            payload (JSONRPC dict): A dictionary in the form of a JSONRPC request
+            payload (JSONRPC dict): A dictionary in the form of a JSONRPC request.
         
         Returns:
             JSON dictionary response.
         
         """
-        payload = json.dumps(payload)
-        response = requests.request("POST", self.endpoint, data=payload, headers=self.headers)
         logging.info(f"--> {self.endpoint}, req: {payload}")
+        response = requests.request(
+            "POST", self.endpoint, data=json.dumps(payload), headers=self.headers
+        )
+        logging.info(f"<-- {self.endpoint} ({response.status_code})")
+
         if response.ok:
-            result = response.json()
-            logging.info(f"<-- {self.endpoint}, ({response.status_code})" )
             return response.json()
         else:
-            logging.error(f"<-- {self.endpoint}, req: {payload} ({response.status_code})")
-
             return {"error": response.status_code}
-        
-        
+
     def create_payload(self, method, params):
         """
         Creates a JSONRPC request.
@@ -51,23 +51,23 @@ class ServiceInterface:
         Parameters:
             method (str): The RPC method to call. 
             params (dict): The arguments to the method call.
-        """   
+        """
         payload = {
             "jsonrpc": "2.0",
             "method": method,
             "id": self.current_id,
-            "params": params
+            "params": params,
         }
         self.current_id += 1
         return payload
 
-    
     def update_headers(self, headers):
         """
         Updates headers of client.
         
         Parameters:
-            headers (dict): The headers to be added with key being parameter and value being value
+            headers (dict): The headers to be added with key being parameter and 
+                            value being value.
             
         """
         for key, value in headers.items():
