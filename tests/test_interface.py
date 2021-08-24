@@ -14,7 +14,7 @@ PARAMS = {"height": 1}
 
 class TestBase(unittest.TestCase):
     def setUp(self):
-        self.interface = ServiceInterface(URL)
+        self.interface = ServiceInterface(base_url=URL)
 
     def test_update_header(self):
         """
@@ -64,7 +64,7 @@ class TestBase(unittest.TestCase):
 
     def test_send_request(self):
         payload = self.interface.create_payload(METHOD, PARAMS)
-        response = self.interface.send_request(payload)
+        response = self.interface.send(payload)
 
         # assert valid response type
         self.assertIsInstance(response, dict)

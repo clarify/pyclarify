@@ -16,13 +16,13 @@ logging.basicConfig(format="%(asctime)s %(message)s ", level=logging.INFO)
 
 class ServiceInterface:
     def __init__(
-        self, endpoint,
+        self, base_url,
     ):
-        self.endpoint = endpoint
+        self.base_url = base_url
         self.headers = {"content-type": "application/json"}
         self.current_id = 0
 
-    def send_request(self, payload):
+    def send(self, payload):
         """
         Returns json dict of JSONPRC request.
         
@@ -33,11 +33,11 @@ class ServiceInterface:
             JSON dictionary response.
         
         """
-        logging.info(f"--> {self.endpoint}, req: {payload}")
+        logging.info(f"--> {self.base_url}, req: {payload}")
         response = requests.request(
-            "POST", self.endpoint, data=json.dumps(payload), headers=self.headers
+            "POST", self.base_url, data=json.dumps(payload), headers=self.headers
         )
-        logging.info(f"<-- {self.endpoint} ({response.status_code})")
+        logging.info(f"<-- {self.base_url} ({response.status_code})")
 
         if response.ok:
             return response.json()
