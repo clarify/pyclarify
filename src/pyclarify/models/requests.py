@@ -5,6 +5,8 @@ from datetime import datetime
 from enum import Enum
 from .data import ClarifyDataFrame
 
+IntegrationId = constr(regex=r"^[a-v0-9]{20}$")
+
 
 class ApiMethod(str, Enum):
     select = 'item.Select'
@@ -13,7 +15,7 @@ class ApiMethod(str, Enum):
 
 
 class InsertParams(BaseModel):
-    integration: constr(regex=r"^[a-v0-9]{20}$") = ""
+    integration: IntegrationId = ""
     data: ClarifyDataFrame
 
 

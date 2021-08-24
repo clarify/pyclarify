@@ -4,9 +4,15 @@ from typing import List, Union, Dict
 from datetime import datetime, timedelta
 from enum import Enum
 
+# constrained string defined by the API
+InputId = constr(regex=r"^[a-z0-9_-]{1,40}$")
+LabelsKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
+AnnotationKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
+
+
 class ClarifyDataFrame(BaseModel):
     times: List[datetime] = None
-    series: Dict[constr(regex=r"^[a-z0-9_-]{1,40}$"),
+    series: Dict[InputId,
                  List[Union[float, int, None]]] = None
 
 
@@ -22,11 +28,11 @@ class SourceTypeSignal(str, Enum):
 
 
 class Signal(BaseModel):
-    name: constr(regex=r"^[a-z0-9_-]{1,40}$")  # constrained string defined by the API
+    name: InputId
     type: TypeSignal = TypeSignal.numeric
     description: str = ""
-    labels: Dict[str, str] = {}
-    annotations: Dict[str, str] = {}
+    labels: Dict[LabelsKey, str] = {}
+    annotations: Dict[AnnotationKey, str] = {}
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
     sourceType: SourceTypeSignal = SourceTypeSignal.measurement
