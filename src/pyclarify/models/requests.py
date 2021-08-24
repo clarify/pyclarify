@@ -3,7 +3,7 @@ from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime
 from enum import Enum
-from .data import ClarifyDataFrame
+from .data import ClarifyDataFrame, InputId, Signal
 
 IntegrationId = constr(regex=r"^[a-v0-9]{20}$")
 
@@ -14,11 +14,6 @@ class ApiMethod(str, Enum):
     save_signals = 'integration.SaveSignals'
 
 
-class InsertParams(BaseModel):
-    integration: IntegrationId = ""
-    data: ClarifyDataFrame
-
-
 class JsonRPCRequest(BaseModel):
     jsonrpc: str = "2.0"
     method: ApiMethod = ApiMethod.select
@@ -26,6 +21,22 @@ class JsonRPCRequest(BaseModel):
     params: Dict = {}
 
 
+class ParamsInsert(BaseModel):
+    integration: IntegrationId = ""
+    data: ClarifyDataFrame
+
+
 class InsertJsonRPCRequest(JsonRPCRequest):
     method: ApiMethod = ApiMethod.insert
-    params: InsertParams
+    params: ParamsInsert
+
+
+class ParamsSave(BaseModel):
+    integration: IntegrationId
+    inputs: Dict[InputId, Signal]
+    createdOnly: Optional[bool] = False
+
+
+class SaveJsonRPCRequest(JsonRPCRequest):
+    method: ApiMethod = ApiMethod.save
+    params: ParamsSave

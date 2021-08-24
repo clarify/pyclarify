@@ -42,8 +42,9 @@ class TestJSONRPC(unittest.TestCase):
         values = [0.6, 1.0]
         signal_id = "test_123_id"
         data = models.data.ClarifyDataFrame(times=times, series={signal_id: values})
-        empty_request = models.requests.InsertJsonRPCRequest(params=models.requests.InsertParams(integration=integration,
-                                                                                                 data=data))
+        empty_request = models.requests.InsertJsonRPCRequest(
+            params=models.requests.InsertParams(integration=integration,
+                                                data=data))
         self.assertEqual(empty_request.json(),
                          '{"jsonrpc": "2.0", "method": "integration.Insert", "id": "1", "params": {"integration": "testintegration12345", "data": {"times": ["2021-03-11T21:49:06+00:00", "2021-03-11T21:50:06+00:00"], "series": {"test_123_id": [0.6, 1.0]}}}}')
 
@@ -53,10 +54,18 @@ class TestJSONRPC(unittest.TestCase):
         values = [0.6, 1.0]
         signal_id = "test_123_id"
         data = models.data.ClarifyDataFrame(times=times, series={signal_id: values})
-        empty_request = models.requests.InsertJsonRPCRequest(params=models.requests.InsertParams(integration=integration,
-                                                                                                 data=data))
+        empty_request = models.requests.InsertJsonRPCRequest(
+            params=models.requests.InsertParams(integration=integration,
+                                                data=data))
         self.assertEqual(empty_request.json(),
                          '{"jsonrpc": "2.0", "method": "integration.Insert", "id": "1", "params": {"integration": "01234567890123456789", "data": {"times": ["2021-03-11T21:49:06+00:00", "2021-03-11T21:50:06+00:00"], "series": {"test_123_id": [0.6, 1.0]}}}}')
 
+
 if __name__ == '__main__':
     unittest.main()
+
+
+""" TODO:
+- Implement test for Signal and SaveSignal models
+
+"""
