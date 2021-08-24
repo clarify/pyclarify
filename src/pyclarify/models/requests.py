@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime
-from enum import Enum, IntEnum
+from enum import Enum
 from .data import ClarifyDataFrame
 
 
@@ -13,7 +13,7 @@ class ApiMethod(str, Enum):
 
 
 class InsertParams(BaseModel):
-    integration: str = ""
+    integration: constr(regex=r"^[a-v0-9]{20}$") = ""
     data: ClarifyDataFrame
 
 
