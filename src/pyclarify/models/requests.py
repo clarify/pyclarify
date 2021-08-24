@@ -22,3 +22,8 @@ class JsonRPCRequest(BaseModel):
     method: ApiMethod = ApiMethod.select
     id: str = "1"
     params: Dict = {}
+
+
+class InsertJsonRPCRequest(JsonRPCRequest):
+    method: ApiMethod = ApiMethod.insert
+    params: InsertParams
