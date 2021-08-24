@@ -22,7 +22,7 @@ class JsonRPCRequest(BaseModel):
 
 
 class ParamsInsert(BaseModel):
-    integration: IntegrationId = ""
+    integration: IntegrationId
     data: ClarifyDataFrame
 
 
@@ -40,3 +40,21 @@ class ParamsSave(BaseModel):
 class SaveJsonRPCRequest(JsonRPCRequest):
     method: ApiMethod = ApiMethod.save
     params: ParamsSave
+
+
+class ErrorData(BaseModel):
+    trace: str
+    params: Optional[Dict[str, List[str]]]
+
+
+class Error(BaseModel):
+    code: int
+    message: str
+    data: Optional[ErrorData]
+
+
+"""
+TODO:
+- Implement request models for the return of the method, using hiearchy of classes, starting with a generic type 
+for any request, and then specializing for each method return
+"""
