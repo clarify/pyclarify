@@ -1,12 +1,12 @@
 import sys
 import unittest
 from datetime import datetime, timedelta
+
 sys.path.insert(1, "src/pyclarify")
 from interface import ServiceInterface, ClarifyInterface
 from dateutil import parser
 
 parser = parser.isoparser("T")
-
 
 # using DASH cryptocurrency RPC endpoints as test API
 # (https://dashplatform.readme.io/docs/reference-dapi-endpoints-json-rpc-endpoints)
@@ -74,10 +74,10 @@ class TestBase(unittest.TestCase):
         self.assertIsInstance(response, dict)
 
         # assert is JSONRPC
-        #self.assertEqual(response["jsonrpc"], "2.0")
+        # self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
-        #self.assertEqual(response["id"], payload["id"])
+        # self.assertEqual(response["id"], payload["id"])
 
 
 class TestClarifyInterface(unittest.TestCase):
@@ -86,16 +86,16 @@ class TestClarifyInterface(unittest.TestCase):
 
     def test_send_request(self):
         integration = "c4ivn4rsbu84313ljdgg"
-        times = [(datetime.now()-timedelta(seconds=10)).astimezone().isoformat(),
+        times = [(datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
                  datetime.now().astimezone().isoformat()]
         values = [0.6, 1.0]
         signal_id = "test_123_id"
         result = self.interface.add_data_single_signal(integration=integration, input_id=signal_id,
                                                        times=times, values=values)
         print(result)
-        self.assertEqual(result.id, str(self.interface.current_id+1))
+        self.assertEqual(result.id, str(self.interface.current_id + 1))
 
-    def test_send_request(self):
+    def test_send_request_2(self):
         integration = "c4ivn4rsbu84313ljdgg"
         times = [(datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
                  datetime.now().astimezone().isoformat()]
@@ -105,7 +105,6 @@ class TestClarifyInterface(unittest.TestCase):
                                                        times=times, values=values)
         print(result)
         self.assertEqual(result.id, str(self.interface.current_id + 1))
-        #self.assertEqual(result.id, None)
 
 
 if __name__ == "__main__":
