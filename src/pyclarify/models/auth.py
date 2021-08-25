@@ -8,12 +8,12 @@ class OAuthRequestBody(BaseModel):
     grant_type: str = "client_credentials"
     client_id: str
     client_secret: str
-    audience: str = "https://clarify.searis.no/api/"
+    audience: str = "https://api.clarify.us/v1/"
 
 
 class OAuthResponse(BaseModel):
     access_token: str
-    scope: str
+    scope: Optional[str]
     expires_in: timedelta
     token_type: str = "Bearer"
 

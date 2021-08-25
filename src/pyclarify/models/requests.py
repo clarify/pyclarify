@@ -55,7 +55,7 @@ class Error(BaseModel):
 
 class ResponseGeneric(BaseModel):
     jsonrpc: str = "2.0"
-    id: str
+    id: Optional[str]
     result: Optional[Dict]
     error: Optional[Error]
 
@@ -70,4 +70,4 @@ class SignalSaveMap(TypedDict, total=True):
 
 
 class ResponseSave(ResponseGeneric):
-    result: SignalSaveMap
+    result: Optional[SignalSaveMap]

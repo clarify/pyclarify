@@ -22,13 +22,14 @@ class TestModels(unittest.TestCase):
                                                              client_secret=credential_obj.credentials.clientSecret)
             self.assertEqual(oauth_request_obj.client_id, credential_obj.credentials.clientId)
 
-    def test_populate_auth_token(self):
+    def populate_auth_token(self):
         with open("clarify-credentials.json") as f:
             data = json.load(f)
             credential_obj = models.auth.ClarifyCredential(**data)
             self.assertEqual(credential_obj.credentials.type, "client-credentials")
             oauth_request_obj = models.auth.OAuthRequestBody(client_id=credential_obj.credentials.clientId,
-                                                             client_secret=credential_obj.credentials.clientSecret)
+                                                             client_secret=credential_obj.credentials.clientSecret,
+                                                             audience=credential_obj.apiUrl)
             response = requests.post(url='https://login.clarify.us/oauth/token',
                                      headers={'content-type': 'application/x-www-form-urlencoded'},
                                      data=oauth_request_obj.dict())
