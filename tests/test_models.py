@@ -5,7 +5,7 @@ sys.path.insert(1, "src/pyclarify")
 import models
 
 
-class TestJSONRPC(unittest.TestCase):
+class TestModels(unittest.TestCase):
     def test_creation(self):
         empty_request = models.requests.JsonRPCRequest()
         self.assertEqual(empty_request.json(), '{"jsonrpc": "2.0", "method": "item.Select", "id": "1", "params": {}}')
@@ -31,7 +31,7 @@ class TestJSONRPC(unittest.TestCase):
         signal_id = "test_123_id"
         data = models.data.ClarifyDataFrame(times=times, series={signal_id: values})
         empty_request = models.requests.JsonRPCRequest(method=models.requests.ApiMethod.insert,
-                                                       params=models.requests.InsertParams(integration=integration,
+                                                       params=models.requests.ParamsInsert(integration=integration,
                                                                                            data=data))
         self.assertEqual(empty_request.json(),
                          '{"jsonrpc": "2.0", "method": "integration.Insert", "id": "1", "params": {"integration": "testintegration12345", "data": {"times": ["2021-03-11T21:49:06+00:00", "2021-03-11T21:50:06+00:00"], "series": {"test_123_id": [0.6, 1.0]}}}}')
@@ -43,7 +43,7 @@ class TestJSONRPC(unittest.TestCase):
         signal_id = "test_123_id"
         data = models.data.ClarifyDataFrame(times=times, series={signal_id: values})
         empty_request = models.requests.InsertJsonRPCRequest(
-            params=models.requests.InsertParams(integration=integration,
+            params=models.requests.ParamsInsert(integration=integration,
                                                 data=data))
         self.assertEqual(empty_request.json(),
                          '{"jsonrpc": "2.0", "method": "integration.Insert", "id": "1", "params": {"integration": "testintegration12345", "data": {"times": ["2021-03-11T21:49:06+00:00", "2021-03-11T21:50:06+00:00"], "series": {"test_123_id": [0.6, 1.0]}}}}')
@@ -55,7 +55,7 @@ class TestJSONRPC(unittest.TestCase):
         signal_id = "test_123_id"
         data = models.data.ClarifyDataFrame(times=times, series={signal_id: values})
         empty_request = models.requests.InsertJsonRPCRequest(
-            params=models.requests.InsertParams(integration=integration,
+            params=models.requests.ParamsInsert(integration=integration,
                                                 data=data))
         self.assertEqual(empty_request.json(),
                          '{"jsonrpc": "2.0", "method": "integration.Insert", "id": "1", "params": {"integration": "01234567890123456789", "data": {"times": ["2021-03-11T21:49:06+00:00", "2021-03-11T21:50:06+00:00"], "series": {"test_123_id": [0.6, 1.0]}}}}')

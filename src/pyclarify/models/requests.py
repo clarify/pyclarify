@@ -1,6 +1,6 @@
 from pydantic import BaseModel, constr
 from pydantic.fields import Optional
-from typing import List, Union, Dict
+from typing import List, Union, Dict, TypedDict
 from datetime import datetime
 from enum import Enum
 from .data import ClarifyDataFrame, InputId, Signal
@@ -38,7 +38,7 @@ class ParamsSave(BaseModel):
 
 
 class SaveJsonRPCRequest(JsonRPCRequest):
-    method: ApiMethod = ApiMethod.save
+    method: ApiMethod = ApiMethod.save_signals
     params: ParamsSave
 
 
@@ -53,8 +53,21 @@ class Error(BaseModel):
     data: Optional[ErrorData]
 
 
-"""
-TODO:
-- Implement request models for the return of the method, using hiearchy of classes, starting with a generic type 
-for any request, and then specializing for each method return
-"""
+class ResponseGeneric(BaseModel):
+    jsonrpc: str = "2.0"
+    id: str
+    result: Optional[Dict]
+    error: Optional[Error]
+
+
+class SaveResult(TypedDict, total=True):
+    id: str
+    created: bool
+
+
+class SignalSaveMap(TypedDict, total=True):
+    signalsByInput: Dict[InputId, SaveResult]
+
+
+class ResponseSave(ResponseGeneric):
+    result: SignalSaveMap
