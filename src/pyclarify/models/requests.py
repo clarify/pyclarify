@@ -1,6 +1,6 @@
 from pydantic import BaseModel, constr
 from pydantic.fields import Optional
-from typing import List, Union, Dict, TypedDict
+from typing import List, Union, Dict
 from datetime import datetime
 from enum import Enum
 from .data import ClarifyDataFrame, InputId, Signal
