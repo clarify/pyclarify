@@ -8,12 +8,12 @@ from enum import Enum
 InputId = constr(regex=r"^[a-z0-9_-]{1,40}$")
 LabelsKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
 AnnotationKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
+NumericalValuesType = List[Union[float, int, None]]
 
 
 class ClarifyDataFrame(BaseModel):
     times: List[datetime] = None
-    series: Dict[InputId,
-                 List[Union[float, int, None]]] = None
+    series: Dict[InputId, NumericalValuesType] = None
 
 
 class TypeSignal(str, Enum):

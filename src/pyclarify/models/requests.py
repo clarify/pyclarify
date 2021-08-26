@@ -48,7 +48,7 @@ class ErrorData(BaseModel):
 
 
 class Error(BaseModel):
-    code: int
+    code: str
     message: str
     data: Optional[ErrorData]
 
@@ -60,12 +60,12 @@ class ResponseGeneric(BaseModel):
     error: Optional[Error]
 
 
-class SaveResult(TypedDict, total=True):
+class SaveResult(BaseModel):
     id: str
     created: bool
 
 
-class SignalSaveMap(TypedDict, total=True):
+class SignalSaveMap(BaseModel):
     signalsByInput: Dict[InputId, SaveResult]
 
 
