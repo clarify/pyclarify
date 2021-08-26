@@ -113,3 +113,32 @@ class ClarifyInterface(ServiceInterface):
         self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
         result = self.send(request_data.json())
         return models.requests.ResponseSave(**result)
+
+    def add_data_multiple_signals(self, integration: str, input_id_lst: List[str],
+                                  times: list, values_lst: List[NumericalValuesType]) -> models.requests.ResponseSave:
+        """
+        This call inserts data for multiple signals. The signals are uniquely identified by its input ID in
+        combination with the integration ID. If no signal with the given combination exists, an empty signal is created.
+        Meta-data for the signal can be provided either through the admin panel or using  the 'add_metadata' call.
+        Mirrors the API call (`integration.Insert`)[https://docs.clarify.us/reference#integrationinsert] for multiple
+        signals.
+
+        Parameters
+        ----------
+        integration :
+        times :
+        input_id_lst :
+        values_lst :
+
+        Returns
+        -------
+
+        """
+        series_dict = {input_id: values for input_id, values in zip(input_id_lst, values_lst)}
+        data = models.data.ClarifyDataFrame(times=times, series=series_dict)
+        request_data = models.requests.InsertJsonRPCRequest(params=models.requests.ParamsInsert(integration=integration,
+                                                                                                data=data))
+        self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
+        result = self.send(request_data.json())
+        return models.requests.ResponseSave(**result)
+
