@@ -51,7 +51,7 @@ class GetToken:
         )
 
         token_obj = OAuthResponse(**response.json())
-        self._expire_token = self._expire_date + token_obj.expires_in
+        self._expire_token = datetime.datetime.now() + token_obj.expires_in
         self.access_token = token_obj.access_token
         return self.access_token
 
