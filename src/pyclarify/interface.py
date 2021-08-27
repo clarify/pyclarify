@@ -9,9 +9,11 @@ help of jsonrpcclient framework.
 import requests
 import json
 import logging
-import models
-from models.data import NumericalValuesType
 from typing import List
+
+import models
+from models.data import NumericalValuesType, Signal, ClarifyDataFrame
+from models.requests import ResponseSave, ParamsInsert, InsertJsonRPCRequest
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)s %(message)s ", level=logging.INFO)
@@ -87,7 +89,7 @@ class ClarifyInterface(ServiceInterface):
         self.update_headers({"X-API-Version": "1.0"})
 
     def add_data_single_signal(self, integration: str, input_id: str,
-                               times: list, values: NumericalValuesType) -> models.requests.ResponseSave:
+                               times: list, values: NumericalValuesType) -> ResponseSave:
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
@@ -98,24 +100,23 @@ class ClarifyInterface(ServiceInterface):
 
         Parameters
         ----------
-        integration
-        input_id
-        times
-        values
+        integration : str
+        input_id : str
+        times : List[datetime]
+        values : List[NumericalValuesType]
 
         Returns
         -------
-
+        ResponseSave
         """
-        data = models.data.ClarifyDataFrame(times=times, series={input_id: values})
-        request_data = models.requests.InsertJsonRPCRequest(params=models.requests.ParamsInsert(integration=integration,
-                                                                                                data=data))
+        data = ClarifyDataFrame(times=times, series={input_id: values})
+        request_data = InsertJsonRPCRequest(params=ParamsInsert(integration=integration, data=data))
         self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
         result = self.send(request_data.json())
-        return models.requests.ResponseSave(**result)
+        return ResponseSave(**result)
 
     def add_data_multiple_signals(self, integration: str, input_id_lst: List[str],
-                                  times: list, values_lst: List[NumericalValuesType]) -> models.requests.ResponseSave:
+                                  times: list, values_lst: List[NumericalValuesType]) -> ResponseSave:
         """
         This call inserts data for multiple signals. The signals are uniquely identified by its input ID in
         combination with the integration ID. If no signal with the given combination exists, an empty signal is created.
@@ -125,20 +126,45 @@ class ClarifyInterface(ServiceInterface):
 
         Parameters
         ----------
-        integration :
-        times :
-        input_id_lst :
-        values_lst :
+        integration : str
+        times : List[str]
+        input_id_lst : List[datetime]
+        values_lst : List[NumericalValuesType]
 
         Returns
         -------
-
+        ResponseSave
         """
         series_dict = {input_id: values for input_id, values in zip(input_id_lst, values_lst)}
-        data = models.data.ClarifyDataFrame(times=times, series=series_dict)
-        request_data = models.requests.InsertJsonRPCRequest(params=models.requests.ParamsInsert(integration=integration,
-                                                                                                data=data))
+        data = ClarifyDataFrame(times=times, series=series_dict)
+        request_data = InsertJsonRPCRequest(params=ParamsInsert(integration=integration, data=data))
+
         self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
         result = self.send(request_data.json())
-        return models.requests.ResponseSave(**result)
+
+        return ResponseSave(**result)
+
+    def add_metadata_signals(self, integration: str, signal_metadata_list: List[Signal],
+                             created_only: bool = False) -> ResponseSave:
+        """
+
+        Parameters
+        ----------
+        created_only
+        signal_metadata_list : List[Signal]
+        integration : str
+
+        Returns
+        -------
+        ResponseSave
+        """
+
+        input_map = {signal[name]: signal for signal in signal_metadata_list}
+        request_data = SaveJsonRPCRequest(params=ParamsSave(integration=integration, inputs=input_map,
+                                                            createdOnly=created_only))
+
+        self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
+        result = self.send(request_data.json())
+
+        return ResponseSave(**result)
 

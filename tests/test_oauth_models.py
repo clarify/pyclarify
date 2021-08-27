@@ -53,7 +53,6 @@ class TestModels(unittest.TestCase):
             self.assertEqual(token_obj.token_type, "Bearer")
             self.assertEqual(token_obj.access_token, "<YOUR_ACCESS_TOKEN>")
         else:
-            print(response.status_code)
             self.assertEqual(401, response.status_code)
 
     @patch('requests.post')
@@ -76,7 +75,6 @@ class TestModels(unittest.TestCase):
             self.assertEqual(token_obj.token_type, "Bearer")
             self.assertEqual(token_obj.access_token, "<YOUR_ACCESS_TOKEN>")
         else:
-            print(response.status_code)
             self.assertEqual(401, response.status_code)
 
 
