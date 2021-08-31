@@ -51,6 +51,9 @@ class TestGetToken(unittest.TestCase):
 
     @patch("oauth2.requests.post")
     def test_get_token(self, mock_request):
+        """
+        Test that it can get and update the token
+        """
         mock_request.return_value.json = lambda: self.mock_token
         response = self.gettoken.get_token()
         self.assertEqual(response, self.mock_token["access_token"])
