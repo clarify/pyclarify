@@ -71,3 +71,31 @@ class SignalSaveMap(BaseModel):
 
 class ResponseSave(ResponseGeneric):
     result: Optional[SignalSaveMap]
+
+class ParamsSelectItems(BaseModel):
+    include: bool = False
+    filter: dict = {}
+    limit: int = 10
+    skip: int = 0
+
+
+class ParamsSelectTimes(BaseModel):
+    before: Union[datetime, str] = ""
+    notBefore: Union[datetime, str] = ""
+
+
+class ParamsSelectSeries(BaseModel):
+    items: bool = False
+    aggregates: bool = False
+
+
+class ParamsSelect(BaseModel):
+    items: ParamsSelectItems
+    times: ParamsSelectTimes
+    series: ParamsSelectSeries
+
+
+class SelectJsonRPCRequest(JsonRPCRequest):
+    method: ApiMethod = ApiMethod.save_signals
+    params: ParamsSelect
+
