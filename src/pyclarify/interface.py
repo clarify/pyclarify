@@ -11,16 +11,15 @@ import json
 import logging
 from typing import List
 
-import models
-from models.data import NumericalValuesType, Signal, ClarifyDataFrame
-from models.requests import ResponseSave, ParamsInsert, InsertJsonRPCRequest
+from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame
+from pyclarify.models.requests import ResponseSave, ParamsInsert, InsertJsonRPCRequest, SaveJsonRPCRequest, ParamsSave
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)s %(message)s ", level=logging.INFO)
 
 
 def mockup_get_token():
-    return 'token1234567890'
+    return 'mockup_values'
 
 
 class ServiceInterface:
@@ -159,7 +158,7 @@ class ClarifyInterface(ServiceInterface):
         ResponseSave
         """
 
-        input_map = {signal[name]: signal for signal in signal_metadata_list}
+        input_map = {signal.name: signal for signal in signal_metadata_list}
         request_data = SaveJsonRPCRequest(params=ParamsSave(integration=integration, inputs=input_map,
                                                             createdOnly=created_only))
 

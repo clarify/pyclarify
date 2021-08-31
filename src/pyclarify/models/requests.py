@@ -71,3 +71,6 @@ class SignalSaveMap(BaseModel):
 
 class ResponseSave(ResponseGeneric):
     result: Optional[SignalSaveMap]
+
+
+

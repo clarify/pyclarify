@@ -31,7 +31,7 @@ class Signal(BaseModel):
     name: InputId
     type: TypeSignal = TypeSignal.numeric
     description: str = ""
-    labels: Dict[LabelsKey, str] = {}
+    labels: Dict[LabelsKey, List[str]] = {}
     annotations: Dict[AnnotationKey, str] = {}
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
