@@ -67,6 +67,6 @@ class GetToken:
         if (self._expire_token == None) or (
             self._expire_token <= datetime.datetime.now()
         ):
-            self.new_token(self.url)
+            return self.new_token(self.url)
         elif self._expire_token > datetime.datetime.now():
             return self.access_token
