@@ -72,6 +72,7 @@ class SignalSaveMap(BaseModel):
 class ResponseSave(ResponseGeneric):
     result: Optional[SignalSaveMap]
 
+
 class ParamsSelectItems(BaseModel):
     include: bool = False
     filter: dict = {}
@@ -98,4 +99,5 @@ class ParamsSelect(BaseModel):
 class SelectJsonRPCRequest(JsonRPCRequest):
     method: ApiMethod = ApiMethod.save_signals
     params: ParamsSelect
+
 

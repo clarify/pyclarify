@@ -109,7 +109,6 @@ class TestClarifyInterface(unittest.TestCase):
         result = self.interface.add_data_single_signal(integration=integration, input_id=signal_id,
                                                        times=times, values=values)
 
-        print(result)
         if result.error is not None:
             self.assertIn(result.error.code, self.error_list)
         else:
