@@ -28,4 +28,3 @@ class ClarifyCredential(BaseModel):
     apiUrl: str
     integration: str
     credentials: Credential
-

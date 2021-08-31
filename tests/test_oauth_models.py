@@ -19,21 +19,25 @@ class TestModels(unittest.TestCase):
   "apiUrl": "https://api.clarify.us/v1/"
 }"""
         self.mock_token = {
-  "access_token":"<YOUR_ACCESS_TOKEN>",
-  "scope":"invoke:integration",
-  "expires_in":86400,
-  "token_type":"Bearer"
-}
+            "access_token": "<YOUR_ACCESS_TOKEN>",
+            "scope": "invoke:integration",
+            "expires_in": 86400,
+            "token_type": "Bearer",
+        }
 
     def test_populate_auth_objs(self):
         data = json.loads(self.example_credentials)
         credential_obj = models.auth.ClarifyCredential(**data)
         self.assertEqual(credential_obj.credentials.type, "client-credentials")
-        oauth_request_obj = models.auth.OAuthRequestBody(client_id=credential_obj.credentials.clientId,
-                                                         client_secret=credential_obj.credentials.clientSecret)
-        self.assertEqual(oauth_request_obj.client_id, credential_obj.credentials.clientId)
+        oauth_request_obj = models.auth.OAuthRequestBody(
+            client_id=credential_obj.credentials.clientId,
+            client_secret=credential_obj.credentials.clientSecret,
+        )
+        self.assertEqual(
+            oauth_request_obj.client_id, credential_obj.credentials.clientId
+        )
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_populate_auth_token(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.status_code = 200
@@ -41,22 +45,25 @@ class TestModels(unittest.TestCase):
         data = json.loads(self.example_credentials)
         credential_obj = models.auth.ClarifyCredential(**data)
         self.assertEqual(credential_obj.credentials.type, "client-credentials")
-        oauth_request_obj = models.auth.OAuthRequestBody(client_id=credential_obj.credentials.clientId,
-                                                         client_secret=credential_obj.credentials.clientSecret,
-                                                         audience=credential_obj.apiUrl)
-        response = requests.post(url='https://login.clarify.us/oauth/token',
-                                 headers={'content-type': 'application/x-www-form-urlencoded'},
-                                 data=oauth_request_obj.dict())
+        oauth_request_obj = models.auth.OAuthRequestBody(
+            client_id=credential_obj.credentials.clientId,
+            client_secret=credential_obj.credentials.clientSecret,
+            audience=credential_obj.apiUrl,
+        )
+        response = requests.post(
+            url="https://login.clarify.us/oauth/token",
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data=oauth_request_obj.dict(),
+        )
 
         if response.ok:
             token_obj = models.auth.OAuthResponse(**response.json())
             self.assertEqual(token_obj.token_type, "Bearer")
             self.assertEqual(token_obj.access_token, "<YOUR_ACCESS_TOKEN>")
         else:
-            print(response.status_code)
             self.assertEqual(401, response.status_code)
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_populate_auth_token_fail(self, mock_request):
         mock_request.return_value.ok = False
         mock_request.return_value.status_code = 401
@@ -64,21 +71,24 @@ class TestModels(unittest.TestCase):
         data = json.loads(self.example_credentials)
         credential_obj = models.auth.ClarifyCredential(**data)
         self.assertEqual(credential_obj.credentials.type, "client-credentials")
-        oauth_request_obj = models.auth.OAuthRequestBody(client_id=credential_obj.credentials.clientId,
-                                                         client_secret=credential_obj.credentials.clientSecret,
-                                                         audience=credential_obj.apiUrl)
-        response = requests.post(url='https://login.clarify.us/oauth/token',
-                                 headers={'content-type': 'application/x-www-form-urlencoded'},
-                                 data=oauth_request_obj.dict())
+        oauth_request_obj = models.auth.OAuthRequestBody(
+            client_id=credential_obj.credentials.clientId,
+            client_secret=credential_obj.credentials.clientSecret,
+            audience=credential_obj.apiUrl,
+        )
+        response = requests.post(
+            url="https://login.clarify.us/oauth/token",
+            headers={"content-type": "application/x-www-form-urlencoded"},
+            data=oauth_request_obj.dict(),
+        )
 
         if response.ok:
             token_obj = models.auth.OAuthResponse(**response.json())
             self.assertEqual(token_obj.token_type, "Bearer")
             self.assertEqual(token_obj.access_token, "<YOUR_ACCESS_TOKEN>")
         else:
-            print(response.status_code)
             self.assertEqual(401, response.status_code)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
