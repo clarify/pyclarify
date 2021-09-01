@@ -1,5 +1,5 @@
 import requests
-from models.auth import OAuthResponse, OAuthRequestBody, ClarifyCredential
+from pyclarify.models.auth import OAuthResponse, OAuthRequestBody, ClarifyCredential
 import datetime
 
 

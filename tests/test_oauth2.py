@@ -3,9 +3,9 @@ import unittest
 import json
 from unittest.mock import patch
 
-sys.path.insert(1, "src/pyclarify")
+sys.path.insert(1, "src/")
 
-from oauth2 import GetToken
+from pyclarify.oauth2 import GetToken
 
 URL = "https://api.clarify.us/v1/"
 
@@ -49,7 +49,7 @@ class TestGetToken(unittest.TestCase):
         req = self.gettoken.read_credentials()
         self.assertEqual(req, self.oauth_request_body_model)
 
-    @patch("oauth2.requests.post")
+    @patch("pyclarify.oauth2.requests.post")
     def test_get_token(self, mock_request):
         """
         Test that it can get and update the token
