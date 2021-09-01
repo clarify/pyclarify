@@ -20,8 +20,14 @@ def mockup_get_token():
 
 
 def increment_id(func):
+
     """
     Decorator which increments the current id variable.
+
+    Returns
+    -------
+    [type]
+        [description]
     """
 
     @functools.wraps(func)
@@ -34,7 +40,8 @@ def increment_id(func):
 
 class ServiceInterface:
     def __init__(
-        self, base_url,
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -43,18 +50,20 @@ class ServiceInterface:
     def send(self, payload):
         """
         Returns json dict of JSONPRC request.
-        
-        Parameters:
-            payload (JSONRPC dict): A dictionary in the form of a JSONRPC request.
-        
-        Returns:
+
+        Parameters
+        ----------
+        payload : JSONRPC dict
+            A dictionary in the form of a JSONRPC request.
+
+        Returns
+        -------
+        JSON
             JSON dictionary response.
-        
         """
+
         logging.info(f"--> {self.base_url}, req: {payload}")
-        response = requests.post(
-            self.base_url, data=payload, headers=self.headers
-        )
+        response = requests.post(self.base_url, data=payload, headers=self.headers)
         logging.info(f"<-- {self.base_url} ({response.status_code})")
 
         if response.ok:
@@ -71,10 +80,18 @@ class ServiceInterface:
     def create_payload(self, method, params):
         """
         Creates a JSONRPC request.
-        
-        Parameters:
-            method (str): The RPC method to call. 
-            params (dict): The arguments to the method call.
+
+        Parameters
+        ----------
+        method : str
+            The RPC method to call.
+        params : dict
+            The arguments to the method call.
+
+        Returns
+        -------
+        [type]
+            [description]
         """
         payload = {
             "jsonrpc": "2.0",
@@ -87,11 +104,11 @@ class ServiceInterface:
     def update_headers(self, headers):
         """
         Updates headers of client.
-        
-        Parameters:
-            headers (dict): The headers to be added with key being parameter and 
-                            value being value.
-            
+
+        Parameters
+        ----------
+        headers : dict
+            The headers to be added with key being parameter and value being value.
         """
         for key, value in headers.items():
             self.headers[key] = value
@@ -116,14 +133,19 @@ class ClarifyInterface(ServiceInterface):
 
         Parameters
         ----------
-        integration
-        input_id
-        times
-        values
+        integration : str
+            [description]
+        input_id : str
+            [description]
+        times : list
+            [description]
+        values : NumericalValuesType
+            [description]
 
         Returns
         -------
-
+        models.requests.ResponseSave
+            [description]
         """
         data = models.data.ClarifyDataFrame(times=times, series={input_id: values})
         request_data = models.requests.InsertJsonRPCRequest(
