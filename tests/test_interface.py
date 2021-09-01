@@ -7,9 +7,9 @@ from unittest.mock import patch
 # Standard library imports...
 
 
-sys.path.insert(1, "src/pyclarify")
-from interface import ServiceInterface, ClarifyInterface
-import interface
+sys.path.insert(1, "src/")
+from pyclarify.interface import ServiceInterface, ClarifyInterface
+import pyclarify.interface as interface
 
 # using DASH cryptocurrency RPC endpoints as test API
 # (https://dashplatform.readme.io/docs/reference-dapi-endpoints-json-rpc-endpoints)

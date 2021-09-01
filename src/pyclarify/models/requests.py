@@ -6,6 +6,7 @@ from enum import Enum
 from .data import ClarifyDataFrame, InputId, Signal
 
 IntegrationId = constr(regex=r"^[a-v0-9]{20}$")
+LimitSelect = conint(ge=0, le=20)
 
 
 class ApiMethod(str, Enum):
@@ -76,7 +77,7 @@ class ResponseSave(ResponseGeneric):
 class ParamsSelectItems(BaseModel):
     include: bool = False
     filter: dict = {}
-    limit: int = 10
+    limit: LimitSelect = 10
     skip: int = 0
 
 
@@ -97,7 +98,7 @@ class ParamsSelect(BaseModel):
 
 
 class SelectJsonRPCRequest(JsonRPCRequest):
-    method: ApiMethod = ApiMethod.save_signals
+    method: ApiMethod = ApiMethod.select
     params: ParamsSelect
 
 
