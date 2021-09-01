@@ -7,9 +7,9 @@ from unittest.mock import patch
 # Standard library imports...
 
 
-sys.path.insert(1, "src/pyclarify")
-from interface import ServiceInterface, ClarifyInterface
-import interface
+sys.path.insert(1, "src/")
+from pyclarify.interface import ServiceInterface, ClarifyInterface
+import pyclarify.interface as interface
 
 # using DASH cryptocurrency RPC endpoints as test API
 # (https://dashplatform.readme.io/docs/reference-dapi-endpoints-json-rpc-endpoints)
@@ -97,7 +97,7 @@ class TestClarifyInterface(unittest.TestCase):
         self.mock_response_insert_2 = {"jsonrpc": "2.0", "id": "1", "result":
             {"signalsByInput": signals_by_input_2}, "error": None}
 
-    @patch('interface.requests.request')
+    @patch('pyclarify.interface.requests.request')
     def test_send_request(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_1
@@ -114,7 +114,7 @@ class TestClarifyInterface(unittest.TestCase):
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
-    @patch('interface.requests.request')
+    @patch('pyclarify.interface.requests.request')
     def test_send_request_2(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_2

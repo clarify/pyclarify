@@ -27,7 +27,7 @@ class TestClarifySaveInterface(unittest.TestCase):
         self.mock_response_insert_2 = {"jsonrpc": "2.0", "id": "1", "result":
             {"signalsByInput": signals_by_input_2}, "error": None}
 
-    @patch('interface.requests.request')
+    @patch('pyclarify.interface.requests.request')
     def test_send_request_2(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_1
@@ -49,7 +49,7 @@ class TestClarifySaveInterface(unittest.TestCase):
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
-    @patch('interface.requests.request')
+    @patch('pyclarify.interface.requests.request')
     def test_send_request_3(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_2
