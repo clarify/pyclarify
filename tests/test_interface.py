@@ -53,12 +53,14 @@ class TestBase(unittest.TestCase):
         )
 
     def test_create_payload(self):
-        VALID_RPC_PAYLOAD = json.dumps({
-            "jsonrpc": "2.0",
-            "method": "getBlockHash",
-            "id": 0,
-            "params": {"height": 1},
-        })
+        VALID_RPC_PAYLOAD = json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "method": "getBlockHash",
+                "id": 1,
+                "params": {"height": 1},
+            }
+        )
 
         payload = self.interface.create_payload(METHOD, PARAMS)
 
@@ -67,7 +69,7 @@ class TestBase(unittest.TestCase):
 
         # assert incrementation of id
         payload_1 = json.loads(self.interface.create_payload(METHOD, PARAMS))
-        self.assertEqual(payload_1["id"], 1)
+        self.assertEqual(payload_1["id"], 2)
 
     def test_send_request(self):
         payload = self.interface.create_payload(METHOD, PARAMS)
@@ -87,44 +89,72 @@ class TestBase(unittest.TestCase):
 class TestClarifyInterface(unittest.TestCase):
     def setUp(self):
         self.interface = ClarifyInterface()
-        self.error_list = ["-32700", "-32600", "-32601", "-32602", "-32603",
-                           "-32000", "-32001", "-32002", "-32003", "-32009", "-32015"]
+        self.error_list = [
+            "-32000",
+            "-32001",
+            "-32002",
+            "-32003",
+            "-32009",
+            "-32015",
+            "-32600",
+            "-32601",
+            "-32602",
+            "-32603",
+            "-32700",
+        ]
         signals_by_input_1 = {"test_123_id": {"id": "test_123_id", "created": True}}
-        self.mock_response_insert_1 = {"jsonrpc": "2.0", "id": "1", "result":
-            {"signalsByInput": signals_by_input_1}, "error": None}
+        self.mock_response_insert_1 = {
+            "jsonrpc": "2.0",
+            "id": "1",
+            "result": {"signalsByInput": signals_by_input_1},
+            "error": None,
+        }
 
-        signals_by_input_2 = {"test_1234_id__a": {"id": "test_1234_id__a", "created": False}}
-        self.mock_response_insert_2 = {"jsonrpc": "2.0", "id": "1", "result":
-            {"signalsByInput": signals_by_input_2}, "error": None}
+        signals_by_input_2 = {
+            "test_1234_id__a": {"id": "test_1234_id__a", "created": False}
+        }
+        self.mock_response_insert_2 = {
+            "jsonrpc": "2.0",
+            "id": "1",
+            "result": {"signalsByInput": signals_by_input_2},
+            "error": None,
+        }
 
     @patch('pyclarify.interface.requests.request')
     def test_send_request(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_1
         integration = "c4ivn4rsbu84313ljdgg"
-        times = [(datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
-                 datetime.now().astimezone().isoformat()]
+        times = [
+            (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
+            datetime.now().astimezone().isoformat(),
+        ]
         values = [0.6, 1.0]
         signal_id = "test_123_id"
-        result = self.interface.add_data_single_signal(integration=integration, input_id=signal_id,
-                                                       times=times, values=values)
+        result = self.interface.add_data_single_signal(
+            integration=integration, input_id=signal_id, times=times, values=values
+        )
 
         if result.error is not None:
             self.assertIn(result.error.code, self.error_list)
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
+
     @patch('pyclarify.interface.requests.request')
     def test_send_request_2(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_2
         integration = "a12vn4rsbu84313ljdgg"
-        times = [(datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
-                 datetime.now().astimezone().isoformat()]
+        times = [
+            (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
+            datetime.now().astimezone().isoformat(),
+        ]
         values = [0.6, 6.7]
         signal_id = "test_1234_id__a"
-        result = self.interface.add_data_single_signal(integration=integration, input_id=signal_id,
-                                                       times=times, values=values)
+        result = self.interface.add_data_single_signal(
+            integration=integration, input_id=signal_id, times=times, values=values
+        )
         if result.error is not None:
             self.assertIn(result.error.code, self.error_list)
         else:
