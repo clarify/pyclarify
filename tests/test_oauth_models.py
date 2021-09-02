@@ -4,8 +4,8 @@ import json
 import requests
 from unittest.mock import patch
 
-sys.path.insert(1, "src/pyclarify")
-import models
+sys.path.insert(1, "src/")
+import pyclarify.models as models
 
 
 class TestModels(unittest.TestCase):
