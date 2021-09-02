@@ -120,7 +120,7 @@ class TestClarifyInterface(unittest.TestCase):
             "error": None,
         }
 
-    @patch('pyclarify.interface.requests.request')
+    @patch("pyclarify.interface.requests.request")
     def test_send_request(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_1
@@ -140,8 +140,7 @@ class TestClarifyInterface(unittest.TestCase):
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
-
-    @patch('pyclarify.interface.requests.request')
+    @patch("pyclarify.interface.requests.request")
     def test_send_request_2(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_2

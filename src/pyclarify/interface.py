@@ -13,7 +13,13 @@ import functools
 from typing import List
 
 from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame
-from pyclarify.models.requests import ResponseSave, ParamsInsert, InsertJsonRPCRequest, SaveJsonRPCRequest, ParamsSave
+from pyclarify.models.requests import (
+    ResponseSave,
+    ParamsInsert,
+    InsertJsonRPCRequest,
+    SaveJsonRPCRequest,
+    ParamsSave,
+)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)s %(message)s ", level=logging.INFO)
@@ -138,23 +144,63 @@ class ClarifyInterface(ServiceInterface):
         Parameters
         ----------
         integration : str
+            The ID if the integration to save signal information for.
         input_id : str
-        times : List[datetime]
+            An Input ID maps uniquely to one signal within an integration. For all API calls that accept Input IDs,
+            new signals are automatically created when needed. This means you do not need to create a signal before
+            writing data to it. Should follow regex: "^[a-z0-9_-]{1,40}$"
+        times : list
+            List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
+            to insert.
         values : List[NumericalValuesType]
+            Array of data points to insert by Input ID. The length of each array must match that of the times array.
+            To omit a value for a given timestamp in times, use the value null.
 
         Returns
         -------
         ResponseSave
+            In case of a valid return value, returns a pydantic model with the following format
+            `{
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result":
+                  { "signalsByInput": map of Input ID => SaveResult
+                  }
+             }`
+           Where `SaveResult` is a pydantic model with field `id: str` (Unique ID of the saved instance)
+           and  `created: bool` (True if a new instance was created).
+           In case of the error the method return a pydantic model with the following format:
+            `{
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                    "code": -32602,
+                    "message": "Invalid params",
+                    "data": {
+                        "trace": "00000000000000000000",
+                        "params": {
+                            "integration": ["required"]
+                        }
+                    }
+                }
+             }`
         """
         data = ClarifyDataFrame(times=times, series={input_id: values})
-        request_data = InsertJsonRPCRequest(params=ParamsInsert(integration=integration, data=data))
+        request_data = InsertJsonRPCRequest(
+            params=ParamsInsert(integration=integration, data=data)
+        )
         self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
         result = self.send(request_data.json())
         return ResponseSave(**result)
 
     @increment_id
-    def add_data_multiple_signals(self, integration: str, input_id_lst: List[str],
-                                  times: list, values_lst: List[NumericalValuesType]) -> ResponseSave:
+    def add_data_multiple_signals(
+        self,
+        integration: str,
+        input_id_lst: List[str],
+        times: list,
+        values_lst: List[List[NumericalValuesType]],
+    ) -> ResponseSave:
         """
         This call inserts data for multiple signals. The signals are uniquely identified by its input ID in
         combination with the integration ID. If no signal with the given combination exists, an empty signal is created.
@@ -165,17 +211,53 @@ class ClarifyInterface(ServiceInterface):
         Parameters
         ----------
         integration : str
-        times : List[str]
-        input_id_lst : List[datetime]
-        values_lst : List[NumericalValuesType]
+            The ID if the integration to save signal information for.
+        input_id_lst: List[str]
+            List of input_ids to be added
+        times: list
+            List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
+            to insert.
+        values_lst : List[List[NumericalValuesType]]
+            List of list of data points to insert for each respective Input ID in the `input_id_lst`. The length of
+            each array must match that of the times array. To omit a value for a given timestamp in times,
+            use the value None.
 
         Returns
         -------
         ResponseSave
+            In case of a valid return value, returns a pydantic model with the following format
+            `{
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result":
+                  { "signalsByInput": map of Input ID => SaveResult
+                  }
+             }`
+           Where `SaveResult` is a pydantic model with field `id: str` (Unique ID of the saved instance)
+           and  `created: bool` (True if a new instance was created).
+           In case of the error the method return a pydantic model with the following format:
+            `{
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                    "code": -32602,
+                    "message": "Invalid params",
+                    "data": {
+                        "trace": "00000000000000000000",
+                        "params": {
+                            "integration": ["required"]
+                        }
+                    }
+                }
+             }`
         """
-        series_dict = {input_id: values for input_id, values in zip(input_id_lst, values_lst)}
+        series_dict = {
+            input_id: values for input_id, values in zip(input_id_lst, values_lst)
+        }
         data = ClarifyDataFrame(times=times, series=series_dict)
-        request_data = InsertJsonRPCRequest(params=ParamsInsert(integration=integration, data=data))
+        request_data = InsertJsonRPCRequest(
+            params=ParamsInsert(integration=integration, data=data)
+        )
 
         self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
         result = self.send(request_data.json())
@@ -183,31 +265,71 @@ class ClarifyInterface(ServiceInterface):
         return ResponseSave(**result)
 
     @increment_id
-    def add_metadata_signals(self, integration: str, signal_metadata_list: List[Signal],
-                             created_only: bool = False) -> ResponseSave:
+    def add_metadata_signals(
+        self,
+        integration: str,
+        signal_metadata_list: List[Signal],
+        created_only: bool = False,
+    ) -> ResponseSave:
         """
         This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
         combination with the integration ID. A List of Signals should be provided with the intended meta-data.
-        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.us/reference#integrationsavesignals] for multiple
-        signals.
+        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.us/reference#integrationsavesignals] for
+        multiple signals.
 
         Parameters
         ----------
-        created_only: bool
-        signal_metadata_list : List[Signal]
         integration : str
+            The ID if the integration to save signal information for.
+
+        signal_metadata_list : List[Signal]
+            List of `Signal` objects. The `Signal` object contains metadata for a signal.
+            Check (`Signal (API)`)[https://docs.clarify.us/reference#signal]
+
+        created_only: bool
+            If set to true, skip update of information for existing signals. That is, all Input IDs that map to
+            existing signals are silently ignored.
+
+
 
         Returns
         -------
         ResponseSave
+            In case of a valid return value, returns a pydantic model with the following format
+            `{
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result":
+                  { "signalsByInput": map of Input ID => SaveResult
+                  }
+             }`
+           Where `SaveResult` is a pydantic model with field `id: str` (Unique ID of the saved instance)
+           and  `created: bool` (True if a new instance was created).
+           In case of the error the method return a pydantic model with the following format:
+            `{
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                    "code": -32602,
+                    "message": "Invalid params",
+                    "data": {
+                        "trace": "00000000000000000000",
+                        "params": {
+                            "integration": ["required"]
+                        }
+                    }
+                }
+             }`
         """
 
         input_map = {signal.name: signal for signal in signal_metadata_list}
-        request_data = SaveJsonRPCRequest(params=ParamsSave(integration=integration, inputs=input_map,
-                                                            createdOnly=created_only))
+        request_data = SaveJsonRPCRequest(
+            params=ParamsSave(
+                integration=integration, inputs=input_map, createdOnly=created_only
+            )
+        )
 
         self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
         result = self.send(request_data.json())
 
         return ResponseSave(**result)
-
