@@ -1,6 +1,5 @@
 import sys
 import unittest
-import json
 from unittest.mock import patch
 
 sys.path.insert(1, "src/")

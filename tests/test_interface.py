@@ -84,6 +84,10 @@ class TestBase(unittest.TestCase):
 
         # assert is correct id
         self.assertEqual(response["id"], payload["id"])
+    
+    def test_authentication(self):
+        read = self.interface.authenticate("./tests/test-clarify-credentials.json")
+        self.assertTrue(read)
 
     def test_authentication(self):
         read = self.interface.authenticate("./tests/data/test-clarify-credentials.json")

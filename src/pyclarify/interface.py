@@ -226,7 +226,6 @@ class ClarifyInterface(ServiceInterface):
         request_data = InsertJsonRPCRequest(
             params=ParamsInsert(integration=integration, data=data)
         )
-
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
         return ResponseSave(**result)
