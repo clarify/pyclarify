@@ -52,8 +52,7 @@ def increment_id(func):
 
 class ServiceInterface:
     def __init__(
-        self,
-        base_url,
+        self, base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
