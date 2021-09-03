@@ -84,6 +84,10 @@ class TestBase(unittest.TestCase):
 
         # assert is correct id
         self.assertEqual(response["id"], payload["id"])
+    
+    def test_authentication(self):
+        read = self.interface.authenticate("./tests/test-clarify-credentials.json")
+        self.assertTrue(read)
 
 
 class TestClarifyInterface(unittest.TestCase):
@@ -119,11 +123,21 @@ class TestClarifyInterface(unittest.TestCase):
             "result": {"signalsByInput": signals_by_input_2},
             "error": None,
         }
+        self.mock_token = {
+            "access_token": "<YOUR_ACCESS_TOKEN>",
+            "scope": "invoke:integration",
+            "expires_in": 86400,
+            "token_type": "Bearer",
+        }
 
+        self.interface.authenticate("./tests/test-clarify-credentials.json")
+    
+    @patch("pyclarify.oauth2.requests.post")
     @patch("pyclarify.interface.requests.request")
-    def test_send_request(self, mock_request):
-        mock_request.return_value.ok = True
-        mock_request.return_value.json = lambda: self.mock_response_insert_1
+    def test_send_request(self, interface_req_mock, oauth_req_mock):
+        oauth_req_mock.return_value.json = lambda: self.mock_token 
+        interface_req_mock.return_value.ok = True
+        interface_req_mock.return_value.json = lambda: self.mock_response_insert_1
         integration = "c4ivn4rsbu84313ljdgg"
         times = [
             (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
@@ -134,16 +148,18 @@ class TestClarifyInterface(unittest.TestCase):
         result = self.interface.add_data_single_signal(
             integration=integration, input_id=signal_id, times=times, values=values
         )
-
+        print("#########\n", result)
         if result.error is not None:
             self.assertIn(result.error.code, self.error_list)
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
+    @patch("pyclarify.oauth2.requests.post")
     @patch("pyclarify.interface.requests.request")
-    def test_send_request_2(self, mock_request):
-        mock_request.return_value.ok = True
-        mock_request.return_value.json = lambda: self.mock_response_insert_2
+    def test_send_request_2(self, interface_req_mock, oauth_req_mock):
+        oauth_req_mock.return_value.json = lambda: self.mock_token 
+        interface_req_mock.return_value.ok = True
+        interface_req_mock.return_value.json = lambda: self.mock_response_insert_2
         integration = "a12vn4rsbu84313ljdgg"
         times = [
             (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),

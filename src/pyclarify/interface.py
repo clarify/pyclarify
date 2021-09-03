@@ -20,24 +20,22 @@ from pyclarify.models.requests import (
     SaveJsonRPCRequest,
     ParamsSave,
 )
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(format="%(asctime)s %(message)s ", level=logging.INFO)
-
-
-def mockup_get_token():
-    return "token1234567890"
+from pyclarify.oauth2 import GetToken
 
 
 def increment_id(func):
-
     """
     Decorator which increments the current id variable.
 
+    Parameters
+    ----------
+    func : function
+        Decorator wraps around function using @increment_id
+
     Returns
     -------
-    [type]
-        [description]
+    func : function
+        returns the wrapped function 
     """
 
     @functools.wraps(func)
@@ -56,6 +54,40 @@ class ServiceInterface:
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
         self.current_id = 0
+        self.authentication = None
+
+    def authenticate(self, credentials: str):
+        """
+        Authenticates the client by using the GetToken class (see oauth2.py)
+
+        Parameters
+        ----------
+
+        credentials : str
+            The path to the clarify_credentials.json downloaded from the Clarify app.
+
+        Returns
+        -------
+        bool
+            True if valid credentials is passed otherwise false
+
+        """
+        try:
+            self.authentication = GetToken(credentials)
+            return True
+        except:
+            return False
+
+    def get_token(self):
+        """
+        Using the GetToken class (see oauth2.py) to get a new authentication token.
+
+        Returns
+        -------
+        str
+            User token.
+        """
+        return self.authentication.get_token()
 
     def send(self, payload):
         """
@@ -189,7 +221,7 @@ class ClarifyInterface(ServiceInterface):
         request_data = InsertJsonRPCRequest(
             params=ParamsInsert(integration=integration, data=data)
         )
-        self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
         return ResponseSave(**result)
 
@@ -259,7 +291,7 @@ class ClarifyInterface(ServiceInterface):
             params=ParamsInsert(integration=integration, data=data)
         )
 
-        self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
         return ResponseSave(**result)
@@ -329,7 +361,7 @@ class ClarifyInterface(ServiceInterface):
             )
         )
 
-        self.update_headers({"Authorization": f"Bearer {mockup_get_token()}"})
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
         return ResponseSave(**result)
