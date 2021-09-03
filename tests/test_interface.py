@@ -128,7 +128,6 @@ class TestClarifyInterface(unittest.TestCase):
             "error": None,
         }
         self.mock_token = "token1234567890"
-
     @patch("pyclarify.interface.ServiceInterface.get_token")
     @patch("pyclarify.interface.requests.post")
     def test_send_request(self, interface_req_mock, get_token_mock):
