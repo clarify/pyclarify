@@ -35,7 +35,7 @@ class GetToken:
         oauth_request_body = OAuthRequestBody(
             client_id=clarify_credentials["credentials"]["clientId"],
             client_secret=clarify_credentials["credentials"]["clientSecret"],
-            audience=clarify_credentials["apiUrl"]
+            audience=clarify_credentials["apiUrl"],
         )
         return oauth_request_body
 
@@ -49,9 +49,7 @@ class GetToken:
             User token.
         """
         response = requests.post(
-            url=self.credentials.audience,
-            headers=self.headers,
-            data=self.credentials,
+            url=self.credentials.audience, headers=self.headers, data=self.credentials,
         )
 
         token_obj = OAuthResponse(**response.json())
