@@ -61,7 +61,6 @@ class ServiceInterface:
 
         Parameters
         ----------
-
         credentials : str
             The path to the clarify_credentials.json downloaded from the Clarify app.
 
@@ -69,7 +68,6 @@ class ServiceInterface:
         -------
         bool
             True if valid credentials is passed otherwise false
-
         """
         try:
             self.authentication = GetToken(credentials)
@@ -131,8 +129,8 @@ class ServiceInterface:
 
         Returns
         -------
-        [type]
-            [description]
+        str
+            payload string in JSONRPC format
         """
         payload = {
             "jsonrpc": "2.0",
