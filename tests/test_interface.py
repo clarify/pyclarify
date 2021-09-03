@@ -84,7 +84,7 @@ class TestBase(unittest.TestCase):
 
         # assert is correct id
         self.assertEqual(response["id"], payload["id"])
-    
+
     def test_authentication(self):
         read = self.interface.authenticate("./tests/test-clarify-credentials.json")
         self.assertTrue(read)
@@ -125,7 +125,7 @@ class TestClarifyInterface(unittest.TestCase):
         }
         self.mock_token = "token1234567890"
         self.interface.authenticate("./tests/test-clarify-credentials.json")
-    
+
     @patch("pyclarify.interface.ServiceInterface.get_token")
     @patch("pyclarify.interface.requests.post")
     def test_send_request(self, interface_req_mock, get_token_mock):

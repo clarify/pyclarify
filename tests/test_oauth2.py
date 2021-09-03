@@ -6,6 +6,7 @@ sys.path.insert(1, "src/")
 
 from pyclarify.oauth2 import GetToken
 
+
 class TestGetToken(unittest.TestCase):
     def setUp(self):
         self.mock_token = {

@@ -51,7 +51,6 @@ class TestClarifySaveInterface(unittest.TestCase):
         }
         self.mock_token = "token1234567890"
 
-
     @patch("pyclarify.interface.ServiceInterface.get_token")
     @patch("pyclarify.interface.requests.request")
     def test_send_request_2(self, interface_req_mock, get_token_mock):
@@ -84,7 +83,7 @@ class TestClarifySaveInterface(unittest.TestCase):
             self.assertIn(result.error.code, self.error_list)
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
-    
+
     @patch("pyclarify.interface.ServiceInterface.get_token")
     @patch("pyclarify.interface.requests.request")
     def test_send_request_3(self, interface_req_mock, get_token_mock):
