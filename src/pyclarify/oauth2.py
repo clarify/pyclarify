@@ -49,7 +49,7 @@ class GetToken:
             User token.
         """
         response = requests.post(
-            url=self.credentials.audience, headers=self.headers, data=self.credentials,
+            url="https://login.clarify.us/oauth/token", headers=self.headers, data=self.credentials,
         )
 
         token_obj = OAuthResponse(**response.json())
