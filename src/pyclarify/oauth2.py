@@ -17,7 +17,7 @@ class GetToken:
         self.access_token = None
         self.headers = {"content-type": "application/x-www-form-urlencoded"}
         self.credentials = self.read_credentials(clarify_credentials_path)
-        self._expire_date = datetime.datetime.now()
+        self.auth_endpoint = "https://login.clarify.us/oauth/token"
         self._expire_token = None
 
     def read_credentials(self, clarify_credentials_path):
@@ -49,7 +49,7 @@ class GetToken:
             User token.
         """
         response = requests.post(
-            url="https://login.clarify.us/oauth/token", headers=self.headers, data=self.credentials,
+            url=self.auth_endpoint, headers=self.headers, data=self.credentials,
         )
 
         token_obj = OAuthResponse(**response.json())
