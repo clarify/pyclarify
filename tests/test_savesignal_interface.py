@@ -16,7 +16,7 @@ import pyclarify
 
 class TestClarifySaveInterface(unittest.TestCase):
     def setUp(self):
-        self.interface = ClarifyInterface()
+        self.interface = ClarifyInterface("./tests/test-clarify-credentials.json")
         self.error_list = [
             "-32700",
             "-32600",

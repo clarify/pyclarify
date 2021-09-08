@@ -154,9 +154,10 @@ class ServiceInterface:
 
 
 class ClarifyInterface(ServiceInterface):
-    def __init__(self):
+    def __init__(self, clarify_credentials_path: str):
         super().__init__("https://api.clarify.us/v1/rpc")
         self.update_headers({"X-API-Version": "1.0"})
+        self.authentication = GetToken(clarify_credentials_path)
 
     @increment_id
     def add_data_single_signal(

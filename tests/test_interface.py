@@ -92,7 +92,7 @@ class TestBase(unittest.TestCase):
 
 class TestClarifyInterface(unittest.TestCase):
     def setUp(self):
-        self.interface = ClarifyInterface()
+        self.interface = ClarifyInterface("./tests/test-clarify-credentials.json")
         self.error_list = [
             "-32000",
             "-32001",
@@ -124,7 +124,6 @@ class TestClarifyInterface(unittest.TestCase):
             "error": None,
         }
         self.mock_token = "token1234567890"
-        self.interface.authenticate("./tests/test-clarify-credentials.json")
 
     @patch("pyclarify.interface.ServiceInterface.get_token")
     @patch("pyclarify.interface.requests.post")
