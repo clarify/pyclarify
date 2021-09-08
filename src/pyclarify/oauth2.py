@@ -1,19 +1,26 @@
 import requests
 from pyclarify.models.auth import OAuthResponse, OAuthRequestBody, ClarifyCredential
 import datetime
+import json
 
 
 class GetToken:
-    def __init__(self, url, credential_file: ClarifyCredential):
+    def __init__(self, clarify_credentials_path: str):
+        """
+        Initialiser of auth class
 
+        Parameters
+        ----------
+        clarify_credentials_path : str
+            The path to the clarify_credentials.json downloaded from the Clarify app
+        """
         self.access_token = None
-        self.content_type = "application/x-www-form-urlencoded"
-        self.credential_file = credential_file
-        self._expire_date = datetime.datetime.now()
+        self.headers = {"content-type": "application/x-www-form-urlencoded"}
+        self.credentials = self.read_credentials(clarify_credentials_path)
+        self.auth_endpoint = "https://login.clarify.us/oauth/token"
         self._expire_token = None
-        self.url = url
 
-    def read_credentials(self):
+    def read_credentials(self, clarify_credentials_path):
         """
         Read user credentials.
 
@@ -22,32 +29,27 @@ class GetToken:
         dict
             Dictionary of the user credentials.
         """
-        data = self.credential_file
+        f = open(clarify_credentials_path)
+        clarify_credentials = json.load(f)
+        f.close()
         oauth_request_body = OAuthRequestBody(
-            client_id=data["credentials"]["clientId"],
-            client_secret=data["credentials"]["clientSecret"],
+            client_id=clarify_credentials["credentials"]["clientId"],
+            client_secret=clarify_credentials["credentials"]["clientSecret"],
+            audience=clarify_credentials["apiUrl"],
         )
-        return oauth_request_body.dict()
+        return oauth_request_body
 
-    def new_token(self, url: str):
+    def get_new_token(self):
         """
         Get a new token using the users credentials.
-
-        Parameters
-        ----------
-        url : str, default "https://login.clarify.us/oauth/token"
-            URL to make the post request to the Clarify API.
 
         Returns
         -------
         str
             User token.
         """
-        data = self.read_credentials()
         response = requests.post(
-            url=url,
-            headers={"content-type": self.content_type},
-            data=data,
+            url=self.auth_endpoint, headers=self.headers, data=self.credentials,
         )
 
         token_obj = OAuthResponse(**response.json())
@@ -67,6 +69,6 @@ class GetToken:
         if (self._expire_token == None) or (
             self._expire_token <= datetime.datetime.now()
         ):
-            return self.new_token(self.url)
+            return self.get_new_token()
         elif self._expire_token > datetime.datetime.now():
             return self.access_token

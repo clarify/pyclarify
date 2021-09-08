@@ -1,19 +1,14 @@
 import sys
 import unittest
-import json
 from unittest.mock import patch
 
 sys.path.insert(1, "src/")
 
 from pyclarify.oauth2 import GetToken
 
-URL = "https://api.clarify.us/v1/"
-
 
 class TestGetToken(unittest.TestCase):
     def setUp(self):
-
-        self.url = URL
         self.mock_token = {
             "access_token": "<YOUR_ACCESS_TOKEN>",
             "scope": "invoke:integration",
@@ -36,17 +31,13 @@ class TestGetToken(unittest.TestCase):
                 "audience": "https://api.clarify.us/v1/",
             }
         )
-        f = open("./tests/test-clarify-credentials.json")
-        clarify_credentials = json.load(f)
-        self.example_credentials = clarify_credentials
-
-        self.gettoken = GetToken(self.url, self.example_credentials)
+        self.gettoken = GetToken("./tests/test-clarify-credentials.json")
 
     def test_read_credentials(self):
         """
         Test that it can read the credentials
         """
-        req = self.gettoken.read_credentials()
+        req = self.gettoken.credentials
         self.assertEqual(req, self.oauth_request_body_model)
 
     @patch("pyclarify.oauth2.requests.post")

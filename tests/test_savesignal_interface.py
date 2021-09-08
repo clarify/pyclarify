@@ -62,12 +62,21 @@ class TestClarifySaveInterface(unittest.TestCase):
             "result": {"signalsByInput": signals_by_input_2},
             "error": None,
         }
+        self.mock_token = "token1234567890"
 
+    @patch("pyclarify.interface.ServiceInterface.get_token")
     @patch("pyclarify.interface.requests.request")
+<<<<<<< HEAD
 >>>>>>> 4416be551733f3fd6096140ebe296f7740051ab8
     def test_send_request_2(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_1
+=======
+    def test_send_request_2(self, interface_req_mock, get_token_mock):
+        get_token_mock.return_value = self.mock_token
+        interface_req_mock.return_value.ok = True
+        interface_req_mock.return_value.json = lambda: self.mock_response_insert_1
+>>>>>>> 7a45ab39cce227dbee2ecabb61103a1a42672986
         integration = "c4ivn4rsbu84313ljdgg"
 
 <<<<<<< HEAD
@@ -110,6 +119,7 @@ class TestClarifySaveInterface(unittest.TestCase):
             self.assertIn(signal_id, result.result.signalsByInput)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     @patch('interface.requests.request')
 =======
     @patch("pyclarify.interface.requests.request")
@@ -117,6 +127,14 @@ class TestClarifySaveInterface(unittest.TestCase):
     def test_send_request_3(self, mock_request):
         mock_request.return_value.ok = True
         mock_request.return_value.json = lambda: self.mock_response_insert_2
+=======
+    @patch("pyclarify.interface.ServiceInterface.get_token")
+    @patch("pyclarify.interface.requests.request")
+    def test_send_request_3(self, interface_req_mock, get_token_mock):
+        get_token_mock.return_value = self.mock_token
+        interface_req_mock.return_value.ok = True
+        interface_req_mock.return_value.json = lambda: self.mock_response_insert_2
+>>>>>>> 7a45ab39cce227dbee2ecabb61103a1a42672986
         integration = "c4ivn4rsbu84313ljdgg"
 
 <<<<<<< HEAD
