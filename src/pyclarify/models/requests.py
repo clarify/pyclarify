@@ -10,9 +10,9 @@ LimitSelect = conint(ge=0, le=20)
 
 
 class ApiMethod(str, Enum):
-    select = 'item.Select'
-    insert = 'integration.Insert'
-    save_signals = 'integration.SaveSignals'
+    select = "item.Select"
+    insert = "integration.Insert"
+    save_signals = "integration.SaveSignals"
 
 
 class JsonRPCRequest(BaseModel):

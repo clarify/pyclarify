@@ -17,8 +17,8 @@ class ClarifyDataFrame(BaseModel):
 
 
 class TypeSignal(str, Enum):
-    numeric = 'numeric'
-    enum = 'enum'
+    numeric = "numeric"
+    enum = "enum"
 
 
 class SourceTypeSignal(str, Enum):
