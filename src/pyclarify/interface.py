@@ -19,6 +19,9 @@ from pyclarify.models.requests import (
     InsertJsonRPCRequest,
     SaveJsonRPCRequest,
     ParamsSave,
+    ParamsSelect,
+    ResponseSelect,
+    SelectJsonRPCRequest
 )
 from pyclarify.oauth2 import GetToken
 
@@ -337,3 +340,32 @@ class ClarifyInterface(ServiceInterface):
         result = self.send(request_data.json())
 
         return ResponseSave(**result)
+
+    @increment_id
+    def select_items(
+            self,
+            params: ParamsSelect
+    ) -> ResponseSelect:
+        """
+        This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
+        combination with the integration ID. A List of Signals should be provided with the intended meta-data.
+        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.us/reference#integrationsavesignals] for
+        multiple signals.
+
+        Parameters
+        ----------
+        params : ParamsSelect
+
+
+        Returns
+        -------
+        ResponseSelect
+        """
+        request_data = SelectJsonRPCRequest(
+            params=params
+        )
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+
+        return ResponseSelect(**result)

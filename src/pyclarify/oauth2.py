@@ -15,6 +15,7 @@ class GetToken:
             The path to the clarify_credentials.json downloaded from the Clarify app
         """
         self.access_token = None
+        self.integration_id = None
         self.headers = {"content-type": "application/x-www-form-urlencoded"}
         self.credentials = self.read_credentials(clarify_credentials_path)
         self.auth_endpoint = "https://login.clarify.us/oauth/token"
@@ -37,6 +38,7 @@ class GetToken:
             client_secret=clarify_credentials["credentials"]["clientSecret"],
             audience=clarify_credentials["apiUrl"],
         )
+        self.integration_id = clarify_credentials["integration"]
         return oauth_request_body
 
     def get_new_token(self):
@@ -49,7 +51,7 @@ class GetToken:
             User token.
         """
         response = requests.post(
-            url=self.auth_endpoint, headers=self.headers, data=self.credentials,
+            url=self.auth_endpoint, headers=self.headers, data=self.credentials.dict(),
         )
 
         token_obj = OAuthResponse(**response.json())
@@ -67,7 +69,7 @@ class GetToken:
             User token.
         """
         if (self._expire_token == None) or (
-            self._expire_token <= datetime.datetime.now()
+                self._expire_token <= datetime.datetime.now()
         ):
             return self.get_new_token()
         elif self._expire_token > datetime.datetime.now():

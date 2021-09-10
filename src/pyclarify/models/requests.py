@@ -1,4 +1,4 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, constr, conint
 from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime
@@ -102,3 +102,10 @@ class SelectJsonRPCRequest(JsonRPCRequest):
     params: ParamsSelect
 
 
+class ResultSelectMap(BaseModel):
+    items: Optional[Dict[InputId, Signal]]
+    data: Optional[ClarifyDataFrame]
+
+
+class ResponseSelect(ResponseGeneric):
+    result: Optional[ResultSelectMap]
