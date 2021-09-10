@@ -349,19 +349,69 @@ class ClarifyInterface(ServiceInterface):
             params: ParamsSelect
     ) -> ResponseSelect:
         """
-        This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
-        combination with the integration ID. A List of Signals should be provided with the intended meta-data.
-        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.us/reference#integrationsavesignals] for
-        multiple signals.
+        Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.us/reference].
+
 
         Parameters
         ----------
         params : ParamsSelect
+            Data model with all the possible settings for method. Fields include
+            - `items`:
+               > Select items to include (data for).
+              - `include` | **bool** | default: False
+                > Set to true to render item meta-data in the response.
+              - `filter` | **Dict**:
+                > Rest-layer style item filter (potentially with limited query options).
+                > Example: {"id":{"$in": ["<id1>", "<id2>"]}}
+              - `limit` | **int(min:0,max:50)** | default=`10`
+                > Limit number of items (max value to be adjusted after tuning).
+              - `skip` | **int**| default=`0`
+                > Skip first N items.
+            - `times`:
+              > Select times to include; ignored if no series are selected.
+              - `before` | **str(`""` | |RFC3339 timestamp)**  | default=`""`
+              - `notBefore` | **str(`""` || RFC3339 timestamp)**  |  default=`""`
+            - `series`:
+              > Select which data series to include.
+              - `items` | bool | default=False
+                > include items mapped by ID in the response data frame.
+              - `aggregates` | bool | default=False
+                > include aggregated values `"count"`, `"sum"`, `"min"` and `"max"` across all items in the response data frame.
 
 
         Returns
         -------
         ResponseSelect
+        Data model with the results of the method. Data and metadata can be found in the `result` field, with the
+        attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
+        `pyclarify.models.data`) and `result.data` containing a `ClarifyDataFrame` object with the resulting data
+        and aggregates (in case the parameter `series.aggregates` is set to True).
+        Example:
+        `{
+            "jsonrpc": "2.0",
+            "result": {
+                "items": {
+                    "<id1>": {
+                        // Signal schema
+                    },
+                    "<id2>": {
+                        //  Signal schema
+                    },
+                },
+                "data": { // DataFrame schema
+                    "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
+                    "series": {
+                        "count": [2, 1, 1],
+                        "sum":[20.4, 0.0, 2.7],
+                        "min": [10.2, 0.0, 2.7],
+                        "max":[10.2, 0.0, 2.7],
+                        "<id1>": [10.2, null, 2.7],
+                        "<id2>": [10.2, 0.0, null]
+                    }
+                }
+            }
+        }`
+
         """
         request_data = SelectJsonRPCRequest(
             params=params
