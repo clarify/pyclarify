@@ -60,14 +60,15 @@ class ServiceInterface:
         self.current_id = 0
         self.authentication = None
 
-    def authenticate(self, credentials: str):
+    def authenticate(self, clarify_credentials):
         """
         Authenticates the client by using the GetToken class (see oauth2.py)
 
         Parameters
         ----------
-        credentials : str
-            The path to the clarify_credentials.json downloaded from the Clarify app.
+        credentials : str/dict
+            The path to the clarify_credentials.json downloaded from the Clarify app, 
+            or json/dictionary of the content in clarify_credentials.json
 
         Returns
         -------
@@ -75,7 +76,7 @@ class ServiceInterface:
             True if valid credentials is passed otherwise false
         """
         try:
-            self.authentication = GetToken(credentials)
+            self.authentication = GetToken(clarify_credentials)
             return True
         except:
             return False
@@ -159,9 +160,10 @@ class ServiceInterface:
 
 
 class ClarifyInterface(ServiceInterface):
-    def __init__(self):
+    def __init__(self, clarify_credentials):
         super().__init__("https://api.clarify.us/v1/rpc")
         self.update_headers({"X-API-Version": "1.0"})
+        self.authentication = GetToken(clarify_credentials)
 
     @increment_id
     def add_data_single_signal(
