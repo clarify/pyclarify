@@ -1,7 +1,10 @@
 import requests
-from pyclarify.models.auth import OAuthResponse, OAuthRequestBody, ClarifyCredential
 import datetime
+import logging
 import json
+from os import path
+
+from pyclarify.models.auth import OAuthResponse, OAuthRequestBody, ClarifyCredential
 
 
 class GetToken:
@@ -29,9 +32,23 @@ class GetToken:
         dict
             Dictionary of the user credentials.
         """
-        f = open(clarify_credentials_path)
-        clarify_credentials = json.load(f)
-        f.close()
+        if isinstance(clarify_credentials_path, str):
+            if path.exists(clarify_credentials_path):
+                f = open(clarify_credentials_path)
+                clarify_credentials = json.load(f)
+                f.close()
+            else:
+                try:
+                    clarify_credentials = json.loads(clarify_credentials_path)
+                except:
+                    logging.error(
+                        f"{clarify_credentials_path} is of type string, but is not a valid path or credentials"
+                    )
+                    return False
+
+        if isinstance(clarify_credentials_path, dict):
+            clarify_credentials = clarify_credentials_path
+
         oauth_request_body = OAuthRequestBody(
             client_id=clarify_credentials["credentials"]["clientId"],
             client_secret=clarify_credentials["credentials"]["clientSecret"],

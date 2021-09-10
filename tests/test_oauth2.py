@@ -1,5 +1,6 @@
 import sys
 import unittest
+import json
 from unittest.mock import patch
 
 sys.path.insert(1, "src/")
@@ -9,19 +10,18 @@ from pyclarify.oauth2 import GetToken
 
 class TestGetToken(unittest.TestCase):
     def setUp(self):
-        self.mock_token = {
-            "access_token": "<YOUR_ACCESS_TOKEN>",
-            "scope": "invoke:integration",
-            "expires_in": 86400,
-            "token_type": "Bearer",
-        }
+        self.credentials_path = "./tests/data/test-clarify-credentials.json"
 
-        self.mock_token2 = {
-            "access_token": "<YOUR_ACCESS_TOKEN2>",
-            "scope": "invoke:integration",
-            "expires_in": 86400,
-            "token_type": "Bearer",
-        }
+        f = open(self.credentials_path)
+        self.credentials_dict = json.load(f)
+        f.close()
+
+        f = open("./tests/data/mock-token.json")
+        self.mock_token = json.load(f)
+        f.close()
+
+        self.mock_token2 = self.mock_token
+        self.mock_token2["access_token"] = "<YOUR_ACCESS_TOKEN2>"
 
         self.oauth_request_body_model = dict(
             {
@@ -31,14 +31,36 @@ class TestGetToken(unittest.TestCase):
                 "audience": "https://api.clarify.us/v1/",
             }
         )
-        self.gettoken = GetToken("./tests/test-clarify-credentials.json")
+        self.gettoken = GetToken(self.credentials_path)
 
-    def test_read_credentials(self):
+    def test_read_credentials_path(self):
         """
-        Test that it can read the credentials
+        Test that it can read the credentials from folder path
         """
-        req = self.gettoken.credentials
-        self.assertEqual(req, self.oauth_request_body_model)
+
+        token_client = GetToken(self.credentials_path)
+        self.assertEqual(token_client.credentials, self.oauth_request_body_model)
+
+    def test_read_credentials_string(self):
+        """
+        Test that it can read the credentials from string
+        """
+        credentials_string = json.dumps(self.credentials_dict)
+        token_client = GetToken(credentials_string)
+        self.assertEqual(token_client.credentials, self.oauth_request_body_model)
+
+    def test_read_credentials_dict(self):
+        """
+        Test that it can read the credentials from a dictionary
+        """
+        token_client = GetToken(self.credentials_dict)
+        self.assertEqual(token_client.credentials, self.oauth_request_body_model)
+
+    def test_no_input(self):
+        """
+        Test that it gets a TypeError when not providing an input
+        """
+        self.assertRaises(TypeError, GetToken)
 
     @patch("pyclarify.oauth2.requests.post")
     def test_get_token(self, mock_request):
