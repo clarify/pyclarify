@@ -51,7 +51,7 @@ class ErrorData(BaseModel):
 class Error(BaseModel):
     code: str
     message: str
-    data: Optional[ErrorData]
+    data: Optional[Union[ErrorData, str]]
 
 
 class ResponseGeneric(BaseModel):
@@ -82,8 +82,8 @@ class ParamsSelectItems(BaseModel):
 
 
 class ParamsSelectTimes(BaseModel):
-    before: Union[datetime, str] = ""
-    notBefore: Union[datetime, str] = ""
+    before: Optional[Union[datetime, str]]
+    notBefore: Optional[Union[datetime, str]]
 
 
 class ParamsSelectSeries(BaseModel):

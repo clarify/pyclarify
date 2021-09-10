@@ -377,7 +377,20 @@ class ClarifyInterface(ServiceInterface):
                 > include items mapped by ID in the response data frame.
               - `aggregates` | bool | default=False
                 > include aggregated values `"count"`, `"sum"`, `"min"` and `"max"` across all items in the response data frame.
-
+            Example:
+                  {
+                        "items": {
+                            "include": true,
+                            "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
+                        },
+                        "times": {
+                            "notBefore": "2020-01-01T01:00:00Z"
+                        },
+                        "series": {
+                            "items": true,
+                            "aggregates": true
+                        }
+                  }
 
         Returns
         -------
