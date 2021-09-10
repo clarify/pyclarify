@@ -11,6 +11,7 @@ import json
 import logging
 import functools
 from typing import List
+from pydantic import validate_arguments
 
 from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame
 from pyclarify.models.requests import (
@@ -21,7 +22,7 @@ from pyclarify.models.requests import (
     ParamsSave,
     ParamsSelect,
     ResponseSelect,
-    SelectJsonRPCRequest
+    SelectJsonRPCRequest,
 )
 from pyclarify.oauth2 import GetToken
 
@@ -38,7 +39,7 @@ def increment_id(func):
     Returns
     -------
     func : function
-        returns the wrapped function 
+        returns the wrapped function
     """
 
     @functools.wraps(func)
@@ -51,9 +52,8 @@ def increment_id(func):
 
 class ServiceInterface:
     def __init__(
-            self,
-            base_url,
-
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -67,7 +67,7 @@ class ServiceInterface:
         Parameters
         ----------
         credentials : str/dict
-            The path to the clarify_credentials.json downloaded from the Clarify app, 
+            The path to the clarify_credentials.json downloaded from the Clarify app,
             or json/dictionary of the content in clarify_credentials.json
 
         Returns
@@ -165,9 +165,10 @@ class ClarifyInterface(ServiceInterface):
         self.update_headers({"X-API-Version": "1.0"})
         self.authentication = GetToken(clarify_credentials)
 
+    @validate_arguments
     @increment_id
     def add_data_single_signal(
-            self, integration: str, input_id: str, times: list, values: NumericalValuesType
+        self, integration: str, input_id: str, times: list, values: NumericalValuesType
     ) -> ResponseSave:
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
@@ -230,13 +231,14 @@ class ClarifyInterface(ServiceInterface):
         result = self.send(request_data.json())
         return ResponseSave(**result)
 
+    @validate_arguments
     @increment_id
     def add_data_multiple_signals(
-            self,
-            integration: str,
-            input_id_lst: List[str],
-            times: list,
-            values_lst: List[List[NumericalValuesType]],
+        self,
+        integration: str,
+        input_id_lst: List[str],
+        times: list,
+        values_lst: List[List[NumericalValuesType]],
     ) -> ResponseSave:
         """
         This call inserts data for multiple signals. The signals are uniquely identified by its input ID in
@@ -264,21 +266,25 @@ class ClarifyInterface(ServiceInterface):
         ResponseSave
 
         """
-        series_dict = {input_id: values for input_id, values in zip(input_id_lst, values_lst)}
+        series_dict = dict( zip(input_id_lst, values_lst))
+
         data = ClarifyDataFrame(times=times, series=series_dict)
-        request_data = InsertJsonRPCRequest(params=ParamsInsert(integration=integration, data=data))
+        request_data = InsertJsonRPCRequest(
+            params=ParamsInsert(integration=integration, data=data)
+        )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
         return ResponseSave(**result)
 
+    @validate_arguments
     @increment_id
     def add_metadata_signals(
-            self,
-            integration: str,
-            signal_metadata_list: List[Signal],
-            created_only: bool = False,
+        self,
+        integration: str,
+        signal_metadata_list: List[Signal],
+        created_only: bool = False,
     ) -> ResponseSave:
         """
         This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
@@ -343,11 +349,9 @@ class ClarifyInterface(ServiceInterface):
 
         return ResponseSave(**result)
 
+    @validate_arguments
     @increment_id
-    def select_items(
-            self,
-            params: ParamsSelect
-    ) -> ResponseSelect:
+    def select_items(self, params: ParamsSelect) -> ResponseSelect:
         """
         Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.us/reference].
 
@@ -426,9 +430,7 @@ class ClarifyInterface(ServiceInterface):
         }`
 
         """
-        request_data = SelectJsonRPCRequest(
-            params=params
-        )
+        request_data = SelectJsonRPCRequest(params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
