@@ -3,6 +3,7 @@ import datetime
 import logging
 import json
 from os import path
+
 from pyclarify.models.auth import OAuthResponse, OAuthRequestBody, ClarifyCredential
 
 

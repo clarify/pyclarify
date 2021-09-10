@@ -86,13 +86,13 @@ class TestBase(unittest.TestCase):
         self.assertEqual(response["id"], payload["id"])
 
     def test_authentication(self):
-        read = self.interface.authenticate("./tests/test-clarify-credentials.json")
+        read = self.interface.authenticate("./tests/data/test-clarify-credentials.json")
         self.assertTrue(read)
 
 
 class TestClarifyInterface(unittest.TestCase):
     def setUp(self):
-        self.interface = ClarifyInterface("./tests/test-clarify-credentials.json")
+        self.interface = ClarifyInterface("./tests/data/test-clarify-credentials.json")
         self.error_list = [
             "-32000",
             "-32001",

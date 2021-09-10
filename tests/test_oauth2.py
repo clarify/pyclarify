@@ -10,28 +10,18 @@ from pyclarify.oauth2 import GetToken
 
 class TestGetToken(unittest.TestCase):
     def setUp(self):
-        self.credentials_dict = {
-            "credentials": {
-                "type": "client-credentials",
-                "clientId": "test_id_123",
-                "clientSecret": "test_pass_123",
-            },
-            "integration": "test_integration_123",
-            "apiUrl": "https://api.clarify.us/v1/",
-        }
-        self.mock_token = {
-            "access_token": "<YOUR_ACCESS_TOKEN>",
-            "scope": "invoke:integration",
-            "expires_in": 86400,
-            "token_type": "Bearer",
-        }
+        self.credentials_path = "./tests/data/test-clarify-credentials.json"
 
-        self.mock_token2 = {
-            "access_token": "<YOUR_ACCESS_TOKEN2>",
-            "scope": "invoke:integration",
-            "expires_in": 86400,
-            "token_type": "Bearer",
-        }
+        f = open(self.credentials_path)
+        self.credentials_dict = json.load(f)
+        f.close()
+
+        f = open("./tests/data/mock-token.json")
+        self.mock_token = json.load(f)
+        f.close()
+
+        self.mock_token2 = self.mock_token
+        self.mock_token2["access_token"] = "<YOUR_ACCESS_TOKEN2>"
 
         self.oauth_request_body_model = dict(
             {
@@ -41,15 +31,14 @@ class TestGetToken(unittest.TestCase):
                 "audience": "https://api.clarify.us/v1/",
             }
         )
-        self.gettoken = GetToken("./tests/test-clarify-credentials.json")
+        self.gettoken = GetToken(self.credentials_path)
 
     def test_read_credentials_path(self):
         """
         Test that it can read the credentials from folder path
         """
 
-        path = "./tests/test-clarify-credentials.json"
-        token_client = GetToken(path)
+        token_client = GetToken(self.credentials_path)
         self.assertEqual(token_client.credentials, self.oauth_request_body_model)
 
     def test_read_credentials_string(self):
