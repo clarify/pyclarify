@@ -66,9 +66,11 @@ class GetToken:
             User token.
         """
         response = requests.post(
-            url=self.auth_endpoint, headers=self.headers, data=self.credentials.dict(),
+            url=self.auth_endpoint,
+            headers=self.headers,
+            data=self.credentials.dict(),
         )
-        
+
         token_obj = OAuthResponse(**response.json())
         self._expire_token = datetime.datetime.now() + token_obj.expires_in
         self.access_token = token_obj.access_token
