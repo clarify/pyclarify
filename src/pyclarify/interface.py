@@ -20,7 +20,7 @@ from pyclarify.models.requests import (
     InsertJsonRPCRequest,
     SaveJsonRPCRequest,
     ParamsSave,
-    ParamsSelect,
+    ItemSelect,
     ResponseSelect,
     SelectJsonRPCRequest,
 )
@@ -165,8 +165,8 @@ class ClarifyInterface(ServiceInterface):
         self.update_headers({"X-API-Version": "1.0"})
         self.authentication = GetToken(clarify_credentials)
 
-    @validate_arguments
     @increment_id
+    @validate_arguments
     def add_data_single_signal(
         self, integration: str, input_id: str, times: list, values: NumericalValuesType
     ) -> ResponseSave:
@@ -231,8 +231,8 @@ class ClarifyInterface(ServiceInterface):
         result = self.send(request_data.json())
         return ResponseSave(**result)
 
-    @validate_arguments
     @increment_id
+    @validate_arguments
     def add_data_multiple_signals(
         self,
         integration: str,
@@ -266,7 +266,7 @@ class ClarifyInterface(ServiceInterface):
         ResponseSave
 
         """
-        series_dict = dict( zip(input_id_lst, values_lst))
+        series_dict = dict(zip(input_id_lst, values_lst))
 
         data = ClarifyDataFrame(times=times, series=series_dict)
         request_data = InsertJsonRPCRequest(
@@ -278,8 +278,8 @@ class ClarifyInterface(ServiceInterface):
 
         return ResponseSave(**result)
 
-    @validate_arguments
     @increment_id
+    @validate_arguments
     def add_metadata_signals(
         self,
         integration: str,
@@ -349,16 +349,16 @@ class ClarifyInterface(ServiceInterface):
 
         return ResponseSave(**result)
 
-    @validate_arguments
     @increment_id
-    def select_items(self, params: ParamsSelect) -> ResponseSelect:
+    @validate_arguments
+    def select_items(self, params: ItemSelect) -> ResponseSelect:
         """
         Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.us/reference].
 
 
         Parameters
         ----------
-        params : ParamsSelect
+        params : ItemSelect
             Data model with all the possible settings for method. Fields include
             - `items`:
                > Select items to include (data for).

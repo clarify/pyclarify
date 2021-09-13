@@ -75,23 +75,23 @@ class ResponseSave(ResponseGeneric):
 
 
 class ParamsSelectItems(BaseModel):
-    include: bool = False
+    include: Optional[bool] = False
     filter: dict = {}
-    limit: LimitSelect = 10
-    skip: int = 0
+    limit: Optional[LimitSelect] = 10
+    skip: Optional[int] = 0
 
 
 class ParamsSelectTimes(BaseModel):
-    before: Optional[Union[datetime, str]]
-    notBefore: Optional[Union[datetime, str]]
+    before: Optional[datetime]
+    notBefore: Optional[datetime]
 
 
 class ParamsSelectSeries(BaseModel):
-    items: bool = False
-    aggregates: bool = False
+    items: Optional[bool] = False
+    aggregates: Optional[bool] = False
 
 
-class ParamsSelect(BaseModel):
+class ItemSelect(BaseModel):
     items: ParamsSelectItems
     times: ParamsSelectTimes
     series: ParamsSelectSeries
@@ -99,7 +99,7 @@ class ParamsSelect(BaseModel):
 
 class SelectJsonRPCRequest(JsonRPCRequest):
     method: ApiMethod = ApiMethod.select
-    params: ParamsSelect
+    params: ItemSelect
 
 
 class ResultSelectMap(BaseModel):
