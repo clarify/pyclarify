@@ -11,6 +11,7 @@ import json
 import logging
 import functools
 from typing import List
+from pydantic import validate_arguments
 
 from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame
 from pyclarify.models.requests import (
@@ -35,7 +36,7 @@ def increment_id(func):
     Returns
     -------
     func : function
-        returns the wrapped function 
+        returns the wrapped function
     """
 
     @functools.wraps(func)
@@ -48,7 +49,8 @@ def increment_id(func):
 
 class ServiceInterface:
     def __init__(
-        self, base_url,
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -62,7 +64,7 @@ class ServiceInterface:
         Parameters
         ----------
         credentials : str/dict
-            The path to the clarify_credentials.json downloaded from the Clarify app, 
+            The path to the clarify_credentials.json downloaded from the Clarify app,
             or json/dictionary of the content in clarify_credentials.json
 
         Returns
@@ -161,6 +163,7 @@ class ClarifyInterface(ServiceInterface):
         self.authentication = GetToken(clarify_credentials)
 
     @increment_id
+    @validate_arguments
     def add_data_single_signal(
         self, integration: str, input_id: str, times: list, values: NumericalValuesType
     ) -> ResponseSave:
@@ -226,6 +229,7 @@ class ClarifyInterface(ServiceInterface):
         return ResponseSave(**result)
 
     @increment_id
+    @validate_arguments
     def add_data_multiple_signals(
         self,
         integration: str,
@@ -297,6 +301,7 @@ class ClarifyInterface(ServiceInterface):
         return ResponseSave(**result)
 
     @increment_id
+    @validate_arguments
     def add_metadata_signals(
         self,
         integration: str,
