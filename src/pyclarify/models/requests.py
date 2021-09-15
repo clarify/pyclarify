@@ -10,7 +10,7 @@ LimitSelect = conint(ge=0, le=20)
 
 
 class ApiMethod(str, Enum):
-    select = "clarify.selectItems"
+    select = "clarify.SelectItems"
     insert = "integration.Insert"
     save_signals = "integration.SaveSignals"
 
