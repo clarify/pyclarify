@@ -4,19 +4,20 @@ import json
 from datetime import datetime, timedelta
 from unittest.mock import patch
 import requests
+from http import HTTPStatus
 
 # Standard library imports...
 
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyInterface, Signal
+from pyclarify import ApiClient, Signal, ClarifyDataFrame
 from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
 import pyclarify
 
 
 class TestClarifySaveInterface(unittest.TestCase):
     def setUp(self):
-        self.interface = ClarifyInterface("./tests/data/test-clarify-credentials.json")
+        self.interface = ApiClient("./tests/data/test-clarify-credentials.json")
         self.error_list = [
             "-32700",
             "-32600",
@@ -29,7 +30,7 @@ class TestClarifySaveInterface(unittest.TestCase):
             "-32003",
             "-32009",
             "-32015",
-        ]
+        ] + [str(e.value) for e in HTTPStatus]
         signals_by_input_1 = {
             "test_1234_id__a": {"id": "test_1234_id__a", "created": False}
         }
@@ -51,7 +52,7 @@ class TestClarifySaveInterface(unittest.TestCase):
         }
         self.mock_token = "token1234567890"
 
-    @patch("pyclarify.interface.ServiceInterface.get_token")
+    @patch("pyclarify.interface.SimpleClient.get_token")
     @patch("pyclarify.interface.requests.request")
     def test_send_request_2(self, interface_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_token
@@ -65,32 +66,29 @@ class TestClarifySaveInterface(unittest.TestCase):
         ]
         values = [0.6, 6.7]
         signal_id = "test_1234_id__a"
-        result = self.interface.add_data_single_signal(
-            integration=integration, input_id=signal_id, times=times, values=values
-        )
+
+        data = ClarifyDataFrame(values={signal_id: values}, times=times)
+        result = self.interface.insert(data)
 
         signal_meta_data = Signal(
             name=signal_id,
             description="test description",
             labels={"test_label_py": ["completed mo"]},
         )
-        result = self.interface.add_metadata_signals(
-            integration=integration,
-            signal_metadata_list=[signal_meta_data],
-            created_only=True,
+        result = self.interface.save_signals(
+            inputs={signal_id: signal_meta_data}, created_only=True
         )
         if result.error is not None:
             self.assertIn(result.error.code, self.error_list)
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
-    @patch("pyclarify.interface.ServiceInterface.get_token")
-    @patch("pyclarify.interface.requests.request")
+    @patch("pyclarify.interface.SimpleClient.get_token")
+    @patch("pyclarify.interface.requests.post")
     def test_send_request_3(self, interface_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_token
         interface_req_mock.return_value.ok = True
         interface_req_mock.return_value.json = lambda: self.mock_response_insert_2
-        integration = "c4ivn4rsbu84313ljdgg"
 
         times = [
             (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
@@ -98,9 +96,8 @@ class TestClarifySaveInterface(unittest.TestCase):
         ]
         values = [0.6, 6.7]
         signal_id = "test_1234_id__b"
-        result = self.interface.add_data_single_signal(
-            integration=integration, input_id=signal_id, times=times, values=values
-        )
+        data = ClarifyDataFrame(values={signal_id: values}, times=times)
+        result = self.interface.insert(data)
 
         signal_meta_data = Signal(
             name=signal_id,
@@ -110,10 +107,8 @@ class TestClarifySaveInterface(unittest.TestCase):
                 "thisonetoo": ["house"],
             },
         )
-        result = self.interface.add_metadata_signals(
-            integration=integration,
-            signal_metadata_list=[signal_meta_data],
-            created_only=True,
+        result = self.interface.save_signals(
+            inputs={signal_id: signal_meta_data}, created_only=True
         )
 
         if result.error is not None:

@@ -92,7 +92,6 @@ class TestModels(unittest.TestCase):
         # expect merged to be same as single input
         self.assertEqual(merged, cdf)
 
-
     def test_merge_two_inputs(self):
         times = ["2021-03-11T21:49:06Z", "2021-03-11T21:50:06Z", "2021-03-11T21:51:06Z"]
         values = [0.6, 1.0, 2.4]
@@ -108,7 +107,7 @@ class TestModels(unittest.TestCase):
         merged_reverse = models.data.merge([cdf2, cdf])
 
         self.assertEqual(merged, merged_reverse)
-    
+
     def test_merge_multiple_inputs(self):
         times = ["2021-03-11T21:49:06Z", "2021-03-11T21:50:06Z", "2021-03-11T21:51:06Z"]
         values = [0.6, 1.0, 2.4]
@@ -124,14 +123,14 @@ class TestModels(unittest.TestCase):
         values = [0.6, 1.0, 2.4]
         signal_id = "signal_3"
         cdf3 = models.data.ClarifyDataFrame(times=times, series={signal_id: values})
-        
+
         merged = models.data.merge([cdf, cdf2, cdf3])
         merged2 = models.data.merge([cdf, cdf3, cdf2])
         merged3 = models.data.merge([cdf2, cdf, cdf3])
         merged4 = models.data.merge([cdf2, cdf3, cdf])
         merged5 = models.data.merge([cdf3, cdf, cdf2])
         merged6 = models.data.merge([cdf3, cdf2, cdf])
-        
+
         self.assertEqual(merged, merged2)
         self.assertEqual(merged, merged3)
         self.assertEqual(merged, merged4)
@@ -149,9 +148,10 @@ class TestModels(unittest.TestCase):
         signal_id = "signal_1"
         cdf2 = models.data.ClarifyDataFrame(times=times, series={signal_id: values})
 
-        merged = models.data.merge([cdf,cdf2])
+        merged = models.data.merge([cdf, cdf2])
 
         self.assertEqual(merged, cdf)
+
 
 if __name__ == "__main__":
     unittest.main()

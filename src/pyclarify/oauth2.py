@@ -18,6 +18,7 @@ class GetToken:
             The path to the clarify_credentials.json downloaded from the Clarify app
         """
         self.access_token = None
+        self.integration_id = None
         self.headers = {"content-type": "application/x-www-form-urlencoded"}
         self.credentials = self.read_credentials(clarify_credentials_path)
         self.auth_endpoint = "https://login.clarify.us/oauth/token"
@@ -54,6 +55,7 @@ class GetToken:
             client_secret=clarify_credentials["credentials"]["clientSecret"],
             audience=clarify_credentials["apiUrl"],
         )
+        self.integration_id = clarify_credentials["integration"]
         return oauth_request_body
 
     def get_new_token(self):

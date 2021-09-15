@@ -3,13 +3,16 @@ import unittest
 import json
 from datetime import datetime, timedelta
 from unittest.mock import patch
+from http import HTTPStatus
+
 
 # Standard library imports...
 
 
 sys.path.insert(1, "src/")
-from pyclarify.interface import ServiceInterface, ClarifyInterface
+from pyclarify.interface import SimpleClient, ApiClient
 import pyclarify.interface as interface
+from pyclarify import ClarifyDataFrame, Signal
 
 # using DASH cryptocurrency RPC endpoints as test API
 # (https://dashplatform.readme.io/docs/reference-dapi-endpoints-json-rpc-endpoints)
@@ -21,7 +24,7 @@ PARAMS = {"height": 1}
 
 class TestBase(unittest.TestCase):
     def setUp(self):
-        self.interface = ServiceInterface(base_url=URL)
+        self.interface = SimpleClient(base_url=URL)
 
     def test_update_header(self):
         """
@@ -90,9 +93,9 @@ class TestBase(unittest.TestCase):
         self.assertTrue(read)
 
 
-class TestClarifyInterface(unittest.TestCase):
+class TestApiClient(unittest.TestCase):
     def setUp(self):
-        self.interface = ClarifyInterface("./tests/data/test-clarify-credentials.json")
+        self.interface = ApiClient("./tests/data/test-clarify-credentials.json")
         self.error_list = [
             "-32000",
             "-32001",
@@ -105,7 +108,7 @@ class TestClarifyInterface(unittest.TestCase):
             "-32602",
             "-32603",
             "-32700",
-        ]
+        ] + [str(e.value) for e in HTTPStatus]
         signals_by_input_1 = {"test_123_id": {"id": "test_123_id", "created": True}}
         self.mock_response_insert_1 = {
             "jsonrpc": "2.0",
@@ -125,43 +128,44 @@ class TestClarifyInterface(unittest.TestCase):
         }
         self.mock_token = "token1234567890"
 
-    @patch("pyclarify.interface.ServiceInterface.get_token")
+    @patch("pyclarify.interface.SimpleClient.get_token")
     @patch("pyclarify.interface.requests.post")
     def test_send_request(self, interface_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_token
         interface_req_mock.return_value.ok = True
         interface_req_mock.return_value.json = lambda: self.mock_response_insert_1
-        integration = "c4ivn4rsbu84313ljdgg"
+
         times = [
             (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
             datetime.now().astimezone().isoformat(),
         ]
         values = [0.6, 1.0]
         signal_id = "test_123_id"
-        result = self.interface.add_data_single_signal(
-            integration=integration, input_id=signal_id, times=times, values=values
-        )
+
+        data = ClarifyDataFrame(values={signal_id: values}, times=times)
+
+        result = self.interface.insert(data)
+
         if result.error is not None:
             self.assertIn(result.error.code, self.error_list)
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
-    @patch("pyclarify.interface.ServiceInterface.get_token")
+    @patch("pyclarify.interface.SimpleClient.get_token")
     @patch("pyclarify.interface.requests.request")
     def test_send_request_2(self, interface_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_token
         interface_req_mock.return_value.ok = True
         interface_req_mock.return_value.json = lambda: self.mock_response_insert_2
-        integration = "a12vn4rsbu84313ljdgg"
         times = [
             (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
             datetime.now().astimezone().isoformat(),
         ]
         values = [0.6, 6.7]
         signal_id = "test_1234_id__a"
-        result = self.interface.add_data_single_signal(
-            integration=integration, input_id=signal_id, times=times, values=values
-        )
+
+        data = ClarifyDataFrame(values={signal_id: values}, times=times)
+        result = self.interface.insert(data)
         if result.error is not None:
             self.assertIn(result.error.code, self.error_list)
         else:

@@ -16,11 +16,12 @@ class ClarifyDataFrame(BaseModel):
     times: List[datetime] = None
     series: Dict[InputId, NumericalValuesType] = None
 
+
 @validate_arguments
-def merge(dataframes : List[ClarifyDataFrame]):
+def merge(dataframes: List[ClarifyDataFrame]):
     """
-    Method for merging 2 or more Clarify Data Frames. Mapping overlapping 
-    signal names to single series. Concatenates timestamps of all data frames. 
+    Method for merging 2 or more Clarify Data Frames. Mapping overlapping
+    signal names to single series. Concatenates timestamps of all data frames.
     Inserts none value to series not containing entry at a given timestamp.
 
     Parameters
@@ -31,7 +32,7 @@ def merge(dataframes : List[ClarifyDataFrame]):
     Returns
     -------
     ClarifyDataFrame : ClarifyDataFrame
-        returns the wrapped function 
+        returns the wrapped function
     """
     signals = [key for df in dataframes for key in df.series.keys()]
     signals = list(set(signals))
@@ -40,12 +41,12 @@ def merge(dataframes : List[ClarifyDataFrame]):
     for cdf in dataframes:
         for signal, values in list(cdf.series.items()):
             for value, time in zip(values, cdf.times):
-                cdf_dict.setdefault(time,[]).append((signal, value))
+                cdf_dict.setdefault(time, []).append((signal, value))
 
     times = sorted(list(cdf_dict.keys()))
 
     # make sure not to refrence pointers
-    signal_values = [[None]*len(times) for i in range(len(signals))] 
+    signal_values = [[None] * len(times) for i in range(len(signals))]
 
     for i, time in enumerate(times):
         for value in cdf_dict[time]:

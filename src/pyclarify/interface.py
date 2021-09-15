@@ -10,10 +10,10 @@ import requests
 import json
 import logging
 import functools
-from typing import List
+from typing import List, Dict
 from pydantic import validate_arguments
 
-from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame
+from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame, InputId
 from pyclarify.models.requests import (
     ResponseSave,
     ParamsInsert,
@@ -47,7 +47,7 @@ def increment_id(func):
     return wrapper
 
 
-class ServiceInterface:
+class SimpleClient:
     def __init__(
         self,
         base_url,
@@ -63,7 +63,8 @@ class ServiceInterface:
 
         Parameters
         ----------
-        credentials : str/dict
+
+        clarify_credentials : str/dict
             The path to the clarify_credentials.json downloaded from the Clarify app,
             or json/dictionary of the content in clarify_credentials.json
 
@@ -156,7 +157,7 @@ class ServiceInterface:
             self.headers[key] = value
 
 
-class ClarifyInterface(ServiceInterface):
+class ApiClient(SimpleClient):
     def __init__(self, clarify_credentials):
         super().__init__("https://api.clarify.us/v1/rpc")
         self.update_headers({"X-API-Version": "1.0"})
@@ -164,9 +165,7 @@ class ClarifyInterface(ServiceInterface):
 
     @increment_id
     @validate_arguments
-    def add_data_single_signal(
-        self, integration: str, input_id: str, times: list, values: NumericalValuesType
-    ) -> ResponseSave:
+    def insert(self, data: ClarifyDataFrame) -> ResponseSave:
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
@@ -177,18 +176,13 @@ class ClarifyInterface(ServiceInterface):
 
         Parameters
         ----------
-        integration : str
-            The ID if the integration to save signal information for.
-        input_id : str
-            An Input ID maps uniquely to one signal within an integration. For all API calls that accept Input IDs,
-            new signals are automatically created when needed. This means you do not need to create a signal before
-            writing data to it. Should follow regex: "^[a-z0-9_-]{1,40}$"
-        times : list
-            List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
-            to insert.
-        values : List[NumericalValuesType]
-            Array of data points to insert by Input ID. The length of each array must match that of the times array.
-            To omit a value for a given timestamp in times, use the value null.
+        data : ClarifyDataFrame
+             Dataframe with the field
+             -   `times`:  List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
+                to insert.
+             - `values` : Dict[InputId, List[Union[None, float, int]]]
+                Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
+                To omit a value for a given timestamp in times, use the value null.
 
         Returns
         -------
@@ -219,7 +213,7 @@ class ClarifyInterface(ServiceInterface):
                 }
              }`
         """
-        data = ClarifyDataFrame(times=times, series={input_id: values})
+        integration = self.authentication.integration_id
         request_data = InsertJsonRPCRequest(
             params=ParamsInsert(integration=integration, data=data)
         )
@@ -230,83 +224,8 @@ class ClarifyInterface(ServiceInterface):
 
     @increment_id
     @validate_arguments
-    def add_data_multiple_signals(
-        self,
-        integration: str,
-        input_id_lst: List[str],
-        times: list,
-        values_lst: List[List[NumericalValuesType]],
-    ) -> ResponseSave:
-        """
-        This call inserts data for multiple signals. The signals are uniquely identified by its input ID in
-        combination with the integration ID. If no signal with the given combination exists, an empty signal is created.
-        Meta-data for the signal can be provided either through the admin panel or using  the 'add_metadata' call.
-        Mirrors the API call (`integration.Insert`)[https://docs.clarify.us/reference#integrationinsert] for multiple
-        signals.
-
-        Parameters
-        ----------
-        integration : str
-            The ID if the integration to save signal information for.
-        input_id_lst: List[str]
-            List of input_ids to be added
-        times: list
-            List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
-            to insert.
-        values_lst : List[List[NumericalValuesType]]
-            List of list of data points to insert for each respective Input ID in the `input_id_lst`. The length of
-            each array must match that of the times array. To omit a value for a given timestamp in times,
-            use the value None.
-
-        Returns
-        -------
-        ResponseSave
-            In case of a valid return value, returns a pydantic model with the following format
-            `{
-                "jsonrpc": "2.0",
-                "id": 1,
-                "result":
-                  { "signalsByInput": map of Input ID => SaveResult
-                  }
-             }`
-           Where `SaveResult` is a pydantic model with field `id: str` (Unique ID of the saved instance)
-           and  `created: bool` (True if a new instance was created).
-           In case of the error the method return a pydantic model with the following format:
-            `{
-                "jsonrpc": "2.0",
-                "id": 1,
-                "error": {
-                    "code": -32602,
-                    "message": "Invalid params",
-                    "data": {
-                        "trace": "00000000000000000000",
-                        "params": {
-                            "integration": ["required"]
-                        }
-                    }
-                }
-             }`
-        """
-        series_dict = {
-            input_id: values for input_id, values in zip(input_id_lst, values_lst)
-        }
-        data = ClarifyDataFrame(times=times, series=series_dict)
-        request_data = InsertJsonRPCRequest(
-            params=ParamsInsert(integration=integration, data=data)
-        )
-
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
-
-        return ResponseSave(**result)
-
-    @increment_id
-    @validate_arguments
-    def add_metadata_signals(
-        self,
-        integration: str,
-        signal_metadata_list: List[Signal],
-        created_only: bool = False,
+    def save_signals(
+        self, inputs: Dict[InputId, Signal], created_only: bool
     ) -> ResponseSave:
         """
         This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
@@ -316,10 +235,8 @@ class ClarifyInterface(ServiceInterface):
 
         Parameters
         ----------
-        integration : str
-            The ID if the integration to save signal information for.
 
-        signal_metadata_list : List[Signal]
+        inputs: Dict[InputId, List[Signal]]
             List of `Signal` objects. The `Signal` object contains metadata for a signal.
             Check (`Signal (API)`)[https://docs.clarify.us/reference#signal]
 
@@ -358,11 +275,10 @@ class ClarifyInterface(ServiceInterface):
                 }
              }`
         """
-
-        input_map = {signal.name: signal for signal in signal_metadata_list}
+        integration = self.authentication.integration_id
         request_data = SaveJsonRPCRequest(
             params=ParamsSave(
-                integration=integration, inputs=input_map, createdOnly=created_only
+                integration=integration, inputs=inputs, createdOnly=created_only
             )
         )
 
