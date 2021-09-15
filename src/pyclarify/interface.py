@@ -238,7 +238,7 @@ class ClarifyInterface(ServiceInterface):
         integration: str,
         input_id_lst: List[str],
         times: list,
-        values_lst: List[List[NumericalValuesType]],
+        values_lst: List[NumericalValuesType],
     ) -> ResponseSave:
         """
         This call inserts data for multiple signals. The signals are uniquely identified by its input ID in
