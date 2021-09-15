@@ -10,7 +10,7 @@ class TestModels(unittest.TestCase):
         empty_request = models.requests.JsonRPCRequest()
         self.assertEqual(
             empty_request.json(),
-            '{"jsonrpc": "2.0", "method": "clarify.selectItems", "id": "1", "params": {}}',
+            '{"jsonrpc": "2.0", "method": "clarify.SelectItems", "id": "1", "params": {}}',
         )
 
     def test_creation_insert(self):
@@ -35,7 +35,7 @@ class TestModels(unittest.TestCase):
         empty_request = models.requests.JsonRPCRequest(params={})
         self.assertEqual(
             empty_request.json(),
-            '{"jsonrpc": "2.0", "method": "clarify.selectItems", "id": "1", "params": {}}',
+            '{"jsonrpc": "2.0", "method": "clarify.SelectItems", "id": "1", "params": {}}',
         )
 
     def test_creation_params_2(self):
