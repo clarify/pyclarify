@@ -70,7 +70,7 @@ class SourceTypeSignal(str, Enum):
 
 
 class Signal(BaseModel):
-    name: InputId
+    name: str
     type: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}

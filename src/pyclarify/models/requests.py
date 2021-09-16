@@ -1,4 +1,4 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, constr, conint
 from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime
@@ -6,10 +6,11 @@ from enum import Enum
 from .data import ClarifyDataFrame, InputId, Signal
 
 IntegrationId = constr(regex=r"^[a-v0-9]{20}$")
+LimitSelect = conint(ge=0, le=20)
 
 
 class ApiMethod(str, Enum):
-    select = "item.Select"
+    select = "clarify.SelectItems"
     insert = "integration.Insert"
     save_signals = "integration.SaveSignals"
 
@@ -50,7 +51,7 @@ class ErrorData(BaseModel):
 class Error(BaseModel):
     code: str
     message: str
-    data: Optional[ErrorData]
+    data: Optional[Union[ErrorData, str]]
 
 
 class ResponseGeneric(BaseModel):
@@ -71,3 +72,40 @@ class SignalSaveMap(BaseModel):
 
 class ResponseSave(ResponseGeneric):
     result: Optional[SignalSaveMap]
+
+
+class ParamsSelectItems(BaseModel):
+    include: Optional[bool] = False
+    filter: dict = {}
+    limit: Optional[LimitSelect] = 10
+    skip: Optional[int] = 0
+
+
+class ParamsSelectTimes(BaseModel):
+    before: Optional[datetime]
+    notBefore: Optional[datetime]
+
+
+class ParamsSelectSeries(BaseModel):
+    items: Optional[bool] = False
+    aggregates: Optional[bool] = False
+
+
+class ItemSelect(BaseModel):
+    items: ParamsSelectItems
+    times: ParamsSelectTimes
+    series: ParamsSelectSeries
+
+
+class SelectJsonRPCRequest(JsonRPCRequest):
+    method: ApiMethod = ApiMethod.select
+    params: ItemSelect
+
+
+class ResultSelectMap(BaseModel):
+    items: Optional[Dict[InputId, Signal]]
+    data: Optional[ClarifyDataFrame]
+
+
+class ResponseSelect(ResponseGeneric):
+    result: Optional[ResultSelectMap]
