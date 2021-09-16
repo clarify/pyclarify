@@ -9,20 +9,19 @@ import requests
 
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyInterface, Signal
+from pyclarify import ApiClient, Signal, ClarifyDataFrame
 from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
 from pyclarify.models.requests import ItemSelect
-from pyclarify.models.data import ClarifyDataFrame
 
 
 class TestClarifySelectInterface(unittest.TestCase):
     def setUp(self):
-        self.interface = ClarifyInterface("./tests/data/test-clarify-credentials.json")
+        self.interface = ApiClient("./tests/data/test-clarify-credentials.json")
         self.mock_token = "token1234567890"
         with open("./tests/data/mock_items_select.json") as f:
             self.test_cases = json.load(f)
 
-    @patch("pyclarify.interface.ServiceInterface.get_token")
+    @patch("pyclarify.interface.SimpleClient.get_token")
     @patch("pyclarify.interface.requests.post")
     def test_get_items_metadata(self, interface_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_token
@@ -36,7 +35,7 @@ class TestClarifySelectInterface(unittest.TestCase):
         for x in response_data.result.items:
             self.assertIsInstance(response_data.result.items[x], Signal)
 
-    @patch("pyclarify.interface.ServiceInterface.get_token")
+    @patch("pyclarify.interface.SimpleClient.get_token")
     @patch("pyclarify.interface.requests.post")
     def test_get_items_metadata_data_agg(self, interface_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_token
@@ -55,7 +54,7 @@ class TestClarifySelectInterface(unittest.TestCase):
         self.assertIn("min", response_data.result.data.series.keys())
         self.assertIn("max", response_data.result.data.series.keys())
 
-    @patch("pyclarify.interface.ServiceInterface.get_token")
+    @patch("pyclarify.interface.SimpleClient.get_token")
     @patch("pyclarify.interface.requests.post")
     def test_get_items_data_only(self, interface_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_token
@@ -68,7 +67,7 @@ class TestClarifySelectInterface(unittest.TestCase):
         self.assertIsNone(response_data.result.items)
         self.assertIsInstance(response_data.result.data, ClarifyDataFrame)
 
-    @patch("pyclarify.interface.ServiceInterface.get_token")
+    @patch("pyclarify.interface.SimpleClient.get_token")
     @patch("pyclarify.interface.requests.post")
     def test_get_items_data_metadata_empty(self, interface_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_token
