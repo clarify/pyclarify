@@ -1,6 +1,5 @@
 """
 Service Intercase module is the main module of PyClarify.
-
 The module provides a class for setting up a HTTPClient which will communicate with
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework. 
@@ -30,12 +29,10 @@ from pyclarify.oauth2 import GetToken
 def increment_id(func):
     """
     Decorator which increments the current id variable.
-
     Parameters
     ----------
     func : function
         Decorator wraps around function using @increment_id
-
     Returns
     -------
     func : function
@@ -52,7 +49,8 @@ def increment_id(func):
 
 class ServiceInterface:
     def __init__(
-        self, base_url,
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -62,13 +60,11 @@ class ServiceInterface:
     def authenticate(self, clarify_credentials):
         """
         Authenticates the client by using the GetToken class (see oauth2.py)
-
         Parameters
         ----------
         credentials : str/dict
             The path to the clarify_credentials.json downloaded from the Clarify app,
             or json/dictionary of the content in clarify_credentials.json
-
         Returns
         -------
         bool
@@ -83,7 +79,6 @@ class ServiceInterface:
     def get_token(self):
         """
         Using the GetToken class (see oauth2.py) to get a new authentication token.
-
         Returns
         -------
         str
@@ -94,12 +89,10 @@ class ServiceInterface:
     def send(self, payload):
         """
         Returns json dict of JSONPRC request.
-
         Parameters
         ----------
         payload : JSONRPC dict
             A dictionary in the form of a JSONRPC request.
-
         Returns
         -------
         JSON
@@ -124,14 +117,12 @@ class ServiceInterface:
     def create_payload(self, method, params):
         """
         Creates a JSONRPC request.
-
         Parameters
         ----------
         method : str
             The RPC method to call.
         params : dict
             The arguments to the method call.
-
         Returns
         -------
         str
@@ -148,7 +139,6 @@ class ServiceInterface:
     def update_headers(self, headers):
         """
         Updates headers of client.
-
         Parameters
         ----------
         headers : dict
@@ -176,7 +166,6 @@ class ClarifyInterface(ServiceInterface):
         the 'add_metadata' call.
         Mirrors the API call (`integration.Insert`)[https://docs.clarify.us/reference#integrationinsert] for a single
         signal.
-
         Parameters
         ----------
         integration : str
@@ -191,7 +180,6 @@ class ClarifyInterface(ServiceInterface):
         values : List[NumericalValuesType]
             Array of data points to insert by Input ID. The length of each array must match that of the times array.
             To omit a value for a given timestamp in times, use the value null.
-
         Returns
         -------
         ResponseSave
@@ -245,7 +233,6 @@ class ClarifyInterface(ServiceInterface):
         Meta-data for the signal can be provided either through the admin panel or using  the 'add_metadata' call.
         Mirrors the API call (`integration.Insert`)[https://docs.clarify.us/reference#integrationinsert] for multiple
         signals.
-
         Parameters
         ----------
         integration : str
@@ -259,11 +246,9 @@ class ClarifyInterface(ServiceInterface):
             List of list of data points to insert for each respective Input ID in the `input_id_lst`. The length of
             each array must match that of the times array. To omit a value for a given timestamp in times,
             use the value None.
-
         Returns
         -------
         ResponseSave
-
         """
         series_dict = dict(zip(input_id_lst, values_lst))
 
@@ -290,22 +275,16 @@ class ClarifyInterface(ServiceInterface):
         combination with the integration ID. A List of Signals should be provided with the intended meta-data.
         Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.us/reference#integrationsavesignals] for
         multiple signals.
-
         Parameters
         ----------
         integration : str
             The ID if the integration to save signal information for.
-
         signal_metadata_list : List[Signal]
             List of `Signal` objects. The `Signal` object contains metadata for a signal.
             Check (`Signal (API)`)[https://docs.clarify.us/reference#signal]
-
         created_only: bool
             If set to true, skip update of information for existing signals. That is, all Input IDs that map to
             existing signals are silently ignored.
-
-
-
         Returns
         -------
         ResponseSave
@@ -353,8 +332,6 @@ class ClarifyInterface(ServiceInterface):
     def select_items(self, params: ItemSelect) -> ResponseSelect:
         """
         Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.us/reference].
-
-
         Parameters
         ----------
         params : ItemSelect
@@ -394,7 +371,6 @@ class ClarifyInterface(ServiceInterface):
                             "aggregates": true
                         }
                   }
-
         Returns
         -------
         ResponseSelect
@@ -427,7 +403,6 @@ class ClarifyInterface(ServiceInterface):
                 }
             }
         }`
-
         """
         request_data = SelectJsonRPCRequest(params=params)
 
