@@ -17,7 +17,7 @@ import sys
 needs_sphinx = '4.1.2'
 
 
-sys.path.insert(0, os.path.abspath('../../../src/'))
+sys.path.insert(0, os.path.abspath('../../src/'))
 
 
 # -- Project information -----------------------------------------------------
