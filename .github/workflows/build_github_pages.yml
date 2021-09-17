@@ -24,7 +24,8 @@ jobs:
           make github
       - name: Commit documentation changes
         run: |
-          git clone git${{ secrets.GHPAGESKEY }}@github.com:searis/pyclarify.git --branch gh-pages --single-branch gh-pages
+          git clone git${{ secrets.GHPAGESKEY }}@github.com:searis/pyclarify.git
+          git checkout gh-pages
           cp -r docs/build/html/* gh-pages/
           cd gh-pages
           touch .nojekyll
