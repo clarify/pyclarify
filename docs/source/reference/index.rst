@@ -16,3 +16,4 @@ included in PyClarify, describing what they are and what they do.
    interface
    oauth2
    models
+   logging
