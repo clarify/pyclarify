@@ -12,13 +12,11 @@ class TestGetToken(unittest.TestCase):
     def setUp(self):
         self.credentials_path = "./tests/data/test-clarify-credentials.json"
 
-        f = open(self.credentials_path)
-        self.credentials_dict = json.load(f)
-        f.close()
+        with open(self.credentials_path) as f:
+            self.credentials_dict = json.load(f)
 
-        f = open("./tests/data/mock-token.json")
-        self.mock_token = json.load(f)
-        f.close()
+        with open("./tests/data/mock-token.json") as f:
+            self.mock_token = json.load(f)
 
         self.mock_token2 = self.mock_token
         self.mock_token2["access_token"] = "<YOUR_ACCESS_TOKEN2>"

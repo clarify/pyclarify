@@ -8,7 +8,7 @@ sys.path.insert(1, "src/")
 import pyclarify.models as models
 
 
-class TestModels(unittest.TestCase):
+class TestOauthModels(unittest.TestCase):
     def setUp(self):
         f = open("./tests/data/test-clarify-credentials.json")
         self.credentials_dict = json.load(f)

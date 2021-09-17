@@ -13,7 +13,7 @@ import functools
 from typing import List, Dict
 from pydantic import validate_arguments
 
-from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame, InputId
+from pyclarify.models.data import NumericalValuesType, Signal, DataFrame, InputId
 from pyclarify.models.requests import (
     ResponseSave,
     ParamsInsert,
@@ -168,7 +168,7 @@ class ApiClient(SimpleClient):
 
     @increment_id
     @validate_arguments
-    def insert(self, data: ClarifyDataFrame) -> ResponseSave:
+    def insert(self, data: DataFrame) -> ResponseSave:
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
@@ -179,7 +179,7 @@ class ApiClient(SimpleClient):
 
         Parameters
         ----------
-        data : ClarifyDataFrame
+        data : DataFrame
              Dataframe with the field
              -   `times`:  List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
                 to insert.
@@ -217,9 +217,8 @@ class ApiClient(SimpleClient):
              }`
         """
 
-        integration = self.authentication.integration_id
         request_data = InsertJsonRPCRequest(
-            params=ParamsInsert(integration=integration, data=data)
+            params=ParamsInsert(integration=self.authentication.integration_id, data=data)
         )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
@@ -279,10 +278,9 @@ class ApiClient(SimpleClient):
                 }
              }`
         """
-        integration = self.authentication.integration_id
         request_data = SaveJsonRPCRequest(
             params=ParamsSave(
-                integration=integration, inputs=inputs, createdOnly=created_only
+                integration=self.authentication.integration_id, inputs=inputs, createdOnly=created_only
             )
         )
 
@@ -343,7 +341,7 @@ class ApiClient(SimpleClient):
         ResponseSelect
         Data model with the results of the method. Data and metadata can be found in the `result` field, with the
         attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
-        `pyclarify.models.data`) and `result.data` containing a `ClarifyDataFrame` object with the resulting data
+        `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
         and aggregates (in case the parameter `series.aggregates` is set to True).
         Example:
         `{
