@@ -3,7 +3,7 @@ name: "Build Github Pages"
 on:
   push:
     branches: 
-      - staging
+      - dev
 
 jobs:
   docs:
@@ -31,7 +31,7 @@ jobs:
       - name: Commit documentation changes
         run: |
           git clone git@github.com:searis/pyclarify.git --branch gh-pages --single-branch gh-pages
-          cp -r docs/build/html/* gh-pages/
+          cp -r docs/build/* gh-pages/
           cd gh-pages
           touch .nojekyll
           git config --local user.email "action@github.com"
