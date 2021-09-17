@@ -22,11 +22,6 @@ jobs:
         run: |
           cd docs
           make github
-      - name: Authentication
-      - uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          
       - name: Commit documentation changes
         run: |
           git clone git@github.com:searis/pyclarify.git --branch gh-pages --single-branch gh-pages
