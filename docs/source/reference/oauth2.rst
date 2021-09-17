@@ -1,4 +1,4 @@
-PyClarify 0Auth 
+PyClarify Auth 
 ===============
 
 .. automodule:: pyclarify.oauth2
