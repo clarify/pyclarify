@@ -15,4 +15,6 @@ jobs:
     - uses: actions/checkout@v1
     - uses: ammaraskar/sphinx-action@master
       with:
+        run: cd docs && cd docsrc
+        build-command: "make github"
         docs-folder: "docs/"
