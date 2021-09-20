@@ -13,7 +13,7 @@
         "-32603",
         "-32700"
     ],
-    "mock_token": "token1234567890",
+    "mock_access_token": "token1234567890",
     "mock_response_1": {
         "jsonrpc": "2.0",
         "id": "1",

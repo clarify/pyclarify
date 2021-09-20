@@ -13,13 +13,13 @@ from pyclarify import DataFrame, Signal
 
 class TestApiClient(unittest.TestCase):
     def setUp(self):
-        self.client = ApiClient("./tests/data/test-clarify-credentials.json")
+        self.client = ApiClient("./tests/data/mock-clarify-credentials.json")
 
         with open("./tests/data/mock-client.json") as f:
             self.mock_data = json.load(f)
 
         self.error_list = self.mock_data["RPC_ERRORS"] + [str(e.value) for e in HTTPStatus]
-
+        self.mock_access_token = self.mock_data["mock_access_token"]
         self.times = [
             (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
             datetime.now().astimezone().isoformat(),
@@ -30,7 +30,7 @@ class TestApiClient(unittest.TestCase):
     @patch("pyclarify.client.SimpleClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request(self, client_req_mock, get_token_mock):
-        get_token_mock.return_value = self.mock_data["mock_token"]
+        get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.mock_data["mock_response_1"]
 
@@ -49,7 +49,7 @@ class TestApiClient(unittest.TestCase):
     @patch("pyclarify.client.SimpleClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_2(self, client_req_mock, get_token_mock):
-        get_token_mock.return_value = self.mock_data["mock_token"]
+        get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.mock_data["mock_response_2"]
 

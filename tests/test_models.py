@@ -58,6 +58,7 @@ class TestJsonRPCRequest(unittest.TestCase):
             json.dumps(self.mock_data["mock_request"]),
         )
 
+
 class TestInsertJsonRPCRequest(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models.json") as f:
@@ -90,7 +91,8 @@ class TestInsertJsonRPCRequest(unittest.TestCase):
             empty_request.json(),
             json.dumps(self.mock_data["mock_request_regex"]),
         )
-        
+
+
 class TestMerge(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models.json") as f:
@@ -114,7 +116,6 @@ class TestMerge(unittest.TestCase):
                 self.mock_data["mock_merge3"]["signal"]: self.mock_data["mock_merge3"]["values"]
             }
         )
-
 
     def test_merge_single_input(self):
         merged = models.data.merge([self.cdf])
@@ -148,6 +149,22 @@ class TestMerge(unittest.TestCase):
 
         self.assertEqual(merged, self.cdf)
 
+
+class TestOauthModels(unittest.TestCase):
+    def setUp(self):
+        with open("./tests/data/mock-clarify-credentials.json") as f:
+            self.credentials_dict = json.load(f)
+
+    def test_populate_auth_objs(self):
+        credential_obj = models.auth.ClarifyCredential(**self.credentials_dict)
+        self.assertEqual(credential_obj.credentials.type, "client-credentials")
+        oauth_request_obj = models.auth.OAuthRequestBody(
+            client_id=credential_obj.credentials.clientId,
+            client_secret=credential_obj.credentials.clientSecret,
+        )
+        self.assertEqual(
+            oauth_request_obj.client_id, credential_obj.credentials.clientId
+        )
 
 if __name__ == "__main__":
     unittest.main()

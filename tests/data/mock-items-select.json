@@ -1,5 +1,4 @@
 {
-  "mock_token": "token1234567890",
   "test_cases":[
     {
       "comments" : "get all items metadata",
