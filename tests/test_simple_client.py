@@ -6,12 +6,11 @@ sys.path.insert(1, "src/")
 from pyclarify.client import SimpleClient
 
 
-
 class TestSimpleClient(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-simple-client.json") as f:
             self.mock_data = json.load(f)
-        
+
         self.client = SimpleClient(base_url=self.mock_data["mock_url"])
         self.content_type_headers = {"content-type": "application/json"}
 
@@ -39,27 +38,30 @@ class TestSimpleClient(unittest.TestCase):
 
         self.assertEqual(
             self.client.headers,
-            {
-                "content-type": "application/json", 
-                "X-API-Version": "1.0"
-            },
+            {"content-type": "application/json", "X-API-Version": "1.0"},
         )
 
     def test_create_payload(self):
         VALID_RPC_PAYLOAD = json.dumps(self.mock_data["mock_RPC_payload"])
 
-        payload = self.client.create_payload(self.mock_data["mock_method"], self.mock_data["mock_params"])
+        payload = self.client.create_payload(
+            self.mock_data["mock_method"], self.mock_data["mock_params"]
+        )
 
         # assert correct creation
         self.assertEqual(payload, VALID_RPC_PAYLOAD)
 
         # assert incrementation of id
-        payload_2 = self.client.create_payload(self.mock_data["mock_method"], self.mock_data["mock_params"])
+        payload_2 = self.client.create_payload(
+            self.mock_data["mock_method"], self.mock_data["mock_params"]
+        )
         payload_2 = json.loads(payload_2)
         self.assertEqual(payload_2["id"], 2)
 
     def test_send_request(self):
-        payload = self.client.create_payload(self.mock_data["mock_method"], self.mock_data["mock_params"])
+        payload = self.client.create_payload(
+            self.mock_data["mock_method"], self.mock_data["mock_params"]
+        )
         response = self.client.send(payload)
         payload = json.loads(payload)
 

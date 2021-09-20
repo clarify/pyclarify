@@ -10,12 +10,11 @@ class TestJsonRPCRequest(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models.json") as f:
             self.mock_data = json.load(f)
-                        
+
     def test_creation(self):
         empty_request = models.requests.JsonRPCRequest()
         self.assertEqual(
-            empty_request.json(),
-            json.dumps(self.mock_data["select_items"]),
+            empty_request.json(), json.dumps(self.mock_data["select_items"]),
         )
 
     def test_creation_insert(self):
@@ -23,8 +22,7 @@ class TestJsonRPCRequest(unittest.TestCase):
             method=models.requests.ApiMethod.insert
         )
         self.assertEqual(
-            empty_request.json(),
-            json.dumps(self.mock_data["insert"]),
+            empty_request.json(), json.dumps(self.mock_data["insert"]),
         )
 
     def test_creation_save(self):
@@ -32,15 +30,13 @@ class TestJsonRPCRequest(unittest.TestCase):
             method=models.requests.ApiMethod.save_signals
         )
         self.assertEqual(
-            empty_request.json(),
-            json.dumps(self.mock_data["save_signals"]),
+            empty_request.json(), json.dumps(self.mock_data["save_signals"]),
         )
 
     def test_creation_params_1(self):
         empty_request = models.requests.JsonRPCRequest(params={})
         self.assertEqual(
-            empty_request.json(),
-            json.dumps(self.mock_data["select_items"]),
+            empty_request.json(), json.dumps(self.mock_data["select_items"]),
         )
 
     def test_creation_params_2(self):
@@ -54,8 +50,7 @@ class TestJsonRPCRequest(unittest.TestCase):
             params=models.requests.ParamsInsert(integration=integration, data=data),
         )
         self.assertEqual(
-            empty_request.json(),
-            json.dumps(self.mock_data["mock_request"]),
+            empty_request.json(), json.dumps(self.mock_data["mock_request"]),
         )
 
 
@@ -74,8 +69,7 @@ class TestInsertJsonRPCRequest(unittest.TestCase):
             params=models.requests.ParamsInsert(integration=integration, data=data)
         )
         self.assertEqual(
-            empty_request.json(),
-            json.dumps(self.mock_data["mock_request"]),
+            empty_request.json(), json.dumps(self.mock_data["mock_request"]),
         )
 
     def test_regex(self):
@@ -88,8 +82,7 @@ class TestInsertJsonRPCRequest(unittest.TestCase):
             params=models.requests.ParamsInsert(integration=integration, data=data)
         )
         self.assertEqual(
-            empty_request.json(),
-            json.dumps(self.mock_data["mock_request_regex"]),
+            empty_request.json(), json.dumps(self.mock_data["mock_request_regex"]),
         )
 
 
@@ -97,24 +90,29 @@ class TestMerge(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models.json") as f:
             self.mock_data = json.load(f)
+        self.mock_data_1 = self.mock_data["mock_data_1"]
+        self.mock_data_2 = self.mock_data["mock_data_2"]
+        self.mock_data_3 = self.mock_data["mock_data_3"]
 
         self.cdf = models.data.DataFrame(
-            times=self.mock_data["mock_merge1"]["times"], 
+            times=self.mock_data_1["times"],
             series={
-                self.mock_data["mock_merge1"]["signal"]: self.mock_data["mock_merge1"]["values"]
-            }
+                self.mock_data_1["signal"]: self.mock_data_1["values"]
+            },
         )
+
         self.cdf2 = models.data.DataFrame(
-            times=self.mock_data["mock_merge2"]["times"], 
+            times=self.mock_data_2["times"],
             series={
-                self.mock_data["mock_merge2"]["signal"]: self.mock_data["mock_merge2"]["values"]
-            }
+                self.mock_data_2["signal"]: self.mock_data_2["values"]
+            },
         )
+
         self.cdf3 = models.data.DataFrame(
-            times=self.mock_data["mock_merge3"]["times"], 
+            times=self.mock_data_3["times"],
             series={
-                self.mock_data["mock_merge3"]["signal"]: self.mock_data["mock_merge3"]["values"]
-            }
+                self.mock_data_3["signal"]: self.mock_data_3["values"]
+            },
         )
 
     def test_merge_single_input(self):
@@ -165,6 +163,7 @@ class TestOauthModels(unittest.TestCase):
         self.assertEqual(
             oauth_request_obj.client_id, credential_obj.credentials.clientId
         )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -32,7 +32,7 @@ def merge(dataframes: List[DataFrame]):
     Returns
     -------
     DataFrame : DataFrame
-        returns the wrapped function
+        Merged data frame of all input data frames
     """
     signals = [key for df in dataframes for key in df.series.keys()]
     signals = list(set(signals))
