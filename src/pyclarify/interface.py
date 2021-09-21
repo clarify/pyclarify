@@ -162,9 +162,10 @@ class SimpleClient:
 
 class ApiClient(SimpleClient):
     def __init__(self, clarify_credentials):
-        super().__init__("https://api.clarify.us/v1/rpc")
+        super().__init__(None)
         self.update_headers({"X-API-Version": "1.1"})
         self.authentication = GetToken(clarify_credentials)
+        self.base_url = f"{self.authentication.api_url}rpc"
 
     @increment_id
     @validate_arguments
