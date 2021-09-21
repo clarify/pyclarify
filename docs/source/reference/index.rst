@@ -13,6 +13,7 @@ included in PyClarify, describing what they are and what they do.
 .. toctree::
    :maxdepth: 2
 
-   interface
+   client
    oauth2
    models
+   logging
