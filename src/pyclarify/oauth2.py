@@ -78,7 +78,9 @@ class GetToken:
             Access token.
         """
         response = requests.post(
-            url=self.auth_endpoint, headers=self.headers, data=self.credentials.dict(),
+            url=self.auth_endpoint,
+            headers=self.headers,
+            data=self.credentials.dict(),
         )
 
         if response.ok:
@@ -99,7 +101,7 @@ class GetToken:
             Access token.
         """
         if (self._expire_token is None) or (
-                self._expire_token <= datetime.datetime.now()
+            self._expire_token <= datetime.datetime.now()
         ):
             return self.get_new_token()
         elif self._expire_token > datetime.datetime.now():
@@ -110,6 +112,7 @@ class AuthError(Exception):
     """
     Error class that is generated when an authentication error appear
     """
+
     def __init__(self, error, error_description):
         self.error = error
         self.error_description = error_description
