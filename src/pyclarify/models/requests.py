@@ -3,7 +3,7 @@ from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime
 from enum import Enum
-from .data import ClarifyDataFrame, InputId, Signal
+from .data import DataFrame, InputId, Signal
 
 IntegrationId = constr(regex=r"^[a-v0-9]{20}$")
 LimitSelect = conint(ge=0, le=20)
@@ -24,7 +24,7 @@ class JsonRPCRequest(BaseModel):
 
 class ParamsInsert(BaseModel):
     integration: IntegrationId
-    data: ClarifyDataFrame
+    data: DataFrame
 
 
 class InsertJsonRPCRequest(JsonRPCRequest):
@@ -104,7 +104,7 @@ class SelectJsonRPCRequest(JsonRPCRequest):
 
 class ResultSelectMap(BaseModel):
     items: Optional[Dict[InputId, Signal]]
-    data: Optional[ClarifyDataFrame]
+    data: Optional[DataFrame]
 
 
 class ResponseSelect(ResponseGeneric):

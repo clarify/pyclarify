@@ -1,0 +1,103 @@
+{
+    "select_items": {
+        "jsonrpc": "2.0", 
+        "method": "clarify.SelectItems", 
+        "id": "1", 
+        "params": {}
+    },
+    "insert": {
+        "jsonrpc": "2.0", 
+        "method": "integration.Insert", 
+        "id": "1", 
+        "params": {}
+    },
+    "save_signals": {
+        "jsonrpc": "2.0", 
+        "method": "integration.SaveSignals", 
+        "id": "1", 
+        "params": {}
+    },
+    "mock_integration": "testintegration12345",
+    "mock_times": ["2021-03-11T21:49:06Z", "2021-03-11T21:50:06Z"],
+    "mock_values": [0.6, 1.0],
+    "mock_signal_id": "test_123_id",
+    "mock_request":{
+        "jsonrpc": "2.0", 
+        "method": "integration.Insert", 
+        "id": "1", 
+        "params": {
+            "integration": "testintegration12345", 
+            "data": {
+                "times": [
+                    "2021-03-11T21:49:06+00:00", 
+                    "2021-03-11T21:50:06+00:00"
+                ], 
+                "series": {
+                    "test_123_id": [
+                        0.6, 
+                        1.0
+                    ]
+                }
+            }
+        }
+    },
+    "mock_request_regex": {
+        "jsonrpc": "2.0", 
+        "method": "integration.Insert", 
+        "id": "1", 
+        "params": {
+            "integration": "01234567890123456789", 
+            "data": {
+                "times": [
+                    "2021-03-11T21:49:06+00:00", 
+                    "2021-03-11T21:50:06+00:00"
+                ], 
+                "series": {
+                    "test_123_id": [
+                        0.6, 
+                        1.0
+                    ]
+                }
+            }
+        }
+    },
+    "mock_data_1": {
+        "times": [
+            "2021-03-11T21:49:06Z", 
+            "2021-03-11T21:50:06Z", 
+            "2021-03-11T21:51:06Z"
+        ],
+        "values": [
+            0.6, 
+            1.0, 
+            2.4
+        ],
+        "signal": "signal_1"
+    },
+    "mock_data_2": {
+        "times": [
+            "2021-03-10T21:49:06Z", 
+            "2021-03-10T21:50:06Z", 
+            "2021-03-11T21:51:06Z"
+        ],
+        "values":  [
+            0.3, 
+            2.0, 
+            3.5
+        ],
+        "signal": "signal_2"
+    },
+    "mock_data_3": {
+        "times": [
+            "2021-03-09T21:49:06Z", 
+            "2021-03-09T21:50:06Z", 
+            "2021-03-11T21:51:06Z"
+        ],
+        "values": [
+            0.6, 
+            1.0, 
+            2.4
+        ],
+        "signal": "signal_3"
+    }
+}
