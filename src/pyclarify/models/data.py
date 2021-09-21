@@ -12,13 +12,13 @@ AnnotationKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
 NumericalValuesType = List[Union[float, int, None]]
 
 
-class ClarifyDataFrame(BaseModel):
+class DataFrame(BaseModel):
     times: List[datetime] = None
     series: Dict[InputId, NumericalValuesType] = None
 
 
 @validate_arguments
-def merge(dataframes: List[ClarifyDataFrame]):
+def merge(dataframes: List[DataFrame]):
     """
     Method for merging 2 or more Clarify Data Frames. Mapping overlapping
     signal names to single series. Concatenates timestamps of all data frames.
@@ -26,13 +26,13 @@ def merge(dataframes: List[ClarifyDataFrame]):
 
     Parameters
     ----------
-    dataframes : List[ClarifyDataFrame]
+    dataframes : List[DataFrame]
        List of Clarify Data Frames
 
     Returns
     -------
-    ClarifyDataFrame : ClarifyDataFrame
-        returns the wrapped function
+    DataFrame : DataFrame
+        Merged data frame of all input data frames
     """
     signals = [key for df in dataframes for key in df.series.keys()]
     signals = list(set(signals))
@@ -56,7 +56,7 @@ def merge(dataframes: List[ClarifyDataFrame]):
     for signal, values in zip(signals, signal_values):
         series[signal] = values
 
-    return ClarifyDataFrame(times=times, series=series)
+    return DataFrame(times=times, series=series)
 
 
 class TypeSignal(str, Enum):

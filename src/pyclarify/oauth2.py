@@ -1,3 +1,10 @@
+"""
+Oauth2 module for authentication client.
+
+The module provides a class for setting reading clarify credentials used to authenticate
+the API client. This module also handles getting access tokens with expiry date. 
+"""
+
 import requests
 import datetime
 import logging
@@ -8,49 +15,57 @@ from pyclarify.models.auth import OAuthResponse, OAuthRequestBody, ClarifyCreden
 
 
 class GetToken:
-    def __init__(self, clarify_credentials_path: str):
+    def __init__(self, clarify_credentials):
         """
-        Initialiser of auth class
+        Initialiser of auth class.
 
         Parameters
         ----------
-        clarify_credentials_path : str
-            The path to the clarify_credentials.json downloaded from the Clarify app
+        clarify_credentials : str/dict
+            The path to the clarify_credentials.json downloaded from the Clarify app,
+            or json/dictionary of the content in clarify_credentials.json
         """
         self.api_url = None
         self.access_token = None
         self.integration_id = None
         self.headers = {"content-type": "application/x-www-form-urlencoded"}
-        self.credentials = self.read_credentials(clarify_credentials_path)
+        self.credentials = self.read_credentials(clarify_credentials)
         self.api_url = self.credentials.audience
         self.auth_endpoint = f"{self.api_url}oauth/token"
         self._expire_token = None
 
-    def read_credentials(self, clarify_credentials_path):
+    def read_credentials(self, clarify_credentials):
         """
         Read user credentials.
+
+        Parameters
+        ----------
+        clarify_credentials : str/dict
+            The path to the clarify_credentials.json downloaded from the Clarify app,
+            or json/dictionary of the content in clarify_credentials.json
+
 
         Returns
         -------
         dict
             Dictionary of the user credentials.
         """
-        if isinstance(clarify_credentials_path, str):
-            if path.exists(clarify_credentials_path):
-                with open(clarify_credentials_path) as f:
+        if isinstance(clarify_credentials, str):
+            if path.exists(clarify_credentials):
+                with open(clarify_credentials) as f:
                     clarify_credentials = json.load(f)
             else:
-                clarify_credentials = json.loads(clarify_credentials_path)
+                clarify_credentials = json.loads(clarify_credentials)
 
-        if isinstance(clarify_credentials_path, dict):
-            clarify_credentials = clarify_credentials_path
+        if isinstance(clarify_credentials, dict):
+            clarify_credentials_object = clarify_credentials
 
         oauth_request_body = OAuthRequestBody(
-            client_id=clarify_credentials["credentials"]["clientId"],
-            client_secret=clarify_credentials["credentials"]["clientSecret"],
-            audience=clarify_credentials["apiUrl"],
+            client_id=clarify_credentials_object["credentials"]["clientId"],
+            client_secret=clarify_credentials_object["credentials"]["clientSecret"],
+            audience=clarify_credentials_object["apiUrl"],
         )
-        self.integration_id = clarify_credentials["integration"]
+        self.integration_id = clarify_credentials_object["integration"]
         return oauth_request_body
 
     def get_new_token(self):
@@ -60,12 +75,10 @@ class GetToken:
         Returns
         -------
         str
-            User token.
+            Access token.
         """
         response = requests.post(
-            url=self.auth_endpoint,
-            headers=self.headers,
-            data=self.credentials.dict(),
+            url=self.auth_endpoint, headers=self.headers, data=self.credentials.dict(),
         )
 
         if response.ok:
@@ -83,10 +96,10 @@ class GetToken:
         Returns
         -------
         str
-            User token.
+            Access token.
         """
         if (self._expire_token is None) or (
-            self._expire_token <= datetime.datetime.now()
+                self._expire_token <= datetime.datetime.now()
         ):
             return self.get_new_token()
         elif self._expire_token > datetime.datetime.now():
@@ -94,6 +107,9 @@ class GetToken:
 
 
 class AuthError(Exception):
+    """
+    Error class that is generated when an authentication error appear
+    """
     def __init__(self, error, error_description):
         self.error = error
         self.error_description = error_description
