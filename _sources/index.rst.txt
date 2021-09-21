@@ -1,6 +1,6 @@
 PyClarify v0.1.0 Manual
 =====================================
-Welcome to PyClarify's documentation, last updated Sep 10, 2021
+Welcome to PyClarify's documentation, last updated Sep 17, 2021
 
 **Parts of the docimentation:**
 
