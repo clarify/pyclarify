@@ -13,7 +13,7 @@ import functools
 from typing import List, Dict
 from pydantic import validate_arguments
 
-from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame, InputId
+from pyclarify.models.data import NumericalValuesType, Signal, DataFrame, InputId
 from pyclarify.models.requests import (
     ResponseSave,
     ParamsInsert,
@@ -39,7 +39,7 @@ def increment_id(func):
     Returns
     -------
     func : function
-        returns the wrapped function
+        returns the wrapped function.
     """
 
     @functools.wraps(func)
@@ -52,8 +52,7 @@ def increment_id(func):
 
 class SimpleClient:
     def __init__(
-        self,
-        base_url,
+        self, base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -66,7 +65,6 @@ class SimpleClient:
 
         Parameters
         ----------
-
         clarify_credentials : str/dict
             The path to the clarify_credentials.json downloaded from the Clarify app,
             or json/dictionary of the content in clarify_credentials.json
@@ -89,17 +87,17 @@ class SimpleClient:
         Returns
         -------
         str
-            User token.
+            Access token.
         """
         return self.authentication.get_token()
 
     def send(self, payload):
         """
-        Returns json dict of JSONPRC request.
+        Uses post request to send Json RPC payload.
 
         Parameters
         ----------
-        payload : JSONRPC dict
+        payload : Json RPC dictionary
             A dictionary in the form of a JSONRPC request.
 
         Returns
@@ -125,7 +123,7 @@ class SimpleClient:
     @increment_id
     def create_payload(self, method, params):
         """
-        Creates a JSONRPC request.
+        Creates a JSONRPC request payload.
 
         Parameters
         ----------
@@ -168,7 +166,7 @@ class ApiClient(SimpleClient):
 
     @increment_id
     @validate_arguments
-    def insert(self, data: ClarifyDataFrame) -> ResponseSave:
+    def insert(self, data: DataFrame) -> ResponseSave:
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
@@ -179,7 +177,7 @@ class ApiClient(SimpleClient):
 
         Parameters
         ----------
-        data : ClarifyDataFrame
+        data : DataFrame
              Dataframe with the field
              -   `times`:  List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
                 to insert.
@@ -217,9 +215,10 @@ class ApiClient(SimpleClient):
              }`
         """
 
-        integration = self.authentication.integration_id
         request_data = InsertJsonRPCRequest(
-            params=ParamsInsert(integration=integration, data=data)
+            params=ParamsInsert(
+                integration=self.authentication.integration_id, data=data
+            )
         )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
@@ -239,7 +238,6 @@ class ApiClient(SimpleClient):
 
         Parameters
         ----------
-
         inputs: Dict[InputId, List[Signal]]
             List of `Signal` objects. The `Signal` object contains metadata for a signal.
             Check (`Signal (API)`)[https://docs.clarify.us/reference#signal]
@@ -247,8 +245,6 @@ class ApiClient(SimpleClient):
         created_only: bool
             If set to true, skip update of information for existing signals. That is, all Input IDs that map to
             existing signals are silently ignored.
-
-
 
         Returns
         -------
@@ -279,10 +275,11 @@ class ApiClient(SimpleClient):
                 }
              }`
         """
-        integration = self.authentication.integration_id
         request_data = SaveJsonRPCRequest(
             params=ParamsSave(
-                integration=integration, inputs=inputs, createdOnly=created_only
+                integration=self.authentication.integration_id,
+                inputs=inputs,
+                createdOnly=created_only,
             )
         )
 
@@ -296,7 +293,6 @@ class ApiClient(SimpleClient):
     def select_items(self, params: ItemSelect) -> ResponseSelect:
         """
         Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.us/reference].
-
 
         Parameters
         ----------
@@ -323,53 +319,53 @@ class ApiClient(SimpleClient):
                 > include items mapped by ID in the response data frame.
               - `aggregates` | bool | default=False
                 > include aggregated values `"count"`, `"sum"`, `"min"` and `"max"` across all items in the response data frame.
-            Example:
-                  {
-                        "items": {
-                            "include": true,
-                            "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
-                        },
-                        "times": {
-                            "notBefore": "2020-01-01T01:00:00Z"
-                        },
-                        "series": {
-                            "items": true,
-                            "aggregates": true
-                        }
-                  }
+        Example:
+            {
+                "items": {
+                    "include": true,
+                    "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
+                },
+                "times": {
+                    "notBefore": "2020-01-01T01:00:00Z"
+                },
+                "series": {
+                    "items": true,
+                    "aggregates": true
+                }
+            }
 
         Returns
         -------
         ResponseSelect
         Data model with the results of the method. Data and metadata can be found in the `result` field, with the
         attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
-        `pyclarify.models.data`) and `result.data` containing a `ClarifyDataFrame` object with the resulting data
+        `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
         and aggregates (in case the parameter `series.aggregates` is set to True).
         Example:
-        `{
-            "jsonrpc": "2.0",
-            "result": {
-                "items": {
-                    "<id1>": {
-                        // Signal schema
+            {
+                "jsonrpc": "2.0",
+                "result": {
+                    "items": {
+                        "<id1>": {
+                            // Signal schema
+                        },
+                        "<id2>": {
+                            //  Signal schema
+                        },
                     },
-                    "<id2>": {
-                        //  Signal schema
-                    },
-                },
-                "data": { // DataFrame schema
-                    "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
-                    "series": {
-                        "count": [2, 1, 1],
-                        "sum":[20.4, 0.0, 2.7],
-                        "min": [10.2, 0.0, 2.7],
-                        "max":[10.2, 0.0, 2.7],
-                        "<id1>": [10.2, null, 2.7],
-                        "<id2>": [10.2, 0.0, null]
+                    "data": { // DataFrame schema
+                        "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
+                        "series": {
+                            "count": [2, 1, 1],
+                            "sum":[20.4, 0.0, 2.7],
+                            "min": [10.2, 0.0, 2.7],
+                            "max":[10.2, 0.0, 2.7],
+                            "<id1>": [10.2, null, 2.7],
+                            "<id2>": [10.2, 0.0, null]
+                        }
                     }
                 }
             }
-        }`
 
         """
         request_data = SelectJsonRPCRequest(params=params)
