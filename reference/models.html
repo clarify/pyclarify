@@ -50,9 +50,9 @@
   <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyclarify.models</a><ul>
-<li><a class="reference internal" href="#auth-module">Auth module</a></li>
-<li><a class="reference internal" href="#data-module">Data module</a></li>
-<li><a class="reference internal" href="#requests-module">Requests module</a></li>
+<li><a class="reference internal" href="#module-pyclarify.models.auth">Auth module</a></li>
+<li><a class="reference internal" href="#module-pyclarify.models.data">Data module</a></li>
+<li><a class="reference internal" href="#module-pyclarify.models.requests">Requests module</a></li>
 </ul>
 </li>
 </ul>
@@ -137,14 +137,608 @@
   <section id="pyclarify-models">
 <h1>pyclarify.models<a class="headerlink" href="#pyclarify-models" title="Permalink to this headline">¶</a></h1>
 <p>Data validation is done by the auth, data and requests modules.</p>
-<section id="auth-module">
-<h2>Auth module<a class="headerlink" href="#auth-module" title="Permalink to this headline">¶</a></h2>
+<section id="module-pyclarify.models.auth">
+<span id="auth-module"></span><h2>Auth module<a class="headerlink" href="#module-pyclarify.models.auth" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.auth.ClarifyCredential">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.auth.</span></span><span class="sig-name descname"><span class="pre">ClarifyCredential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apiUrl</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.auth.Credential" title="pyclarify.models.auth.Credential"><span class="pre">pyclarify.models.auth.Credential</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.auth.ClarifyCredential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.ClarifyCredential.apiUrl">
+<span class="sig-name descname"><span class="pre">apiUrl</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.ClarifyCredential.apiUrl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.ClarifyCredential.credentials">
+<span class="sig-name descname"><span class="pre">credentials</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.auth.Credential" title="pyclarify.models.auth.Credential"><span class="pre">pyclarify.models.auth.Credential</span></a></em><a class="headerlink" href="#pyclarify.models.auth.ClarifyCredential.credentials" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.ClarifyCredential.integration">
+<span class="sig-name descname"><span class="pre">integration</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.ClarifyCredential.integration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.auth.Credential">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.auth.</span></span><span class="sig-name descname"><span class="pre">Credential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clientId</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clientSecret</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.auth.Credential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.Credential.clientId">
+<span class="sig-name descname"><span class="pre">clientId</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.Credential.clientId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.Credential.clientSecret">
+<span class="sig-name descname"><span class="pre">clientSecret</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.Credential.clientSecret" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.Credential.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.Credential.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthRequestBody">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.auth.</span></span><span class="sig-name descname"><span class="pre">OAuthRequestBody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grant_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'client_credentials'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_secret</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audience</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'https://api.clarify.us/v1/'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.auth.OAuthRequestBody" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthRequestBody.audience">
+<span class="sig-name descname"><span class="pre">audience</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.OAuthRequestBody.audience" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthRequestBody.client_id">
+<span class="sig-name descname"><span class="pre">client_id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.OAuthRequestBody.client_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthRequestBody.client_secret">
+<span class="sig-name descname"><span class="pre">client_secret</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.OAuthRequestBody.client_secret" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthRequestBody.grant_type">
+<span class="sig-name descname"><span class="pre">grant_type</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.OAuthRequestBody.grant_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthResponse">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.auth.</span></span><span class="sig-name descname"><span class="pre">OAuthResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expires_in</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.timedelta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Bearer'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.auth.OAuthResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthResponse.access_token">
+<span class="sig-name descname"><span class="pre">access_token</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.OAuthResponse.access_token" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthResponse.expires_in">
+<span class="sig-name descname"><span class="pre">expires_in</span></span><em class="property"><span class="pre">:</span> <span class="pre">datetime.timedelta</span></em><a class="headerlink" href="#pyclarify.models.auth.OAuthResponse.expires_in" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthResponse.scope">
+<span class="sig-name descname"><span class="pre">scope</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.auth.OAuthResponse.scope" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.auth.OAuthResponse.token_type">
+<span class="sig-name descname"><span class="pre">token_type</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.auth.OAuthResponse.token_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="data-module">
-<h2>Data module<a class="headerlink" href="#data-module" title="Permalink to this headline">¶</a></h2>
+<section id="module-pyclarify.models.data">
+<span id="data-module"></span><h2>Data module<a class="headerlink" href="#module-pyclarify.models.data" title="Permalink to this headline">¶</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.AnnotationKey">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">AnnotationKey</span></span><a class="headerlink" href="#pyclarify.models.data.AnnotationKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.data.ConstrainedStrValue</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.data.DataFrame">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">DataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.DataFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.DataFrame.series">
+<span class="sig-name descname"><span class="pre">series</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.data.DataFrame.series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.DataFrame.times">
+<span class="sig-name descname"><span class="pre">times</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.data.DataFrame.times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.InputId">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">InputId</span></span><a class="headerlink" href="#pyclarify.models.data.InputId" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.data.ConstrainedStrValue</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.LabelsKey">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">LabelsKey</span></span><a class="headerlink" href="#pyclarify.models.data.LabelsKey" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.data.ConstrainedStrValue</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">Signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.data.TypeSignal" title="pyclarify.models.data.TypeSignal"><span class="pre">pyclarify.models.data.TypeSignal</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">TypeSignal.numeric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engUnit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enumValues</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourceType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.data.SourceTypeSignal" title="pyclarify.models.data.SourceTypeSignal"><span class="pre">pyclarify.models.data.SourceTypeSignal</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">SourceTypeSignal.measurement</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampleInterval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.timedelta</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gapDetection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.timedelta</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.Signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.annotations">
+<span class="sig-name descname"><span class="pre">annotations</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.data.Signal.annotations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.data.Signal.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.engUnit">
+<span class="sig-name descname"><span class="pre">engUnit</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.data.Signal.engUnit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.enumValues">
+<span class="sig-name descname"><span class="pre">enumValues</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.data.Signal.enumValues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.gapDetection">
+<span class="sig-name descname"><span class="pre">gapDetection</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.timedelta</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.data.Signal.gapDetection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.labels">
+<span class="sig-name descname"><span class="pre">labels</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.data.Signal.labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.data.Signal.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.sampleInterval">
+<span class="sig-name descname"><span class="pre">sampleInterval</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.timedelta</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.data.Signal.sampleInterval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.sourceType">
+<span class="sig-name descname"><span class="pre">sourceType</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.data.SourceTypeSignal" title="pyclarify.models.data.SourceTypeSignal"><span class="pre">pyclarify.models.data.SourceTypeSignal</span></a></em><a class="headerlink" href="#pyclarify.models.data.Signal.sourceType" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.Signal.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.data.TypeSignal" title="pyclarify.models.data.TypeSignal"><span class="pre">pyclarify.models.data.TypeSignal</span></a></em><a class="headerlink" href="#pyclarify.models.data.Signal.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.data.SourceTypeSignal">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">SourceTypeSignal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.SourceTypeSignal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.SourceTypeSignal.aggregation">
+<span class="sig-name descname"><span class="pre">aggregation</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'aggregation'</span></em><a class="headerlink" href="#pyclarify.models.data.SourceTypeSignal.aggregation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.SourceTypeSignal.measurement">
+<span class="sig-name descname"><span class="pre">measurement</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'measurement'</span></em><a class="headerlink" href="#pyclarify.models.data.SourceTypeSignal.measurement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.SourceTypeSignal.prediction">
+<span class="sig-name descname"><span class="pre">prediction</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'prediction'</span></em><a class="headerlink" href="#pyclarify.models.data.SourceTypeSignal.prediction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.data.TypeSignal">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">TypeSignal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.TypeSignal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.TypeSignal.enum">
+<span class="sig-name descname"><span class="pre">enum</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'enum'</span></em><a class="headerlink" href="#pyclarify.models.data.TypeSignal.enum" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.data.TypeSignal.numeric">
+<span class="sig-name descname"><span class="pre">numeric</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'numeric'</span></em><a class="headerlink" href="#pyclarify.models.data.TypeSignal.numeric" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyclarify.models.data.merge">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for merging 2 or more Clarify Data Frames. Mapping overlapping
+signal names to single series. Concatenates timestamps of all data frames.
+Inserts none value to series not containing entry at a given timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataframes</strong> (<em>List</em><em>[</em><a class="reference internal" href="#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><em>DataFrame</em></a><em>]</em>) – List of Clarify Data Frames</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>DataFrame</strong> – Merged data frame of all input data frames</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame">DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="requests-module">
-<h2>Requests module<a class="headerlink" href="#requests-module" title="Permalink to this headline">¶</a></h2>
+<section id="module-pyclarify.models.requests">
+<span id="requests-module"></span><h2>Requests module<a class="headerlink" href="#module-pyclarify.models.requests" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ApiMethod">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ApiMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ApiMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ApiMethod.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'integration.Insert'</span></em><a class="headerlink" href="#pyclarify.models.requests.ApiMethod.insert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ApiMethod.save_signals">
+<span class="sig-name descname"><span class="pre">save_signals</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'integration.SaveSignals'</span></em><a class="headerlink" href="#pyclarify.models.requests.ApiMethod.save_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ApiMethod.select">
+<span class="sig-name descname"><span class="pre">select</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'clarify.SelectItems'</span></em><a class="headerlink" href="#pyclarify.models.requests.ApiMethod.select" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.Error">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">Error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.models.requests.ErrorData" title="pyclarify.models.requests.ErrorData"><span class="pre">pyclarify.models.requests.ErrorData</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.Error.code">
+<span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.requests.Error.code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.Error.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.models.requests.ErrorData" title="pyclarify.models.requests.ErrorData"><span class="pre">pyclarify.models.requests.ErrorData</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.Error.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.Error.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.requests.Error.message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ErrorData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ErrorData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ErrorData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ErrorData.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ErrorData.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ErrorData.trace">
+<span class="sig-name descname"><span class="pre">trace</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.requests.ErrorData.trace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.InsertJsonRPCRequest">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">InsertJsonRPCRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonrpc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'2.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ApiMethod" title="pyclarify.models.requests.ApiMethod"><span class="pre">pyclarify.models.requests.ApiMethod</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">ApiMethod.insert</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ParamsInsert" title="pyclarify.models.requests.ParamsInsert"><span class="pre">pyclarify.models.requests.ParamsInsert</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.InsertJsonRPCRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyclarify.models.requests.JsonRPCRequest" title="pyclarify.models.requests.JsonRPCRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.requests.JsonRPCRequest</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.InsertJsonRPCRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ApiMethod" title="pyclarify.models.requests.ApiMethod"><span class="pre">pyclarify.models.requests.ApiMethod</span></a></em><a class="headerlink" href="#pyclarify.models.requests.InsertJsonRPCRequest.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.InsertJsonRPCRequest.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ParamsInsert" title="pyclarify.models.requests.ParamsInsert"><span class="pre">pyclarify.models.requests.ParamsInsert</span></a></em><a class="headerlink" href="#pyclarify.models.requests.InsertJsonRPCRequest.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.IntegrationId">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">IntegrationId</span></span><a class="headerlink" href="#pyclarify.models.requests.IntegrationId" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.requests.ConstrainedStrValue</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ItemSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ParamsSelectItems" title="pyclarify.models.requests.ParamsSelectItems"><span class="pre">pyclarify.models.requests.ParamsSelectItems</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ParamsSelectTimes" title="pyclarify.models.requests.ParamsSelectTimes"><span class="pre">pyclarify.models.requests.ParamsSelectTimes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ParamsSelectSeries" title="pyclarify.models.requests.ParamsSelectSeries"><span class="pre">pyclarify.models.requests.ParamsSelectSeries</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ItemSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect.items">
+<span class="sig-name descname"><span class="pre">items</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ParamsSelectItems" title="pyclarify.models.requests.ParamsSelectItems"><span class="pre">pyclarify.models.requests.ParamsSelectItems</span></a></em><a class="headerlink" href="#pyclarify.models.requests.ItemSelect.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect.series">
+<span class="sig-name descname"><span class="pre">series</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ParamsSelectSeries" title="pyclarify.models.requests.ParamsSelectSeries"><span class="pre">pyclarify.models.requests.ParamsSelectSeries</span></a></em><a class="headerlink" href="#pyclarify.models.requests.ItemSelect.series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect.times">
+<span class="sig-name descname"><span class="pre">times</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ParamsSelectTimes" title="pyclarify.models.requests.ParamsSelectTimes"><span class="pre">pyclarify.models.requests.ParamsSelectTimes</span></a></em><a class="headerlink" href="#pyclarify.models.requests.ItemSelect.times" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.JsonRPCRequest">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">JsonRPCRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonrpc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'2.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ApiMethod" title="pyclarify.models.requests.ApiMethod"><span class="pre">pyclarify.models.requests.ApiMethod</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">ApiMethod.select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.JsonRPCRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.JsonRPCRequest.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.requests.JsonRPCRequest.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.JsonRPCRequest.jsonrpc">
+<span class="sig-name descname"><span class="pre">jsonrpc</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.requests.JsonRPCRequest.jsonrpc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.JsonRPCRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ApiMethod" title="pyclarify.models.requests.ApiMethod"><span class="pre">pyclarify.models.requests.ApiMethod</span></a></em><a class="headerlink" href="#pyclarify.models.requests.JsonRPCRequest.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.JsonRPCRequest.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span></em><a class="headerlink" href="#pyclarify.models.requests.JsonRPCRequest.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.LimitSelect">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">LimitSelect</span></span><a class="headerlink" href="#pyclarify.models.requests.LimitSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.requests.ConstrainedIntValue</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsInsert">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ParamsInsert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.models.requests.ConstrainedStrValue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ParamsInsert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsInsert.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></em><a class="headerlink" href="#pyclarify.models.requests.ParamsInsert.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsInsert.integration">
+<span class="sig-name descname"><span class="pre">integration</span></span><em class="property"><span class="pre">:</span> <span class="pre">pyclarify.models.requests.ConstrainedStrValue</span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsInsert.integration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSave">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ParamsSave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.models.requests.ConstrainedStrValue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><span class="pre">pyclarify.models.data.Signal</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createdOnly</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ParamsSave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSave.createdOnly">
+<span class="sig-name descname"><span class="pre">createdOnly</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSave.createdOnly" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSave.inputs">
+<span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><span class="pre">pyclarify.models.data.Signal</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSave.inputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSave.integration">
+<span class="sig-name descname"><span class="pre">integration</span></span><em class="property"><span class="pre">:</span> <span class="pre">pyclarify.models.requests.ConstrainedStrValue</span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSave.integration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectItems">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ParamsSelectItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.models.requests.ConstrainedIntValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectItems" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectItems.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><em class="property"><span class="pre">:</span> <span class="pre">dict</span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectItems.filter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectItems.include">
+<span class="sig-name descname"><span class="pre">include</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectItems.include" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectItems.limit">
+<span class="sig-name descname"><span class="pre">limit</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.requests.ConstrainedIntValue</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectItems.limit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectItems.skip">
+<span class="sig-name descname"><span class="pre">skip</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectItems.skip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectSeries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ParamsSelectSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectSeries.aggregates">
+<span class="sig-name descname"><span class="pre">aggregates</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectSeries.aggregates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectSeries.items">
+<span class="sig-name descname"><span class="pre">items</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectSeries.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectTimes">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ParamsSelectTimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notBefore</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectTimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectTimes.before">
+<span class="sig-name descname"><span class="pre">before</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectTimes.before" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ParamsSelectTimes.notBefore">
+<span class="sig-name descname"><span class="pre">notBefore</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ParamsSelectTimes.notBefore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseGeneric">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ResponseGeneric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonrpc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'2.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.Error" title="pyclarify.models.requests.Error"><span class="pre">pyclarify.models.requests.Error</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ResponseGeneric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseGeneric.error">
+<span class="sig-name descname"><span class="pre">error</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.models.requests.Error" title="pyclarify.models.requests.Error"><span class="pre">pyclarify.models.requests.Error</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ResponseGeneric.error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseGeneric.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ResponseGeneric.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseGeneric.jsonrpc">
+<span class="sig-name descname"><span class="pre">jsonrpc</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.requests.ResponseGeneric.jsonrpc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseGeneric.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ResponseGeneric.result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseSave">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ResponseSave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonrpc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'2.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.SignalSaveMap" title="pyclarify.models.requests.SignalSaveMap"><span class="pre">pyclarify.models.requests.SignalSaveMap</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.Error" title="pyclarify.models.requests.Error"><span class="pre">pyclarify.models.requests.Error</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ResponseSave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyclarify.models.requests.ResponseGeneric" title="pyclarify.models.requests.ResponseGeneric"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.requests.ResponseGeneric</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseSave.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.models.requests.SignalSaveMap" title="pyclarify.models.requests.SignalSaveMap"><span class="pre">pyclarify.models.requests.SignalSaveMap</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ResponseSave.result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseSelect">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ResponseSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonrpc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'2.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ResultSelectMap" title="pyclarify.models.requests.ResultSelectMap"><span class="pre">pyclarify.models.requests.ResultSelectMap</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.Error" title="pyclarify.models.requests.Error"><span class="pre">pyclarify.models.requests.Error</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ResponseSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyclarify.models.requests.ResponseGeneric" title="pyclarify.models.requests.ResponseGeneric"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.requests.ResponseGeneric</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResponseSelect.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.models.requests.ResultSelectMap" title="pyclarify.models.requests.ResultSelectMap"><span class="pre">pyclarify.models.requests.ResultSelectMap</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ResponseSelect.result" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResultSelectMap">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ResultSelectMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><span class="pre">pyclarify.models.data.Signal</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ResultSelectMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResultSelectMap.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ResultSelectMap.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ResultSelectMap.items">
+<span class="sig-name descname"><span class="pre">items</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><span class="pre">pyclarify.models.data.Signal</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.ResultSelectMap.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SaveJsonRPCRequest">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">SaveJsonRPCRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonrpc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'2.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ApiMethod" title="pyclarify.models.requests.ApiMethod"><span class="pre">pyclarify.models.requests.ApiMethod</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">ApiMethod.save_signals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ParamsSave" title="pyclarify.models.requests.ParamsSave"><span class="pre">pyclarify.models.requests.ParamsSave</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.SaveJsonRPCRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyclarify.models.requests.JsonRPCRequest" title="pyclarify.models.requests.JsonRPCRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.requests.JsonRPCRequest</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SaveJsonRPCRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ApiMethod" title="pyclarify.models.requests.ApiMethod"><span class="pre">pyclarify.models.requests.ApiMethod</span></a></em><a class="headerlink" href="#pyclarify.models.requests.SaveJsonRPCRequest.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SaveJsonRPCRequest.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ParamsSave" title="pyclarify.models.requests.ParamsSave"><span class="pre">pyclarify.models.requests.ParamsSave</span></a></em><a class="headerlink" href="#pyclarify.models.requests.SaveJsonRPCRequest.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SaveResult">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">SaveResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.SaveResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SaveResult.created">
+<span class="sig-name descname"><span class="pre">created</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#pyclarify.models.requests.SaveResult.created" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SaveResult.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.requests.SaveResult.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SelectJsonRPCRequest">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">SelectJsonRPCRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonrpc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'2.0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ApiMethod" title="pyclarify.models.requests.ApiMethod"><span class="pre">pyclarify.models.requests.ApiMethod</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">ApiMethod.select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><span class="pre">pyclarify.models.requests.ItemSelect</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.SelectJsonRPCRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyclarify.models.requests.JsonRPCRequest" title="pyclarify.models.requests.JsonRPCRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.models.requests.JsonRPCRequest</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SelectJsonRPCRequest.method">
+<span class="sig-name descname"><span class="pre">method</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ApiMethod" title="pyclarify.models.requests.ApiMethod"><span class="pre">pyclarify.models.requests.ApiMethod</span></a></em><a class="headerlink" href="#pyclarify.models.requests.SelectJsonRPCRequest.method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SelectJsonRPCRequest.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><span class="pre">pyclarify.models.requests.ItemSelect</span></a></em><a class="headerlink" href="#pyclarify.models.requests.SelectJsonRPCRequest.params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SignalSaveMap">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">SignalSaveMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signalsByInput</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#pyclarify.models.requests.SaveResult" title="pyclarify.models.requests.SaveResult"><span class="pre">pyclarify.models.requests.SaveResult</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.SignalSaveMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SignalSaveMap.signalsByInput">
+<span class="sig-name descname"><span class="pre">signalsByInput</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#pyclarify.models.requests.SaveResult" title="pyclarify.models.requests.SaveResult"><span class="pre">pyclarify.models.requests.SaveResult</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SignalSaveMap.signalsByInput" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -158,9 +752,9 @@
   <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pyclarify.models</a><ul>
-<li><a class="reference internal" href="#auth-module">Auth module</a></li>
-<li><a class="reference internal" href="#data-module">Data module</a></li>
-<li><a class="reference internal" href="#requests-module">Requests module</a></li>
+<li><a class="reference internal" href="#module-pyclarify.models.auth">Auth module</a></li>
+<li><a class="reference internal" href="#module-pyclarify.models.data">Data module</a></li>
+<li><a class="reference internal" href="#module-pyclarify.models.requests">Requests module</a></li>
 </ul>
 </li>
 </ul>
