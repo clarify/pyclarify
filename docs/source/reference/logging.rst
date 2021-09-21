@@ -13,13 +13,13 @@ An example
     >>> logging.basicConfig(filename="client.log", level=logging.INFO,
                             format='%(asctime)s:%(levelname)s%(message)s')
 
-Now when running for example 
+Now when running for example:
 
 .. code-block:: python
 
     >>> client = ApiClient("./clarify-credentials.json")
 
-    >>> data = ClarifyDataFrame(
+    >>> data = DataFrame(
     >>>         times=["2021-03-11T21:50:06Z", "2021-04-11T21:50:06Z"],
     >>>         series={"id": [1, 2]})
     >>> client.insert(data=data)
