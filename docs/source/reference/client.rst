@@ -7,7 +7,7 @@ PyClarify Client
 
 .. currentmodule:: pyclarify
 
-The PyClarify Client has a class named :ref:`ApiClient <interface.ApiClient>`.
+The PyClarify Client has a class named :ref:`ApiClient <pyclarify.interface.ApiClient>`.
 In this class the 3 most important methods are insert, save_signals, select_items.
 
 .. automodule:: pyclarify.client
