@@ -37,17 +37,10 @@ class GetToken:
         """
         if isinstance(clarify_credentials_path, str):
             if path.exists(clarify_credentials_path):
-                f = open(clarify_credentials_path)
-                clarify_credentials = json.load(f)
-                f.close()
+                with open(clarify_credentials_path) as f:
+                    clarify_credentials = json.load(f)
             else:
-                try:
-                    clarify_credentials = json.loads(clarify_credentials_path)
-                except:
-                    logging.error(
-                        f"{clarify_credentials_path} is of type string, but is not a valid path or credentials"
-                    )
-                    return False
+                clarify_credentials = json.loads(clarify_credentials_path)
 
         if isinstance(clarify_credentials_path, dict):
             clarify_credentials = clarify_credentials_path
