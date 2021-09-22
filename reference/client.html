@@ -126,24 +126,24 @@
             
   <section id="pyclarify-client">
 <span id="client"></span><h1>PyClarify Client<a class="headerlink" href="#pyclarify-client" title="Permalink to this headline">¶</a></h1>
-<p>The PyClarify Client has a class named <span class="xref std std-ref">ApiClient</span>.
+<p>The PyClarify Client has a class named <span class="xref std std-ref">APIClient</span>.
 In this class the 3 most important methods are insert, save_signals, select_items.</p>
 <span class="target" id="module-pyclarify.client"></span><p>Service Intercase module is the main module of PyClarify.</p>
 <p>The module provides a class for setting up a HTTPClient which will communicate with
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="pyclarify.client.ApiClient">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">ApiClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.ApiClient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyclarify.client.SimpleClient" title="pyclarify.client.SimpleClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.client.SimpleClient</span></code></a></p>
+<dt class="sig sig-object py" id="pyclarify.client.APIClient">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">APIClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.APIClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyclarify.client.RawClient" title="pyclarify.client.RawClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.client.RawClient</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.ApiClient.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.ResponseSave" title="pyclarify.models.requests.ResponseSave"><span class="pre">pyclarify.models.requests.ResponseSave</span></a></span></span><a class="headerlink" href="#pyclarify.client.ApiClient.insert" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.ResponseSave" title="pyclarify.models.requests.ResponseSave"><span class="pre">pyclarify.models.requests.ResponseSave</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.insert" title="Permalink to this definition">¶</a></dt>
 <dd><p>This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
 the integration ID. If no signal with the given combination exists, an empty signal is created.
 Meta-data for the signal can be provided either through the admin panel or using
 the ‘add_metadata’ call.
-Mirrors the API call (<cite>integration.Insert</cite>)[<a class="reference external" href="https://docs.clarify.us/reference#integrationinsert">https://docs.clarify.us/reference#integrationinsert</a>] for a single
+Mirrors the API call (<cite>integration.Insert</cite>)[<a class="reference external" href="https://docs.clarify.io/reference#integrationinsert">https://docs.clarify.io/reference#integrationinsert</a>] for a single
 signal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -154,7 +154,7 @@ signal.</p>
 </div></blockquote>
 <ul class="simple">
 <li><dl class="simple">
-<dt><cite>values</cite><span class="classifier">Dict[InputId, List[Union[None, float, int]]]</span></dt><dd><p>Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
+<dt><cite>values</cite><span class="classifier">Dict[InputID, List[Union[None, float, int]]]</span></dt><dd><p>Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
 To omit a value for a given timestamp in times, use the value null.</p>
 </dd>
 </dl>
@@ -217,17 +217,17 @@ In case of the error the method return a pydantic model with the following forma
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.ApiClient.save_signals">
-<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="models.html#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><span class="pre">pyclarify.models.data.Signal</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_only</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.ResponseSave" title="pyclarify.models.requests.ResponseSave"><span class="pre">pyclarify.models.requests.ResponseSave</span></a></span></span><a class="headerlink" href="#pyclarify.client.ApiClient.save_signals" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.save_signals">
+<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="models.html#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><span class="pre">pyclarify.models.data.Signal</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_only</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.ResponseSave" title="pyclarify.models.requests.ResponseSave"><span class="pre">pyclarify.models.requests.ResponseSave</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.save_signals" title="Permalink to this definition">¶</a></dt>
 <dd><p>This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
 combination with the integration ID. A List of Signals should be provided with the intended meta-data.
-Mirrors the API call (<cite>integration.SaveSignals</cite>)[<a class="reference external" href="https://docs.clarify.us/reference#integrationsavesignals">https://docs.clarify.us/reference#integrationsavesignals</a>] for
+Mirrors the API call (<cite>integration.SaveSignals</cite>)[<a class="reference external" href="https://docs.clarify.io/reference#integrationsavesignals">https://docs.clarify.io/reference#integrationsavesignals</a>] for
 multiple signals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>Dict</em><em>[</em><em>InputId</em><em>, </em><em>List</em><em>[</em><a class="reference internal" href="models.html#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><em>Signal</em></a><em>]</em><em>]</em>) – List of <cite>Signal</cite> objects. The <cite>Signal</cite> object contains metadata for a signal.
-Check (<cite>Signal (API)</cite>)[<a class="reference external" href="https://docs.clarify.us/reference#signal">https://docs.clarify.us/reference#signal</a>]</p></li>
+<li><p><strong>inputs</strong> (<em>Dict</em><em>[</em><em>InputID</em><em>, </em><em>List</em><em>[</em><a class="reference internal" href="models.html#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><em>Signal</em></a><em>]</em><em>]</em>) – List of <cite>Signal</cite> objects. The <cite>Signal</cite> object contains metadata for a signal.
+Check (<cite>Signal (API)</cite>)[<a class="reference external" href="https://docs.clarify.io/reference#signal">https://docs.clarify.io/reference#signal</a>]</p></li>
 <li><p><strong>created_only</strong> (<em>bool</em>) – If set to true, skip update of information for existing signals. That is, all Input IDs that map to
 existing signals are silently ignored.</p></li>
 </ul>
@@ -287,9 +287,9 @@ In case of the error the method return a pydantic model with the following forma
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.ApiClient.select_items">
-<span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="models.html#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><span class="pre">pyclarify.models.requests.ItemSelect</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.ResponseSelect" title="pyclarify.models.requests.ResponseSelect"><span class="pre">pyclarify.models.requests.ResponseSelect</span></a></span></span><a class="headerlink" href="#pyclarify.client.ApiClient.select_items" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return item data and metadata, mirroring the Clarify API call (<cite>item.Select</cite>)[<a class="reference external" href="https://docs.clarify.us/reference">https://docs.clarify.us/reference</a>].</p>
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.select_items">
+<span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="models.html#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><span class="pre">pyclarify.models.requests.ItemSelect</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.ResponseSelect" title="pyclarify.models.requests.ResponseSelect"><span class="pre">pyclarify.models.requests.ResponseSelect</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return item data and metadata, mirroring the Clarify API call (<cite>item.Select</cite>)[<a class="reference external" href="https://docs.clarify.io/reference">https://docs.clarify.io/reference</a>].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -409,12 +409,12 @@ In case of the error the method return a pydantic model with the following forma
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="pyclarify.client.SimpleClient">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">SimpleClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.SimpleClient" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.client.RawClient">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">RawClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.SimpleClient.authenticate">
-<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.SimpleClient.authenticate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.authenticate">
+<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.authenticate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authenticates the client by using the GetToken class (see oauth2.py)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -431,8 +431,8 @@ or json/dictionary of the content in clarify_credentials.json</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.SimpleClient.create_payload">
-<span class="sig-name descname"><span class="pre">create_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.SimpleClient.create_payload" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.create_payload">
+<span class="sig-name descname"><span class="pre">create_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.create_payload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a JSONRPC request payload.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -451,8 +451,8 @@ or json/dictionary of the content in clarify_credentials.json</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.SimpleClient.get_token">
-<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.SimpleClient.get_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.get_token">
+<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.get_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Using the GetToken class (see oauth2.py) to get a new authentication token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -465,12 +465,12 @@ or json/dictionary of the content in clarify_credentials.json</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.SimpleClient.send">
-<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.SimpleClient.send" title="Permalink to this definition">¶</a></dt>
-<dd><p>Uses post request to send Json RPC payload.</p>
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses post request to send JSON RPC payload.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>payload</strong> (<em>Json RPC dictionary</em>) – A dictionary in the form of a JSONRPC request.</p>
+<dd class="field-odd"><p><strong>payload</strong> (<em>JSON RPC dictionary</em>) – A dictionary in the form of a JSONRPC request.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>JSON dictionary response.</p>
@@ -482,8 +482,8 @@ or json/dictionary of the content in clarify_credentials.json</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.SimpleClient.update_headers">
-<span class="sig-name descname"><span class="pre">update_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.SimpleClient.update_headers" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.update_headers">
+<span class="sig-name descname"><span class="pre">update_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.update_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates headers of client.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
