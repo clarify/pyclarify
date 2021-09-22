@@ -1,2 +1,2 @@
-from pyclarify.client import SimpleClient, ApiClient
-from pyclarify.models.data import Signal, DataFrame, InputId
+from pyclarify.client import RawClient, APIClient
+from pyclarify.models.data import Signal, DataFrame, InputID

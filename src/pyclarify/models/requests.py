@@ -3,9 +3,9 @@ from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime
 from enum import Enum
-from .data import DataFrame, InputId, Signal
+from .data import DataFrame, InputID, Signal
 
-IntegrationId = constr(regex=r"^[a-v0-9]{20}$")
+IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
 LimitSelect = conint(ge=0, le=20)
 
 
@@ -15,7 +15,7 @@ class ApiMethod(str, Enum):
     save_signals = "integration.SaveSignals"
 
 
-class JsonRPCRequest(BaseModel):
+class JSONRPCRequest(BaseModel):
     jsonrpc: str = "2.0"
     method: ApiMethod = ApiMethod.select
     id: str = "1"
@@ -23,22 +23,22 @@ class JsonRPCRequest(BaseModel):
 
 
 class ParamsInsert(BaseModel):
-    integration: IntegrationId
+    integration: IntegrationID
     data: DataFrame
 
 
-class InsertJsonRPCRequest(JsonRPCRequest):
+class InsertRequest(JSONRPCRequest):
     method: ApiMethod = ApiMethod.insert
     params: ParamsInsert
 
 
 class ParamsSave(BaseModel):
-    integration: IntegrationId
-    inputs: Dict[InputId, Signal]
+    integration: IntegrationID
+    inputs: Dict[InputID, Signal]
     createdOnly: Optional[bool] = False
 
 
-class SaveJsonRPCRequest(JsonRPCRequest):
+class SaveRequest(JSONRPCRequest):
     method: ApiMethod = ApiMethod.save_signals
     params: ParamsSave
 
@@ -67,7 +67,7 @@ class SaveResult(BaseModel):
 
 
 class SignalSaveMap(BaseModel):
-    signalsByInput: Dict[InputId, SaveResult]
+    signalsByInput: Dict[InputID, SaveResult]
 
 
 class ResponseSave(ResponseGeneric):
@@ -97,13 +97,13 @@ class ItemSelect(BaseModel):
     series: ParamsSelectSeries
 
 
-class SelectJsonRPCRequest(JsonRPCRequest):
+class SelectRequest(JSONRPCRequest):
     method: ApiMethod = ApiMethod.select
     params: ItemSelect
 
 
 class ResultSelectMap(BaseModel):
-    items: Optional[Dict[InputId, Signal]]
+    items: Optional[Dict[InputID, Signal]]
     data: Optional[DataFrame]
 
 

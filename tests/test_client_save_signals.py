@@ -10,14 +10,14 @@ from http import HTTPStatus
 
 
 sys.path.insert(1, "src/")
-from pyclarify import ApiClient, Signal, DataFrame
+from pyclarify import APIClient, Signal, DataFrame
 from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
 import pyclarify
 
 
 class TestClarifySaveClient(unittest.TestCase):
     def setUp(self):
-        self.client = ApiClient("./tests/data/mock-clarify-credentials.json")
+        self.client = APIClient("./tests/data/mock-clarify-credentials.json")
 
         with open("./tests/data/mock-client.json") as f:
             self.mock_data = json.load(f)
@@ -33,7 +33,7 @@ class TestClarifySaveClient(unittest.TestCase):
 
         self.values = [0.6, 1.0]
 
-    @patch("pyclarify.client.SimpleClient.get_token")
+    @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_2(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -57,7 +57,7 @@ class TestClarifySaveClient(unittest.TestCase):
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
-    @patch("pyclarify.client.SimpleClient.get_token")
+    @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_3(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token

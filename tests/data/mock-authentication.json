@@ -9,6 +9,6 @@
         "grant_type": "client_credentials",
         "client_id": "test_id_123",
         "client_secret": "test_pass_123",
-        "audience": "https://api.clarify.us/v1/"
+        "audience": "https://api.clarify.io/v1/"
     }
 }

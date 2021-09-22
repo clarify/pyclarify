@@ -6,19 +6,19 @@ sys.path.insert(1, "src/")
 import pyclarify.models as models
 
 
-class TestJsonRPCRequest(unittest.TestCase):
+class TestJSONRPCRequest(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models.json") as f:
             self.mock_data = json.load(f)
 
     def test_creation(self):
-        empty_request = models.requests.JsonRPCRequest()
+        empty_request = models.requests.JSONRPCRequest()
         self.assertEqual(
             empty_request.json(), json.dumps(self.mock_data["select_items"]),
         )
 
     def test_creation_insert(self):
-        empty_request = models.requests.JsonRPCRequest(
+        empty_request = models.requests.JSONRPCRequest(
             method=models.requests.ApiMethod.insert
         )
         self.assertEqual(
@@ -26,7 +26,7 @@ class TestJsonRPCRequest(unittest.TestCase):
         )
 
     def test_creation_save(self):
-        empty_request = models.requests.JsonRPCRequest(
+        empty_request = models.requests.JSONRPCRequest(
             method=models.requests.ApiMethod.save_signals
         )
         self.assertEqual(
@@ -34,7 +34,7 @@ class TestJsonRPCRequest(unittest.TestCase):
         )
 
     def test_creation_params_1(self):
-        empty_request = models.requests.JsonRPCRequest(params={})
+        empty_request = models.requests.JSONRPCRequest(params={})
         self.assertEqual(
             empty_request.json(), json.dumps(self.mock_data["select_items"]),
         )
@@ -45,7 +45,7 @@ class TestJsonRPCRequest(unittest.TestCase):
         values = self.mock_data["mock_values"]
         signal_id = self.mock_data["mock_signal_id"]
         data = models.data.DataFrame(times=times, series={signal_id: values})
-        empty_request = models.requests.JsonRPCRequest(
+        empty_request = models.requests.JSONRPCRequest(
             method=models.requests.ApiMethod.insert,
             params=models.requests.ParamsInsert(integration=integration, data=data),
         )
@@ -54,7 +54,7 @@ class TestJsonRPCRequest(unittest.TestCase):
         )
 
 
-class TestInsertJsonRPCRequest(unittest.TestCase):
+class TestInsertRequest(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models.json") as f:
             self.mock_data = json.load(f)
@@ -65,7 +65,7 @@ class TestInsertJsonRPCRequest(unittest.TestCase):
         values = self.mock_data["mock_values"]
         signal_id = self.mock_data["mock_signal_id"]
         data = models.data.DataFrame(times=times, series={signal_id: values})
-        empty_request = models.requests.InsertJsonRPCRequest(
+        empty_request = models.requests.InsertRequest(
             params=models.requests.ParamsInsert(integration=integration, data=data)
         )
         self.assertEqual(
@@ -78,7 +78,7 @@ class TestInsertJsonRPCRequest(unittest.TestCase):
         values = self.mock_data["mock_values"]
         signal_id = self.mock_data["mock_signal_id"]
         data = models.data.DataFrame(times=times, series={signal_id: values})
-        empty_request = models.requests.InsertJsonRPCRequest(
+        empty_request = models.requests.InsertRequest(
             params=models.requests.ParamsInsert(integration=integration, data=data)
         )
         self.assertEqual(

@@ -9,14 +9,14 @@ import requests
 
 
 sys.path.insert(1, "src/")
-from pyclarify import ApiClient, Signal, DataFrame
+from pyclarify import APIClient, Signal, DataFrame
 from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
 from pyclarify.models.requests import ItemSelect
 
 
 class TestClarifySelectClient(unittest.TestCase):
     def setUp(self):
-        self.client = ApiClient("./tests/data/mock-clarify-credentials.json")
+        self.client = APIClient("./tests/data/mock-clarify-credentials.json")
         with open("./tests/data/mock-items-select.json") as f:
             self.mock_data = json.load(f)
         self.test_cases = self.mock_data["test_cases"]
@@ -25,7 +25,7 @@ class TestClarifySelectClient(unittest.TestCase):
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
 
-    @patch("pyclarify.client.SimpleClient.get_token")
+    @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_metadata(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -39,7 +39,7 @@ class TestClarifySelectClient(unittest.TestCase):
         for x in response_data.result.items:
             self.assertIsInstance(response_data.result.items[x], Signal)
 
-    @patch("pyclarify.client.SimpleClient.get_token")
+    @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_metadata_data_agg(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -58,7 +58,7 @@ class TestClarifySelectClient(unittest.TestCase):
         self.assertIn("min", response_data.result.data.series.keys())
         self.assertIn("max", response_data.result.data.series.keys())
 
-    @patch("pyclarify.client.SimpleClient.get_token")
+    @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_data_only(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -71,7 +71,7 @@ class TestClarifySelectClient(unittest.TestCase):
         self.assertIsNone(response_data.result.items)
         self.assertIsInstance(response_data.result.data, DataFrame)
 
-    @patch("pyclarify.client.SimpleClient.get_token")
+    @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_data_metadata_empty(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token

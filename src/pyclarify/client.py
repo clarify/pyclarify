@@ -13,16 +13,16 @@ import functools
 from typing import List, Dict
 from pydantic import validate_arguments
 
-from pyclarify.models.data import NumericalValuesType, Signal, DataFrame, InputId
+from pyclarify.models.data import NumericalValuesType, Signal, DataFrame, InputID
 from pyclarify.models.requests import (
     ResponseSave,
     ParamsInsert,
-    InsertJsonRPCRequest,
-    SaveJsonRPCRequest,
+    InsertRequest,
+    SaveRequest,
     ParamsSave,
     ItemSelect,
     ResponseSelect,
-    SelectJsonRPCRequest,
+    SelectRequest,
 )
 from pyclarify.oauth2 import GetToken
 
@@ -50,7 +50,7 @@ def increment_id(func):
     return wrapper
 
 
-class SimpleClient:
+class RawClient:
     def __init__(
         self, base_url,
     ):
@@ -93,11 +93,11 @@ class SimpleClient:
 
     def send(self, payload):
         """
-        Uses post request to send Json RPC payload.
+        Uses post request to send JSON RPC payload.
 
         Parameters
         ----------
-        payload : Json RPC dictionary
+        payload : JSON RPC dictionary
             A dictionary in the form of a JSONRPC request.
 
         Returns
@@ -158,7 +158,7 @@ class SimpleClient:
             self.headers[key] = value
 
 
-class ApiClient(SimpleClient):
+class APIClient(RawClient):
     def __init__(self, clarify_credentials):
         super().__init__(None)
         self.update_headers({"X-API-Version": "1.1"})
@@ -173,7 +173,7 @@ class ApiClient(SimpleClient):
         the integration ID. If no signal with the given combination exists, an empty signal is created.
         Meta-data for the signal can be provided either through the admin panel or using
         the 'add_metadata' call.
-        Mirrors the API call (`integration.Insert`)[https://docs.clarify.us/reference#integrationinsert] for a single
+        Mirrors the API call (`integration.Insert`)[https://docs.clarify.io/reference#integrationinsert] for a single
         signal.
 
         Parameters
@@ -182,7 +182,7 @@ class ApiClient(SimpleClient):
              Dataframe with the field
              -   `times`:  List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
                 to insert.
-             - `values` : Dict[InputId, List[Union[None, float, int]]]
+             - `values` : Dict[InputID, List[Union[None, float, int]]]
                 Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
                 To omit a value for a given timestamp in times, use the value null.
 
@@ -216,7 +216,7 @@ class ApiClient(SimpleClient):
              }`
         """
 
-        request_data = InsertJsonRPCRequest(
+        request_data = InsertRequest(
             params=ParamsInsert(
                 integration=self.authentication.integration_id, data=data
             )
@@ -229,19 +229,19 @@ class ApiClient(SimpleClient):
     @increment_id
     @validate_arguments
     def save_signals(
-        self, inputs: Dict[InputId, Signal], created_only: bool
+        self, inputs: Dict[InputID, Signal], created_only: bool
     ) -> ResponseSave:
         """
         This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
         combination with the integration ID. A List of Signals should be provided with the intended meta-data.
-        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.us/reference#integrationsavesignals] for
+        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.io/reference#integrationsavesignals] for
         multiple signals.
 
         Parameters
         ----------
-        inputs: Dict[InputId, List[Signal]]
+        inputs: Dict[InputID, List[Signal]]
             List of `Signal` objects. The `Signal` object contains metadata for a signal.
-            Check (`Signal (API)`)[https://docs.clarify.us/reference#signal]
+            Check (`Signal (API)`)[https://docs.clarify.io/reference#signal]
 
         created_only: bool
             If set to true, skip update of information for existing signals. That is, all Input IDs that map to
@@ -276,7 +276,7 @@ class ApiClient(SimpleClient):
                 }
              }`
         """
-        request_data = SaveJsonRPCRequest(
+        request_data = SaveRequest(
             params=ParamsSave(
                 integration=self.authentication.integration_id,
                 inputs=inputs,
@@ -293,7 +293,7 @@ class ApiClient(SimpleClient):
     @validate_arguments
     def select_items(self, params: ItemSelect) -> ResponseSelect:
         """
-        Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.us/reference].
+        Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.io/reference].
 
         Parameters
         ----------
@@ -369,7 +369,7 @@ class ApiClient(SimpleClient):
             }
 
         """
-        request_data = SelectJsonRPCRequest(params=params)
+        request_data = SelectRequest(params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())

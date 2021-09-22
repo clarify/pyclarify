@@ -17,7 +17,7 @@ Now when running for example:
 
 .. code-block:: python
 
-    >>> client = ApiClient("./clarify-credentials.json")
+    >>> client = APIClient("./clarify-credentials.json")
 
     >>> data = DataFrame(
     >>>         times=["2021-03-11T21:50:06Z", "2021-04-11T21:50:06Z"],

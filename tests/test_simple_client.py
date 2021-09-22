@@ -3,15 +3,15 @@ import unittest
 import json
 
 sys.path.insert(1, "src/")
-from pyclarify.client import SimpleClient
+from pyclarify.client import RawClient
 
 
-class TestSimpleClient(unittest.TestCase):
+class TestRawClient(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-simple-client.json") as f:
             self.mock_data = json.load(f)
 
-        self.client = SimpleClient(base_url=self.mock_data["mock_url"])
+        self.client = RawClient(base_url=self.mock_data["mock_url"])
         self.content_type_headers = {"content-type": "application/json"}
 
     def test_update_header(self):

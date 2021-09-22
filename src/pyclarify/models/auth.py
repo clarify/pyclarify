@@ -8,7 +8,7 @@ class OAuthRequestBody(BaseModel):
     grant_type: str = "client_credentials"
     client_id: str
     client_secret: str
-    audience: str = "https://api.clarify.us/v1/"
+    audience: str = "https://api.clarify.io/v1/"
 
 
 class OAuthResponse(BaseModel):
