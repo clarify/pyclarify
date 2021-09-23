@@ -1,7 +1,7 @@
 """
-Service Intercase module is the main module of PyClarify.
+Client module is the main module of PyClarify.
 
-The module provides a class for setting up a HTTPClient which will communicate with
+The module provides a class for setting up a JSONRPCClient which will communicate with
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework. 
 """
