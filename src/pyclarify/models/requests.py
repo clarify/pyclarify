@@ -22,17 +22,17 @@ class JSONRPCRequest(BaseModel):
     params: Dict = {}
 
 
-class ParamsInsert(BaseModel):
+class InsertParams(BaseModel):
     integration: IntegrationID
     data: DataFrame
 
 
 class InsertRequest(JSONRPCRequest):
     method: ApiMethod = ApiMethod.insert
-    params: ParamsInsert
+    params: InsertParams
 
 
-class ParamsSave(BaseModel):
+class SaveParams(BaseModel):
     integration: IntegrationID
     inputs: Dict[InputID, Signal]
     createdOnly: Optional[bool] = False
@@ -40,7 +40,7 @@ class ParamsSave(BaseModel):
 
 class SaveRequest(JSONRPCRequest):
     method: ApiMethod = ApiMethod.save_signals
-    params: ParamsSave
+    params: SaveParams
 
 
 class ErrorData(BaseModel):
@@ -54,7 +54,7 @@ class Error(BaseModel):
     data: Optional[Union[ErrorData, str]]
 
 
-class ResponseGeneric(BaseModel):
+class GenericResponse(BaseModel):
     jsonrpc: str = "2.0"
     id: Optional[str]
     result: Optional[Dict]
@@ -70,31 +70,31 @@ class SignalSaveMap(BaseModel):
     signalsByInput: Dict[InputID, SaveResult]
 
 
-class ResponseSave(ResponseGeneric):
+class SaveResponse(GenericResponse):
     result: Optional[SignalSaveMap]
 
 
-class ParamsSelectItems(BaseModel):
+class SelectItemsParams(BaseModel):
     include: Optional[bool] = False
     filter: dict = {}
     limit: Optional[LimitSelect] = 10
     skip: Optional[int] = 0
 
 
-class ParamsSelectTimes(BaseModel):
+class SelectTimesParams(BaseModel):
     before: Optional[datetime]
     notBefore: Optional[datetime]
 
 
-class ParamsSelectSeries(BaseModel):
+class SelectSeriesParams(BaseModel):
     items: Optional[bool] = False
     aggregates: Optional[bool] = False
 
 
 class ItemSelect(BaseModel):
-    items: ParamsSelectItems
-    times: ParamsSelectTimes
-    series: ParamsSelectSeries
+    items: SelectItemsParams
+    times: SelectTimesParams
+    series: SelectSeriesParams
 
 
 class SelectRequest(JSONRPCRequest):
@@ -102,10 +102,10 @@ class SelectRequest(JSONRPCRequest):
     params: ItemSelect
 
 
-class ResultSelectMap(BaseModel):
+class SelectMapResult(BaseModel):
     items: Optional[Dict[InputID, Signal]]
     data: Optional[DataFrame]
 
 
-class ResponseSelect(ResponseGeneric):
-    result: Optional[ResultSelectMap]
+class SelectResponse(GenericResponse):
+    result: Optional[SelectMapResult]

@@ -15,13 +15,13 @@ from pydantic import validate_arguments
 
 from pyclarify.models.data import NumericalValuesType, Signal, DataFrame, InputID
 from pyclarify.models.requests import (
-    ResponseSave,
-    ParamsInsert,
+    SaveResponse,
+    InsertParams,
     InsertRequest,
     SaveRequest,
-    ParamsSave,
+    SaveParams,
     ItemSelect,
-    ResponseSelect,
+    SelectResponse,
     SelectRequest,
 )
 from pyclarify.oauth2 import GetToken
@@ -52,7 +52,8 @@ def increment_id(func):
 
 class RawClient:
     def __init__(
-        self, base_url,
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -167,7 +168,7 @@ class APIClient(RawClient):
 
     @increment_id
     @validate_arguments
-    def insert(self, data: DataFrame) -> ResponseSave:
+    def insert(self, data: DataFrame) -> SaveResponse:
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
@@ -188,7 +189,7 @@ class APIClient(RawClient):
 
         Returns
         -------
-        ResponseSave
+        SaveResponse
             In case of a valid return value, returns a pydantic model with the following format
             `{
                 "jsonrpc": "2.0",
@@ -217,20 +218,20 @@ class APIClient(RawClient):
         """
 
         request_data = InsertRequest(
-            params=ParamsInsert(
+            params=InsertParams(
                 integration=self.authentication.integration_id, data=data
             )
         )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
-        return ResponseSave(**result)
+        return SaveResponse(**result)
 
     @increment_id
     @validate_arguments
     def save_signals(
         self, inputs: Dict[InputID, Signal], created_only: bool
-    ) -> ResponseSave:
+    ) -> SaveResponse:
         """
         This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
         combination with the integration ID. A List of Signals should be provided with the intended meta-data.
@@ -249,7 +250,7 @@ class APIClient(RawClient):
 
         Returns
         -------
-        ResponseSave
+        SaveResponse
             In case of a valid return value, returns a pydantic model with the following format
             `{
                 "jsonrpc": "2.0",
@@ -277,7 +278,7 @@ class APIClient(RawClient):
              }`
         """
         request_data = SaveRequest(
-            params=ParamsSave(
+            params=SaveParams(
                 integration=self.authentication.integration_id,
                 inputs=inputs,
                 createdOnly=created_only,
@@ -287,11 +288,11 @@ class APIClient(RawClient):
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
-        return ResponseSave(**result)
+        return SaveResponse(**result)
 
     @increment_id
     @validate_arguments
-    def select_items(self, params: ItemSelect) -> ResponseSelect:
+    def select_items(self, params: ItemSelect) -> SelectResponse:
         """
         Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.io/reference].
 
@@ -337,7 +338,7 @@ class APIClient(RawClient):
 
         Returns
         -------
-        ResponseSelect
+        SelectResponse
         Data model with the results of the method. Data and metadata can be found in the `result` field, with the
         attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
         `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
@@ -374,4 +375,4 @@ class APIClient(RawClient):
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
-        return ResponseSelect(**result)
+        return SelectResponse(**result)

@@ -106,7 +106,7 @@ To get data of an item, you first must have an integration with reading access.
 Once the is a reading access for an integation, use the :py:meth:`~pyclarify.client.APIClient.select_items` method.
 
 Step 1: Create a :py:meth:`~pyclarify.models.requests.ItemSelect` model. This model uses three other models.
-The :py:meth:`~pyclarify.models.requests.ParamsSelectItems`, :py:meth:`~pyclarify.models.requests.ParamsSelectTimes` and the :py:meth:`~pyclarify.models.requests.ParamsSelectSeries`. 
+The :py:meth:`~pyclarify.models.requests.SelectItemsParams`, :py:meth:`~pyclarify.models.requests.SelectTimesParams` and the :py:meth:`~pyclarify.models.requests.SelectSeriesParams`. 
 
 Step 2: Call the :py:meth:`~pyclarify.client.APIClient.select_items` method with ItemSelect as an argument.
 
@@ -119,18 +119,18 @@ An example
     >>> from pyclarify.client import APIClient
     >>> from pyclarify.models.requests import (
     >>>         ItemSelect,
-    >>>         ParamsSelectItems,
-    >>>         ParamsSelectTimes,
-    >>>         ParamsSelectSeries,
+    >>>         SelectItemsParams,
+    >>>         SelectTimesParams,
+    >>>         SelectSeriesParams,
     >>> )
 
     >>> client = APIClient("./clarify-credentials.json")
 
-    >>> items = ParamsSelectItems(include=True, filter={"id": {"$in": ["id1"]}})
-    >>> times = ParamsSelectTimes(
+    >>> items = SelectItemsParams(include=True, filter={"id": {"$in": ["id1"]}})
+    >>> times = SelectTimesParams(
     >>>         notBefore="2021-03-10T21:50:06Z", before="2021-04-11T22:50:06Z"
     >>> )
-    >>> series = ParamsSelectSeries(items=True)
+    >>> series = SelectSeriesParams(items=True)
 
     >>> params = ItemSelect(items=items, times=times, series=series)
 

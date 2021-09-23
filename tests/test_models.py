@@ -14,7 +14,8 @@ class TestJSONRPCRequest(unittest.TestCase):
     def test_creation(self):
         empty_request = models.requests.JSONRPCRequest()
         self.assertEqual(
-            empty_request.json(), json.dumps(self.mock_data["select_items"]),
+            empty_request.json(),
+            json.dumps(self.mock_data["select_items"]),
         )
 
     def test_creation_insert(self):
@@ -22,7 +23,8 @@ class TestJSONRPCRequest(unittest.TestCase):
             method=models.requests.ApiMethod.insert
         )
         self.assertEqual(
-            empty_request.json(), json.dumps(self.mock_data["insert"]),
+            empty_request.json(),
+            json.dumps(self.mock_data["insert"]),
         )
 
     def test_creation_save(self):
@@ -30,13 +32,15 @@ class TestJSONRPCRequest(unittest.TestCase):
             method=models.requests.ApiMethod.save_signals
         )
         self.assertEqual(
-            empty_request.json(), json.dumps(self.mock_data["save_signals"]),
+            empty_request.json(),
+            json.dumps(self.mock_data["save_signals"]),
         )
 
     def test_creation_params_1(self):
         empty_request = models.requests.JSONRPCRequest(params={})
         self.assertEqual(
-            empty_request.json(), json.dumps(self.mock_data["select_items"]),
+            empty_request.json(),
+            json.dumps(self.mock_data["select_items"]),
         )
 
     def test_creation_params_2(self):
@@ -47,10 +51,11 @@ class TestJSONRPCRequest(unittest.TestCase):
         data = models.data.DataFrame(times=times, series={signal_id: values})
         empty_request = models.requests.JSONRPCRequest(
             method=models.requests.ApiMethod.insert,
-            params=models.requests.ParamsInsert(integration=integration, data=data),
+            params=models.requests.InsertParams(integration=integration, data=data),
         )
         self.assertEqual(
-            empty_request.json(), json.dumps(self.mock_data["mock_request"]),
+            empty_request.json(),
+            json.dumps(self.mock_data["mock_request"]),
         )
 
 
@@ -66,10 +71,11 @@ class TestInsertRequest(unittest.TestCase):
         signal_id = self.mock_data["mock_signal_id"]
         data = models.data.DataFrame(times=times, series={signal_id: values})
         empty_request = models.requests.InsertRequest(
-            params=models.requests.ParamsInsert(integration=integration, data=data)
+            params=models.requests.InsertParams(integration=integration, data=data)
         )
         self.assertEqual(
-            empty_request.json(), json.dumps(self.mock_data["mock_request"]),
+            empty_request.json(),
+            json.dumps(self.mock_data["mock_request"]),
         )
 
     def test_regex(self):
@@ -79,10 +85,11 @@ class TestInsertRequest(unittest.TestCase):
         signal_id = self.mock_data["mock_signal_id"]
         data = models.data.DataFrame(times=times, series={signal_id: values})
         empty_request = models.requests.InsertRequest(
-            params=models.requests.ParamsInsert(integration=integration, data=data)
+            params=models.requests.InsertParams(integration=integration, data=data)
         )
         self.assertEqual(
-            empty_request.json(), json.dumps(self.mock_data["mock_request_regex"]),
+            empty_request.json(),
+            json.dumps(self.mock_data["mock_request_regex"]),
         )
 
 
@@ -96,23 +103,17 @@ class TestMerge(unittest.TestCase):
 
         self.cdf = models.data.DataFrame(
             times=self.mock_data_1["times"],
-            series={
-                self.mock_data_1["signal"]: self.mock_data_1["values"]
-            },
+            series={self.mock_data_1["signal"]: self.mock_data_1["values"]},
         )
 
         self.cdf2 = models.data.DataFrame(
             times=self.mock_data_2["times"],
-            series={
-                self.mock_data_2["signal"]: self.mock_data_2["values"]
-            },
+            series={self.mock_data_2["signal"]: self.mock_data_2["values"]},
         )
 
         self.cdf3 = models.data.DataFrame(
             times=self.mock_data_3["times"],
-            series={
-                self.mock_data_3["signal"]: self.mock_data_3["values"]
-            },
+            series={self.mock_data_3["signal"]: self.mock_data_3["values"]},
         )
 
     def test_merge_single_input(self):
