@@ -1,45 +1,46 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, constr, conint
 from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime
 from enum import Enum
-from .data import ClarifyDataFrame, InputId, Signal
+from .data import DataFrame, InputID, Signal
 
-IntegrationId = constr(regex=r"^[a-v0-9]{20}$")
+IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
+LimitSelect = conint(ge=0, le=20)
 
 
 class ApiMethod(str, Enum):
-    select = "item.Select"
+    select = "clarify.SelectItems"
     insert = "integration.Insert"
     save_signals = "integration.SaveSignals"
 
 
-class JsonRPCRequest(BaseModel):
+class JSONRPCRequest(BaseModel):
     jsonrpc: str = "2.0"
     method: ApiMethod = ApiMethod.select
     id: str = "1"
     params: Dict = {}
 
 
-class ParamsInsert(BaseModel):
-    integration: IntegrationId
-    data: ClarifyDataFrame
+class InsertParams(BaseModel):
+    integration: IntegrationID
+    data: DataFrame
 
 
-class InsertJsonRPCRequest(JsonRPCRequest):
+class InsertRequest(JSONRPCRequest):
     method: ApiMethod = ApiMethod.insert
-    params: ParamsInsert
+    params: InsertParams
 
 
-class ParamsSave(BaseModel):
-    integration: IntegrationId
-    inputs: Dict[InputId, Signal]
+class SaveParams(BaseModel):
+    integration: IntegrationID
+    inputs: Dict[InputID, Signal]
     createdOnly: Optional[bool] = False
 
 
-class SaveJsonRPCRequest(JsonRPCRequest):
+class SaveRequest(JSONRPCRequest):
     method: ApiMethod = ApiMethod.save_signals
-    params: ParamsSave
+    params: SaveParams
 
 
 class ErrorData(BaseModel):
@@ -50,10 +51,10 @@ class ErrorData(BaseModel):
 class Error(BaseModel):
     code: str
     message: str
-    data: Optional[ErrorData]
+    data: Optional[Union[ErrorData, str]]
 
 
-class ResponseGeneric(BaseModel):
+class GenericResponse(BaseModel):
     jsonrpc: str = "2.0"
     id: Optional[str]
     result: Optional[Dict]
@@ -66,8 +67,45 @@ class SaveResult(BaseModel):
 
 
 class SignalSaveMap(BaseModel):
-    signalsByInput: Dict[InputId, SaveResult]
+    signalsByInput: Dict[InputID, SaveResult]
 
 
-class ResponseSave(ResponseGeneric):
+class SaveResponse(GenericResponse):
     result: Optional[SignalSaveMap]
+
+
+class SelectItemsParams(BaseModel):
+    include: Optional[bool] = False
+    filter: dict = {}
+    limit: Optional[LimitSelect] = 10
+    skip: Optional[int] = 0
+
+
+class SelectTimesParams(BaseModel):
+    before: Optional[datetime]
+    notBefore: Optional[datetime]
+
+
+class SelectSeriesParams(BaseModel):
+    items: Optional[bool] = False
+    aggregates: Optional[bool] = False
+
+
+class ItemSelect(BaseModel):
+    items: SelectItemsParams
+    times: SelectTimesParams
+    series: SelectSeriesParams
+
+
+class SelectRequest(JSONRPCRequest):
+    method: ApiMethod = ApiMethod.select
+    params: ItemSelect
+
+
+class SelectMapResult(BaseModel):
+    items: Optional[Dict[InputID, Signal]]
+    data: Optional[DataFrame]
+
+
+class SelectResponse(GenericResponse):
+    result: Optional[SelectMapResult]

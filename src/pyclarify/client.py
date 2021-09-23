@@ -10,15 +10,19 @@ import requests
 import json
 import logging
 import functools
-from typing import List
+from typing import List, Dict
+from pydantic import validate_arguments
 
-from pyclarify.models.data import NumericalValuesType, Signal, ClarifyDataFrame
+from pyclarify.models.data import NumericalValuesType, Signal, DataFrame, InputID
 from pyclarify.models.requests import (
-    ResponseSave,
-    ParamsInsert,
-    InsertJsonRPCRequest,
-    SaveJsonRPCRequest,
-    ParamsSave,
+    SaveResponse,
+    InsertParams,
+    InsertRequest,
+    SaveRequest,
+    SaveParams,
+    ItemSelect,
+    SelectResponse,
+    SelectRequest,
 )
 from pyclarify.oauth2 import GetToken
 
@@ -35,7 +39,7 @@ def increment_id(func):
     Returns
     -------
     func : function
-        returns the wrapped function 
+        returns the wrapped function.
     """
 
     @functools.wraps(func)
@@ -46,9 +50,10 @@ def increment_id(func):
     return wrapper
 
 
-class ServiceInterface:
+class RawClient:
     def __init__(
-        self, base_url,
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -61,8 +66,8 @@ class ServiceInterface:
 
         Parameters
         ----------
-        credentials : str/dict
-            The path to the clarify_credentials.json downloaded from the Clarify app, 
+        clarify_credentials : str/dict
+            The path to the clarify_credentials.json downloaded from the Clarify app,
             or json/dictionary of the content in clarify_credentials.json
 
         Returns
@@ -83,17 +88,17 @@ class ServiceInterface:
         Returns
         -------
         str
-            User token.
+            Access token.
         """
         return self.authentication.get_token()
 
     def send(self, payload):
         """
-        Returns json dict of JSONPRC request.
+        Uses post request to send JSON RPC payload.
 
         Parameters
         ----------
-        payload : JSONRPC dict
+        payload : JSON RPC dictionary
             A dictionary in the form of a JSONRPC request.
 
         Returns
@@ -119,7 +124,7 @@ class ServiceInterface:
     @increment_id
     def create_payload(self, method, params):
         """
-        Creates a JSONRPC request.
+        Creates a JSONRPC request payload.
 
         Parameters
         ----------
@@ -154,42 +159,37 @@ class ServiceInterface:
             self.headers[key] = value
 
 
-class ClarifyInterface(ServiceInterface):
+class APIClient(RawClient):
     def __init__(self, clarify_credentials):
-        super().__init__("https://api.clarify.us/v1/rpc")
-        self.update_headers({"X-API-Version": "1.0"})
+        super().__init__(None)
+        self.update_headers({"X-API-Version": "1.1"})
         self.authentication = GetToken(clarify_credentials)
+        self.base_url = f"{self.authentication.api_url}rpc"
 
     @increment_id
-    def add_data_single_signal(
-        self, integration: str, input_id: str, times: list, values: NumericalValuesType
-    ) -> ResponseSave:
+    @validate_arguments
+    def insert(self, data: DataFrame) -> SaveResponse:
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
         Meta-data for the signal can be provided either through the admin panel or using
         the 'add_metadata' call.
-        Mirrors the API call (`integration.Insert`)[https://docs.clarify.us/reference#integrationinsert] for a single
+        Mirrors the API call (`integration.Insert`)[https://docs.clarify.io/reference#integrationinsert] for a single
         signal.
 
         Parameters
         ----------
-        integration : str
-            The ID if the integration to save signal information for.
-        input_id : str
-            An Input ID maps uniquely to one signal within an integration. For all API calls that accept Input IDs,
-            new signals are automatically created when needed. This means you do not need to create a signal before
-            writing data to it. Should follow regex: "^[a-z0-9_-]{1,40}$"
-        times : list
-            List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
-            to insert.
-        values : List[NumericalValuesType]
-            Array of data points to insert by Input ID. The length of each array must match that of the times array.
-            To omit a value for a given timestamp in times, use the value null.
+        data : DataFrame
+             Dataframe with the field
+             -   `times`:  List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
+                to insert.
+             - `values` : Dict[InputID, List[Union[None, float, int]]]
+                Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
+                To omit a value for a given timestamp in times, use the value null.
 
         Returns
         -------
-        ResponseSave
+        SaveResponse
             In case of a valid return value, returns a pydantic model with the following format
             `{
                 "jsonrpc": "2.0",
@@ -216,117 +216,41 @@ class ClarifyInterface(ServiceInterface):
                 }
              }`
         """
-        data = ClarifyDataFrame(times=times, series={input_id: values})
-        request_data = InsertJsonRPCRequest(
-            params=ParamsInsert(integration=integration, data=data)
+
+        request_data = InsertRequest(
+            params=InsertParams(
+                integration=self.authentication.integration_id, data=data
+            )
         )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
-        return ResponseSave(**result)
+        return SaveResponse(**result)
 
     @increment_id
-    def add_data_multiple_signals(
-        self,
-        integration: str,
-        input_id_lst: List[str],
-        times: list,
-        values_lst: List[List[NumericalValuesType]],
-    ) -> ResponseSave:
-        """
-        This call inserts data for multiple signals. The signals are uniquely identified by its input ID in
-        combination with the integration ID. If no signal with the given combination exists, an empty signal is created.
-        Meta-data for the signal can be provided either through the admin panel or using  the 'add_metadata' call.
-        Mirrors the API call (`integration.Insert`)[https://docs.clarify.us/reference#integrationinsert] for multiple
-        signals.
-
-        Parameters
-        ----------
-        integration : str
-            The ID if the integration to save signal information for.
-        input_id_lst: List[str]
-            List of input_ids to be added
-        times: list
-            List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
-            to insert.
-        values_lst : List[List[NumericalValuesType]]
-            List of list of data points to insert for each respective Input ID in the `input_id_lst`. The length of
-            each array must match that of the times array. To omit a value for a given timestamp in times,
-            use the value None.
-
-        Returns
-        -------
-        ResponseSave
-            In case of a valid return value, returns a pydantic model with the following format
-            `{
-                "jsonrpc": "2.0",
-                "id": 1,
-                "result":
-                  { "signalsByInput": map of Input ID => SaveResult
-                  }
-             }`
-           Where `SaveResult` is a pydantic model with field `id: str` (Unique ID of the saved instance)
-           and  `created: bool` (True if a new instance was created).
-           In case of the error the method return a pydantic model with the following format:
-            `{
-                "jsonrpc": "2.0",
-                "id": 1,
-                "error": {
-                    "code": -32602,
-                    "message": "Invalid params",
-                    "data": {
-                        "trace": "00000000000000000000",
-                        "params": {
-                            "integration": ["required"]
-                        }
-                    }
-                }
-             }`
-        """
-        series_dict = {
-            input_id: values for input_id, values in zip(input_id_lst, values_lst)
-        }
-        data = ClarifyDataFrame(times=times, series=series_dict)
-        request_data = InsertJsonRPCRequest(
-            params=ParamsInsert(integration=integration, data=data)
-        )
-
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
-
-        return ResponseSave(**result)
-
-    @increment_id
-    def add_metadata_signals(
-        self,
-        integration: str,
-        signal_metadata_list: List[Signal],
-        created_only: bool = False,
-    ) -> ResponseSave:
+    @validate_arguments
+    def save_signals(
+        self, inputs: Dict[InputID, Signal], created_only: bool
+    ) -> SaveResponse:
         """
         This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
         combination with the integration ID. A List of Signals should be provided with the intended meta-data.
-        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.us/reference#integrationsavesignals] for
+        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.io/reference#integrationsavesignals] for
         multiple signals.
 
         Parameters
         ----------
-        integration : str
-            The ID if the integration to save signal information for.
-
-        signal_metadata_list : List[Signal]
+        inputs: Dict[InputID, List[Signal]]
             List of `Signal` objects. The `Signal` object contains metadata for a signal.
-            Check (`Signal (API)`)[https://docs.clarify.us/reference#signal]
+            Check (`Signal (API)`)[https://docs.clarify.io/reference#signal]
 
         created_only: bool
             If set to true, skip update of information for existing signals. That is, all Input IDs that map to
             existing signals are silently ignored.
 
-
-
         Returns
         -------
-        ResponseSave
+        SaveResponse
             In case of a valid return value, returns a pydantic model with the following format
             `{
                 "jsonrpc": "2.0",
@@ -353,15 +277,102 @@ class ClarifyInterface(ServiceInterface):
                 }
              }`
         """
-
-        input_map = {signal.name: signal for signal in signal_metadata_list}
-        request_data = SaveJsonRPCRequest(
-            params=ParamsSave(
-                integration=integration, inputs=input_map, createdOnly=created_only
+        request_data = SaveRequest(
+            params=SaveParams(
+                integration=self.authentication.integration_id,
+                inputs=inputs,
+                createdOnly=created_only,
             )
         )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
-        return ResponseSave(**result)
+        return SaveResponse(**result)
+
+    @increment_id
+    @validate_arguments
+    def select_items(self, params: ItemSelect) -> SelectResponse:
+        """
+        Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.io/reference].
+
+        Parameters
+        ----------
+        params : ItemSelect
+            Data model with all the possible settings for method. Fields include
+            - `items`:
+               > Select items to include (data for).
+              - `include` | **bool** | default: False
+                > Set to true to render item meta-data in the response.
+              - `filter` | **Dict**:
+                > Rest-layer style item filter (potentially with limited query options).
+                > Example: {"id":{"$in": ["<id1>", "<id2>"]}}
+              - `limit` | **int(min:0,max:50)** | default=`10`
+                > Limit number of items (max value to be adjusted after tuning).
+              - `skip` | **int**| default=`0`
+                > Skip first N items.
+            - `times`:
+              > Select times to include; ignored if no series are selected.
+              - `before` | **str(`""` | |RFC3339 timestamp)**  | default=`""`
+              - `notBefore` | **str(`""` || RFC3339 timestamp)**  |  default=`""`
+            - `series`:
+              > Select which data series to include.
+              - `items` | bool | default=False
+                > include items mapped by ID in the response data frame.
+              - `aggregates` | bool | default=False
+                > include aggregated values `"count"`, `"sum"`, `"min"` and `"max"` across all items in the response data frame.
+        Example:
+            {
+                "items": {
+                    "include": true,
+                    "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
+                },
+                "times": {
+                    "notBefore": "2020-01-01T01:00:00Z"
+                },
+                "series": {
+                    "items": true,
+                    "aggregates": true
+                }
+            }
+
+        Returns
+        -------
+        SelectResponse
+        Data model with the results of the method. Data and metadata can be found in the `result` field, with the
+        attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
+        `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
+        and aggregates (in case the parameter `series.aggregates` is set to True).
+        Example:
+            {
+                "jsonrpc": "2.0",
+                "result": {
+                    "items": {
+                        "<id1>": {
+                            // Signal schema
+                        },
+                        "<id2>": {
+                            //  Signal schema
+                        },
+                    },
+                    "data": { // DataFrame schema
+                        "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
+                        "series": {
+                            "count": [2, 1, 1],
+                            "sum":[20.4, 0.0, 2.7],
+                            "min": [10.2, 0.0, 2.7],
+                            "max":[10.2, 0.0, 2.7],
+                            "<id1>": [10.2, null, 2.7],
+                            "<id2>": [10.2, 0.0, null]
+                        }
+                    }
+                }
+            }
+
+        """
+        request_data = SelectRequest(params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+
+        return SelectResponse(**result)
