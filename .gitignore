@@ -19,6 +19,7 @@ lib64/
 parts/
 sdist/
 var/
+.vscode
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
@@ -26,6 +27,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+.DS_Store
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -70,6 +72,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/docsrc/_build/
 
 # PyBuilder
 target/
@@ -127,3 +130,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Credentials
+clarify-credentials.json
