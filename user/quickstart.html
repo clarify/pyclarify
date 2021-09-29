@@ -159,13 +159,13 @@ tutorial</a>.</p>
 <section id="interact-with-clarify">
 <h2>Interact with Clarify<a class="headerlink" href="#interact-with-clarify" title="Permalink to this headline">¶</a></h2>
 <p>PyClarify provides a fast and easy way to write data into Clarify, create or update the signal metadata and get item data, by using the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient" title="pyclarify.client.APIClient"><code class="xref py py-meth docutils literal notranslate"><span class="pre">APIClient()</span></code></a> class.
-This class takes as an argoument the path of your credentials in string format, which always should be the first step when starting to interact with the Clarify API.</p>
+This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with the Clarify API.</p>
 <p>For information about the Clarify Developer documentation
 click <a class="reference external" href="https://docs.clarify.io/reference">here</a>.</p>
 <section id="write-data-into-clarify">
 <h3>Write data into Clarify<a class="headerlink" href="#write-data-into-clarify" title="Permalink to this headline">¶</a></h3>
 <p>Step 1: Create a <a class="reference internal" href="../reference/models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame()</span></code></a> model.</p>
-<p>Step 2: Use the  <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.insert" title="pyclarify.client.APIClient.insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">insert()</span></code></a> method which takes as an argoument the DataFrame model.</p>
+<p>Step 2: Use the  <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.insert" title="pyclarify.client.APIClient.insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">insert()</span></code></a> method which takes as an argument the DataFrame model.</p>
 </section>
 <section id="an-example">
 <h3>An example<a class="headerlink" href="#an-example" title="Permalink to this headline">¶</a></h3>
@@ -182,7 +182,7 @@ click <a class="reference external" href="https://docs.clarify.io/reference">her
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After that you should be able to see the newly created signal in Clarify.</p>
+<p>Now, you should be able to see the newly created signal in Clarify.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -196,8 +196,10 @@ click <a class="reference external" href="https://docs.clarify.io/reference">her
 <h2>Add signal metadata<a class="headerlink" href="#add-signal-metadata" title="Permalink to this headline">¶</a></h2>
 <p>To add or update the signal’s metadata, use the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.save_signals" title="pyclarify.client.APIClient.save_signals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_signals()</span></code></a> method.</p>
 <p>Step 1 : Create a <a class="reference internal" href="../reference/models.html#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Signal()</span></code></a> model.</p>
-<p>Step 2 : Use the  <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.save_signals" title="pyclarify.client.APIClient.save_signals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_signals()</span></code></a> method which takes as a first argoument <em>inputs</em> which is a dictionary with keys the signal-id-name and values the signal model.
-The second argoument is <em>created_only</em> which when set to False will not ignore all existing signal.</p>
+<p>Step 2 : Use the  <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.save_signals" title="pyclarify.client.APIClient.save_signals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_signals()</span></code></a> method,
+which takes <em>inputs</em> as a first argument. This is a dictionary, where the key is ‘signal-id-name’
+and the value is ‘signal model’. The second argument is created_only which when set to False will
+not ignore all existing signals.</p>
 <section id="id1">
 <h3>An example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify.client</span> <span class="kn">import</span> <span class="n">APIClient</span>
@@ -225,8 +227,8 @@ The second argoument is <em>created_only</em> which when set to False will not i
 </section>
 <section id="get-item-data">
 <h2>Get Item data<a class="headerlink" href="#get-item-data" title="Permalink to this headline">¶</a></h2>
-<p>To get data of an item, you first must have an integration with reading access.
-Once the is a reading access for an integation, use the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.select_items" title="pyclarify.client.APIClient.select_items"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_items()</span></code></a> method.</p>
+<p>To get the data from an item, you must first have an integration with reading access.
+Once reading access is enabled, use the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.select_items" title="pyclarify.client.APIClient.select_items"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_items()</span></code></a> method.</p>
 <p>Step 1: Create a <a class="reference internal" href="../reference/models.html#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ItemSelect()</span></code></a> model. This model uses three other models.
 The <a class="reference internal" href="../reference/models.html#pyclarify.models.requests.SelectItemsParams" title="pyclarify.models.requests.SelectItemsParams"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SelectItemsParams()</span></code></a>, <a class="reference internal" href="../reference/models.html#pyclarify.models.requests.SelectTimesParams" title="pyclarify.models.requests.SelectTimesParams"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SelectTimesParams()</span></code></a> and the <a class="reference internal" href="../reference/models.html#pyclarify.models.requests.SelectSeriesParams" title="pyclarify.models.requests.SelectSeriesParams"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SelectSeriesParams()</span></code></a>.</p>
 <p>Step 2: Call the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.select_items" title="pyclarify.client.APIClient.select_items"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_items()</span></code></a> method with ItemSelect as an argument.</p>
