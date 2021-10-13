@@ -24,9 +24,7 @@ class JSONRPCRequest(BaseModel):
     params: Dict = {}
 
     class Config:
-        json_encoders = {
-            timedelta: timedelta_isoformat
-        }
+        json_encoders = {timedelta: timedelta_isoformat}
 
 
 class InsertParams(BaseModel):

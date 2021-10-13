@@ -82,8 +82,6 @@ class Signal(BaseModel):
     sourceType: SourceTypeSignal = SourceTypeSignal.measurement
     sampleInterval: Optional[timedelta] = None
     gapDetection: Optional[timedelta] = None
-    
+
     class Config:
-        json_encoders = {
-            timedelta: timedelta_isoformat
-        }
+        json_encoders = {timedelta: timedelta_isoformat}
