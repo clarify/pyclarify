@@ -4,6 +4,7 @@ from typing import List, Union, Dict
 from datetime import datetime, timedelta
 import logging
 from enum import Enum
+from pyclarify.__utils__.convert import timedelta_isoformat
 
 # constrained string defined by the API
 InputID = constr(regex=r"^[a-z0-9_-]{1,40}$")
@@ -81,3 +82,8 @@ class Signal(BaseModel):
     sourceType: SourceTypeSignal = SourceTypeSignal.measurement
     sampleInterval: Optional[timedelta] = None
     gapDetection: Optional[timedelta] = None
+    
+    class Config:
+        json_encoders = {
+            timedelta: timedelta_isoformat
+        }
