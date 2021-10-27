@@ -48,6 +48,7 @@ class TestClarifySaveClient(unittest.TestCase):
             name=signal_id,
             description="test description",
             labels={"test_label_py": ["completed mo"]},
+            gapDetection="PT5M"
         )
         result = self.client.save_signals(
             inputs={signal_id: signal_meta_data}, created_only=True
@@ -75,6 +76,7 @@ class TestClarifySaveClient(unittest.TestCase):
                 "test_label_py": ["completed no", "and one more"],
                 "thisonetoo": ["house"],
             },
+            gapDetection="PT3M"
         )
         result = self.client.save_signals(
             inputs={signal_id: signal_meta_data}, created_only=True

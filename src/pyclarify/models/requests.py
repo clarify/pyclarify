@@ -4,6 +4,8 @@ from typing import List, Union, Dict
 from datetime import datetime
 from enum import Enum
 from .data import DataFrame, InputID, Signal
+from pyclarify.__utils__.convert import timedelta_isoformat
+from datetime import timedelta
 
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
 LimitSelect = conint(ge=0, le=20)
@@ -20,6 +22,9 @@ class JSONRPCRequest(BaseModel):
     method: ApiMethod = ApiMethod.select
     id: str = "1"
     params: Dict = {}
+
+    class Config:
+        json_encoders = {timedelta: timedelta_isoformat}
 
 
 class InsertParams(BaseModel):
