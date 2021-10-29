@@ -66,13 +66,19 @@ class GenericResponse(BaseModel):
     error: Optional[Error]
 
 
-class SaveResult(BaseModel):
+class GenericSummary(BaseModel):
     id: str
     created: bool
 
+class InsertSummary(GenericSummary):
+    pass
+
+class SaveSummary(GenericSummary):
+    updated: bool
+
 
 class SignalSaveMap(BaseModel):
-    signalsByInput: Dict[InputID, SaveResult]
+    signalsByInput: Dict[InputID, Union[SaveSummary, InsertSummary]]
 
 
 class SaveResponse(GenericResponse):

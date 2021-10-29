@@ -34,7 +34,22 @@
             "signalsByInput": {
                 "test_1234_id__a": {
                     "id": "test_1234_id__a", 
-                    "created": false
+                    "created": true,
+                    "updated": false
+                }
+            }
+        },
+        "error": null
+    },
+    "mock_response_3": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+            "signalsByInput": {
+                "test_1234_id__a": {
+                    "id": "test_1234_id__a", 
+                    "created": false,
+                    "updated": true
                 }
             }
         },

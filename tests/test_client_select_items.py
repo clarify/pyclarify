@@ -21,7 +21,7 @@ class TestClarifySelectClient(unittest.TestCase):
             self.mock_data = json.load(f)
         self.test_cases = self.mock_data["test_cases"]
 
-        with open("./tests/data/mock-client.json") as f:
+        with open("./tests/data/mock-client-common.json") as f:
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
 

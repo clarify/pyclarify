@@ -15,13 +15,17 @@ class TestAPIClient(unittest.TestCase):
     def setUp(self):
         self.client = APIClient("./tests/data/mock-clarify-credentials.json")
 
-        with open("./tests/data/mock-client.json") as f:
+        with open("./tests/data/mock-client-common.json") as f:
             self.mock_data = json.load(f)
 
         self.error_list = self.mock_data["RPC_ERRORS"] + [
             str(e.value) for e in HTTPStatus
         ]
         self.mock_access_token = self.mock_data["mock_access_token"]
+
+        with open("./tests/data/mock-insert.json") as f:
+            self.mock_data = json.load(f)
+
         self.times = [
             (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
             datetime.now().astimezone().isoformat(),
