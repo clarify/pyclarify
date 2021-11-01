@@ -52,7 +52,7 @@ class TestClarifySaveClient(unittest.TestCase):
             name=signal_id,
             description="test description",
             labels={"test_label_py": ["completed mo"]},
-            gapDetection="PT5M"
+            gapDetection="PT5M",
         )
         result = self.client.save_signals(
             inputs={signal_id: signal_meta_data}, created_only=True
@@ -80,7 +80,7 @@ class TestClarifySaveClient(unittest.TestCase):
                 "test_label_py": ["completed no", "and one more"],
                 "thisonetoo": ["house"],
             },
-            gapDetection="PT3M"
+            gapDetection="PT3M",
         )
         result = self.client.save_signals(
             inputs={signal_id: signal_meta_data}, created_only=True
@@ -91,7 +91,6 @@ class TestClarifySaveClient(unittest.TestCase):
         else:
             self.assertIn(signal_id, result.result.signalsByInput)
 
-    
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_4(self, client_req_mock, get_token_mock):
