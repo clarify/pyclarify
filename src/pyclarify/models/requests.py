@@ -87,25 +87,21 @@ class SaveResponse(GenericResponse):
 
 class SelectItemsParams(BaseModel):
     include: Optional[bool] = False
-    filter: dict = {}
+    filter: dict = {}                   # https://docs.clarify.io/v1.1/reference/filtering
     limit: Optional[LimitSelect] = 10
     skip: Optional[int] = 0
 
 
-class SelectTimesParams(BaseModel):
-    before: Optional[datetime]
+class SelectDataParams(BaseModel):
+    include: Optional[bool] = False
+    rollup: Optional[timedelta] = None
     notBefore: Optional[datetime]
-
-
-class SelectSeriesParams(BaseModel):
-    items: Optional[bool] = False
-    aggregates: Optional[bool] = False
+    before: Optional[datetime]
 
 
 class ItemSelect(BaseModel):
     items: SelectItemsParams
-    times: SelectTimesParams
-    series: SelectSeriesParams
+    data: SelectDataParams
 
 
 class SelectRequest(JSONRPCRequest):
