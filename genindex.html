@@ -130,18 +130,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.auth.OAuthResponse.access_token">access_token (pyclarify.models.auth.OAuthResponse attribute)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectSeriesParams.aggregates">aggregates (pyclarify.models.requests.SelectSeriesParams attribute)</a>
-</li>
       <li><a href="reference/models.html#pyclarify.models.data.SourceTypeSignal.aggregation">aggregation (pyclarify.models.data.SourceTypeSignal attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.AnnotationKey">AnnotationKey (in module pyclarify.models.data)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.Signal.annotations">annotations (pyclarify.models.data.Signal attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/client.html#pyclarify.client.APIClient">APIClient (class in pyclarify.client)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.ApiMethod">ApiMethod (class in pyclarify.models.requests)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.auth.ClarifyCredential.apiUrl">apiUrl (pyclarify.models.auth.ClarifyCredential attribute)</a>
@@ -158,7 +156,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectTimesParams.before">before (pyclarify.models.requests.SelectTimesParams attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectDataParams.before">before (pyclarify.models.requests.SelectDataParams attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -204,6 +202,8 @@
 
       <ul>
         <li><a href="reference/models.html#pyclarify.models.requests.InsertParams.data">(pyclarify.models.requests.InsertParams attribute)</a>
+</li>
+        <li><a href="reference/models.html#pyclarify.models.requests.ItemSelect.data">(pyclarify.models.requests.ItemSelect attribute)</a>
 </li>
         <li><a href="reference/models.html#pyclarify.models.requests.SelectMapResult.data">(pyclarify.models.requests.SelectMapResult attribute)</a>
 </li>
@@ -286,8 +286,12 @@
         <li><a href="reference/models.html#pyclarify.models.requests.JSONRPCRequest.id">(pyclarify.models.requests.JSONRPCRequest attribute)</a>
 </li>
       </ul></li>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams.include">include (pyclarify.models.requests.SelectItemsParams attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectDataParams.include">include (pyclarify.models.requests.SelectDataParams attribute)</a>
+
+      <ul>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams.include">(pyclarify.models.requests.SelectItemsParams attribute)</a>
 </li>
+      </ul></li>
       <li><a href="reference/client.html#pyclarify.client.increment_id">increment_id() (in module pyclarify.client)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.InputID">InputID (in module pyclarify.models.data)</a>
@@ -298,10 +302,10 @@
 </li>
       <li><a href="reference/client.html#pyclarify.client.APIClient.insert">insert() (pyclarify.client.APIClient method)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.requests.InsertParams">InsertParams (class in pyclarify.models.requests)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/models.html#pyclarify.models.requests.InsertParams">InsertParams (class in pyclarify.models.requests)</a>
+</li>
       <li><a href="reference/models.html#pyclarify.models.requests.InsertRequest">InsertRequest (class in pyclarify.models.requests)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.InsertSummary">InsertSummary (class in pyclarify.models.requests)</a>
@@ -322,8 +326,6 @@
 
       <ul>
         <li><a href="reference/models.html#pyclarify.models.requests.SelectMapResult.items">(pyclarify.models.requests.SelectMapResult attribute)</a>
-</li>
-        <li><a href="reference/models.html#pyclarify.models.requests.SelectSeriesParams.items">(pyclarify.models.requests.SelectSeriesParams attribute)</a>
 </li>
       </ul></li>
       <li><a href="reference/models.html#pyclarify.models.requests.ItemSelect">ItemSelect (class in pyclarify.models.requests)</a>
@@ -421,7 +423,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectTimesParams.notBefore">notBefore (pyclarify.models.requests.SelectTimesParams attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectDataParams.notBefore">notBefore (pyclarify.models.requests.SelectDataParams attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.TypeSignal.numeric">numeric (pyclarify.models.data.TypeSignal attribute)</a>
 </li>
@@ -511,8 +513,6 @@
 </li>
       <li><a href="reference/oauth2.html#pyclarify.oauth2.GetToken.read_credentials">read_credentials() (pyclarify.oauth2.GetToken method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.GenericResponse.result">result (pyclarify.models.requests.GenericResponse attribute)</a>
 
       <ul>
@@ -521,6 +521,10 @@
         <li><a href="reference/models.html#pyclarify.models.requests.SelectResponse.result">(pyclarify.models.requests.SelectResponse attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectDataParams.rollup">rollup (pyclarify.models.requests.SelectDataParams attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -547,28 +551,22 @@
 </li>
       <li><a href="reference/client.html#pyclarify.client.APIClient.select_items">select_items() (pyclarify.client.APIClient method)</a>
 </li>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectDataParams">SelectDataParams (class in pyclarify.models.requests)</a>
+</li>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams">SelectItemsParams (class in pyclarify.models.requests)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectMapResult">SelectMapResult (class in pyclarify.models.requests)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectRequest">SelectRequest (class in pyclarify.models.requests)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectResponse">SelectResponse (class in pyclarify.models.requests)</a>
-</li>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectSeriesParams">SelectSeriesParams (class in pyclarify.models.requests)</a>
-</li>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectTimesParams">SelectTimesParams (class in pyclarify.models.requests)</a>
 </li>
       <li><a href="reference/client.html#pyclarify.client.RawClient.send">send() (pyclarify.client.RawClient method)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.DataFrame.series">series (pyclarify.models.data.DataFrame attribute)</a>
-
-      <ul>
-        <li><a href="reference/models.html#pyclarify.models.requests.ItemSelect.series">(pyclarify.models.requests.ItemSelect attribute)</a>
 </li>
-      </ul></li>
       <li><a href="glossary.html#term-Signal"><strong>Signal</strong></a>
 
       <ul>
@@ -594,17 +592,13 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.data.DataFrame.times">times (pyclarify.models.data.DataFrame attribute)</a>
-
-      <ul>
-        <li><a href="reference/models.html#pyclarify.models.requests.ItemSelect.times">(pyclarify.models.requests.ItemSelect attribute)</a>
 </li>
-      </ul></li>
       <li><a href="reference/models.html#pyclarify.models.auth.OAuthResponse.token_type">token_type (pyclarify.models.auth.OAuthResponse attribute)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.requests.ErrorData.trace">trace (pyclarify.models.requests.ErrorData attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.requests.ErrorData.trace">trace (pyclarify.models.requests.ErrorData attribute)</a>
-</li>
       <li><a href="reference/models.html#pyclarify.models.auth.Credential.type">type (pyclarify.models.auth.Credential attribute)</a>
 
       <ul>

@@ -555,21 +555,16 @@ Inserts none value to series not containing entry at a given timestamp.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ItemSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.SelectItemsParams" title="pyclarify.models.requests.SelectItemsParams"><span class="pre">pyclarify.models.requests.SelectItemsParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.SelectTimesParams" title="pyclarify.models.requests.SelectTimesParams"><span class="pre">pyclarify.models.requests.SelectTimesParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.SelectSeriesParams" title="pyclarify.models.requests.SelectSeriesParams"><span class="pre">pyclarify.models.requests.SelectSeriesParams</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ItemSelect" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">ItemSelect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.SelectItemsParams" title="pyclarify.models.requests.SelectItemsParams"><span class="pre">pyclarify.models.requests.SelectItemsParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#pyclarify.models.requests.SelectDataParams" title="pyclarify.models.requests.SelectDataParams"><span class="pre">pyclarify.models.requests.SelectDataParams</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.ItemSelect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.SelectDataParams" title="pyclarify.models.requests.SelectDataParams"><span class="pre">pyclarify.models.requests.SelectDataParams</span></a></em><a class="headerlink" href="#pyclarify.models.requests.ItemSelect.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect.items">
 <span class="sig-name descname"><span class="pre">items</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.SelectItemsParams" title="pyclarify.models.requests.SelectItemsParams"><span class="pre">pyclarify.models.requests.SelectItemsParams</span></a></em><a class="headerlink" href="#pyclarify.models.requests.ItemSelect.items" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect.series">
-<span class="sig-name descname"><span class="pre">series</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.SelectSeriesParams" title="pyclarify.models.requests.SelectSeriesParams"><span class="pre">pyclarify.models.requests.SelectSeriesParams</span></a></em><a class="headerlink" href="#pyclarify.models.requests.ItemSelect.series" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.models.requests.ItemSelect.times">
-<span class="sig-name descname"><span class="pre">times</span></span><em class="property"><span class="pre">:</span> <a class="reference internal" href="#pyclarify.models.requests.SelectTimesParams" title="pyclarify.models.requests.SelectTimesParams"><span class="pre">pyclarify.models.requests.SelectTimesParams</span></a></em><a class="headerlink" href="#pyclarify.models.requests.ItemSelect.times" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -677,6 +672,32 @@ Inserts none value to series not containing entry at a given timestamp.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SelectDataParams">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">SelectDataParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rollup</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.timedelta</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notBefore</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.SelectDataParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SelectDataParams.before">
+<span class="sig-name descname"><span class="pre">before</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectDataParams.before" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SelectDataParams.include">
+<span class="sig-name descname"><span class="pre">include</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectDataParams.include" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SelectDataParams.notBefore">
+<span class="sig-name descname"><span class="pre">notBefore</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectDataParams.notBefore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.models.requests.SelectDataParams.rollup">
+<span class="sig-name descname"><span class="pre">rollup</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.timedelta</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectDataParams.rollup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="pyclarify.models.requests.SelectItemsParams">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">SelectItemsParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.models.requests.ConstrainedIntValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.SelectItemsParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
@@ -741,38 +762,6 @@ Inserts none value to series not containing entry at a given timestamp.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyclarify.models.requests.SelectResponse.result">
 <span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.models.requests.SelectMapResult" title="pyclarify.models.requests.SelectMapResult"><span class="pre">pyclarify.models.requests.SelectMapResult</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectResponse.result" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyclarify.models.requests.SelectSeriesParams">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">SelectSeriesParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.SelectSeriesParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.models.requests.SelectSeriesParams.aggregates">
-<span class="sig-name descname"><span class="pre">aggregates</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectSeriesParams.aggregates" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.models.requests.SelectSeriesParams.items">
-<span class="sig-name descname"><span class="pre">items</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectSeriesParams.items" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyclarify.models.requests.SelectTimesParams">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.requests.</span></span><span class="sig-name descname"><span class="pre">SelectTimesParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notBefore</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.datetime</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.requests.SelectTimesParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.models.requests.SelectTimesParams.before">
-<span class="sig-name descname"><span class="pre">before</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectTimesParams.before" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.models.requests.SelectTimesParams.notBefore">
-<span class="sig-name descname"><span class="pre">notBefore</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.SelectTimesParams.notBefore" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
