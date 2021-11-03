@@ -289,121 +289,110 @@ In case of the error the method return a pydantic model with the following forma
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.APIClient.select_items">
 <span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="models.html#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><span class="pre">pyclarify.models.requests.ItemSelect</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.SelectResponse" title="pyclarify.models.requests.SelectResponse"><span class="pre">pyclarify.models.requests.SelectResponse</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_items" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return item data and metadata, mirroring the Clarify API call (<cite>item.Select</cite>)[<a class="reference external" href="https://docs.clarify.io/reference">https://docs.clarify.io/reference</a>].</p>
+<dd><p>Return item data and metadata, mirroring the Clarify API call .. _item.Select: <a class="reference external" href="https://docs.clarify.io/reference">https://docs.clarify.io/reference</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> (<a class="reference internal" href="models.html#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><em>ItemSelect</em></a>) – <p>Data model with all the possible settings for method. Fields include
-- <cite>items</cite>:</p>
-<blockquote>
-<div><blockquote>
-<div><p>&gt; Select items to include (data for).</p>
-</div></blockquote>
+<dd class="field-odd"><p><strong>params</strong> (<code class="docutils literal notranslate"><span class="pre">ItemSelect</span></code>) – <ul class="simple">
+<li><dl class="simple">
+<dt>items: <code class="docutils literal notranslate"><span class="pre">SelectItemsParams</span></code></dt><dd><p>Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.</p>
 <ul>
-<li><p><cite>include</cite> | <strong>bool</strong> | default: False
-&gt; Set to true to render item meta-data in the response.</p></li>
-<li><p><cite>filter</cite> | <strong>Dict</strong>:
-&gt; Rest-layer style item filter (potentially with limited query options).
-&gt; Example: {“id”:{“$in”: [“&lt;id1&gt;”, “&lt;id2&gt;”]}}</p></li>
-<li><p><cite>limit</cite> | <strong>int(min:0,max:50)</strong> | default=`10`
-&gt; Limit number of items (max value to be adjusted after tuning).</p></li>
-<li><p><cite>skip</cite> | <a href="#id9"><span class="problematic" id="id10">**</span></a>int**| default=`0`
-&gt; Skip first N items.</p></li>
-</ul>
-</div></blockquote>
-<ul>
-<li><p><cite>times</cite>:
-&gt; Select times to include; ignored if no series are selected.
-- <cite>before</cite> | <strong>str(`””` | |RFC3339 timestamp)</strong>  | default=`””`
-- <cite>notBefore</cite> | <strong>str(`””` || RFC3339 timestamp)</strong>  |  default=`””`</p></li>
-<li><p><cite>series</cite>:
-&gt; Select which data series to include.
-- <cite>items</cite> | bool | default=False</p>
-<blockquote>
-<div><p>&gt; include items mapped by ID in the response data frame.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p><cite>aggregates</cite> | bool | default=False
-&gt; include aggregated values <cite>“count”</cite>, <cite>“sum”</cite>, <cite>“min”</cite> and <cite>“max”</cite> across all items in the response data frame.</p></li>
-</ul>
+<li><dl class="simple">
+<dt>include: bool, default False</dt><dd><p>Set to true to include matched resources in the response.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>filter: dict, .. _Resource Filter: <a class="reference external" href="https://docs.clarify.io/v1.1/reference/filtering">https://docs.clarify.io/v1.1/reference/filtering</a></dt><dd><p>Filter which resources to include.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>limit: int, default 10</dt><dd><p>Number of resources to include in the match.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>skip: int, default 0</dt><dd><p>Skip the n first items.</p>
+</dd>
+</dl>
 </li>
 </ul>
-</p></li>
-<li><p><strong>Example</strong> – <dl>
-<dt>{</dt><dd><dl class="simple">
-<dt>“items”: {</dt><dd><p>“include”: true,
-“filter”: {“id”:{“$in”: [“&lt;id1&gt;”, “&lt;id2&gt;”]}}</p>
 </dd>
 </dl>
-<p>},
-“times”: {</p>
-<blockquote>
-<div><p>”notBefore”: “2020-01-01T01:00:00Z”</p>
-</div></blockquote>
-<p>},
-“series”: {</p>
-<blockquote>
-<div><p>”items”: true,
-“aggregates”: true</p>
-</div></blockquote>
-<p>}</p>
+</li>
+<li><dl class="simple">
+<dt>data: <code class="docutils literal notranslate"><span class="pre">SelectDataParams</span></code></dt><dd><p>Configure which data to include in the response.</p>
+<ul>
+<li><dl class="simple">
+<dt>include: bool, default False</dt><dd><p>Include the timeseries data in the response.</p>
 </dd>
 </dl>
-<p>}</p>
-</p></li>
+</li>
+<li><dl class="simple">
+<dt>notBefore: string(RFC 3339 timestamp), optional</dt><dd><p>An RFC3339 time describing the inclusive start of the window.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>before: string(RFC 3339 timestamp), optional</dt><dd><p>An RFC3339 time describing the exclusive end of the window.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>rollup: RFC 3339 duration, default None</dt><dd><p>If specified, roll-up the values into either the full time window (<cite>notBefore</cite> -&gt; <cite>before</cite>) or evenly sized buckets.</p>
+</dd>
+</dl>
+</li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul>
-<li><p><em>SelectResponse</em></p></li>
-<li><p>Data model with the results of the method. Data and metadata can be found in the <cite>result</cite> field, with the</p></li>
-<li><p>attributes <cite>result.items</cite> as a dictionary of <cite>item_id</cite> and <cite>Signal</cite> (definition can be found in</p></li>
-<li><p><cite>pyclarify.models.data</cite>) and <cite>result.data</cite> containing a <cite>DataFrame</cite> object with the resulting data</p></li>
-<li><p>and aggregates (in case the parameter <cite>series.aggregates</cite> is set to True).</p></li>
-<li><p><em>Example</em> –</p>
-<dl>
-<dt>{</dt><dd><p>“jsonrpc”: “2.0”,
-“result”: {</p>
-<blockquote>
-<div><dl>
-<dt>”items”: {</dt><dd><dl class="simple">
-<dt>“&lt;id1&gt;”: {</dt><dd><p>// Signal schema</p>
-</dd>
 </dl>
-<p>},
-“&lt;id2&gt;”: {</p>
-<blockquote>
-<div><p>//  Signal schema</p>
-</div></blockquote>
-<p>},</p>
-</dd>
-</dl>
-<p>},
-“data”: { // DataFrame schema</p>
-<blockquote>
-<div><p>”times”: [“2020-01-01T01:00:00Z”,”2020-01-01T02:00:00Z”,”2020-01-01T03:00:00Z”],
-“series”: {</p>
-<blockquote>
-<div><p>”count”: [2, 1, 1],
-“sum”:[20.4, 0.0, 2.7],
-“min”: [10.2, 0.0, 2.7],
-“max”:[10.2, 0.0, 2.7],
-“&lt;id1&gt;”: [10.2, null, 2.7],
-“&lt;id2&gt;”: [10.2, 0.0, null]</p>
-</div></blockquote>
-<p>}</p>
-</div></blockquote>
-<p>}</p>
-</div></blockquote>
-<p>}</p>
-</dd>
-</dl>
-<p>}</p>
 </li>
 </ul>
 </p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><dl class="simple">
+<dt>result: <code class="docutils literal notranslate"><span class="pre">SelectMapResult</span></code></dt><dd><ul>
+<li><p>items: dict of {<code class="docutils literal notranslate"><span class="pre">InputID</span></code>, <code class="docutils literal notranslate"><span class="pre">Signal</span></code>}</p></li>
+<li><p>data: <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></p></li>
+</ul>
+</dd>
 </dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">SelectResponse</span></code></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;jsonrpc&quot;</span><span class="p">:</span> <span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;item_id&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;signal_name_1&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;numeric&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2021-10-10T21:00:00+00:00&quot;</span><span class="p">,</span> <span class="s2">&quot;2021-10-10T22:00:00+00:00&quot;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;series&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;item_id_avg&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;item_id_count&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;item_id_max&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;item_id_min&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;item_id_sum&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">null</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
