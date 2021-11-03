@@ -21,7 +21,7 @@ You'll need your Clarify credentials. Click :ref:`here <getcredentials>` for how
 Interact with Clarify
 =====================
 PyClarify provides a fast and easy way to write data into Clarify, create or update the signal metadata and get item data, by using the :py:meth:`~pyclarify.client.APIClient` class. 
-This class takes as an argoument the path of your credentials in string format, which always should be the first step when starting to interact with the Clarify API. 
+This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with the Clarify API. 
 
 For information about the Clarify Developer documentation
 click `here <https://docs.clarify.io/reference>`__.
@@ -31,7 +31,7 @@ Write data into Clarify
 
 Step 1: Create a :py:meth:`~pyclarify.models.data.DataFrame` model. 
 
-Step 2: Use the  :py:meth:`~pyclarify.client.APIClient.insert` method which takes as an argoument the DataFrame model.
+Step 2: Use the  :py:meth:`~pyclarify.client.APIClient.insert` method which takes as an argument the DataFrame model.
 
 An example
 ^^^^^^^^^^
@@ -51,7 +51,7 @@ An example
     >>> print(response)
 
 
-After that you should be able to see the newly created signal in Clarify.
+Now, you should be able to see the newly created signal in Clarify.
 
 |
 .. image:: signal_data.png
@@ -68,8 +68,10 @@ To add or update the signal's metadata, use the :py:meth:`~pyclarify.client.APIC
 
 Step 1 : Create a :py:meth:`~pyclarify.models.data.Signal` model. 
 
-Step 2 : Use the  :py:meth:`~pyclarify.client.APIClient.save_signals` method which takes as a first argoument *inputs* which is a dictionary with keys the signal-id-name and values the signal model. 
-The second argoument is *created_only* which when set to False will not ignore all existing signal.
+Step 2 : Use the  :py:meth:`~pyclarify.client.APIClient.save_signals` method,
+which takes *inputs* as a first argument. This is a dictionary, where the key is ‘signal-id-name’ 
+and the value is ‘signal model’. The second argument is created_only which when set to False will 
+not ignore all existing signals.
 
 
 An example
@@ -102,8 +104,8 @@ An example
 Get Item data  
 =============
 
-To get data of an item, you first must have an integration with reading access. 
-Once the is a reading access for an integation, use the :py:meth:`~pyclarify.client.APIClient.select_items` method.
+To get the data from an item, you must first have an integration with reading access.
+Once reading access is enabled, use the :py:meth:`~pyclarify.client.APIClient.select_items` method.
 
 Step 1: Create a :py:meth:`~pyclarify.models.requests.ItemSelect` model. This model uses three other models.
 The :py:meth:`~pyclarify.models.requests.SelectItemsParams`, :py:meth:`~pyclarify.models.requests.SelectTimesParams` and the :py:meth:`~pyclarify.models.requests.SelectSeriesParams`. 

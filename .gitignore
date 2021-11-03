@@ -133,3 +133,4 @@ dmypy.json
 
 # Credentials
 clarify-credentials.json
+clarify-credentials-dev.json
