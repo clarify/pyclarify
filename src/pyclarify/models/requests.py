@@ -4,6 +4,8 @@ from typing import List, Union, Dict
 from datetime import datetime
 from enum import Enum
 from .data import DataFrame, InputID, Signal
+from pyclarify.__utils__.convert import timedelta_isoformat
+from datetime import timedelta
 
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
 LimitSelect = conint(ge=0, le=20)
@@ -20,6 +22,9 @@ class JSONRPCRequest(BaseModel):
     method: ApiMethod = ApiMethod.select
     id: str = "1"
     params: Dict = {}
+
+    class Config:
+        json_encoders = {timedelta: timedelta_isoformat}
 
 
 class InsertParams(BaseModel):
@@ -61,13 +66,19 @@ class GenericResponse(BaseModel):
     error: Optional[Error]
 
 
-class SaveResult(BaseModel):
+class GenericSummary(BaseModel):
     id: str
     created: bool
 
+class InsertSummary(GenericSummary):
+    pass
+
+class SaveSummary(GenericSummary):
+    updated: bool
+
 
 class SignalSaveMap(BaseModel):
-    signalsByInput: Dict[InputID, SaveResult]
+    signalsByInput: Dict[InputID, Union[SaveSummary, InsertSummary]]
 
 
 class SaveResponse(GenericResponse):
@@ -76,25 +87,21 @@ class SaveResponse(GenericResponse):
 
 class SelectItemsParams(BaseModel):
     include: Optional[bool] = False
-    filter: dict = {}
+    filter: dict = {}                   # https://docs.clarify.io/v1.1/reference/filtering
     limit: Optional[LimitSelect] = 10
     skip: Optional[int] = 0
 
 
-class SelectTimesParams(BaseModel):
-    before: Optional[datetime]
+class SelectDataParams(BaseModel):
+    include: Optional[bool] = False
     notBefore: Optional[datetime]
-
-
-class SelectSeriesParams(BaseModel):
-    items: Optional[bool] = False
-    aggregates: Optional[bool] = False
+    before: Optional[datetime]
+    rollup: Optional[timedelta] = None
 
 
 class ItemSelect(BaseModel):
     items: SelectItemsParams
-    times: SelectTimesParams
-    series: SelectSeriesParams
+    data: SelectDataParams
 
 
 class SelectRequest(JSONRPCRequest):
