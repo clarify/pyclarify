@@ -1,119 +1,20 @@
 {
-  "test_cases":[
+  "test_cases": [
     {
-      "comments" : "get all items metadata",
-      "args" : {
-        "items": {
-          "include": true, 
-          "filter": {}, 
-          "limit": null, 
-          "skip": null
-        }, 
-        "times": {
-          "before": null, 
-          "notBefore": null
-        }, 
-        "series": {
-          "items": false, 
-          "aggregates": null
-        }
-      },
-      "response" :{
-        "jsonrpc": "2.0", 
-        "id": "1",
-        "result":{
-          "items":
-          { "c4medah70nh34fs577v0": {
-            "name": "test_1234_id__a", 
-            "type": "numeric", 
-            "description": "first data inserted test", 
-            "labels": {
-              "data-source": [], 
-              "location": []
-            }, 
-            "annotations": {}, 
-            "engUnit": "", 
-            "enumValues": {}, 
-            "sourceType": "measurement", 
-            "sampleInterval": null, 
-            "gapDetection": null
-          },
-            "c4mf2i970nh34fs57k8g": {
-              "name": "test_1234_id__b", 
-              "type": "numeric", 
-              "description": "test description", 
-              "labels": {
-                "data-source": [], 
-                "location": [], 
-                "test_label_py": [
-                  "completed yes"
-                  ]
-                }, 
-                "annotations": {}, 
-                "engUnit": "", 
-                "enumValues": {}, 
-                "sourceType": "measurement", 
-                "sampleInterval": null, 
-                "gapDetection": null
-            },
-            "c4t201qj2jui2fkodqu0": {
-              "name": "test_1234_id__c", 
-              "type": "numeric", 
-              "description": "test sin time", 
-              "labels": {
-                "data-source": [], 
-                "location": [], 
-                "new_label_py": [
-                  "tag updated"
-                ], 
-                "test_label_py": [
-                  "tag updated"
-                ]
-              }, 
-              "annotations": {}, 
-              "engUnit": "", 
-              "enumValues": {}, 
-              "sourceType": "measurement", 
-              "sampleInterval": null, 
-              "gapDetection": null
-            }
-          },
-          "data": null
-        },
-        "error": null
-      }
-    },
-    {
-      "comments" : "get items matching criteria, return metadata and data (with stats)",
+      "comments": "get all item metadata",
       "args": {
-        "items": {
-          "include": true,
-          "filter": {
-            "id": {
-              "$in": [
-                "test_1234_id__a",
-                "test_1234_id__c"
-              ]
-            }
-          }
-        },
-        "times": {
-          "notBefore": "2020-01-01T01:00:00Z"
-        },
-        "series": {
-          "items": true,
-          "aggregates": true
-        }
+        "items": { "include": true },
+        "data": {}
       },
       "response": {
         "jsonrpc": "2.0",
         "id": "1",
         "result": {
           "items": {
-            "c4medah70nh34fs577v0": {
-              "name": "test_1234_id__a",
+            "id1": {
+              "name": "signal_name_1",
               "type": "numeric",
-              "description": "first data inserted test",
+              "description": "Test description",
               "labels": {
                 "data-source": [],
                 "location": []
@@ -124,66 +25,58 @@
               "sourceType": "measurement",
               "sampleInterval": null,
               "gapDetection": null
-            },
-            "c4t201qj2jui2fkodqu0": {
-              "name": "test_1234_id__c",
+            }
+          },
+          "data": null
+        },
+        "error": null
+      }
+    },
+    {
+      "comments": "get items matching criteria, return metadata and data (with stats)",
+      "args": {
+        "items": {
+          "include": true,
+          "filter": {
+            "id": {
+              "$in": ["item_id"]
+            }
+          }
+        },
+        "data": {
+          "include": true,
+          "notBefore": "2021-10-10T21:50:06Z",
+          "before": "2021-10-11T22:50:06Z",
+          "rollup": "PT1H"
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "items": {
+            "item_id": {
+              "name": "signal_name_1",
               "type": "numeric",
-              "description": "test sin time",
-              "labels": {
-                "data-source": [],
-                "location": [],
-                "new_label_py": [
-                  "tag updated"
-                ],
-                "test_label_py": [
-                  "tag updated"
-                ]
-              },
+              "description": "Test description",
+              "labels": { "data-source": [], "location": [] },
               "annotations": {},
               "engUnit": "",
               "enumValues": {},
               "sourceType": "measurement",
               "sampleInterval": null,
-              "gapDetection": null
+              "gapDetection": "3600.0"
             }
           },
+
           "data": {
-            "times": [
-              "2020-01-01T01:00:00Z",
-              "2020-01-01T02:00:00Z",
-              "2020-01-01T03:00:00Z"
-            ],
+            "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
             "series": {
-              "count": [
-                2,
-                1,
-                1
-              ],
-              "sum": [
-                20.4,
-                0.0,
-                2.7
-              ],
-              "min": [
-                10.2,
-                0.0,
-                2.7
-              ],
-              "max": [
-                10.2,
-                0.0,
-                2.7
-              ],
-              "c4medah70nh34fs577v0": [
-                10.2,
-                null,
-                2.7
-              ],
-              "c4t201qj2jui2fkodqu0": [
-                10.2,
-                0.0,
-                null
-              ]
+              "item_id_avg": [0.0, 0.0],
+              "item_id_count": [20.0, 20.0],
+              "item_id_max": [0.0, 0.0],
+              "item_id_min": [0.0, 0.0],
+              "item_id_sum": [0.0, 0.0]
             }
           },
           "error": null
@@ -191,25 +84,21 @@
       }
     },
     {
-      "comments" : "get items matching criteria, return only data",
+      "comments": "get items matching criteria, return only data",
       "args": {
         "items": {
-          "include": false,
+          "include": true,
           "filter": {
             "id": {
-              "$in": [
-                "test_1234_id__a",
-                "test_1234_id__c"
-              ]
+              "$in": ["item_id"]
             }
           }
         },
-        "times": {
-          "notBefore": "2020-01-01T01:00:00Z"
-        },
-        "series": {
-          "items": true,
-          "aggregates": false
+        "data": {
+          "include": true,
+          "notBefore": "2021-10-10T21:50:06Z",
+          "before": "2021-10-11T22:50:06Z",
+          "rollup": "PT1H"
         }
       },
       "response": {
@@ -218,75 +107,43 @@
         "result": {
           "items": null,
           "data": {
-            "times": [
-              "2020-01-01T01:00:00Z",
-              "2020-01-01T02:00:00Z",
-              "2020-01-01T03:00:00Z"
-            ],
+            "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
             "series": {
-              "count": [
-                2,
-                1,
-                1
-              ],
-              "sum": [
-                20.4,
-                0.0,
-                2.7
-              ],
-              "min": [
-                10.2,
-                0.0,
-                2.7
-              ],
-              "max": [
-                10.2,
-                0.0,
-                2.7
-              ],
-              "c4medah70nh34fs577v0": [
-                10.2,
-                null,
-                2.7
-              ],
-              "c4t201qj2jui2fkodqu0": [
-                10.2,
-                0.0,
-                null
-              ]
+              "item_id_avg": [0.0, 0.0],
+              "item_id_count": [20.0, 20.0],
+              "item_id_max": [0.0, 0.0],
+              "item_id_min": [0.0, 0.0],
+              "item_id_sum": [0.0, 0.0]
             }
-          },
-          "error": null
-        }
+          }
+        },
+        "error": null
       }
     },
     {
-      "comments" : "get items matching criteria, data and metadata should be empty",
+      "comments": "get items matching criteria, data and metadata should be empty",
       "args": {
         "items": {
           "include": false,
           "filter": {
             "id": {
-              "$in": [
-                "test_1234_id__a",
-                "test_1234_id__c"
-              ]
+              "$in": ["item_id"]
             }
           }
         },
-        "times": {
-          "notBefore": "2020-01-01T01:00:00Z"
-        },
-        "series": {
-          "items": false,
-          "aggregates": false
+        "data": {
+          "include": false,
+          "notBefore": "2021-10-10T21:50:06Z",
+          "before": "2021-10-11T22:50:06Z",
+          "rollup": "PT1H"
         }
       },
       "response": {
         "jsonrpc": "2.0",
         "id": "1",
-        "result": {"items": null, "data": null},
-        "error": null}
+        "result": { "items": null, "data": null },
+        "error": null
       }
+    }
   ]
 }

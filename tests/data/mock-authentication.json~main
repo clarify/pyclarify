@@ -1,0 +1,14 @@
+{
+    "mock_token": {
+        "access_token": "<YOUR_ACCESS_TOKEN>",
+        "scope": "invoke:integration",
+        "expires_in": 86400,
+        "token_type": "Bearer"
+    },
+    "oauth_request_body": {
+        "grant_type": "client_credentials",
+        "client_id": "test_id_123",
+        "client_secret": "test_pass_123",
+        "audience": "https://api.clarify.io/v1/"
+    }
+}
