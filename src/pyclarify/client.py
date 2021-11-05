@@ -298,81 +298,75 @@ class APIClient(RawClient):
     @validate_arguments
     def select_items(self, params: ItemSelect) -> SelectResponse:
         """
-        Return item data and metadata, mirroring the Clarify API call (`item.Select`)[https://docs.clarify.io/reference].
+        Return item data and metadata, mirroring the Clarify API call .. _item.Select: https://docs.clarify.io/reference .
 
         Parameters
         ----------
-        params : ItemSelect
-            Data model with all the possible settings for method. Fields include
-            - `items`:
-               > Select items to include (data for).
-              - `include` | **bool** | default: False
-                > Set to true to render item meta-data in the response.
-              - `filter` | **Dict**:
-                > Rest-layer style item filter (potentially with limited query options).
-                > Example: {"id":{"$in": ["<id1>", "<id2>"]}}
-              - `limit` | **int(min:0,max:50)** | default=`10`
-                > Limit number of items (max value to be adjusted after tuning).
-              - `skip` | **int**| default=`0`
-                > Skip first N items.
-            - `times`:
-              > Select times to include; ignored if no series are selected.
-              - `before` | **str(`""` | |RFC3339 timestamp)**  | default=`""`
-              - `notBefore` | **str(`""` || RFC3339 timestamp)**  |  default=`""`
-            - `series`:
-              > Select which data series to include.
-              - `items` | bool | default=False
-                > include items mapped by ID in the response data frame.
-              - `aggregates` | bool | default=False
-                > include aggregated values `"count"`, `"sum"`, `"min"` and `"max"` across all items in the response data frame.
-        Example:
-            {
-                "items": {
-                    "include": true,
-                    "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
-                },
-                "times": {
-                    "notBefore": "2020-01-01T01:00:00Z"
-                },
-                "series": {
-                    "items": true,
-                    "aggregates": true
-                }
-            }
+        params : ``ItemSelect``
+
+            - items: ``SelectItemsParams``
+                Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.
+                
+                - include: bool, default False
+                    Set to true to include matched resources in the response.
+
+                - filter: dict, .. _Resource Filter: https://docs.clarify.io/v1.1/reference/filtering
+                    Filter which resources to include.
+
+                - limit: int, default 10
+                    Number of resources to include in the match.
+
+                - skip: int, default 0
+                    Skip the n first items.
+
+            - data: ``SelectDataParams``
+                Configure which data to include in the response.
+
+                - include: bool, default False
+                    Include the timeseries data in the response.
+
+                - notBefore: string(RFC 3339 timestamp), optional
+                    An RFC3339 time describing the inclusive start of the window.
+
+                - before: string(RFC 3339 timestamp), optional
+                    An RFC3339 time describing the exclusive end of the window.
+
+                - rollup: RFC 3339 duration, default None
+                    If specified, roll-up the values into either the full time window (`notBefore` -> `before`) or evenly sized buckets.
 
         Returns
         -------
-        SelectResponse
-        Data model with the results of the method. Data and metadata can be found in the `result` field, with the
-        attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
-        `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
-        and aggregates (in case the parameter `series.aggregates` is set to True).
-        Example:
-            {
-                "jsonrpc": "2.0",
-                "result": {
-                    "items": {
-                        "<id1>": {
-                            // Signal schema
-                        },
-                        "<id2>": {
-                            //  Signal schema
-                        },
-                    },
-                    "data": { // DataFrame schema
-                        "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
-                        "series": {
-                            "count": [2, 1, 1],
-                            "sum":[20.4, 0.0, 2.7],
-                            "min": [10.2, 0.0, 2.7],
-                            "max":[10.2, 0.0, 2.7],
-                            "<id1>": [10.2, null, 2.7],
-                            "<id2>": [10.2, 0.0, null]
-                        }
-                    }
-                }
-            }
+        ``SelectResponse``
+        
+            - result: ``SelectMapResult``
+                - items: dict of {``InputID``, ``Signal``}
+                - data: ``DataFrame``
 
+        Example
+        -------
+            >>> "response": {
+            >>>    "jsonrpc": "2.0",
+            >>>    "id": "1",
+            >>>    "result": {
+            >>>    "items": {
+            >>>        "item_id": {
+            >>>        "name": "signal_name_1",
+            >>>        "type": "numeric"
+            >>>        }
+            >>>    },
+            >>>    "data": {
+            >>>        "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+            >>>        "series": {
+            >>>        "item_id_avg": [0.0, 0.0],
+            >>>        "item_id_count": [20.0, 20.0],
+            >>>        "item_id_max": [0.0, 0.0],
+            >>>        "item_id_min": [0.0, 0.0],
+            >>>        "item_id_sum": [0.0, 0.0]
+            >>>        }
+            >>>    },
+            >>>    "error": null
+            >>>    }
+            >>> }
         """
         request_data = SelectItemRequest(params=params)
 

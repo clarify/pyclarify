@@ -96,9 +96,9 @@ class SelectItemsParams(BaseModel):
 
 class SelectDataParams(BaseModel):
     include: Optional[bool] = False
-    rollup: Optional[timedelta] = None
     notBefore: Optional[datetime]
     before: Optional[datetime]
+    rollup: Optional[timedelta] = None
 
 
 class ItemSelect(BaseModel):
