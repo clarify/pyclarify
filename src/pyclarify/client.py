@@ -13,7 +13,7 @@ import functools
 from typing import List, Dict
 from pydantic import validate_arguments
 
-from pyclarify.models.data import NumericalValuesType, Signal, DataFrame, InputID
+from pyclarify.models.data import NumericalValuesType, Signal, SignalInfo, DataFrame, InputID
 from pyclarify.models.requests import (
     SaveResponse,
     InsertParams,
@@ -21,8 +21,12 @@ from pyclarify.models.requests import (
     SaveRequest,
     SaveParams,
     ItemSelect,
+    SignalSelect,
     SelectResponse,
-    SelectRequest,
+    SelectItemRequest,
+    SelectSignalRequest,
+    SignalItemParams,
+    SelectSignalParams
 )
 from pyclarify.oauth2 import GetToken
 
@@ -230,7 +234,7 @@ class APIClient(RawClient):
     @increment_id
     @validate_arguments
     def save_signals(
-        self, inputs: Dict[InputID, Signal], created_only: bool
+        self, inputs: Dict[InputID, SignalInfo], created_only: bool
     ) -> SaveResponse:
         """
         This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
@@ -240,9 +244,9 @@ class APIClient(RawClient):
 
         Parameters
         ----------
-        inputs: Dict[InputID, List[Signal]]
-            List of `Signal` objects. The `Signal` object contains metadata for a signal.
-            Check (`Signal (API)`)[https://docs.clarify.io/reference#signal]
+        inputs: Dict[InputID, List[SignalInfo]]
+            List of `SignalInfo` objects. The `SignalInfo` object contains metadata for a signal.
+            Check (`SignalInfo (API)`)[https://docs.clarify.io/reference#signalinfo]
 
         created_only: bool
             If set to true, skip update of information for existing signals. That is, all Input IDs that map to
@@ -370,9 +374,91 @@ class APIClient(RawClient):
             }
 
         """
-        request_data = SelectRequest(params=params)
+        request_data = SelectItemRequest(params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
+        return SelectResponse(**result)
+
+    @increment_id
+    @validate_arguments
+    def select_signals(self, signals: SelectSignalParams, items: SignalItemParams) -> SelectResponse:
+        """
+        Return signal data and metadata, mirroring the Clarify API call [admin.selectSignals](https://docs.clarify.io/v1.1/reference/adminselectsignals).
+
+        Parameters
+        ----------
+        params : SignalSelect
+            Data model with all the possible settings for method. Fields include
+            - `signals`:
+               > Select signals to include (data for).
+              - `include` | **bool** | default: False
+                > Set to true to render item meta-data in the response.
+              - `filter` | **Dict**:
+                > Rest-layer style item filter (potentially with limited query options).
+                > Example: {"id":{"$in": ["<id1>", "<id2>"]}}
+              - `limit` | **int(min:0,max:1000)** | default=`50`
+                > Limit number of signals (max value to be adjusted after tuning).
+              - `skip` | **int**| default=`0`
+                > Skip first N signals.
+            - `items`:
+              > Configure item inclusion.
+              - `include` | bool | default=False
+                > Set to true to include items exposed by the selected signals.
+        Example:
+            {
+                "signals": {
+                    "include": true,
+                    "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
+                },
+                "items": {
+                    "include": true
+                }
+            }
+
+        Returns
+        -------
+        SelectResponse
+        Data model with the results of the method. Data and metadata can be found in the `result` field, with the
+        attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
+        `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
+        and aggregates (in case the parameter `series.aggregates` is set to True).
+        Example:
+            {
+                "jsonrpc": "2.0",
+                "result": {
+                    "items": {
+                        "<id1>": {
+                            // Signal schema
+                        },
+                        "<id2>": {
+                            //  Signal schema
+                        },
+                    },
+                    "data": { // DataFrame schema
+                        "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
+                        "series": {
+                            "count": [2, 1, 1],
+                            "sum":[20.4, 0.0, 2.7],
+                            "min": [10.2, 0.0, 2.7],
+                            "max":[10.2, 0.0, 2.7],
+                            "<id1>": [10.2, null, 2.7],
+                            "<id2>": [10.2, 0.0, null]
+                        }
+                    }
+                }
+            }
+
+        """
+
+        request_data = SelectSignalRequest(
+            params=SignalSelect(
+                integration=self.authentication.integration_id, 
+                signals=signals,
+                items=items
+            )
+        )
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
         return SelectResponse(**result)

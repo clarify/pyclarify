@@ -10,7 +10,7 @@ from http import HTTPStatus
 
 
 sys.path.insert(1, "src/")
-from pyclarify import APIClient, Signal, DataFrame
+from pyclarify import APIClient, SignalInfo, DataFrame
 from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
 import pyclarify
 
@@ -39,7 +39,7 @@ class TestClarifySaveClient(unittest.TestCase):
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_send_request_2(self, client_req_mock, get_token_mock):
+    def test_send_request_1(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.mock_data["mock_response_1"]
@@ -48,7 +48,7 @@ class TestClarifySaveClient(unittest.TestCase):
         data = DataFrame(values={signal_id: self.values}, times=self.times)
         result = self.client.insert(data)
 
-        signal_meta_data = Signal(
+        signal_meta_data = SignalInfo(
             name=signal_id,
             description="test description",
             labels={"test_label_py": ["completed mo"]},
@@ -64,7 +64,7 @@ class TestClarifySaveClient(unittest.TestCase):
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_send_request_3(self, client_req_mock, get_token_mock):
+    def test_send_request_2(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.mock_data["mock_response_2"]
@@ -73,7 +73,7 @@ class TestClarifySaveClient(unittest.TestCase):
         data = DataFrame(values={signal_id: self.values}, times=self.times)
         result = self.client.insert(data)
 
-        signal_meta_data = Signal(
+        signal_meta_data = SignalInfo(
             name=signal_id,
             description="test description",
             labels={
@@ -93,7 +93,7 @@ class TestClarifySaveClient(unittest.TestCase):
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_send_request_4(self, client_req_mock, get_token_mock):
+    def test_send_request_3(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.mock_data["mock_response_3"]
@@ -102,7 +102,7 @@ class TestClarifySaveClient(unittest.TestCase):
         data = DataFrame(values={signal_id: self.values}, times=self.times)
         result = self.client.insert(data)
 
-        signal_meta_data = Signal(
+        signal_meta_data = SignalInfo(
             name=signal_id,
             description="test description",
             labels={
