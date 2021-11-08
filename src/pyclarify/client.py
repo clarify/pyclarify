@@ -19,7 +19,9 @@ from pyclarify.models.requests import (
     InsertParams,
     InsertRequest,
     SaveRequest,
+    PublishRequest,
     SaveParams,
+    PublishParams,
     ItemSelect,
     SignalSelect,
     SelectResponse,
@@ -456,3 +458,85 @@ class APIClient(RawClient):
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
         return SelectResponse(**result)
+
+
+    @increment_id
+    @validate_arguments
+    def publish_signals(self, signals: Dict[InputID, SignalInfo], created_only: bool) -> SelectResponse:
+        """
+        Publishes a signal to create an item, mirroring the Clarify API call [admin.publishSignals](https://docs.clarify.io/v1.1/reference/adminpublishsignals).
+
+        Parameters
+        ----------
+        signals : SelectSignalParams
+            Data model with all the possible settings for method. Fields include
+            - `signals`:
+               > Select signals to include (data for).
+              - `include` | **bool** | default: False
+                > Set to true to render item meta-data in the response.
+              - `filter` | **Dict**:
+                > Rest-layer style item filter (potentially with limited query options).
+                > Example: {"id":{"$in": ["<id1>", "<id2>"]}}
+              - `limit` | **int(min:0,max:1000)** | default=`50`
+                > Limit number of signals (max value to be adjusted after tuning).
+              - `skip` | **int**| default=`0`
+                > Skip first N signals.
+            - `created_only`  | **bool** | default: False
+              > If set to true, skip update of information for existing items.
+        Example:
+            {
+                "signals": {
+                    "include": true,
+                    "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
+                },
+                "items": {
+                    "include": true
+                }
+            }
+
+        Returns
+        -------
+        SelectResponse
+        Data model with the results of the method. Data and metadata can be found in the `result` field, with the
+        attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
+        `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
+        and aggregates (in case the parameter `series.aggregates` is set to True).
+        Example:
+            {
+                "jsonrpc": "2.0",
+                "result": {
+                    "items": {
+                        "<id1>": {
+                            // Signal schema
+                        },
+                        "<id2>": {
+                            //  Signal schema
+                        },
+                    },
+                    "data": { // DataFrame schema
+                        "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
+                        "series": {
+                            "count": [2, 1, 1],
+                            "sum":[20.4, 0.0, 2.7],
+                            "min": [10.2, 0.0, 2.7],
+                            "max":[10.2, 0.0, 2.7],
+                            "<id1>": [10.2, null, 2.7],
+                            "<id2>": [10.2, 0.0, null]
+                        }
+                    }
+                }
+            }
+
+        """
+
+        request_data = PublishRequest(
+            params=PublishParams(
+                integration=self.authentication.integration_id, 
+                itemsBySignal=signals,
+                createOnly=created_only
+            )
+        )
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+        return SaveResponse(**result)

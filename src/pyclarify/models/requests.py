@@ -17,6 +17,7 @@ class ApiMethod(str, Enum):
     save_signals = "integration.SaveSignals"
     select_items = "clarify.SelectItems"
     select_signal = "admin.SelectSignals"
+    publish_signals = "admin.PublishSignals"
 
 
 class JSONRPCRequest(BaseModel):
@@ -45,9 +46,19 @@ class SaveParams(BaseModel):
     createdOnly: Optional[bool] = False
 
 
+class PublishParams(BaseModel):
+    integration: IntegrationID
+    itemsBySignal: Dict[InputID, SignalInfo]
+    createOnly: Optional[bool] = False
+
+
 class SaveRequest(JSONRPCRequest):
     method: ApiMethod = ApiMethod.save_signals
     params: SaveParams
+
+class PublishRequest(JSONRPCRequest):
+    method: ApiMethod = ApiMethod.publish_signals
+    params: PublishParams
 
 
 class ErrorData(BaseModel):
@@ -83,8 +94,12 @@ class SignalSaveMap(BaseModel):
     signalsByInput: Dict[InputID, Union[SaveSummary, InsertSummary]]
 
 
+class SignalPublishMap(BaseModel):
+    itemsBySignal: Dict[InputID, Union[SaveSummary, InsertSummary]]
+
+
 class SaveResponse(GenericResponse):
-    result: Optional[SignalSaveMap]
+    result: Optional[Union[SignalSaveMap, SignalPublishMap]]
 
 
 class SelectItemsParams(BaseModel):
