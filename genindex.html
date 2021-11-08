@@ -134,7 +134,7 @@
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.AnnotationKey">AnnotationKey (in module pyclarify.models.data)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.annotations">annotations (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.annotations">annotations (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
       <li><a href="reference/client.html#pyclarify.client.APIClient">APIClient (class in pyclarify.client)</a>
 </li>
@@ -176,6 +176,8 @@
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.Error.code">code (pyclarify.models.requests.Error attribute)</a>
 </li>
+      <li><a href="reference/models.html#pyclarify.models.data.ResourceMetadata.contentHash">contentHash (pyclarify.models.data.ResourceMetadata attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/client.html#pyclarify.client.RawClient.create_payload">create_payload() (pyclarify.client.RawClient method)</a>
@@ -186,6 +188,8 @@
         <li><a href="reference/models.html#pyclarify.models.requests.InsertSummary.created">(pyclarify.models.requests.InsertSummary attribute)</a>
 </li>
       </ul></li>
+      <li><a href="reference/models.html#pyclarify.models.data.ResourceMetadata.createdAt">createdAt (pyclarify.models.data.ResourceMetadata attribute)</a>
+</li>
       <li><a href="reference/models.html#pyclarify.models.requests.SaveParams.createdOnly">createdOnly (pyclarify.models.requests.SaveParams attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.auth.Credential">Credential (class in pyclarify.models.auth)</a>
@@ -212,7 +216,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.data.DataFrame">DataFrame (class in pyclarify.models.data)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.description">description (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.description">description (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -220,11 +224,11 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.engUnit">engUnit (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.engUnit">engUnit (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.TypeSignal.enum">enum (pyclarify.models.data.TypeSignal attribute)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.enumValues">enumValues (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.enumValues">enumValues (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -243,14 +247,18 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams.filter">filter (pyclarify.models.requests.SelectItemsParams attribute)</a>
+
+      <ul>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalParams.filter">(pyclarify.models.requests.SelectSignalParams attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.gapDetection">gapDetection (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.gapDetection">gapDetection (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.GenericResponse">GenericResponse (class in pyclarify.models.requests)</a>
 </li>
@@ -291,10 +299,16 @@
       <ul>
         <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams.include">(pyclarify.models.requests.SelectItemsParams attribute)</a>
 </li>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalParams.include">(pyclarify.models.requests.SelectSignalParams attribute)</a>
+</li>
+        <li><a href="reference/models.html#pyclarify.models.requests.SignalItemParams.include">(pyclarify.models.requests.SignalItemParams attribute)</a>
+</li>
       </ul></li>
       <li><a href="reference/client.html#pyclarify.client.increment_id">increment_id() (in module pyclarify.client)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.InputID">InputID (in module pyclarify.models.data)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.data.Signal.inputId">inputId (pyclarify.models.data.Signal attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.SaveParams.inputs">inputs (pyclarify.models.requests.SaveParams attribute)</a>
 </li>
@@ -317,15 +331,23 @@
 </li>
         <li><a href="reference/models.html#pyclarify.models.requests.SaveParams.integration">(pyclarify.models.requests.SaveParams attribute)</a>
 </li>
+        <li><a href="reference/models.html#pyclarify.models.requests.SignalSelect.integration">(pyclarify.models.requests.SignalSelect attribute)</a>
+</li>
       </ul></li>
       <li><a href="reference/models.html#pyclarify.models.requests.IntegrationID">IntegrationID (in module pyclarify.models.requests)</a>
 </li>
       <li><a href="glossary.html#term-Item"><strong>Item</strong></a>
 </li>
+      <li><a href="reference/models.html#pyclarify.models.data.Signal.item">item (pyclarify.models.data.Signal attribute)</a>
+</li>
       <li><a href="reference/models.html#pyclarify.models.requests.ItemSelect.items">items (pyclarify.models.requests.ItemSelect attribute)</a>
 
       <ul>
         <li><a href="reference/models.html#pyclarify.models.requests.SelectMapResult.items">(pyclarify.models.requests.SelectMapResult attribute)</a>
+</li>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalsMapResult.items">(pyclarify.models.requests.SelectSignalsMapResult attribute)</a>
+</li>
+        <li><a href="reference/models.html#pyclarify.models.requests.SignalSelect.items">(pyclarify.models.requests.SignalSelect attribute)</a>
 </li>
       </ul></li>
       <li><a href="reference/models.html#pyclarify.models.requests.ItemSelect">ItemSelect (class in pyclarify.models.requests)</a>
@@ -336,7 +358,7 @@
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.Config.json_encoders">json_encoders (pyclarify.models.data.Signal.Config attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.Config.json_encoders">json_encoders (pyclarify.models.data.SignalInfo.Config attribute)</a>
 
       <ul>
         <li><a href="reference/models.html#pyclarify.models.requests.JSONRPCRequest.Config.json_encoders">(pyclarify.models.requests.JSONRPCRequest.Config attribute)</a>
@@ -360,15 +382,21 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.labels">labels (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.labels">labels (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.LabelsKey">LabelsKey (in module pyclarify.models.data)</a>
 </li>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams.limit">limit (pyclarify.models.requests.SelectItemsParams attribute)</a>
+
+      <ul>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalParams.limit">(pyclarify.models.requests.SelectSignalParams attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams.limit">limit (pyclarify.models.requests.SelectItemsParams attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.requests.LimitSelectItems">LimitSelectItems (in module pyclarify.models.requests)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.requests.LimitSelect">LimitSelect (in module pyclarify.models.requests)</a>
+      <li><a href="reference/models.html#pyclarify.models.requests.LimitSelectSignals">LimitSelectSignals (in module pyclarify.models.requests)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -382,6 +410,8 @@
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.Error.message">message (pyclarify.models.requests.Error attribute)</a>
 </li>
+      <li><a href="reference/models.html#pyclarify.models.data.Signal.meta">meta (pyclarify.models.data.Signal attribute)</a>
+</li>
       <li><a href="glossary.html#term-Metadata"><strong>Metadata</strong></a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.InsertRequest.method">method (pyclarify.models.requests.InsertRequest attribute)</a>
@@ -391,7 +421,9 @@
 </li>
         <li><a href="reference/models.html#pyclarify.models.requests.SaveRequest.method">(pyclarify.models.requests.SaveRequest attribute)</a>
 </li>
-        <li><a href="reference/models.html#pyclarify.models.requests.SelectRequest.method">(pyclarify.models.requests.SelectRequest attribute)</a>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectItemRequest.method">(pyclarify.models.requests.SelectItemRequest attribute)</a>
+</li>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalRequest.method">(pyclarify.models.requests.SelectSignalRequest attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -419,7 +451,7 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.name">name (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.name">name (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -454,7 +486,9 @@
 </li>
         <li><a href="reference/models.html#pyclarify.models.requests.SaveRequest.params">(pyclarify.models.requests.SaveRequest attribute)</a>
 </li>
-        <li><a href="reference/models.html#pyclarify.models.requests.SelectRequest.params">(pyclarify.models.requests.SelectRequest attribute)</a>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectItemRequest.params">(pyclarify.models.requests.SelectItemRequest attribute)</a>
+</li>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalRequest.params">(pyclarify.models.requests.SelectSignalRequest attribute)</a>
 </li>
       </ul></li>
       <li><a href="reference/models.html#pyclarify.models.data.SourceTypeSignal.prediction">prediction (pyclarify.models.data.SourceTypeSignal attribute)</a>
@@ -466,6 +500,8 @@
         <li><a href="reference/index.html#module-pyclarify">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pyclarify.client
 
@@ -473,8 +509,6 @@
         <li><a href="reference/client.html#module-pyclarify.client">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pyclarify.models.auth
 
@@ -513,6 +547,12 @@
 </li>
       <li><a href="reference/oauth2.html#pyclarify.oauth2.GetToken.read_credentials">read_credentials() (pyclarify.oauth2.GetToken method)</a>
 </li>
+      <li><a href="reference/models.html#pyclarify.models.data.ResourceID">ResourceID (in module pyclarify.models.data)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.data.ResourceMetadata">ResourceMetadata (class in pyclarify.models.data)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.GenericResponse.result">result (pyclarify.models.requests.GenericResponse attribute)</a>
 
       <ul>
@@ -521,8 +561,6 @@
         <li><a href="reference/models.html#pyclarify.models.requests.SelectResponse.result">(pyclarify.models.requests.SelectResponse attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectDataParams.rollup">rollup (pyclarify.models.requests.SelectDataParams attribute)</a>
 </li>
   </ul></td>
@@ -531,7 +569,7 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.sampleInterval">sampleInterval (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.sampleInterval">sampleInterval (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.ApiMethod.save_signals">save_signals (pyclarify.models.requests.ApiMethod attribute)</a>
 </li>
@@ -547,25 +585,37 @@
 </li>
       <li><a href="reference/models.html#pyclarify.models.auth.OAuthResponse.scope">scope (pyclarify.models.auth.OAuthResponse attribute)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.requests.ApiMethod.select">select (pyclarify.models.requests.ApiMethod attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.requests.ApiMethod.select_items">select_items (pyclarify.models.requests.ApiMethod attribute)</a>
 </li>
       <li><a href="reference/client.html#pyclarify.client.APIClient.select_items">select_items() (pyclarify.client.APIClient method)</a>
 </li>
+      <li><a href="reference/models.html#pyclarify.models.requests.ApiMethod.select_signal">select_signal (pyclarify.models.requests.ApiMethod attribute)</a>
+</li>
+      <li><a href="reference/client.html#pyclarify.client.APIClient.select_signals">select_signals() (pyclarify.client.APIClient method)</a>
+</li>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectDataParams">SelectDataParams (class in pyclarify.models.requests)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectItemRequest">SelectItemRequest (class in pyclarify.models.requests)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams">SelectItemsParams (class in pyclarify.models.requests)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectMapResult">SelectMapResult (class in pyclarify.models.requests)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectRequest">SelectRequest (class in pyclarify.models.requests)</a>
-</li>
       <li><a href="reference/models.html#pyclarify.models.requests.SelectResponse">SelectResponse (class in pyclarify.models.requests)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalParams">SelectSignalParams (class in pyclarify.models.requests)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalRequest">SelectSignalRequest (class in pyclarify.models.requests)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalsMapResult">SelectSignalsMapResult (class in pyclarify.models.requests)</a>
 </li>
       <li><a href="reference/client.html#pyclarify.client.RawClient.send">send() (pyclarify.client.RawClient method)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.DataFrame.series">series (pyclarify.models.data.DataFrame attribute)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.data.SHA1Hash">SHA1Hash (in module pyclarify.models.data)</a>
 </li>
       <li><a href="glossary.html#term-Signal"><strong>Signal</strong></a>
 
@@ -573,15 +623,31 @@
         <li><a href="reference/models.html#pyclarify.models.data.Signal">(class in pyclarify.models.data)</a>
 </li>
       </ul></li>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.Config">Signal.Config (class in pyclarify.models.data)</a>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo">SignalInfo (class in pyclarify.models.data)</a>
 </li>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.Config">SignalInfo.Config (class in pyclarify.models.data)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.requests.SignalItemParams">SignalItemParams (class in pyclarify.models.requests)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectMapResult.signals">signals (pyclarify.models.requests.SelectMapResult attribute)</a>
+
+      <ul>
+        <li><a href="reference/models.html#pyclarify.models.requests.SignalSelect.signals">(pyclarify.models.requests.SignalSelect attribute)</a>
+</li>
+      </ul></li>
       <li><a href="reference/models.html#pyclarify.models.requests.SignalSaveMap">SignalSaveMap (class in pyclarify.models.requests)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.requests.SignalSaveMap.signalsByInput">signalsByInput (pyclarify.models.requests.SignalSaveMap attribute)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams.skip">skip (pyclarify.models.requests.SelectItemsParams attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.requests.SignalSelect">SignalSelect (class in pyclarify.models.requests)</a>
 </li>
-      <li><a href="reference/models.html#pyclarify.models.data.Signal.sourceType">sourceType (pyclarify.models.data.Signal attribute)</a>
+      <li><a href="reference/models.html#pyclarify.models.requests.SelectItemsParams.skip">skip (pyclarify.models.requests.SelectItemsParams attribute)</a>
+
+      <ul>
+        <li><a href="reference/models.html#pyclarify.models.requests.SelectSignalParams.skip">(pyclarify.models.requests.SelectSignalParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.sourceType">sourceType (pyclarify.models.data.SignalInfo attribute)</a>
 </li>
       <li><a href="reference/models.html#pyclarify.models.data.SourceTypeSignal">SourceTypeSignal (class in pyclarify.models.data)</a>
 </li>
@@ -602,7 +668,7 @@
       <li><a href="reference/models.html#pyclarify.models.auth.Credential.type">type (pyclarify.models.auth.Credential attribute)</a>
 
       <ul>
-        <li><a href="reference/models.html#pyclarify.models.data.Signal.type">(pyclarify.models.data.Signal attribute)</a>
+        <li><a href="reference/models.html#pyclarify.models.data.SignalInfo.type">(pyclarify.models.data.SignalInfo attribute)</a>
 </li>
       </ul></li>
       <li><a href="reference/models.html#pyclarify.models.data.TypeSignal">TypeSignal (class in pyclarify.models.data)</a>
@@ -618,6 +684,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/models.html#pyclarify.models.requests.SaveSummary.updated">updated (pyclarify.models.requests.SaveSummary attribute)</a>
+</li>
+      <li><a href="reference/models.html#pyclarify.models.data.ResourceMetadata.updatedAt">updatedAt (pyclarify.models.data.ResourceMetadata attribute)</a>
 </li>
   </ul></td>
 </tr></table>

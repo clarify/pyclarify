@@ -218,7 +218,7 @@ In case of the error the method return a pydantic model with the following forma
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.APIClient.save_signals">
-<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="models.html#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><span class="pre">pyclarify.models.data.Signal</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_only</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.SaveResponse" title="pyclarify.models.requests.SaveResponse"><span class="pre">pyclarify.models.requests.SaveResponse</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.save_signals" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="models.html#pyclarify.models.data.SignalInfo" title="pyclarify.models.data.SignalInfo"><span class="pre">pyclarify.models.data.SignalInfo</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created_only</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.SaveResponse" title="pyclarify.models.requests.SaveResponse"><span class="pre">pyclarify.models.requests.SaveResponse</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.save_signals" title="Permalink to this definition">¶</a></dt>
 <dd><p>This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
 combination with the integration ID. A List of Signals should be provided with the intended meta-data.
 Mirrors the API call (<cite>integration.SaveSignals</cite>)[<a class="reference external" href="https://docs.clarify.io/reference#integrationsavesignals">https://docs.clarify.io/reference#integrationsavesignals</a>] for
@@ -226,8 +226,8 @@ multiple signals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>Dict</em><em>[</em><em>InputID</em><em>, </em><em>List</em><em>[</em><a class="reference internal" href="models.html#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><em>Signal</em></a><em>]</em><em>]</em>) – List of <cite>Signal</cite> objects. The <cite>Signal</cite> object contains metadata for a signal.
-Check (<cite>Signal (API)</cite>)[<a class="reference external" href="https://docs.clarify.io/reference#signal">https://docs.clarify.io/reference#signal</a>]</p></li>
+<li><p><strong>inputs</strong> (<em>Dict</em><em>[</em><em>InputID</em><em>, </em><em>List</em><em>[</em><a class="reference internal" href="models.html#pyclarify.models.data.SignalInfo" title="pyclarify.models.data.SignalInfo"><em>SignalInfo</em></a><em>]</em><em>]</em>) – List of <cite>SignalInfo</cite> objects. The <cite>SignalInfo</cite> object contains metadata for a signal.
+Check (<cite>SignalInfo (API)</cite>)[<a class="reference external" href="https://docs.clarify.io/reference#signalinfo">https://docs.clarify.io/reference#signalinfo</a>]</p></li>
 <li><p><strong>created_only</strong> (<em>bool</em>) – If set to true, skip update of information for existing signals. That is, all Input IDs that map to
 existing signals are silently ignored.</p></li>
 </ul>
@@ -393,6 +393,112 @@ In case of the error the method return a pydantic model with the following forma
 <span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.select_signals">
+<span class="sig-name descname"><span class="pre">select_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signals</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="models.html#pyclarify.models.requests.SelectSignalParams" title="pyclarify.models.requests.SelectSignalParams"><span class="pre">pyclarify.models.requests.SelectSignalParams</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="models.html#pyclarify.models.requests.SignalItemParams" title="pyclarify.models.requests.SignalItemParams"><span class="pre">pyclarify.models.requests.SignalItemParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.SelectResponse" title="pyclarify.models.requests.SelectResponse"><span class="pre">pyclarify.models.requests.SelectResponse</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return signal data and metadata, mirroring the Clarify API call [admin.selectSignals](<a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminselectsignals">https://docs.clarify.io/v1.1/reference/adminselectsignals</a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<a class="reference internal" href="models.html#pyclarify.models.requests.SignalSelect" title="pyclarify.models.requests.SignalSelect"><em>SignalSelect</em></a>) – <p>Data model with all the possible settings for method. Fields include
+- <cite>signals</cite>:</p>
+<blockquote>
+<div><blockquote>
+<div><p>&gt; Select signals to include (data for).</p>
+</div></blockquote>
+<ul>
+<li><p><cite>include</cite> | <strong>bool</strong> | default: False
+&gt; Set to true to render item meta-data in the response.</p></li>
+<li><p><cite>filter</cite> | <strong>Dict</strong>:
+&gt; Rest-layer style item filter (potentially with limited query options).
+&gt; Example: {“id”:{“$in”: [“&lt;id1&gt;”, “&lt;id2&gt;”]}}</p></li>
+<li><p><cite>limit</cite> | <strong>int(min:0,max:1000)</strong> | default=`50`
+&gt; Limit number of signals (max value to be adjusted after tuning).</p></li>
+<li><p><cite>skip</cite> | <a href="#id9"><span class="problematic" id="id10">**</span></a>int**| default=`0`
+&gt; Skip first N signals.</p></li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><cite>items</cite>:
+&gt; Configure item inclusion.
+- <cite>include</cite> | bool | default=False</p>
+<blockquote>
+<div><p>&gt; Set to true to include items exposed by the selected signals.</p>
+</div></blockquote>
+</li>
+</ul>
+</p></li>
+<li><p><strong>Example</strong> – <dl>
+<dt>{</dt><dd><dl class="simple">
+<dt>“signals”: {</dt><dd><p>“include”: true,
+“filter”: {“id”:{“$in”: [“&lt;id1&gt;”, “&lt;id2&gt;”]}}</p>
+</dd>
+</dl>
+<p>},
+“items”: {</p>
+<blockquote>
+<div><p>”include”: true</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>}</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul>
+<li><p><em>SelectResponse</em></p></li>
+<li><p>Data model with the results of the method. Data and metadata can be found in the <cite>result</cite> field, with the</p></li>
+<li><p>attributes <cite>result.items</cite> as a dictionary of <cite>item_id</cite> and <cite>Signal</cite> (definition can be found in</p></li>
+<li><p><cite>pyclarify.models.data</cite>) and <cite>result.data</cite> containing a <cite>DataFrame</cite> object with the resulting data</p></li>
+<li><p>and aggregates (in case the parameter <cite>series.aggregates</cite> is set to True).</p></li>
+<li><p><em>Example</em> –</p>
+<dl>
+<dt>{</dt><dd><p>“jsonrpc”: “2.0”,
+“result”: {</p>
+<blockquote>
+<div><dl>
+<dt>”items”: {</dt><dd><dl class="simple">
+<dt>“&lt;id1&gt;”: {</dt><dd><p>// Signal schema</p>
+</dd>
+</dl>
+<p>},
+“&lt;id2&gt;”: {</p>
+<blockquote>
+<div><p>//  Signal schema</p>
+</div></blockquote>
+<p>},</p>
+</dd>
+</dl>
+<p>},
+“data”: { // DataFrame schema</p>
+<blockquote>
+<div><p>”times”: [“2020-01-01T01:00:00Z”,”2020-01-01T02:00:00Z”,”2020-01-01T03:00:00Z”],
+“series”: {</p>
+<blockquote>
+<div><p>”count”: [2, 1, 1],
+“sum”:[20.4, 0.0, 2.7],
+“min”: [10.2, 0.0, 2.7],
+“max”:[10.2, 0.0, 2.7],
+“&lt;id1&gt;”: [10.2, null, 2.7],
+“&lt;id2&gt;”: [10.2, 0.0, null]</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+<p>}</p>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
