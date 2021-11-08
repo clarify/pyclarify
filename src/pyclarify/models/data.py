@@ -8,10 +8,11 @@ from pyclarify.__utils__.convert import timedelta_isoformat
 
 # constrained string defined by the API
 InputID = constr(regex=r"^[a-z0-9_-]{1,40}$")
+ResourceID = constr(regex=r"^[a-v0-9]{20}$")
 LabelsKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
 AnnotationKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
 NumericalValuesType = List[Union[float, int, None]]
-
+SHA1Hash = constr(regex=r"^[0-9a-f]{5,40}$")
 
 class DataFrame(BaseModel):
     times: List[datetime] = None
@@ -71,7 +72,7 @@ class SourceTypeSignal(str, Enum):
     prediction = "prediction"
 
 
-class Signal(BaseModel):
+class SignalInfo(BaseModel):
     name: str
     type: TypeSignal = TypeSignal.numeric
     description: str = ""
@@ -85,3 +86,15 @@ class Signal(BaseModel):
 
     class Config:
         json_encoders = {timedelta: timedelta_isoformat}
+
+
+class ResourceMetadata(BaseModel):
+    contentHash: SHA1Hash
+    updatedAt: datetime
+    createdAt: datetime
+
+
+class Signal(SignalInfo):
+    item: Optional[ResourceID]
+    inputId: InputID
+    meta: ResourceMetadata

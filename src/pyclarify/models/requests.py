@@ -3,23 +3,25 @@ from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime
 from enum import Enum
-from .data import DataFrame, InputID, Signal
+from .data import DataFrame, InputID, SignalInfo, Signal
 from pyclarify.__utils__.convert import timedelta_isoformat
 from datetime import timedelta
 
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
-LimitSelect = conint(ge=0, le=20)
+LimitSelectItems = conint(ge=0, le=50)
+LimitSelectSignals = conint(ge=0, le=1000)
 
 
 class ApiMethod(str, Enum):
-    select = "clarify.SelectItems"
     insert = "integration.Insert"
     save_signals = "integration.SaveSignals"
+    select_items = "clarify.SelectItems"
+    select_signal = "admin.SelectSignals"
 
 
 class JSONRPCRequest(BaseModel):
     jsonrpc: str = "2.0"
-    method: ApiMethod = ApiMethod.select
+    method: ApiMethod = ApiMethod.select_items
     id: str = "1"
     params: Dict = {}
 
@@ -39,7 +41,7 @@ class InsertRequest(JSONRPCRequest):
 
 class SaveParams(BaseModel):
     integration: IntegrationID
-    inputs: Dict[InputID, Signal]
+    inputs: Dict[InputID, SignalInfo]
     createdOnly: Optional[bool] = False
 
 
@@ -88,7 +90,7 @@ class SaveResponse(GenericResponse):
 class SelectItemsParams(BaseModel):
     include: Optional[bool] = False
     filter: dict = {}                   # https://docs.clarify.io/v1.1/reference/filtering
-    limit: Optional[LimitSelect] = 10
+    limit: Optional[LimitSelectItems] = 10
     skip: Optional[int] = 0
 
 
@@ -104,15 +106,47 @@ class ItemSelect(BaseModel):
     data: SelectDataParams
 
 
-class SelectRequest(JSONRPCRequest):
-    method: ApiMethod = ApiMethod.select
+class SelectItemRequest(JSONRPCRequest):
+    method: ApiMethod = ApiMethod.select_items
     params: ItemSelect
 
 
+class SelectSignalParams(BaseModel):
+    include: Optional[bool] = False
+    filter: dict = {}
+    limit: Optional[LimitSelectSignals] = 50
+    skip: Optional[int] = 0
+
+
+class SignalItemParams(BaseModel):
+    include: Optional[bool] = False
+
+
+class SignalSelect(BaseModel):
+    integration: IntegrationID
+    signals: SelectSignalParams
+    items: SignalItemParams
+
+
+class SelectSignalRequest(JSONRPCRequest):
+    method: ApiMethod = ApiMethod.select_signal
+    params: SignalSelect
+
+
 class SelectMapResult(BaseModel):
-    items: Optional[Dict[InputID, Signal]]
+    items: Optional[Dict[InputID, SignalInfo]]
+    signals: Optional[Dict[InputID, Signal]]
     data: Optional[DataFrame]
 
 
+class SelectSignalsMapResult(BaseModel):
+    items: Optional[Dict[InputID, SignalInfo]]
+
+
 class SelectResponse(GenericResponse):
-    result: Optional[SelectMapResult]
+    result: Optional[SelectMapResult] 
+
+
+
+
+

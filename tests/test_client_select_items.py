@@ -6,11 +6,11 @@ from unittest.mock import patch
 # Standard library imports...
 
 sys.path.insert(1, "src/")
-from pyclarify import APIClient, Signal, DataFrame
+from pyclarify import APIClient, SignalInfo, DataFrame
 from pyclarify.models.requests import ItemSelect
 
 
-class TestClarifySelectClient(unittest.TestCase):
+class TestClarifySelectItemsClient(unittest.TestCase):
     def setUp(self):
         self.client = APIClient("./tests/data/mock-clarify-credentials.json")
 
@@ -35,7 +35,7 @@ class TestClarifySelectClient(unittest.TestCase):
         response_data = self.client.select_items(params)
 
         for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], Signal)
+            self.assertIsInstance(response_data.result.items[x], SignalInfo)
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -49,7 +49,7 @@ class TestClarifySelectClient(unittest.TestCase):
         response_data = self.client.select_items(params)
 
         for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], Signal)
+            self.assertIsInstance(response_data.result.items[x], SignalInfo)
         self.assertIsInstance(response_data.result.data, DataFrame)
 
     @patch("pyclarify.client.RawClient.get_token")
