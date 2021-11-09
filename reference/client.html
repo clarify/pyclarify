@@ -289,12 +289,12 @@ In case of the error the method return a pydantic model with the following forma
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.APIClient.select_items">
 <span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="models.html#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><span class="pre">pyclarify.models.requests.ItemSelect</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.requests.SelectResponse" title="pyclarify.models.requests.SelectResponse"><span class="pre">pyclarify.models.requests.SelectResponse</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_items" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return item data and metadata, mirroring the Clarify API call .. _item.Select: <a class="reference external" href="https://docs.clarify.io/reference">https://docs.clarify.io/reference</a> .</p>
+<dd><p>Return item data and metadata, mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/itemselect">item.Select</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>params</strong> (<code class="docutils literal notranslate"><span class="pre">ItemSelect</span></code>) – <ul class="simple">
+<dd class="field-odd"><p><strong>params</strong> (<a class="reference internal" href="models.html#pyclarify.models.requests.ItemSelect" title="pyclarify.models.requests.ItemSelect"><em>ItemSelect</em></a>) – <ul class="simple">
 <li><dl class="simple">
-<dt>items: <code class="docutils literal notranslate"><span class="pre">SelectItemsParams</span></code></dt><dd><p>Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.</p>
+<dt>items: SelectItemsParams</dt><dd><p>Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.</p>
 <ul>
 <li><dl class="simple">
 <dt>include: bool, default False</dt><dd><p>Set to true to include matched resources in the response.</p>
@@ -302,7 +302,7 @@ In case of the error the method return a pydantic model with the following forma
 </dl>
 </li>
 <li><dl class="simple">
-<dt>filter: dict, .. _Resource Filter: <a class="reference external" href="https://docs.clarify.io/v1.1/reference/filtering">https://docs.clarify.io/v1.1/reference/filtering</a></dt><dd><p>Filter which resources to include.</p>
+<dt>filter: dict, <a class="reference external" href="https://docs.clarify.io/v1.1/reference/filtering">Resource Filter</a></dt><dd><p>Filter which resources to include.</p>
 </dd>
 </dl>
 </li>
@@ -321,7 +321,7 @@ In case of the error the method return a pydantic model with the following forma
 </dl>
 </li>
 <li><dl class="simple">
-<dt>data: <code class="docutils literal notranslate"><span class="pre">SelectDataParams</span></code></dt><dd><p>Configure which data to include in the response.</p>
+<dt>data: SelectDataParams</dt><dd><p>Configure which data to include in the response.</p>
 <ul>
 <li><dl class="simple">
 <dt>include: bool, default False</dt><dd><p>Include the timeseries data in the response.</p>
@@ -339,7 +339,8 @@ In case of the error the method return a pydantic model with the following forma
 </dl>
 </li>
 <li><dl class="simple">
-<dt>rollup: RFC 3339 duration, default None</dt><dd><p>If specified, roll-up the values into either the full time window (<cite>notBefore</cite> -&gt; <cite>before</cite>) or evenly sized buckets.</p>
+<dt>rollup: RFC 3339 duration or “window”, default None</dt><dd><p>If RFC 3339 duration is specified, roll-up the values into either the full time window (<cite>notBefore</cite> -&gt; <cite>before</cite>) or evenly sized buckets.
+For more information click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/data-query">here</a></p>
 </dd>
 </dl>
 </li>
@@ -353,9 +354,9 @@ In case of the error the method return a pydantic model with the following forma
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><dl class="simple">
-<dt>result: <code class="docutils literal notranslate"><span class="pre">SelectMapResult</span></code></dt><dd><ul>
-<li><p>items: dict of {<code class="docutils literal notranslate"><span class="pre">InputID</span></code>, <code class="docutils literal notranslate"><span class="pre">Signal</span></code>}</p></li>
-<li><p>data: <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></p></li>
+<dt>result: SelectMapResult</dt><dd><ul>
+<li><p>items: dict of {InputID, Signal}</p></li>
+<li><p>data: DataFrame</p></li>
 </ul>
 </dd>
 </dl>
@@ -364,7 +365,7 @@ In case of the error the method return a pydantic model with the following forma
 </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">SelectResponse</span></code></p>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.requests.SelectResponse" title="pyclarify.models.requests.SelectResponse">SelectResponse</a></p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
