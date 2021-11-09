@@ -1,0 +1,62 @@
+{
+  "request": {
+    "name": "This is my new item",
+    "description": "I published this item through the PyClarify SDK!",
+    "labels": {
+      "Published_automatically": ["true"],
+      "SDK_version": ["0.2.0"]
+    },
+    "gapDetection": "PT5M"
+  },
+  "empty_response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "itemsBySignal": {}
+    }
+  },
+  "publish_one_response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "itemsBySignal": {
+        "some_valid_id": {
+          "id": "some_valid_id",
+          "created": true,
+          "updated": false
+        }
+      }
+    }
+  },
+  "update_one_response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "itemsBySignal": {
+        "some_valid_id": {
+          "id": "some_valid_id",
+          "created": false,
+          "updated": true
+        }
+      }
+    }
+  },
+  "publish_two_response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "itemsBySignal": {
+        "some_valid_id_1": {
+          "id": "some_valid_id_1",
+          "created": true,
+          "updated": false
+        },
+        "some_valid_id_2": {
+          "id": "some_valid_id_2",
+          "created": true,
+          "updated": false
+        }
+      }
+    }
+  }
+}
