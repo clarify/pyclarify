@@ -14,53 +14,6 @@ from pyclarify import APIClient, SignalInfo, DataFrame
 from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
 import pyclarify
 
-signal_id = "test_publish_signal"
-client = APIClient("./tests/clarify-credentials-8.json")
-
-
-# item_meta_data = SignalInfo(
-#     name="This is my new signal",
-#     description="I created this signal through the PyClarify SDK!",
-#     labels={
-#         "Test_signal_version": ["3"],
-#         "SDK_version": ["0.2.0"]
-#     },
-#     gapDetection="PT5M",
-# )
-
-# response = client.save_signals(
-#     inputs={"test_signal_3" : item_meta_data},
-#     created_only=False #False = create new signal, True = update existing signal
-# )
-# print(response)
-# test_signal_id_1 = "c64j2vfqfsj0hurrtjdg"
-# test_signal_id_2 = "c64j35nqfsj0hurrtje0"
-# test_signal_id_3 = "c64j7pnqfsj0hurrtjfg"
-
-# item_meta_data_1 = SignalInfo(
-#     name="Item numero tres",
-#     description="I published this item through the PyClarify SDK!",
-#     labels={
-#         "Published_automatically": ["True"],
-#         "SDK_version": ["0.2.0"]
-#     },
-#     gapDetection="PT5M",
-# )
-
-# item_meta_data_2 = SignalInfo(
-#     name="Item numero quatro",
-#     description="I published this item through the PyClarify SDK!",
-#     labels={
-#         "Published_automatically": ["True"],
-#         "SDK_version": ["0.2.0"]
-#     },
-#     gapDetection="PT5M",
-# )
-
-
-# response = client.publish_signals(signals={test_signal_id_3: item_meta_data_1, test_signal_id_2: item_meta_data_2}, created_only=False)
-# print(response)
-
 
 class TestClarifySaveClient(unittest.TestCase):
     def setUp(self):
