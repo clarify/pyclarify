@@ -1,6 +1,7 @@
-from pydantic import BaseModel, constr, conint
+from pydantic import BaseModel, constr, conint, Extra
 from pydantic.fields import Optional
 from typing import List, Union, Dict
+from typing_extensions import Literal
 from datetime import datetime
 from enum import Enum
 from .data import DataFrame, InputID, SignalInfo, Signal
@@ -29,7 +30,7 @@ class JSONRPCRequest(BaseModel):
         json_encoders = {timedelta: timedelta_isoformat}
 
 
-class InsertParams(BaseModel):
+class InsertParams(BaseModel, extra=Extra.forbid):
     integration: IntegrationID
     data: DataFrame
 
@@ -39,7 +40,7 @@ class InsertRequest(JSONRPCRequest):
     params: InsertParams
 
 
-class SaveParams(BaseModel):
+class SaveParams(BaseModel, extra=Extra.forbid):
     integration: IntegrationID
     inputs: Dict[InputID, SignalInfo]
     createdOnly: Optional[bool] = False
@@ -68,14 +69,14 @@ class GenericResponse(BaseModel):
     error: Optional[Error]
 
 
-class GenericSummary(BaseModel):
+class GenericSummary(BaseModel, extra=Extra.forbid):
     id: str
     created: bool
 
-class InsertSummary(GenericSummary):
+class InsertSummary(GenericSummary, extra=Extra.forbid):
     pass
 
-class SaveSummary(GenericSummary):
+class SaveSummary(GenericSummary, extra=Extra.forbid):
     updated: bool
 
 
@@ -87,21 +88,21 @@ class SaveResponse(GenericResponse):
     result: Optional[SignalSaveMap]
 
 
-class SelectItemsParams(BaseModel):
+class SelectItemsParams(BaseModel, extra=Extra.forbid):
     include: Optional[bool] = False
     filter: dict = {}                   # https://docs.clarify.io/v1.1/reference/filtering
     limit: Optional[LimitSelectItems] = 10
     skip: Optional[int] = 0
 
 
-class SelectDataParams(BaseModel):
+class SelectDataParams(BaseModel, extra=Extra.forbid):
     include: Optional[bool] = False
     notBefore: Optional[datetime]
     before: Optional[datetime]
-    rollup: Optional[timedelta] = None
+    rollup: Optional[Union[timedelta, Literal["window"]]]
 
 
-class ItemSelect(BaseModel):
+class ItemSelect(BaseModel, extra=Extra.forbid):
     items: SelectItemsParams
     data: SelectDataParams
 
@@ -111,18 +112,18 @@ class SelectItemRequest(JSONRPCRequest):
     params: ItemSelect
 
 
-class SelectSignalParams(BaseModel):
+class SelectSignalParams(BaseModel, extra=Extra.forbid):
     include: Optional[bool] = False
     filter: dict = {}
     limit: Optional[LimitSelectSignals] = 50
     skip: Optional[int] = 0
 
 
-class SignalItemParams(BaseModel):
+class SignalItemParams(BaseModel, extra=Extra.forbid):
     include: Optional[bool] = False
 
 
-class SignalSelect(BaseModel):
+class SignalSelect(BaseModel, extra=Extra.forbid):
     integration: IntegrationID
     signals: SelectSignalParams
     items: SignalItemParams
@@ -133,13 +134,13 @@ class SelectSignalRequest(JSONRPCRequest):
     params: SignalSelect
 
 
-class SelectMapResult(BaseModel):
+class SelectMapResult(BaseModel, extra=Extra.forbid):
     items: Optional[Dict[InputID, SignalInfo]]
     signals: Optional[Dict[InputID, Signal]]
     data: Optional[DataFrame]
 
 
-class SelectSignalsMapResult(BaseModel):
+class SelectSignalsMapResult(BaseModel, extra=Extra.forbid):
     items: Optional[Dict[InputID, SignalInfo]]
 
 

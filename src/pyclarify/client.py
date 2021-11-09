@@ -298,19 +298,19 @@ class APIClient(RawClient):
     @validate_arguments
     def select_items(self, params: ItemSelect) -> SelectResponse:
         """
-        Return item data and metadata, mirroring the Clarify API call .. _item.Select: https://docs.clarify.io/reference .
+        Return item data and metadata, mirroring the Clarify API call `item.Select <https://docs.clarify.io/v1.1/reference/itemselect>`_ .
 
         Parameters
         ----------
-        params : ``ItemSelect``
+        params : ItemSelect
 
-            - items: ``SelectItemsParams``
+            - items: SelectItemsParams
                 Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.
                 
                 - include: bool, default False
                     Set to true to include matched resources in the response.
 
-                - filter: dict, .. _Resource Filter: https://docs.clarify.io/v1.1/reference/filtering
+                - filter: dict, `Resource Filter <https://docs.clarify.io/v1.1/reference/filtering>`_
                     Filter which resources to include.
 
                 - limit: int, default 10
@@ -319,7 +319,7 @@ class APIClient(RawClient):
                 - skip: int, default 0
                     Skip the n first items.
 
-            - data: ``SelectDataParams``
+            - data: SelectDataParams
                 Configure which data to include in the response.
 
                 - include: bool, default False
@@ -331,16 +331,17 @@ class APIClient(RawClient):
                 - before: string(RFC 3339 timestamp), optional
                     An RFC3339 time describing the exclusive end of the window.
 
-                - rollup: RFC 3339 duration, default None
-                    If specified, roll-up the values into either the full time window (`notBefore` -> `before`) or evenly sized buckets.
+                - rollup: RFC 3339 duration or "window", default None
+                    If RFC 3339 duration is specified, roll-up the values into either the full time window (`notBefore` -> `before`) or evenly sized buckets.
+                    For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_
 
         Returns
         -------
-        ``SelectResponse``
-        
-            - result: ``SelectMapResult``
-                - items: dict of {``InputID``, ``Signal``}
-                - data: ``DataFrame``
+        SelectResponse
+
+            - result: SelectMapResult
+                - items: dict of {InputID, Signal}
+                - data: DataFrame
 
         Example
         -------

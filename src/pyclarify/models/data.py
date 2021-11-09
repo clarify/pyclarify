@@ -1,4 +1,4 @@
-from pydantic import BaseModel, constr, validate_arguments
+from pydantic import BaseModel, constr, validate_arguments, Extra
 from pydantic.fields import Optional
 from typing import List, Union, Dict
 from datetime import datetime, timedelta
@@ -86,6 +86,7 @@ class SignalInfo(BaseModel):
 
     class Config:
         json_encoders = {timedelta: timedelta_isoformat}
+        extra = Extra.forbid
 
 
 class ResourceMetadata(BaseModel):
