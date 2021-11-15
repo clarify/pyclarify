@@ -1,0 +1,63 @@
+{
+  "generic_query_params": {
+    "include": false,
+    "filter": {},
+    "skip": 0
+  },
+  "generic_inclusion_params": {
+    "include": false
+  },
+  "select_items_params": {
+    "items": {},
+    "data": {}
+  },
+  "insert_params": {
+    "integration": "c618rbfqfsj7mjkj0ss1",
+    "data": {
+      "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+      "series": {
+        "signal1": [1.0, 2.0],
+        "signal2": [3.0, 4.0]
+      }
+    }
+  },
+  "save_signals_params": {
+    "integration": "c618rbfqfsj7mjkj0ss1",
+    "inputs": {
+      "signal1": { "name": "signal1" },
+      "signal2": { "name": "signal2" }
+    },
+    "createOnly": true
+  },
+  "publish_signals_params": {
+    "integration": "c618rbfqfsj7mjkj0ss1",
+    "itemsBySignal": {
+      "c618rbfqfsj7mjkj0ss1": { "name": "signal1" },
+      "c618rbfqfsj7mjkj0ss2": { "name": "signal2" }
+    },
+    "createOnly": true
+  },
+  "select_signals_params": {
+    "integration": "c618rbfqfsj7mjkj0ss1",
+    "signals": {},
+    "items": {}
+  },
+  "select_items": {
+    "jsonrpc": "2.0",
+    "method": "clarify.SelectItems",
+    "id": "1",
+    "params": {}
+  },
+  "insert": {
+    "jsonrpc": "2.0",
+    "method": "integration.Insert",
+    "id": "1",
+    "params": {}
+  },
+  "save_signals": {
+    "jsonrpc": "2.0",
+    "method": "integration.SaveSignals",
+    "id": "1",
+    "params": {}
+  }
+}

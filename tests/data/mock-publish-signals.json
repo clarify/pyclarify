@@ -20,8 +20,8 @@
     "id": "1",
     "result": {
       "itemsBySignal": {
-        "some_valid_id": {
-          "id": "some_valid_id",
+        "c618rbfqfsj7mjkj0ss1": {
+          "id": "c618rbfqfsj7mjkj0ss1",
           "created": true,
           "updated": false
         }
@@ -33,8 +33,8 @@
     "id": "1",
     "result": {
       "itemsBySignal": {
-        "some_valid_id": {
-          "id": "some_valid_id",
+        "c618rbfqfsj7mjkj0ss1": {
+          "id": "c618rbfqfsj7mjkj0ss1",
           "created": false,
           "updated": true
         }
@@ -46,13 +46,13 @@
     "id": "1",
     "result": {
       "itemsBySignal": {
-        "some_valid_id_1": {
-          "id": "some_valid_id_1",
+        "c618rbfqfsj7mjkj0ss1": {
+          "id": "c618rbfqfsj7mjkj0ss1",
           "created": true,
           "updated": false
         },
-        "some_valid_id_2": {
-          "id": "some_valid_id_2",
+        "c618rbfqfsj7mjkj0ss2": {
+          "id": "c618rbfqfsj7mjkj0ss2",
           "created": true,
           "updated": false
         }

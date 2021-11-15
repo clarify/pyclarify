@@ -10,26 +10,11 @@ import requests
 import json
 import logging
 import functools
-from typing import List, Dict
 from pydantic import validate_arguments
 
-from pyclarify.models.data import NumericalValuesType, Signal, SignalInfo, DataFrame, InputID
-from pyclarify.models.requests import (
-    SaveResponse,
-    InsertParams,
-    InsertRequest,
-    SaveRequest,
-    PublishRequest,
-    SaveParams,
-    PublishParams,
-    ItemSelect,
-    SignalSelect,
-    SelectResponse,
-    SelectItemRequest,
-    SelectSignalRequest,
-    SignalItemParams,
-    SelectSignalParams
-)
+from pyclarify.models.data import DataFrame
+from pyclarify.models.requests import Request, ApiMethod
+from pyclarify.models.response import Response
 from pyclarify.oauth2 import GetToken
 
 
@@ -174,7 +159,7 @@ class APIClient(RawClient):
 
     @increment_id
     @validate_arguments
-    def insert(self, data: DataFrame) -> SaveResponse:
+    def insert(self, data: DataFrame) -> Response:
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
@@ -223,21 +208,18 @@ class APIClient(RawClient):
              }`
         """
 
-        request_data = InsertRequest(
-            params=InsertParams(
-                integration=self.authentication.integration_id, data=data
-            )
+        request_data = Request(
+            method=ApiMethod.insert,
+            params={"integration": self.authentication.integration_id, "data": data},
         )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
-        return SaveResponse(**result)
+        return Response(**result)
 
     @increment_id
     @validate_arguments
-    def save_signals(
-        self, inputs: Dict[InputID, SignalInfo], created_only: bool
-    ) -> SaveResponse:
+    def save_signals(self, params: dict) -> Response:
         """
         This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
         combination with the integration ID. A List of Signals should be provided with the intended meta-data.
@@ -283,32 +265,31 @@ class APIClient(RawClient):
                 }
              }`
         """
-        request_data = SaveRequest(
-            params=SaveParams(
-                integration=self.authentication.integration_id,
-                inputs=inputs,
-                createdOnly=created_only,
-            )
-        )
+
+        # assert integration parameter
+        if not hasattr(params, "integration"):
+            params["integration"] = self.authentication.integration_id
+
+        request_data = Request(method=ApiMethod.save_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
-        return SaveResponse(**result)
+        return Response(**result)
 
     @increment_id
     @validate_arguments
-    def select_items(self, params: ItemSelect) -> SelectResponse:
+    def select_items(self, params: dict) -> Response:
         """
         Return item data and metadata, mirroring the Clarify API call `item.Select <https://docs.clarify.io/v1.1/reference/itemselect>`_ .
 
         Parameters
         ----------
-        params : ItemSelect
+        params : SelectItemsParams
 
             - items: SelectItemsParams
                 Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.
-                
+
                 - include: bool, default False
                     Set to true to include matched resources in the response.
 
@@ -371,22 +352,22 @@ class APIClient(RawClient):
             >>>    }
             >>> }
         """
-        request_data = SelectItemRequest(params=params)
+        request_data = Request(method=ApiMethod.select_items, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
 
-        return SelectResponse(**result)
+        return Response(**result)
 
     @increment_id
     @validate_arguments
-    def select_signals(self, signals: SelectSignalParams, items: SignalItemParams) -> SelectResponse:
+    def select_signals(self, params: dict) -> Response:
         """
         Return signal data and metadata, mirroring the Clarify API call [admin.selectSignals](https://docs.clarify.io/v1.1/reference/adminselectsignals).
 
         Parameters
         ----------
-        params : SignalSelect
+        params : SelectSignalsParams
             Data model with all the possible settings for method. Fields include
             - `signals`:
                > Select signals to include (data for).
@@ -449,21 +430,18 @@ class APIClient(RawClient):
 
         """
 
-        request_data = SelectSignalRequest(
-            params=SignalSelect(
-                integration=self.authentication.integration_id, 
-                signals=signals,
-                items=items
-            )
-        )
+        # assert integration parameter
+        if not hasattr(params, "integration"):
+            params["integration"] = self.authentication.integration_id
+
+        request_data = Request(method=ApiMethod.select_signals, params=params)
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
-        return SelectResponse(**result)
-
+        return Response(**result)
 
     @increment_id
     @validate_arguments
-    def publish_signals(self, signals: Dict[InputID, SignalInfo], created_only: bool) -> SelectResponse:
+    def publish_signals(self, params: dict) -> Response:
         """
         Publishes a signal to create an item, mirroring the Clarify API call [admin.publishSignals](https://docs.clarify.io/v1.1/reference/adminpublishsignals).
 
@@ -530,14 +508,12 @@ class APIClient(RawClient):
 
         """
 
-        request_data = PublishRequest(
-            params=PublishParams(
-                integration=self.authentication.integration_id, 
-                itemsBySignal=signals,
-                createOnly=created_only
-            )
-        )
+        # assert integration parameter
+        if not hasattr(params, "integration"):
+            params["integration"] = self.authentication.integration_id
+
+        request_data = Request(method=ApiMethod.publish_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
-        return SaveResponse(**result)
+        return Response(**result)
