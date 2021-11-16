@@ -10,8 +10,10 @@ import requests
 import json
 import logging
 import functools
+from pyclarify.__utils__.pagination import data_blocks, item_block
 from typing import List, Dict
 from pydantic import validate_arguments
+import datetime
 
 from pyclarify.models.data import NumericalValuesType, Signal, SignalInfo, DataFrame, InputID
 from pyclarify.models.requests import (
@@ -54,6 +56,26 @@ def increment_id(func):
         return func(*args, **kwargs)
 
     return wrapper
+
+
+def get_data(self, request_data, date_list):
+    dates = len(date_list)
+    for i in range(dates - 1):
+        if i + 2  == dates:
+            request_data.params.data.notBefore = date_list[i]
+            request_data.params.data.before = date_list[i + 1]
+        else:
+            request_data.params.data.notBefore = date_list[i]
+            request_data.params.data.before = date_list[i + 1] - datetime.timedelta(seconds=1)
+
+        if i == 0:
+            result = self.send(request_data.json())
+        else:
+            res = self.send(request_data.json())
+            if res["result"]["data"]["times"]:
+                result["result"]["data"]["times"].extend(res["result"]["data"]["times"])
+                list(result["result"]["data"]["series"].values())[0].extend(list(res["result"]["data"]["series"].values())[0])
+    return result
 
 
 class RawClient:
@@ -296,6 +318,7 @@ class APIClient(RawClient):
 
         return SaveResponse(**result)
 
+
     @increment_id
     @validate_arguments
     def select_items(self, params: ItemSelect) -> SelectResponse:
@@ -371,10 +394,28 @@ class APIClient(RawClient):
             >>>    }
             >>> }
         """
+
         request_data = SelectItemRequest(params=params)
+        num_items = request_data.params.items.limit
+        notbefore = request_data.params.data.notBefore
+        before = request_data.params.data.before
+        date_list, delta = data_blocks(notbefore, before)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+
+        if num_items > 50:
+            item_blocks, remainder = item_block(num_items)
+            for items in range(item_blocks):
+                print(f"Get {(items + 1 ) * 50} items for {delta} days...")
+                request_data.params.items.limit = 50
+                result = get_data(self, request_data, date_list)
+            if request_data.params.items.limit != 0:
+                print(f"Get last {remainder} items for {delta} days...")
+                request_data.params.items.limit = remainder
+                result = get_data(self, request_data, date_list)
+
+        else:
+            result = get_data(self, request_data, date_list)
 
         return SelectResponse(**result)
 

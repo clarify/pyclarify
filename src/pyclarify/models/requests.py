@@ -9,8 +9,6 @@ from pyclarify.__utils__.convert import timedelta_isoformat
 from datetime import timedelta
 
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
-LimitSelectItems = conint(ge=0, le=50)
-LimitSelectSignals = conint(ge=0, le=1000)
 
 
 class ApiMethod(str, Enum):
@@ -106,7 +104,7 @@ class SaveResponse(GenericResponse):
 class SelectItemsParams(BaseModel, extra=Extra.forbid):
     include: Optional[bool] = False
     filter: dict = {}                   # https://docs.clarify.io/v1.1/reference/filtering
-    limit: Optional[LimitSelectItems] = 10
+    limit: Optional[int] = 10
     skip: Optional[int] = 0
 
 
@@ -130,7 +128,7 @@ class SelectItemRequest(JSONRPCRequest):
 class SelectSignalParams(BaseModel, extra=Extra.forbid):
     include: Optional[bool] = False
     filter: dict = {}
-    limit: Optional[LimitSelectSignals] = 50
+    limit: Optional[int] = 10
     skip: Optional[int] = 0
 
 
@@ -161,8 +159,3 @@ class SelectSignalsMapResult(BaseModel, extra=Extra.forbid):
 
 class SelectResponse(GenericResponse):
     result: Optional[SelectMapResult] 
-
-
-
-
-
