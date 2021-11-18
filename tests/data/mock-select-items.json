@@ -11,8 +11,8 @@
         "id": "1",
         "result": {
           "items": {
-            "id1": {
-              "name": "signal_name_1",
+            "c5vv12btaf7d0qbk0l0g": {
+              "name": "c5vv12btaf7d0qbk0l0g",
               "type": "numeric",
               "description": "Test description",
               "labels": {
@@ -39,7 +39,7 @@
           "include": true,
           "filter": {
             "id": {
-              "$in": ["item_id"]
+              "$in": ["c5vv12btaf7d0qbk0l0g"]
             }
           }
         },
@@ -55,8 +55,8 @@
         "id": "1",
         "result": {
           "items": {
-            "item_id": {
-              "name": "signal_name_1",
+            "c5vv12btaf7d0qbk0l0g": {
+              "name": "c5vv12btaf7d0qbk0l0g",
               "type": "numeric",
               "description": "Test description",
               "labels": { "data-source": [], "location": [] },
@@ -90,7 +90,7 @@
           "include": true,
           "filter": {
             "id": {
-              "$in": ["item_id"]
+              "$in": ["c5vv12btaf7d0qbk0l0g"]
             }
           }
         },
@@ -127,7 +127,7 @@
           "include": false,
           "filter": {
             "id": {
-              "$in": ["item_id"]
+              "$in": ["c5vv12btaf7d0qbk0l0g"]
             }
           }
         },

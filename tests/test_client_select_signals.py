@@ -17,30 +17,26 @@ limitations under the License.
 import sys
 import unittest
 import json
-from datetime import datetime, timedelta
 from unittest.mock import patch
-import requests
 
 # Standard library imports...
 
 
 sys.path.insert(1, "src/")
-from pyclarify import APIClient, Signal, SignalInfo, DataFrame
-from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
-from pyclarify.models.requests import SignalSelect, SignalItemParams, SelectSignalParams, SelectMapResult
+from pyclarify import APIClient, Signal, SignalInfo
+
 
 class TestClarifySelectSignalsClient(unittest.TestCase):
     def setUp(self):
         self.client = APIClient("./tests/data/mock-clarify-credentials.json")
 
-        with open("./tests/data/mock-signals-select.json") as f:
+        with open("./tests/data/mock-select-signals.json") as f:
             self.mock_data = json.load(f)
         self.test_cases = self.mock_data["test_cases"]
 
         with open("./tests/data/mock-client-common.json") as f:
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
-
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -50,12 +46,7 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        items = SignalItemParams(**test_case["args"]["items"])
-        signals = SelectSignalParams(**test_case["args"]["signals"])
-        response_data = self.client.select_signals(signals=signals, items=items)
-
-        # Assert return type
-        self.assertIsInstance(response_data.result, SelectMapResult)
+        response_data = self.client.select_signals(test_case["args"])
 
         # Assert content of return
         for key, signal in response_data.result.signals.items():
@@ -63,7 +54,6 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
 
         for key, item in response_data.result.items.items():
             self.assertIsInstance(item, SignalInfo)
-
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -73,20 +63,11 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        items = SignalItemParams(**test_case["args"]["items"])
-        signals = SelectSignalParams(**test_case["args"]["signals"])
-        filtered_ids = signals.filter["id"]["$in"]
-
-        # Assert only quering 1 signal
-        self.assertEqual(len(filtered_ids), 1)
-
-        response_data = self.client.select_signals(signals=signals, items=items)
+        response_data = self.client.select_signals(test_case["args"])
 
         # Assert content of return
         for key, signal in response_data.result.signals.items():
             self.assertIsInstance(signal, Signal)
-            self.assertEqual(filtered_ids[0], key)
-
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -96,12 +77,10 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        items = SignalItemParams(**test_case["args"]["items"])
-        signals = SelectSignalParams(**test_case["args"]["signals"])
-        response_data = self.client.select_signals(signals=signals, items=items)
+        response_data = self.client.select_signals(test_case["args"])
 
         # Assert no Signals
-        self.assertEqual(response_data.result.signals, {})       
+        self.assertEqual(response_data.result.signals, {})
 
         # Assert content of return
         for key, item in response_data.result.items.items():
@@ -115,12 +94,10 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        items = SignalItemParams(**test_case["args"]["items"])
-        signals = SelectSignalParams(**test_case["args"]["signals"])
-        response_data = self.client.select_signals(signals=signals, items=items)
+        response_data = self.client.select_signals(test_case["args"])
 
         # Assert no Items
-        self.assertEqual(response_data.result.items, {})  
+        self.assertEqual(response_data.result.items, {})
 
         # Assert content of return
         for key, signal in response_data.result.signals.items():
@@ -134,10 +111,8 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        items = SignalItemParams(**test_case["args"]["items"])
-        signals = SelectSignalParams(**test_case["args"]["signals"])
-        response_data = self.client.select_signals(signals=signals, items=items)
+        response_data = self.client.select_signals(test_case["args"])
 
         # Assert no Items or Signals
-        self.assertEqual(response_data.result.items, {})  
-        self.assertEqual(response_data.result.signals, {})  
+        self.assertEqual(response_data.result.items, {})
+        self.assertEqual(response_data.result.signals, {})

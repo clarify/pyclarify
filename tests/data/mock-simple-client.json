@@ -1,16 +1,16 @@
 {
-    "data_source": "https://dashplatform.readme.io/docs/reference-dapi-endpoints-json-rpc-endpoints",
-    "mock_url": "http://seed-1.testnet.networks.dash.org:3000/",
-    "mock_method": "getBlockHash",
-    "mock_params": {
-        "height": 1
-    },
-    "mock_RPC_payload": {
-        "jsonrpc": "2.0",
-        "method": "getBlockHash",
-        "id": 1,
-        "params": {
-            "height": 1
-        }
+  "data_source": "https://dashplatform.readme.io/docs/reference-dapi-endpoints-json-rpc-endpoints",
+  "mock_url": "http://seed-1.testnet.networks.dash.org:3000/",
+  "mock_method": "getBlockHash",
+  "mock_params": {
+    "height": 1
+  },
+  "mock_RPC_payload": {
+    "jsonrpc": "2.0",
+    "method": "getBlockHash",
+    "id": 1,
+    "params": {
+      "height": 1
     }
+  }
 }
