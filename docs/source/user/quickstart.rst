@@ -66,8 +66,6 @@ Example: Add Signal metadata
 |
 
 .. image:: metadata.png
-    :width: 374px
-    :height: 687px
     :scale: 50 %
 
 |
@@ -107,8 +105,6 @@ Now, you should be able to see the newly created signal in Clarify.
 |
 
 .. image:: signal_data.png
-    :width: 1166px
-    :height: 308px
     :scale: 50 %
 
 |
@@ -117,9 +113,9 @@ Now, you should be able to see the newly created signal in Clarify.
 Get Signal meta-data
 ====================
 This call retrieves signal meta-data and/or exposed items.
-This call is a recommend step before doing a publishSignals call. For more information click `here <https://docs.clarify.io/v1.1/reference/adminselectsignals>_`
+This call is a recommend step before doing a publishSignals call. For more information click `here <https://docs.clarify.io/v1.1/reference/adminselectsignals>`_ .
 
-Step 1: Create the params dictionary. Click `here ~pyclarify.client.APIClient.select_signals.params`__ for more information.
+Step 1: Create the params dictionary. See :py:meth:`~pyclarify.client.APIClient.select_signals.params` for more information.
 
 Step 2: Call the :py:meth:`~pyclarify.client.APIClient.select_signals` method.
 
@@ -175,7 +171,7 @@ Get Item data
 To get the data from an item, you must first have an integration with reading access.
 Once reading access is enabled, use the :py:meth:`~pyclarify.client.APIClient.select_items` method.
 
-Step 1: Create the params dictionary. Click `here ~pyclarify.client.APIClient.select_items.params`__ for more information.
+Step 1: Create the params dictionary. For more information see :py:meth:`~pyclarify.client.APIClient.select_items.params` .
 
 Step 2: Call the :py:meth:`~pyclarify.client.APIClient.select_items` method.
 

@@ -177,19 +177,19 @@ class APIClient(RawClient):
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
-        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/v1.1/reference/adminpublishsignals>`_ .
+        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/v1.1/reference/integrationinsert>`_ .
 
         Parameters
         ----------
         data : DataFrame
             Dataframe with the fields:
 
-                - times:  List of timestamps 
-                    Either as a python datetime or as YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
+            - times:  List of timestamps 
+                Either as a python datetime or as YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
 
-                - values: Dict[InputID, List[Union[None, float, int]]]
-                    Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
-                    To omit a value for a given timestamp in times, use the value null.
+            - values: Dict[InputID, List[Union[None, float, int]]]
+                Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
+                To omit a value for a given timestamp in times, use the value null.
 
         Returns
         -------
@@ -205,8 +205,10 @@ class APIClient(RawClient):
             and created: bool (True if a new instance was created, False is the instance already existed).
 
             In case of the error the method return a pydantic model with the following format:
+
             Example
             -------
+
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> result = None
@@ -215,6 +217,7 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {'data.series.id': ['not same length as times']})
                 >>> )
+
         """
         request_data = Request(
             method=ApiMethod.insert,
@@ -239,12 +242,13 @@ class APIClient(RawClient):
             - inputs: Dict[InputID, List[SignalInfo]]
                 The SignalInfo object contains metadata for a signal. Click `here <https://docs.clarify.io/reference/signal>`_ for more information.
 
-        created_only: bool
-            If True then only published signal with input id = <input_ID> will be updated. 
-            If False then all the signal with input id = <input_ID> will be updated
+            - created_only: bool
+                If True then only published signal with input id = <input_ID> will be updated. 
+                If False then all the signal with input id = <input_ID> will be updated
         
-        Example
-        -------
+            Example
+            -------
+
                 >>> signal = SignalInfo(
                 >>>    name = "Home temperature",
                 >>>    description = "Temperature in the bedroom",
@@ -262,11 +266,11 @@ class APIClient(RawClient):
                 >>> result = SaveSignalsResponse(signalsByInput={<INPUT_ID>: SaveSummary(id=<signal_id>, created=True, updated=False)})
                 >>> error = None
 
-
            WhereSaveSummary is a pydantic model with field id: str (Unique ID of the saved instance), 
            created: bool (True if a new instance was created) and updated: bool (True if the metadata where updated).
 
            In case of the error the method return a pydantic model with the following format:
+
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> result = None
@@ -275,6 +279,7 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
+
         """
 
         # assert integration parameter
@@ -296,7 +301,8 @@ class APIClient(RawClient):
 
         Parameters
         ----------
-        params : Dict["items":{}, "data":{}]
+        params : Dict
+            Fields include:
 
             - items: dict
                 Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.
@@ -327,10 +333,11 @@ class APIClient(RawClient):
 
                 - rollup: RFC 3339 duration or "window", default None
                     If RFC 3339 duration is specified, roll-up the values into either the full time window (`notBefore` -> `before`) or evenly sized buckets.
-                    For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_
+                    For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_ .
 
             Example
             -------
+
                 >>> {
                 >>>    "items": {"include":True, "filter": {"id": {"$in": [<item_id>]}} },
                 >>>    "data": {"include": True}
@@ -339,43 +346,43 @@ class APIClient(RawClient):
         Returns
         -------
         Response
-            In case of a valid return value, returns a pydantic model with the following format:
+            In case of a valid return value, returns a pydantic model with the following (example) format:
 
-        Example
-        -------
-            >>> {
-            >>>    "jsonrpc": "2.0",
-            >>>    "id": "1",
-            >>>    "result": {
-            >>>    "items": {
-            >>>        "item_id": {
-            >>>        "name": "item_name",
-            >>>        "type": "numeric"
-            >>>        }
-            >>>    },
-            >>>    "data": {
-            >>>        "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
-            >>>        "series": {
-            >>>        "item_id_avg": [0.0, 0.0],
-            >>>        "item_id_count": [20.0, 20.0],
-            >>>        "item_id_max": [0.0, 0.0],
-            >>>        "item_id_min": [0.0, 0.0],
-            >>>        "item_id_sum": [0.0, 0.0]
-            >>>        }
-            >>>    },
-            >>>    "error": null
-            >>>    }
-            >>> }
+                >>> {
+                >>>    "jsonrpc": "2.0",
+                >>>    "id": "1",
+                >>>    "result": {
+                >>>    "items": {
+                >>>        "item_id": {
+                >>>        "name": "item_name",
+                >>>        "type": "numeric"
+                >>>        }
+                >>>    },
+                >>>    "data": {
+                >>>        "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+                >>>        "series": {
+                >>>        "item_id_avg": [0.0, 0.0],
+                >>>        "item_id_count": [20.0, 20.0],
+                >>>        "item_id_max": [0.0, 0.0],
+                >>>        "item_id_min": [0.0, 0.0],
+                >>>        "item_id_sum": [0.0, 0.0]
+                >>>        }
+                >>>    },
+                >>>    "error": null
+                >>>    }
+                >>> }
 
-        In case of the error the method return a pydantic model with the following format:
-            >>> jsonrpc = '2.0'
-            >>> id = '1'
-            >>> result = None
-            >>> error = Error(
-            >>>         code = '-32602',
-            >>>         message = 'Invalid params', 
-            >>>         data = ErrorData(trace = <trace_id>, params = {})
-            >>> )
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
+
         """
         request_data = Request(method=ApiMethod.select_items, params=params)
 
@@ -403,8 +410,7 @@ class APIClient(RawClient):
                         Set to true to render item meta-data in the response.
 
                     - filter: dict
-                        Example:
-                        >>> {"id":{"$in": ["<signal_id1>", "<signal_id2>"]}}
+                        Click `here <https://docs.clarify.io/v1.1/reference/filtering>`_ for more information.
 
                     - limit: int, min=0, max= 1000, default=50
                         Limit number of signals (max value to be adjusted after tuning).
@@ -454,6 +460,7 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
+
         """
 
         # assert integration parameter
@@ -474,19 +481,20 @@ class APIClient(RawClient):
 
         Parameters
         ----------
-        params : Dict["itemsBySignal": dict, "createOnly": bool]
+        params : Dict
             
-            - itemsBySignal: Dict["signal_id": SignalInfo]
+            - itemsBySignal: Dict
                 Select signals to include (data for).
-                
 
-        Example
-        -------
+                - signal_id: SignalInfo
+
+            - createOnly: bool
+                
             >>> {
             >>>    "itemsBySignal": {
             >>>         "<signal_id>" : SignalInfo(name= "Home temperature")
             >>>     },
-                    "createOnly": False
+            >>>     "createOnly": False
             >>> }
 
         Returns
@@ -503,7 +511,7 @@ class APIClient(RawClient):
                 >>>     "error": null
                 >>> }
 
-        In case of the error the method return a pydantic model with the following format:
+            In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
@@ -513,6 +521,7 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
+
         """
 
         # assert integration parameter
