@@ -26,3 +26,11 @@ Requests module
    :members:
    :undoc-members:
    :show-inheritance:
+
+Response module
+---------------
+
+.. automodule:: pyclarify.models.response
+   :members:
+   :undoc-members:
+   :show-inheritance:
