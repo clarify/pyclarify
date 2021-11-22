@@ -51,17 +51,25 @@
   <ul>
 <li><a class="reference internal" href="#">PyClarify quickstart</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li><a class="reference internal" href="#interact-with-clarify">Interact with Clarify</a><ul>
-<li><a class="reference internal" href="#write-data-into-clarify">Write data into Clarify</a></li>
-<li><a class="reference internal" href="#an-example">An example</a></li>
+<li><a class="reference internal" href="#interact-with-clarify">Interact with Clarify</a></li>
+<li><a class="reference internal" href="#add-signal-metadata">Add Signal metadata</a><ul>
+<li><a class="reference internal" href="#example-add-signal-metadata">Example: Add Signal metadata</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#add-signal-metadata">Add signal metadata</a><ul>
-<li><a class="reference internal" href="#id1">An example</a></li>
+<li><a class="reference internal" href="#write-data-into-clarify">Write data into Clarify</a><ul>
+<li><a class="reference internal" href="#example-write-data-into-clarify">Example: Write data into Clarify</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#get-signal-meta-data">Get Signal meta-data</a><ul>
+<li><a class="reference internal" href="#example-get-signal-meta-data">Example: Get Signal meta-data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#publish-signals">Publish signals</a><ul>
+<li><a class="reference internal" href="#example-publish-signals">Example: Publish signals</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#get-item-data">Get Item data</a><ul>
-<li><a class="reference internal" href="#id2">An example</a></li>
+<li><a class="reference internal" href="#example-get-item-data">Example: Get Item data</a></li>
 </ul>
 </li>
 </ul>
@@ -159,27 +167,68 @@ tutorial</a>.</p>
 <section id="interact-with-clarify">
 <h2>Interact with Clarify<a class="headerlink" href="#interact-with-clarify" title="Permalink to this headline">¶</a></h2>
 <p>PyClarify provides a fast and easy way to write data into Clarify, create or update the signal metadata and get item data, by using the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient" title="pyclarify.client.APIClient"><code class="xref py py-meth docutils literal notranslate"><span class="pre">APIClient()</span></code></a> class.
-This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with the Clarify API.</p>
+This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.</p>
 <p>For information about the Clarify Developer documentation
 click <a class="reference external" href="https://docs.clarify.io/reference">here</a>.</p>
-<section id="write-data-into-clarify">
-<h3>Write data into Clarify<a class="headerlink" href="#write-data-into-clarify" title="Permalink to this headline">¶</a></h3>
-<p>Step 1: Create a <a class="reference internal" href="../reference/models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame()</span></code></a> model.</p>
-<p>Step 2: Use the  <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.insert" title="pyclarify.client.APIClient.insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">insert()</span></code></a> method which takes as an argument the DataFrame model.</p>
 </section>
-<section id="an-example">
-<h3>An example<a class="headerlink" href="#an-example" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify.client</span> <span class="kn">import</span> <span class="n">APIClient</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify.models.data</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<section id="add-signal-metadata">
+<h2>Add Signal metadata<a class="headerlink" href="#add-signal-metadata" title="Permalink to this headline">¶</a></h2>
+<p>To add or update the signal’s metadata, use the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.save_signals" title="pyclarify.client.APIClient.save_signals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_signals()</span></code></a> method.</p>
+<p>Step 1 : Create a <a class="reference internal" href="../reference/models.html#pyclarify.models.data.SignalInfo" title="pyclarify.models.data.SignalInfo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SignalInfo()</span></code></a> model.</p>
+<p>Step 2 : Use the  <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.save_signals" title="pyclarify.client.APIClient.save_signals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_signals()</span></code></a> method.</p>
+<section id="example-add-signal-metadata">
+<h3>Example: Add Signal metadata<a class="headerlink" href="#example-add-signal-metadata" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">APIClient</span><span class="p">,</span> <span class="n">SignalInfo</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2021-03-11T21:50:06Z&quot;</span><span class="p">,</span> <span class="s2">&quot;2021-04-11T21:50:06Z&quot;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">series</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]},</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">signal_1</span> <span class="o">=</span> <span class="n">SignalInfo</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]},</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">signal_2</span> <span class="o">=</span> <span class="n">SignalInfo</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Home humidity&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Humidity in the living room&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]},</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">save_signals</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="n">signal_1</span><span class="p">,</span> <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="n">signal_2</span><span class="p">},</span> <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<a class="reference internal image-reference" href="../_images/metadata.png"><img alt="../_images/metadata.png" src="../_images/metadata.png" style="width: 187.0px; height: 343.5px;" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</section>
+</section>
+<section id="write-data-into-clarify">
+<h2>Write data into Clarify<a class="headerlink" href="#write-data-into-clarify" title="Permalink to this headline">¶</a></h2>
+<p>Step 1: Create a <a class="reference internal" href="../reference/models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataFrame()</span></code></a> model.</p>
+<p>Step 2: Use the  <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.insert" title="pyclarify.client.APIClient.insert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">insert()</span></code></a> method which takes as an argument the DataFrame model.</p>
+<section id="example-write-data-into-clarify">
+<h3>Example: Write data into Clarify<a class="headerlink" href="#example-write-data-into-clarify" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">APIClient</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">series</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span> <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">5</span><span class="p">]},</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">times</span><span class="o">=</span><span class="p">[</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;2021-11-09T21:50:06Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;2021-11-10T21:50:06Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;2021-11-12T21:50:06Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;2021-11-12T21:50:06Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>Now, you should be able to see the newly created signal in Clarify.</p>
@@ -192,36 +241,51 @@ click <a class="reference external" href="https://docs.clarify.io/reference">her
 </div>
 </section>
 </section>
-<section id="add-signal-metadata">
-<h2>Add signal metadata<a class="headerlink" href="#add-signal-metadata" title="Permalink to this headline">¶</a></h2>
-<p>To add or update the signal’s metadata, use the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.save_signals" title="pyclarify.client.APIClient.save_signals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_signals()</span></code></a> method.</p>
-<p>Step 1 : Create a <a class="reference internal" href="../reference/models.html#pyclarify.models.data.Signal" title="pyclarify.models.data.Signal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Signal()</span></code></a> model.</p>
-<p>Step 2 : Use the  <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.save_signals" title="pyclarify.client.APIClient.save_signals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save_signals()</span></code></a> method,
-which takes <em>inputs</em> as a first argument. This is a dictionary, where the key is ‘signal-id-name’
-and the value is ‘signal model’. The second argument is created_only which when set to False will
-not ignore all existing signals.</p>
-<section id="id1">
-<h3>An example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify.client</span> <span class="kn">import</span> <span class="n">APIClient</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify.models.data</span> <span class="kn">import</span> <span class="n">Signal</span>
+<section id="get-signal-meta-data">
+<h2>Get Signal meta-data<a class="headerlink" href="#get-signal-meta-data" title="Permalink to this headline">¶</a></h2>
+<p>This call retrieves signal meta-data and/or exposed items.
+This call is a recommend step before doing a publishSignals call. For more information click <cite>here &lt;https://docs.clarify.io/v1.1/reference/adminselectsignals&gt;_</cite></p>
+<p>Step 1: Create the params dictionary. Click <a href="#id1"><span class="problematic" id="id2">`here ~pyclarify.client.APIClient.select_signals.params`__</span></a> for more information.</p>
+<p>Step 2: Call the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.select_signals" title="pyclarify.client.APIClient.select_signals"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_signals()</span></code></a> method.</p>
+<section id="example-get-signal-meta-data">
+<h3>Example: Get Signal meta-data<a class="headerlink" href="#example-get-signal-meta-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">APIClient</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;id1&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Clarify is awesome!&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Office&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Trondheim&quot;</span><span class="p">]},</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">select_signals</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;signals&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;signal_id&gt;&quot;</span><span class="p">]}},</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">save_signals</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="n">signal</span><span class="p">},</span> <span class="n">created_only</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-<div class="line-block">
-<div class="line"><br /></div>
-</div>
-<a class="reference internal image-reference" href="../_images/metadata.png"><img alt="../_images/metadata.png" src="../_images/metadata.png" style="width: 187.0px; height: 343.5px;" /></a>
-<div class="line-block">
-<div class="line"><br /></div>
+</section>
+</section>
+<section id="publish-signals">
+<h2>Publish signals<a class="headerlink" href="#publish-signals" title="Permalink to this headline">¶</a></h2>
+<p>Publish one or more Signals by providing the SignalInfo, which will add metadata to your created Item.</p>
+<section id="example-publish-signals">
+<h3>Example: Publish signals<a class="headerlink" href="#example-publish-signals" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">APIClient</span><span class="p">,</span> <span class="n">SignalInfo</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">publish_signals</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;itemsBySignal&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;&lt;signal_id&gt;&quot;</span><span class="p">:</span> <span class="n">SignalInfo</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;&lt;item_name&gt;&quot;</span><span class="p">)},</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
 </div>
 </section>
 </section>
@@ -229,31 +293,21 @@ not ignore all existing signals.</p>
 <h2>Get Item data<a class="headerlink" href="#get-item-data" title="Permalink to this headline">¶</a></h2>
 <p>To get the data from an item, you must first have an integration with reading access.
 Once reading access is enabled, use the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.select_items" title="pyclarify.client.APIClient.select_items"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_items()</span></code></a> method.</p>
-<p>Step 1: Create a <code class="xref py py-meth docutils literal notranslate"><span class="pre">ItemSelect()</span></code> model. This model uses three other models.
-The <a class="reference internal" href="../reference/models.html#pyclarify.models.requests.SelectItemsParams" title="pyclarify.models.requests.SelectItemsParams"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SelectItemsParams()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">SelectTimesParams()</span></code> and the <code class="xref py py-meth docutils literal notranslate"><span class="pre">SelectSeriesParams()</span></code>.</p>
-<p>Step 2: Call the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.select_items" title="pyclarify.client.APIClient.select_items"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_items()</span></code></a> method with ItemSelect as an argument.</p>
-<section id="id2">
-<h3>An example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify.client</span> <span class="kn">import</span> <span class="n">APIClient</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify.models.requests</span> <span class="kn">import</span> <span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">ItemSelect</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">SelectItemsParams</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">SelectTimesParams</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">SelectSeriesParams</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<p>Step 1: Create the params dictionary. Click <a href="#id1"><span class="problematic" id="id3">`here ~pyclarify.client.APIClient.select_items.params`__</span></a> for more information.</p>
+<p>Step 2: Call the <a class="reference internal" href="../reference/client.html#pyclarify.client.APIClient.select_items" title="pyclarify.client.APIClient.select_items"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_items()</span></code></a> method.</p>
+<section id="example-get-item-data">
+<h3>Example: Get Item data<a class="headerlink" href="#example-get-item-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">APIClient</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">items</span> <span class="o">=</span> <span class="n">SelectItemsParams</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">]}})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">times</span> <span class="o">=</span> <span class="n">SelectTimesParams</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">notBefore</span><span class="o">=</span><span class="s2">&quot;2021-03-10T21:50:06Z&quot;</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">&quot;2021-04-11T22:50:06Z&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">select_items</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;item_id&gt;&quot;</span><span class="p">]}}},</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">series</span> <span class="o">=</span> <span class="n">SelectSeriesParams</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="n">ItemSelect</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">items</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="n">times</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="n">series</span><span class="p">)</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">select_items</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>
@@ -271,17 +325,25 @@ The <a class="reference internal" href="../reference/models.html#pyclarify.model
   <ul>
 <li><a class="reference internal" href="#">PyClarify quickstart</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li><a class="reference internal" href="#interact-with-clarify">Interact with Clarify</a><ul>
-<li><a class="reference internal" href="#write-data-into-clarify">Write data into Clarify</a></li>
-<li><a class="reference internal" href="#an-example">An example</a></li>
+<li><a class="reference internal" href="#interact-with-clarify">Interact with Clarify</a></li>
+<li><a class="reference internal" href="#add-signal-metadata">Add Signal metadata</a><ul>
+<li><a class="reference internal" href="#example-add-signal-metadata">Example: Add Signal metadata</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#add-signal-metadata">Add signal metadata</a><ul>
-<li><a class="reference internal" href="#id1">An example</a></li>
+<li><a class="reference internal" href="#write-data-into-clarify">Write data into Clarify</a><ul>
+<li><a class="reference internal" href="#example-write-data-into-clarify">Example: Write data into Clarify</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#get-signal-meta-data">Get Signal meta-data</a><ul>
+<li><a class="reference internal" href="#example-get-signal-meta-data">Example: Get Signal meta-data</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#publish-signals">Publish signals</a><ul>
+<li><a class="reference internal" href="#example-publish-signals">Example: Publish signals</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#get-item-data">Get Item data</a><ul>
-<li><a class="reference internal" href="#id2">An example</a></li>
+<li><a class="reference internal" href="#example-get-item-data">Example: Get Item data</a></li>
 </ul>
 </li>
 </ul>
