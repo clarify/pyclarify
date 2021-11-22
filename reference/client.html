@@ -146,7 +146,7 @@ limitations under the License.</p>
 <dd><p>Bases: <a class="reference internal" href="#pyclarify.client.RawClient" title="pyclarify.client.RawClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.client.RawClient</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.APIClient.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.models.response.Response</span></span></span><a class="headerlink" href="#pyclarify.client.APIClient.insert" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.insert" title="Permalink to this definition">¶</a></dt>
 <dd><p>This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
 the integration ID. If no signal with the given combination exists, an empty signal is created.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/integrationinsert">integration.insert</a> .</p>
@@ -200,14 +200,14 @@ and created: bool (True if a new instance was created, False is the instance alr
 </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.APIClient.publish_signals">
-<span class="sig-name descname"><span class="pre">publish_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.models.response.Response</span></span></span><a class="headerlink" href="#pyclarify.client.APIClient.publish_signals" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">publish_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.publish_signals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Publishes a signal to create an item.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminpublishsignals">admin.publishSignals</a> .</p>
 <dl class="field-list simple">
@@ -265,14 +265,14 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.APIClient.save_signals">
-<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.models.response.Response</span></span></span><a class="headerlink" href="#pyclarify.client.APIClient.save_signals" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.save_signals" title="Permalink to this definition">¶</a></dt>
 <dd><p>This call inserts metadata for one or multiple signals. The signals are uniquely identified by its &lt;input_ID&gt;.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/integrationsavesignals">integration.saveSignals</a> .</p>
 <dl class="field-list simple">
@@ -331,14 +331,14 @@ updated: bool (True if the metadata where updated).</p>
 </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.APIClient.select_items">
-<span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.models.response.Response</span></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_items" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return item data and metadata.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/itemselect">clarify.selectItems</a> .</p>
 <dl class="field-list simple">
@@ -453,14 +453,14 @@ For more information click <a class="reference external" href="https://docs.clar
 </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.APIClient.select_signals">
-<span class="sig-name descname"><span class="pre">select_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.models.response.Response</span></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_signals" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">select_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_signals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return signal meta-data and/or exposed items. This call is a recommend step before doing a publish_signals call.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminselectsignals">admin.selectSignals</a> .</p>
 <dl class="field-list simple">
@@ -547,7 +547,7 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 </p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
 </dd>
 </dl>
 </dd></dl>
