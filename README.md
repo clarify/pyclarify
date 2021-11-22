@@ -15,17 +15,21 @@
 - [Pattern Recognition tutorial](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Pattern%20Recognition.ipynb)
 - [Google Cloud Hosting tutorial](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Google%20Cloud%20Hosting.ipynb)
 
-# Install and import PyClarify
-
-> $ pip install pyclarify
-
-> import pyclarify
-
 # Prerequisites
 
-- You'll need to know a bit of Python. For a refresher, see the [Python tutoria](https://docs.python.org/tutorial/).
+In order to start using the Python SDK, you need
 
-- You'll need your Clarify credentials.
+- To know a bit of Python. For a refresher, see the [Official Python tutorial](https://docs.python.org/tutorial/).
+- Python3 (>= 3.7) and pip.
+- Credentials from a Clarify integration. See the [introduction notebook](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb) for a complete introduction.
+
+# Install and import PyClarify
+
+To install this package:
+
+> $ pip install pyclarify
+>
+> import pyclarify
 
 # Interact with Clarify
 
@@ -157,3 +161,11 @@ Step 2: Call the `select_items` method.
     >>>     }
     >>> )
     >>> print(response.json())
+
+# Changelog
+
+Wondering about upcoming or previous changes to the SDK? Take a look at the [CHANGELOG](https://github.com/clarify/pyclarify/blob/main/CHENGELOG.md).
+
+# Contributing
+
+Want to contribute? Check out [CONTRIBUTING](https://github.com/clarify/pyclarify/blob/main/CONTRIBUTING.md).
