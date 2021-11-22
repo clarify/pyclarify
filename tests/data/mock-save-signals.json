@@ -1,61 +1,44 @@
-
 {
-    "RPC_ERRORS": [
-        "-32000",
-        "-32001",
-        "-32002",
-        "-32003",
-        "-32009",
-        "-32015",
-        "-32600",
-        "-32601",
-        "-32602",
-        "-32603",
-        "-32700"
-    ],
-    "mock_access_token": "token1234567890",
-    "mock_response_1": {
-        "jsonrpc": "2.0",
-        "id": "1",
-        "result": {
-            "signalsByInput": {
-                "test_123_id": {
-                    "id": "test_123_id", 
-                    "created": true
-                }
-            }
-        },
-        "error": null
+  "mock_response_1": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "signalsByInput": {
+        "c5vv12btaf7d0qbk0l0g": {
+          "id": "c5vv12btaf7d0qbk0l0g",
+          "created": true,
+          "updated": false
+        }
+      }
     },
-    "mock_response_2": {
-        "jsonrpc": "2.0",
-        "id": "1",
-        "result": {
-            "signalsByInput": {
-                "test_1234_id__a": {
-                    "id": "test_1234_id__a", 
-                    "created": true,
-                    "updated": false
-                }
-            }
-        },
-        "error": null
+    "error": null
+  },
+  "mock_response_2": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "signalsByInput": {
+        "c5vv12btaf7d0qbk0l0e": {
+          "id": "c5vv12btaf7d0qbk0l0e",
+          "created": true,
+          "updated": false
+        }
+      }
     },
-    "mock_response_3": {
-        "jsonrpc": "2.0",
-        "id": "1",
-        "result": {
-            "signalsByInput": {
-                "test_1234_id__a": {
-                    "id": "test_1234_id__a", 
-                    "created": false,
-                    "updated": true
-                }
-            }
-        },
-        "error": null
-    }
-
-
+    "error": null
+  },
+  "mock_response_3": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "signalsByInput": {
+        "c5vv12btaf7d0qbk0l0g": {
+          "id": "c5vv12btaf7d0qbk0l0g",
+          "created": false,
+          "updated": true
+        }
+      }
+    },
+    "error": null
+  }
 }
-

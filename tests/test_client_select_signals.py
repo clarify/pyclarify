@@ -21,15 +21,16 @@ from unittest.mock import patch
 
 # Standard library imports...
 
+
 sys.path.insert(1, "src/")
-from pyclarify import APIClient, SignalInfo, DataFrame
+from pyclarify import APIClient, Signal, SignalInfo
 
 
-class TestClarifySelectItemsClient(unittest.TestCase):
+class TestClarifySelectSignalsClient(unittest.TestCase):
     def setUp(self):
         self.client = APIClient("./tests/data/mock-clarify-credentials.json")
 
-        with open("./tests/data/mock-select-items.json") as f:
+        with open("./tests/data/mock-select-signals.json") as f:
             self.mock_data = json.load(f)
         self.test_cases = self.mock_data["test_cases"]
 
@@ -39,58 +40,79 @@ class TestClarifySelectItemsClient(unittest.TestCase):
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_get_all_item_metadata(self, client_req_mock, get_token_mock):
+    def test_empty_request(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[0]
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_items(test_case["args"])
+        response_data = self.client.select_signals(test_case["args"])
 
-        for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], SignalInfo)
+        # Assert content of return
+        for key, signal in response_data.result.signals.items():
+            self.assertIsInstance(signal, Signal)
+
+        for key, item in response_data.result.items.items():
+            self.assertIsInstance(item, SignalInfo)
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_get_items_metadata_data_agg(self, client_req_mock, get_token_mock):
+    def test_filter_id(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_items(test_case["args"])
+        response_data = self.client.select_signals(test_case["args"])
 
-        for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], SignalInfo)
-        self.assertIsInstance(response_data.result.data, DataFrame)
+        # Assert content of return
+        for key, signal in response_data.result.signals.items():
+            self.assertIsInstance(signal, Signal)
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_get_items_data_only(self, client_req_mock, get_token_mock):
+    def test_only_items(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[2]
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_items(test_case["args"])
+        response_data = self.client.select_signals(test_case["args"])
 
-        self.assertIsNone(response_data.result.items)
-        self.assertIsInstance(response_data.result.data, DataFrame)
+        # Assert no Signals
+        self.assertEqual(response_data.result.signals, {})
+
+        # Assert content of return
+        for key, item in response_data.result.items.items():
+            self.assertIsInstance(item, SignalInfo)
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_get_items_data_metadata_empty(self, client_req_mock, get_token_mock):
+    def test_only_signals(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[3]
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_items(test_case["args"])
+        response_data = self.client.select_signals(test_case["args"])
 
-        self.assertIsNone(response_data.result.items)
-        self.assertIsNone(response_data.result.data)
-        self.assertIsNone(response_data.error)
+        # Assert no Items
+        self.assertEqual(response_data.result.items, {})
 
+        # Assert content of return
+        for key, signal in response_data.result.signals.items():
+            self.assertIsInstance(signal, Signal)
 
-if __name__ == "__main__":
-    unittest.main()
+    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_include_false(self, client_req_mock, get_token_mock):
+        test_case = self.test_cases[4]
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: test_case["response"]
+
+        response_data = self.client.select_signals(test_case["args"])
+
+        # Assert no Items or Signals
+        self.assertEqual(response_data.result.items, {})
+        self.assertEqual(response_data.result.signals, {})
