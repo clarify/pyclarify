@@ -155,12 +155,14 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><em>DataFrame</em></a>) – <p>Dataframe with the fields:</p>
 <ul class="simple">
 <li><dl class="simple">
-<dt>times:  List of timestamps</dt><dd><p>Either as a python datetime or as YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.</p>
+<dt>times:  List of timestamps</dt><dd><p>Either as a python datetime or as
+YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>values: Dict[InputID, List[Union[None, float, int]]]</dt><dd><p>Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
+<dt>values: Dict[InputID, List[Union[None, float, int]]]</dt><dd><p>Map of inputid to Array of data points to insert by Input ID.
+The length of each array must match that of the times array.
 To omit a value for a given timestamp in times, use the value null.</p>
 </dd>
 </dl>
@@ -172,7 +174,9 @@ To omit a value for a given timestamp in times, use the value null.</p>
 <dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">InsertResponse</span><span class="p">(</span><span class="n">signalsByInput</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">InsertSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">signal_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">InsertResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">signalsByInput</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">InsertSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">signal_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
@@ -186,7 +190,10 @@ and created: bool (True if a new instance was created, False is the instance alr
 <span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data.series.id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;not same length as times&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data.series.id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;not same length as times&#39;</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
 </pre></div>
 </div>
@@ -232,7 +239,13 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;jsonrpc&quot;</span><span class="p">:</span> <span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;itemsBySignal&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;&lt;signal_id&gt;&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;item_id&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;created&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="s2">&quot;updated&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">}}</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;itemsBySignal&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;&lt;signal_id&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;item_id&gt;&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="s2">&quot;created&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="s2">&quot;updated&quot;</span><span class="p">:</span> <span class="n">false</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">},</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">null</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
@@ -266,13 +279,14 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>params</strong> (<em>Dict</em><em>[</em><em>inputs</em><em>, </em><em>createOnly</em><em>]</em>) – <ul class="simple">
 <li><dl class="simple">
-<dt>inputs: Dict[InputID, List[SignalInfo]]</dt><dd><p>The SignalInfo object contains metadata for a signal. Click <a class="reference external" href="https://docs.clarify.io/reference/signal">here</a> for more information.</p>
+<dt>inputs: Dict[InputID, List[SignalInfo]]</dt><dd><p>The SignalInfo object contains metadata for a signal.
+Click <a class="reference external" href="https://docs.clarify.io/reference/signal">here</a> for more information.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>created_only: bool</dt><dd><p>If True then only published signal with input id = &lt;input_ID&gt; will be updated.
-If False then all the signal with input id = &lt;input_ID&gt; will be updated</p>
+<dt>created_only: bool</dt><dd><p>If True then only published signal with input id equal to input_id will be updated.
+If False then all the signal with input id equal to input_id will be updated</p>
 </dd>
 </dl>
 </li>
@@ -289,17 +303,20 @@ If False then all the signal with input id = &lt;input_ID&gt; will be updated</p
 </p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><blockquote>
-<div><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SaveSignalsResponse</span><span class="p">(</span><span class="n">signalsByInput</span><span class="o">=</span><span class="p">{</span><span class="o">&lt;</span><span class="n">INPUT_ID</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=&lt;</span><span class="n">signal_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SaveSignalsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">signalsByInput</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="o">&lt;</span><span class="n">INPUT_ID</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=&lt;</span><span class="n">signal_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>             <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>WhereSaveSummary is a pydantic model with field id: str (Unique ID of the saved instance),
-created: bool (True if a new instance was created) and updated: bool (True if the metadata where updated).</p>
+created: bool (True if a new instance was created) and
+updated: bool (True if the metadata where updated).</p>
 <p>In case of the error the method return a pydantic model with the following format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
@@ -329,7 +346,8 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <dd class="field-odd"><p><strong>params</strong> (<em>Dict</em>) – <p>Fields include:</p>
 <ul class="simple">
 <li><dl class="simple">
-<dt>items: dict</dt><dd><p>Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.</p>
+<dt>items: dict</dt><dd><p>Query which items to select, and configure inclusion or exclusion of meta-data in the response.
+By default, no meta-data is included.</p>
 <ul>
 <li><dl class="simple">
 <dt>include: bool, default False</dt><dd><p>Set to true to include matched resources in the response.</p>
@@ -374,7 +392,8 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 </dl>
 </li>
 <li><dl class="simple">
-<dt>rollup: RFC 3339 duration or “window”, default None</dt><dd><p>If RFC 3339 duration is specified, roll-up the values into either the full time window (<cite>notBefore</cite> -&gt; <cite>before</cite>) or evenly sized buckets.
+<dt>rollup: RFC 3339 duration or “window”, default None</dt><dd><p>If RFC 3339 duration is specified, roll-up the values into either the full time window
+(<cite>notBefore</cite> -&gt; <cite>before</cite>) or evenly sized buckets.
 For more information click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/data-query">here</a> .</p>
 </dd>
 </dl>
