@@ -135,11 +135,11 @@ Example: Get Signal meta-data
     >>>         "signals": {
     >>>             "include": True,
     >>>             "filter": {"id": {"$in": ["<signal_id>"]}},
-    >>>     },
-    >>>     "items": {
-    >>>         "include": True,
-    >>>     },
-    >>> }
+    >>>         },
+    >>>         "items": {
+    >>>             "include": True,
+    >>>         },
+    >>>     }
     >>> )
     >>> print(response.json())
 
@@ -158,9 +158,9 @@ Example: Publish signals
     >>> client = APIClient("./clarify-credentials.json")
 
     >>> response = client.publish_signals(
-    >>> params={
-    >>>     "itemsBySignal": {"<signal_id>": SignalInfo(name="<item_name>")},
-    >>>     "createOnly": False,
+    >>>     params={
+    >>>         "itemsBySignal": {"<signal_id>": SignalInfo(name="<item_name>")},
+    >>>         "createOnly": False,
     >>>     }
     >>> )
     >>> print(response.json())
