@@ -41,14 +41,13 @@ def increment_id(func):
     Parameters
     ----------
     func : function
-        Decorator wraps around function using @increment_id
+        Decorator wraps around function using @increment_id.
 
     Returns
     -------
     func : function
         returns the wrapped function.
     """
-
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         args[0].current_id += 1  # args[0] = self
@@ -69,18 +68,18 @@ class RawClient:
 
     def authenticate(self, clarify_credentials):
         """
-        Authenticates the client by using the GetToken class (see oauth2.py)
+        Authenticates the client by using the GetToken class (see oauth2.py).
 
         Parameters
         ----------
         clarify_credentials : str/dict
             The path to the clarify_credentials.json downloaded from the Clarify app,
-            or json/dictionary of the content in clarify_credentials.json
+            or json/dictionary of the content in clarify_credentials.json.
 
         Returns
         -------
         bool
-            True if valid credentials is passed otherwise false
+            True if valid credentials is passed otherwise False.
         """
         try:
             self.authentication = GetToken(clarify_credentials)
@@ -113,7 +112,6 @@ class RawClient:
         JSON
             JSON dictionary response.
         """
-
         logging.info(f"--> {self.base_url}, req: {payload}")
         response = requests.post(self.base_url, data=payload, headers=self.headers)
         logging.info(f"<-- {self.base_url} ({response.status_code})")
@@ -143,7 +141,7 @@ class RawClient:
         Returns
         -------
         str
-            payload string in JSONRPC format
+            Payload string in JSONRPC format.
         """
         payload = {
             "jsonrpc": "2.0",
@@ -179,51 +177,45 @@ class APIClient(RawClient):
         """
         This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created.
-        Meta-data for the signal can be provided either through the admin panel or using
-        the 'add_metadata' call.
-        Mirrors the API call (`integration.Insert`)[https://docs.clarify.io/reference#integrationinsert] for a single
-        signal.
+        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/v1.1/reference/adminpublishsignals>`_ .
 
         Parameters
         ----------
         data : DataFrame
-             Dataframe with the field
-             -   `times`:  List of timestamps (either as a python datetime or as `YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]]`
-                to insert.
-             - `values` : Dict[InputID, List[Union[None, float, int]]]
-                Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
-                To omit a value for a given timestamp in times, use the value null.
+            Dataframe with the fields:
+
+                - times:  List of timestamps 
+                    Either as a python datetime or as YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
+
+                - values: Dict[InputID, List[Union[None, float, int]]]
+                    Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
+                    To omit a value for a given timestamp in times, use the value null.
 
         Returns
         -------
-        SaveResponse
-            In case of a valid return value, returns a pydantic model with the following format
-            `{
-                "jsonrpc": "2.0",
-                "id": 1,
-                "result":
-                  { "signalsByInput": map of Input ID => SaveResult
-                  }
-             }`
-           Where `SaveResult` is a pydantic model with field `id: str` (Unique ID of the saved instance)
-           and  `created: bool` (True if a new instance was created).
-           In case of the error the method return a pydantic model with the following format:
-            `{
-                "jsonrpc": "2.0",
-                "id": 1,
-                "error": {
-                    "code": -32602,
-                    "message": "Invalid params",
-                    "data": {
-                        "trace": "00000000000000000000",
-                        "params": {
-                            "integration": ["required"]
-                        }
-                    }
-                }
-             }`
-        """
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
 
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = InsertResponse(signalsByInput = {'id': InsertSummary(id = <signal_id>, created = True)}) 
+                >>> error = None
+
+            Where InsertSummary is a pydantic model with field id: str (unique ID of the saved instance)
+            and created: bool (True if a new instance was created, False is the instance already existed).
+
+            In case of the error the method return a pydantic model with the following format:
+            Example
+            -------
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {'data.series.id': ['not same length as times']})
+                >>> )
+        """
         request_data = Request(
             method=ApiMethod.insert,
             params={"integration": self.authentication.integration_id, "data": data},
@@ -237,49 +229,52 @@ class APIClient(RawClient):
     @validate_arguments
     def save_signals(self, params: dict) -> Response:
         """
-        This call inserts metadata for multiple signals. The signals are uniquely identified by its input ID in
-        combination with the integration ID. A List of Signals should be provided with the intended meta-data.
-        Mirrors the API call (`integration.SaveSignals`)[https://docs.clarify.io/reference#integrationsavesignals] for
-        multiple signals.
+        This call inserts metadata for one or multiple signals. The signals are uniquely identified by its <input_ID>.
+        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/v1.1/reference/integrationsavesignals>`_ .
 
         Parameters
         ----------
-        inputs: Dict[InputID, List[SignalInfo]]
-            List of `SignalInfo` objects. The `SignalInfo` object contains metadata for a signal.
-            Check (`SignalInfo (API)`)[https://docs.clarify.io/reference#signalinfo]
+        params: Dict[inputs, createOnly]
+
+            - inputs: Dict[InputID, List[SignalInfo]]
+                The SignalInfo object contains metadata for a signal. Click `here <https://docs.clarify.io/reference/signal>`_ for more information.
 
         created_only: bool
-            If set to true, skip update of information for existing signals. That is, all Input IDs that map to
-            existing signals are silently ignored.
+            If True then only published signal with input id = <input_ID> will be updated. 
+            If False then all the signal with input id = <input_ID> will be updated
+        
+        Example
+        -------
+                >>> signal = SignalInfo(
+                >>>    name = "Home temperature",
+                >>>    description = "Temperature in the bedroom",
+                >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+                >>> )
+                >>> params = {"inputs": {"id1": signal, "createOnly": False}
 
         Returns
         -------
-        SaveResponse
-            In case of a valid return value, returns a pydantic model with the following format
-            `{
-                "jsonrpc": "2.0",
-                "id": 1,
-                "result":
-                  { "signalsByInput": map of Input ID => SaveResult
-                  }
-             }`
-           Where `SaveResult` is a pydantic model with field `id: str` (Unique ID of the saved instance)
-           and  `created: bool` (True if a new instance was created).
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = SaveSignalsResponse(signalsByInput={<INPUT_ID>: SaveSummary(id=<signal_id>, created=True, updated=False)})
+                >>> error = None
+
+
+           WhereSaveSummary is a pydantic model with field id: str (Unique ID of the saved instance), 
+           created: bool (True if a new instance was created) and updated: bool (True if the metadata where updated).
+
            In case of the error the method return a pydantic model with the following format:
-            `{
-                "jsonrpc": "2.0",
-                "id": 1,
-                "error": {
-                    "code": -32602,
-                    "message": "Invalid params",
-                    "data": {
-                        "trace": "00000000000000000000",
-                        "params": {
-                            "integration": ["required"]
-                        }
-                    }
-                }
-             }`
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
         """
 
         # assert integration parameter
@@ -290,20 +285,20 @@ class APIClient(RawClient):
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
-
         return Response(**result)
 
     @increment_id
     @validate_arguments
     def select_items(self, params: dict) -> Response:
         """
-        Return item data and metadata, mirroring the Clarify API call `item.Select <https://docs.clarify.io/v1.1/reference/itemselect>`_ .
+        Return item data and metadata.
+        Mirroring the Clarify API call `clarify.selectItems <https://docs.clarify.io/v1.1/reference/itemselect>`_ .
 
         Parameters
         ----------
-        params : SelectItemsParams
+        params : Dict["items":{}, "data":{}]
 
-            - items: SelectItemsParams
+            - items: dict
                 Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.
 
                 - include: bool, default False
@@ -318,7 +313,7 @@ class APIClient(RawClient):
                 - skip: int, default 0
                     Skip the n first items.
 
-            - data: SelectDataParams
+            - data: dict
                 Configure which data to include in the response.
 
                 - include: bool, default False
@@ -334,23 +329,27 @@ class APIClient(RawClient):
                     If RFC 3339 duration is specified, roll-up the values into either the full time window (`notBefore` -> `before`) or evenly sized buckets.
                     For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_
 
+            Example
+            -------
+                >>> {
+                >>>    "items": {"include":True, "filter": {"id": {"$in": [<item_id>]}} },
+                >>>    "data": {"include": True}
+                >>> }
+
         Returns
         -------
-        SelectResponse
-
-            - result: SelectMapResult
-                - items: dict of {InputID, Signal}
-                - data: DataFrame
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
 
         Example
         -------
-            >>> "response": {
+            >>> {
             >>>    "jsonrpc": "2.0",
             >>>    "id": "1",
             >>>    "result": {
             >>>    "items": {
             >>>        "item_id": {
-            >>>        "name": "signal_name_1",
+            >>>        "name": "item_name",
             >>>        "type": "numeric"
             >>>        }
             >>>    },
@@ -367,6 +366,16 @@ class APIClient(RawClient):
             >>>    "error": null
             >>>    }
             >>> }
+
+        In case of the error the method return a pydantic model with the following format:
+            >>> jsonrpc = '2.0'
+            >>> id = '1'
+            >>> result = None
+            >>> error = Error(
+            >>>         code = '-32602',
+            >>>         message = 'Invalid params', 
+            >>>         data = ErrorData(trace = <trace_id>, params = {})
+            >>> )
         """
         request_data = Request(method=ApiMethod.select_items, params=params)
 
@@ -379,71 +388,72 @@ class APIClient(RawClient):
     @validate_arguments
     def select_signals(self, params: dict) -> Response:
         """
-        Return signal data and metadata, mirroring the Clarify API call [admin.selectSignals](https://docs.clarify.io/v1.1/reference/adminselectsignals).
+        Return signal meta-data and/or exposed items. This call is a recommend step before doing a publish_signals call.
+        Mirroring the Clarify API call `admin.selectSignals <https://docs.clarify.io/v1.1/reference/adminselectsignals>`_ .
 
         Parameters
         ----------
-        params : SelectSignalsParams
-            Data model with all the possible settings for method. Fields include
-            - `signals`:
-               > Select signals to include (data for).
-              - `include` | **bool** | default: False
-                > Set to true to render item meta-data in the response.
-              - `filter` | **Dict**:
-                > Rest-layer style item filter (potentially with limited query options).
-                > Example: {"id":{"$in": ["<id1>", "<id2>"]}}
-              - `limit` | **int(min:0,max:1000)** | default=`50`
-                > Limit number of signals (max value to be adjusted after tuning).
-              - `skip` | **int**| default=`0`
-                > Skip first N signals.
-            - `items`:
-              > Configure item inclusion.
-              - `include` | bool | default=False
-                > Set to true to include items exposed by the selected signals.
-        Example:
-            {
-                "signals": {
-                    "include": true,
-                    "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
-                },
-                "items": {
-                    "include": true
-                }
-            }
+        params : Dict
+            Data model with all the possible settings for method. Fields include:
+
+            - signals: dict
+                    Select signals to include (data for).
+
+                    - include: bool, default: False
+                        Set to true to render item meta-data in the response.
+
+                    - filter: dict
+                        Example:
+                        >>> {"id":{"$in": ["<signal_id1>", "<signal_id2>"]}}
+
+                    - limit: int, min=0, max= 1000, default=50
+                        Limit number of signals (max value to be adjusted after tuning).
+
+                    - skip: int, default=0
+                        Skip first N signals.
+
+            - items: dict
+                Configure item inclusion.
+
+                - include: bool, default=False
+                    Set to true to include items exposed by the selected signals.
+
+            Example
+            -------
+                >>> {
+                >>>     "signals": {
+                >>>         "include": true,
+                >>>         "filter": {"id":{"$in": ["<signal_id1>", "<signal_id2>"]}}
+                >>>     },
+                >>>     "items": {
+                >>>         "include": true
+                >>>     }
+                >>> }
 
         Returns
         -------
-        SelectResponse
-        Data model with the results of the method. Data and metadata can be found in the `result` field, with the
-        attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
-        `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
-        and aggregates (in case the parameter `series.aggregates` is set to True).
-        Example:
-            {
-                "jsonrpc": "2.0",
-                "result": {
-                    "items": {
-                        "<id1>": {
-                            // Signal schema
-                        },
-                        "<id2>": {
-                            //  Signal schema
-                        },
-                    },
-                    "data": { // DataFrame schema
-                        "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
-                        "series": {
-                            "count": [2, 1, 1],
-                            "sum":[20.4, 0.0, 2.7],
-                            "min": [10.2, 0.0, 2.7],
-                            "max":[10.2, 0.0, 2.7],
-                            "<id1>": [10.2, null, 2.7],
-                            "<id2>": [10.2, 0.0, null]
-                        }
-                    }
-                }
-            }
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
 
+                >>> {
+                >>>     "jsonrpc": "2.0", 
+                >>>     "id": "1",
+                >>>     "result": {
+                >>>        "signals": {"<signal_id>": Signal},
+                >>>        "items": {"<item_id>": SignalInfo},
+                >>>     "error": null
+                >>> }
+
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
         """
 
         # assert integration parameter
@@ -459,69 +469,50 @@ class APIClient(RawClient):
     @validate_arguments
     def publish_signals(self, params: dict) -> Response:
         """
-        Publishes a signal to create an item, mirroring the Clarify API call [admin.publishSignals](https://docs.clarify.io/v1.1/reference/adminpublishsignals).
+        Publishes a signal to create an item.
+        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/v1.1/reference/adminpublishsignals>`_ .
 
         Parameters
         ----------
-        signals : SelectSignalParams
-            Data model with all the possible settings for method. Fields include
-            - `signals`:
-               > Select signals to include (data for).
-              - `include` | **bool** | default: False
-                > Set to true to render item meta-data in the response.
-              - `filter` | **Dict**:
-                > Rest-layer style item filter (potentially with limited query options).
-                > Example: {"id":{"$in": ["<id1>", "<id2>"]}}
-              - `limit` | **int(min:0,max:1000)** | default=`50`
-                > Limit number of signals (max value to be adjusted after tuning).
-              - `skip` | **int**| default=`0`
-                > Skip first N signals.
-            - `created_only`  | **bool** | default: False
-              > If set to true, skip update of information for existing items.
-        Example:
-            {
-                "signals": {
-                    "include": true,
-                    "filter": {"id":{"$in": ["<id1>", "<id2>"]}}
-                },
-                "items": {
-                    "include": true
-                }
-            }
+        params : Dict["itemsBySignal": dict, "createOnly": bool]
+            
+            - itemsBySignal: Dict["signal_id": SignalInfo]
+                Select signals to include (data for).
+                
+
+        Example
+        -------
+            >>> {
+            >>>    "itemsBySignal": {
+            >>>         "<signal_id>" : SignalInfo(name= "Home temperature")
+            >>>     },
+                    "createOnly": False
+            >>> }
 
         Returns
         -------
-        SelectResponse
-        Data model with the results of the method. Data and metadata can be found in the `result` field, with the
-        attributes `result.items` as a dictionary of `item_id` and `Signal` (definition can be found in
-        `pyclarify.models.data`) and `result.data` containing a `DataFrame` object with the resulting data
-        and aggregates (in case the parameter `series.aggregates` is set to True).
-        Example:
-            {
-                "jsonrpc": "2.0",
-                "result": {
-                    "items": {
-                        "<id1>": {
-                            // Signal schema
-                        },
-                        "<id2>": {
-                            //  Signal schema
-                        },
-                    },
-                    "data": { // DataFrame schema
-                        "times": ["2020-01-01T01:00:00Z","2020-01-01T02:00:00Z","2020-01-01T03:00:00Z"],
-                        "series": {
-                            "count": [2, 1, 1],
-                            "sum":[20.4, 0.0, 2.7],
-                            "min": [10.2, 0.0, 2.7],
-                            "max":[10.2, 0.0, 2.7],
-                            "<id1>": [10.2, null, 2.7],
-                            "<id2>": [10.2, 0.0, null]
-                        }
-                    }
-                }
-            }
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
 
+                >>> {
+                >>>     "jsonrpc": "2.0",
+                >>>     "id": "1", 
+                >>>     "result": {
+                >>>         "itemsBySignal": {"<signal_id>": {"id": "<item_id>", "created": true, "updated": false}}
+                >>>     }, 
+                >>>     "error": null
+                >>> }
+
+        In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
         """
 
         # assert integration parameter
