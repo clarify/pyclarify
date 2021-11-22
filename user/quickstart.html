@@ -200,6 +200,7 @@ click <a class="reference external" href="https://docs.clarify.io/reference">her
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
+<p>Now, you should be able to see the newly created signal in Clarify.</p>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
@@ -258,11 +259,11 @@ This call is a recommend step before doing a publishSignals call. For more infor
 <span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;signals&quot;</span><span class="p">:</span> <span class="p">{</span>
 <span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;signal_id&gt;&quot;</span><span class="p">]}},</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
@@ -279,9 +280,9 @@ This call is a recommend step before doing a publishSignals call. For more infor
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">publish_signals</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;itemsBySignal&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;&lt;signal_id&gt;&quot;</span><span class="p">:</span> <span class="n">SignalInfo</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;&lt;item_name&gt;&quot;</span><span class="p">)},</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;itemsBySignal&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;&lt;signal_id&gt;&quot;</span><span class="p">:</span> <span class="n">SignalInfo</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;&lt;item_name&gt;&quot;</span><span class="p">)},</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
