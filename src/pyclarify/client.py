@@ -292,7 +292,6 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
-
         """
 
         # assert integration parameter
@@ -352,7 +351,6 @@ class APIClient(RawClient):
 
             Example
             -------
-
                 >>> {
                 >>>    "items": {"include":True, "filter": {"id": {"$in": [<item_id>]}} },
                 >>>    "data": {"include": True}
@@ -475,7 +473,6 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
-
         """
 
         # assert integration parameter
@@ -512,7 +509,7 @@ class APIClient(RawClient):
             >>>     "createOnly": False
             >>> }
 
-        Returns
+        Example
         -------
         Response
             In case of a valid return value, returns a pydantic model with the following format:
@@ -543,6 +540,30 @@ class APIClient(RawClient):
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
 
+        Returns
+        -------
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> {
+                >>>     "jsonrpc": "2.0",
+                >>>     "id": "1", 
+                >>>     "result": {
+                >>>         "itemsBySignal": {"<signal_id>": {"id": "<item_id>", "created": true, "updated": false}}
+                >>>     }, 
+                >>>     "error": null
+                >>> }
+
+        In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
         """
 
         # assert integration parameter

@@ -63,6 +63,8 @@ Example: Add Signal metadata
     >>> )
     >>> print(response.json())
 
+Now, you should be able to see the newly created signal in Clarify.
+
 |
 
 .. image:: metadata.png
