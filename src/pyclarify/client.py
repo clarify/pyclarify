@@ -292,6 +292,7 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
+
         """
 
         # assert integration parameter
@@ -351,6 +352,7 @@ class APIClient(RawClient):
 
             Example
             -------
+
                 >>> {
                 >>>    "items": {"include":True, "filter": {"id": {"$in": [<item_id>]}} },
                 >>>    "data": {"include": True}
@@ -473,6 +475,7 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
+
         """
 
         # assert integration parameter
@@ -554,7 +557,7 @@ class APIClient(RawClient):
                 >>>     "error": null
                 >>> }
 
-        In case of the error the method return a pydantic model with the following format:
+            In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
@@ -564,6 +567,7 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
+
         """
 
         # assert integration parameter
