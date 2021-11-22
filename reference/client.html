@@ -149,12 +149,11 @@ limitations under the License.</p>
 <span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.models.response.Response</span></span></span><a class="headerlink" href="#pyclarify.client.APIClient.insert" title="Permalink to this definition">¶</a></dt>
 <dd><p>This call inserts data for one signal. The signal is uniquely identified by its input ID in combination with
 the integration ID. If no signal with the given combination exists, an empty signal is created.
-Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminpublishsignals">integration.insert</a> .</p>
+Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/integrationinsert">integration.insert</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><em>DataFrame</em></a>) – <p>Dataframe with the fields:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><dl class="simple">
 <dt>times:  List of timestamps</dt><dd><p>Either as a python datetime or as YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.</p>
 </dd>
@@ -167,7 +166,6 @@ To omit a value for a given timestamp in times, use the value null.</p>
 </dl>
 </li>
 </ul>
-</div></blockquote>
 </p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -180,8 +178,8 @@ To omit a value for a given timestamp in times, use the value null.</p>
 </div>
 <p>Where InsertSummary is a pydantic model with field id: str (unique ID of the saved instance)
 and created: bool (True if a new instance was created, False is the instance already existed).</p>
-<p>In case of the error the method return a pydantic model with the following format:
-.. rubric:: Example</p>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
@@ -207,30 +205,29 @@ and created: bool (True if a new instance was created, False is the instance alr
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminpublishsignals">admin.publishSignals</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>params</strong> (<em>Dict</em><em>[</em><em>&quot;itemsBySignal&quot;: dict</em><em>, </em><em>&quot;createOnly&quot;: bool</em><em>]</em>) – <ul class="simple">
+<dd class="field-odd"><p><strong>params</strong> (<em>Dict</em>) – <ul class="simple">
 <li><dl class="simple">
-<dt>itemsBySignal: Dict[“signal_id”: SignalInfo]</dt><dd><p>Select signals to include (data for).</p>
+<dt>itemsBySignal: Dict</dt><dd><p>Select signals to include (data for).</p>
+<ul>
+<li><p>signal_id: SignalInfo</p></li>
+</ul>
 </dd>
 </dl>
 </li>
+<li><p>createOnly: bool</p></li>
 </ul>
-</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;itemsBySignal&quot;</span><span class="p">:</span> <span class="p">{</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;&lt;signal_id&gt;&quot;</span> <span class="p">:</span> <span class="n">SignalInfo</span><span class="p">(</span><span class="n">name</span><span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">},</span>
-<span class="go">        &quot;createOnly&quot;: False</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="kc">False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul>
-<li><p><em>Response</em> –</p>
-<p>In case of a valid return value, returns a pydantic model with the following format:</p>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;jsonrpc&quot;</span><span class="p">:</span> <span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
@@ -241,17 +238,21 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
 </pre></div>
 </div>
-</li>
-<li><p><em>In case of the error the method return a pydantic model with the following format</em> – &gt;&gt;&gt; jsonrpc = ‘2.0’
-&gt;&gt;&gt; id = ‘1’
-&gt;&gt;&gt; result = None
-&gt;&gt;&gt; error = Error(
-&gt;&gt;&gt;         code = ‘-32602’,
-&gt;&gt;&gt;         message = ‘Invalid params’,
-&gt;&gt;&gt;         data = ErrorData(trace = &lt;trace_id&gt;, params = {})
-&gt;&gt;&gt; )</p></li>
-</ul>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
 </p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -263,20 +264,19 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/integrationsavesignals">integration.saveSignals</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> (<em>Dict</em><em>[</em><em>inputs</em><em>, </em><em>createOnly</em><em>]</em>) – <ul>
+<dd class="field-odd"><p><strong>params</strong> (<em>Dict</em><em>[</em><em>inputs</em><em>, </em><em>createOnly</em><em>]</em>) – <ul class="simple">
 <li><dl class="simple">
 <dt>inputs: Dict[InputID, List[SignalInfo]]</dt><dd><p>The SignalInfo object contains metadata for a signal. Click <a class="reference external" href="https://docs.clarify.io/reference/signal">here</a> for more information.</p>
 </dd>
 </dl>
 </li>
-</ul>
-</p></li>
-<li><p><strong>created_only</strong> (<em>bool</em>) – If True then only published signal with input id = &lt;input_ID&gt; will be updated.
-If False then all the signal with input id = &lt;input_ID&gt; will be updated</p></li>
-</ul>
+<li><dl class="simple">
+<dt>created_only: bool</dt><dd><p>If True then only published signal with input id = &lt;input_ID&gt; will be updated.
+If False then all the signal with input id = &lt;input_ID&gt; will be updated</p>
 </dd>
 </dl>
+</li>
+</ul>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span> <span class="o">=</span> <span class="n">SignalInfo</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
@@ -286,23 +286,22 @@ If False then all the signal with input id = &lt;input_ID&gt; will be updated</p
 <span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="n">signal</span><span class="p">,</span> <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><blockquote>
+<div><p>In case of a valid return value, returns a pydantic model with the following format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SaveSignalsResponse</span><span class="p">(</span><span class="n">signalsByInput</span><span class="o">=</span><span class="p">{</span><span class="o">&lt;</span><span class="n">INPUT_ID</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=&lt;</span><span class="n">signal_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
-</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><p>Response</p>
+</div></blockquote>
 <p>WhereSaveSummary is a pydantic model with field id: str (Unique ID of the saved instance),
 created: bool (True if a new instance was created) and updated: bool (True if the metadata where updated).</p>
-<dl>
-<dt>In case of the error the method return a pydantic model with the following format:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
@@ -312,9 +311,10 @@ created: bool (True if a new instance was created) and updated: bool (True if th
 <span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -326,7 +326,8 @@ created: bool (True if a new instance was created) and updated: bool (True if th
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/itemselect">clarify.selectItems</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>params</strong> (<em>Dict</em><em>[</em><em>&quot;items&quot;:{}</em><em>, </em><em>&quot;data&quot;:{}</em><em>]</em>) – <ul class="simple">
+<dd class="field-odd"><p><strong>params</strong> (<em>Dict</em>) – <p>Fields include:</p>
+<ul class="simple">
 <li><dl class="simple">
 <dt>items: dict</dt><dd><p>Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.</p>
 <ul>
@@ -374,7 +375,7 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 </li>
 <li><dl class="simple">
 <dt>rollup: RFC 3339 duration or “window”, default None</dt><dd><p>If RFC 3339 duration is specified, roll-up the values into either the full time window (<cite>notBefore</cite> -&gt; <cite>before</cite>) or evenly sized buckets.
-For more information click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/data-query">here</a></p>
+For more information click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/data-query">here</a> .</p>
 </dd>
 </dl>
 </li>
@@ -393,13 +394,7 @@ For more information click <a class="reference external" href="https://docs.clar
 </p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>In case of a valid return value, returns a pydantic model with the following format:</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Response</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
+<dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following (example) format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;jsonrpc&quot;</span><span class="p">:</span> <span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
@@ -425,8 +420,8 @@ For more information click <a class="reference external" href="https://docs.clar
 <span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
 </pre></div>
 </div>
-<dl>
-<dt>In case of the error the method return a pydantic model with the following format:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
@@ -436,6 +431,10 @@ For more information click <a class="reference external" href="https://docs.clar
 <span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
 </pre></div>
 </div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -458,8 +457,7 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 </dl>
 </li>
 <li><dl class="simple">
-<dt>filter: dict</dt><dd><p>Example:
-&gt;&gt;&gt; {“id”:{“$in”: [“&lt;signal_id1&gt;”, “&lt;signal_id2&gt;”]}}</p>
+<dt>filter: dict</dt><dd><p>Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/filtering">here</a> for more information.</p>
 </dd>
 </dl>
 </li>
