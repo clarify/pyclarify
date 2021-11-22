@@ -185,10 +185,12 @@ class APIClient(RawClient):
             Dataframe with the fields:
 
             - times:  List of timestamps 
-                Either as a python datetime or as YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
+                Either as a python datetime or as 
+                YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
 
             - values: Dict[InputID, List[Union[None, float, int]]]
-                Map of inputid to Array of data points to insert by Input ID. The length of each array must match that of the times array.
+                Map of inputid to Array of data points to insert by Input ID. 
+                The length of each array must match that of the times array.
                 To omit a value for a given timestamp in times, use the value null.
 
         Returns
@@ -198,7 +200,9 @@ class APIClient(RawClient):
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
-                >>> result = InsertResponse(signalsByInput = {'id': InsertSummary(id = <signal_id>, created = True)}) 
+                >>> result = InsertResponse(
+                >>>             signalsByInput = {'id': InsertSummary(id = <signal_id>, created = True)}
+                >>> ) 
                 >>> error = None
 
             Where InsertSummary is a pydantic model with field id: str (unique ID of the saved instance)
@@ -215,7 +219,10 @@ class APIClient(RawClient):
                 >>> error = Error(
                 >>>         code = '-32602',
                 >>>         message = 'Invalid params', 
-                >>>         data = ErrorData(trace = <trace_id>, params = {'data.series.id': ['not same length as times']})
+                >>>         data = ErrorData(
+                >>>                     trace = <trace_id>, 
+                >>>                     params = {'data.series.id': ['not same length as times']}
+                >>>         )
                 >>> )
 
         """
@@ -240,11 +247,12 @@ class APIClient(RawClient):
         params: Dict[inputs, createOnly]
 
             - inputs: Dict[InputID, List[SignalInfo]]
-                The SignalInfo object contains metadata for a signal. Click `here <https://docs.clarify.io/reference/signal>`_ for more information.
+                The SignalInfo object contains metadata for a signal. 
+                Click `here <https://docs.clarify.io/reference/signal>`_ for more information.
 
             - created_only: bool
-                If True then only published signal with input id = <input_ID> will be updated. 
-                If False then all the signal with input id = <input_ID> will be updated
+                If True then only published signal with input id equal to input_id will be updated. 
+                If False then all the signal with input id equal to input_id will be updated
         
             Example
             -------
@@ -263,13 +271,18 @@ class APIClient(RawClient):
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
-                >>> result = SaveSignalsResponse(signalsByInput={<INPUT_ID>: SaveSummary(id=<signal_id>, created=True, updated=False)})
+                >>> result = SaveSignalsResponse(
+                >>>             signalsByInput={
+                >>>                 <INPUT_ID>: SaveSummary(id=<signal_id>, created=True, updated=False)
+                >>>              }
+                >>>          )
                 >>> error = None
 
-           WhereSaveSummary is a pydantic model with field id: str (Unique ID of the saved instance), 
-           created: bool (True if a new instance was created) and updated: bool (True if the metadata where updated).
+            WhereSaveSummary is a pydantic model with field id: str (Unique ID of the saved instance), 
+            created: bool (True if a new instance was created) and
+            updated: bool (True if the metadata where updated).
 
-           In case of the error the method return a pydantic model with the following format:
+            In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
@@ -305,7 +318,8 @@ class APIClient(RawClient):
             Fields include:
 
             - items: dict
-                Query which items to select, and configure inclusion or exclusion of meta-data in the response. By default, no meta-data is included.
+                Query which items to select, and configure inclusion or exclusion of meta-data in the response.
+                By default, no meta-data is included.
 
                 - include: bool, default False
                     Set to true to include matched resources in the response.
@@ -332,7 +346,8 @@ class APIClient(RawClient):
                     An RFC3339 time describing the exclusive end of the window.
 
                 - rollup: RFC 3339 duration or "window", default None
-                    If RFC 3339 duration is specified, roll-up the values into either the full time window (`notBefore` -> `before`) or evenly sized buckets.
+                    If RFC 3339 duration is specified, roll-up the values into either the full time window
+                    (`notBefore` -> `before`) or evenly sized buckets.
                     For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_ .
 
             Example
@@ -506,7 +521,13 @@ class APIClient(RawClient):
                 >>>     "jsonrpc": "2.0",
                 >>>     "id": "1", 
                 >>>     "result": {
-                >>>         "itemsBySignal": {"<signal_id>": {"id": "<item_id>", "created": true, "updated": false}}
+                >>>         "itemsBySignal": {
+                >>>             "<signal_id>": {
+                >>>                 "id": "<item_id>",
+                >>>                 "created": true, 
+                >>>                 "updated": false
+                >>>             }
+                >>>         }
                 >>>     }, 
                 >>>     "error": null
                 >>> }
