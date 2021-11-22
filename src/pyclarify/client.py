@@ -552,7 +552,13 @@ class APIClient(RawClient):
                 >>>     "jsonrpc": "2.0",
                 >>>     "id": "1", 
                 >>>     "result": {
-                >>>         "itemsBySignal": {"<signal_id>": {"id": "<item_id>", "created": true, "updated": false}}
+                >>>         "itemsBySignal": {
+                >>>             "<signal_id>": {
+                >>>                 "id": "<item_id>",
+                >>>                 "created": true, 
+                >>>                 "updated": false
+                >>>             }
+                >>>         }
                 >>>     }, 
                 >>>     "error": null
                 >>> }
