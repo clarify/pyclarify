@@ -164,7 +164,7 @@ Step 2: Call the `select_items` method.
 
 # Changelog
 
-Wondering about upcoming or previous changes to the SDK? Take a look at the [CHANGELOG](https://github.com/clarify/pyclarify/blob/main/CHENGELOG.md).
+Wondering about upcoming or previous changes to the SDK? Take a look at the [CHANGELOG](https://github.com/clarify/pyclarify/blob/main/CHANGELOG.md).
 
 # Contributing
 
