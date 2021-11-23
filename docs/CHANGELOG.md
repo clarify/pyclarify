@@ -20,4 +20,10 @@ Changes are grouped as follows
 ## Added
 
 - Added methods to APIClient for the Admin API.
-- Restructured the Pydantic models into Request and Response types
+- Restructured the Pydantic models into Request and Response types.
+
+# [0.2.1] - 2021-11-23
+
+## Fixed
+
+- Fix import dependency for python version 3.7.
