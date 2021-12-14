@@ -144,3 +144,6 @@ class Signal(SignalInfo):
     item: Union[ResourceID, None]
     inputId: InputID
     meta: ResourceMetadata
+
+class Item(SignalInfo):
+    visible: bool = False
