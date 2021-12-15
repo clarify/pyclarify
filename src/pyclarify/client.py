@@ -26,12 +26,16 @@ import requests
 import json
 import logging
 import functools
+from datetime import timedelta
 from pydantic import validate_arguments
-
+from typing import List, Union
+from typing_extensions import Literal
+from pydantic.fields import Optional
 from pyclarify.models.data import DataFrame
 from pyclarify.models.requests import Request, ApiMethod
 from pyclarify.models.response import Response
 from pyclarify.oauth2 import GetToken
+from pyclarify.__utils__.convert import compute_timewindow
 
 
 def increment_id(func):
@@ -584,4 +588,75 @@ class APIClient(RawClient):
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
+        return Response(**result)
+
+
+class ClarifyClient(APIClient):
+    def __init__(self, clarify_credentials):
+        super().__init__(clarify_credentials)
+
+    @increment_id
+    @validate_arguments
+    def select_items_data(
+        self, 
+        ids: List = [],
+        skip: int = 0, 
+        not_before = None, 
+        before = None, 
+        rollup: Union[timedelta, Literal["window"]] = None 
+        ) -> Response:
+        """
+        Return item data from selected signals.
+
+        Parameters
+        ----------
+        - ids: Optional[List]
+            List of item ids to retrieve. Empty list means take all.
+        - not_before: string(RFC 3339 timestamp), optional default datetime.now() - 40days
+            An RFC3339 time describing the inclusive start of the window.
+        - before: string(RFC 3339 timestamp), optional default datetime.now()
+            An RFC3339 time describing the exclusive end of the window. 
+        - rollup: RFC 3339 duration or "window", default None
+            If RFC 3339 duration is specified, roll-up the values into either the full time window
+            (`notBefore` -> `before`) or evenly sized buckets.
+            For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_ .
+
+        TODO: Update example and response
+        Example
+        -------
+
+            >>> {
+            >>>    "items": {"include":True, "filter": {"id": {"$in": [<item_id>]}} },
+            >>>    "data": {"include": True}
+            >>> }
+
+        """
+        not_before, before = compute_timewindow(not_before, before)
+
+        params = {
+            "items": {
+                "include": False,
+                "filter": {
+                    "id":{
+                        "$in": ids
+                    }
+                }
+            },
+            "data": {
+                "include": True,  
+                "notBefore": not_before,
+                "before": before,
+                "rollup": rollup
+            }
+        }
+
+        if len(ids) < 1:
+            del params["items"]["filter"]
+            print(params)
+
+        request_data = Request(method=ApiMethod.select_items, params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+
         return Response(**result)
