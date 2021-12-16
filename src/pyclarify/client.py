@@ -546,38 +546,6 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
-
-        Returns
-        -------
-        Response
-            In case of a valid return value, returns a pydantic model with the following format:
-
-                >>> {
-                >>>     "jsonrpc": "2.0",
-                >>>     "id": "1", 
-                >>>     "result": {
-                >>>         "itemsBySignal": {
-                >>>             "<signal_id>": {
-                >>>                 "id": "<item_id>",
-                >>>                 "created": true, 
-                >>>                 "updated": false
-                >>>             }
-                >>>         }
-                >>>     }, 
-                >>>     "error": null
-                >>> }
-
-            In case of the error the method return a pydantic model with the following format:
-
-                >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
-                >>>         data = ErrorData(trace = <trace_id>, params = {})
-                >>> )
-
         """
 
         # assert integration parameter
@@ -625,10 +593,48 @@ class ClarifyClient(APIClient):
         Example
         -------
 
-            >>> {
-            >>>    "items": {"include":True, "filter": {"id": {"$in": [<item_id>]}} },
-            >>>    "data": {"include": True}
-            >>> }
+            >>> client.select_items_data(
+            >>>     ids=[<item_id>],
+            >>>     skip=0,
+            >>>     not_before="2021-10-01T12:00:00Z"
+            >>>     before="2021-11-10T12:00:00Z"
+            >>>     rollup="P1DT"
+            >>>     )
+        
+
+        Response
+        --------
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> {
+                >>>    "jsonrpc": "2.0",
+                >>>    "id": "1",
+                >>>    "result": {
+                >>>    "items": None,
+                >>>    "data": {
+                >>>        "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+                >>>        "series": {
+                >>>        "item_id_avg": [0.0, 0.0],
+                >>>        "item_id_count": [20.0, 20.0],
+                >>>        "item_id_max": [0.0, 0.0],
+                >>>        "item_id_min": [0.0, 0.0],
+                >>>        "item_id_sum": [0.0, 0.0]
+                >>>        }
+                >>>    },
+                >>>    "error": null
+                >>>    }
+                >>> }
+
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
 
         """
         not_before, before = compute_timewindow(not_before, before)
@@ -683,15 +689,47 @@ class ClarifyClient(APIClient):
         - skip: int default: 0
             Skip first N signals.
 
-        TODO: Update example and response
-        Example
+       Example
         -------
 
-            >>> {
-            >>>    "items": {"include":True, "filter": {"id": {"$in": [<item_id>]}} },
-            >>>    "data": {"include": True}
-            >>> }
+            >>> client.select_items_metadata(
+            >>>     ids=[<item_id>],
+            >>>     name="Electricity",
+            >>>     labels={"city":"Trondheim"}
+            >>>     skip=0
+            >>>     )
+        
 
+        Response
+        --------
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> {
+                >>>    "jsonrpc": "2.0",
+                >>>    "id": "1",
+                >>>    "result": {
+                >>>    "items": {
+                >>>        "item_id": {
+                >>>             "name": "item_name",
+                >>>             "type": "numeric",
+                >>>             ...
+                >>>        }
+                >>>    },
+                >>>    "data": None,
+                >>>    "error": null
+                >>>    }
+                >>> }
+
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
         """
         filters = []
         if len(ids) > 0:
