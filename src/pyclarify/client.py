@@ -652,7 +652,69 @@ class ClarifyClient(APIClient):
 
         if len(ids) < 1:
             del params["items"]["filter"]
-            print(params)
+
+        request_data = Request(method=ApiMethod.select_items, params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+
+        return Response(**result)
+
+    @increment_id
+    @validate_arguments
+    def select_items_metadata(
+        self, 
+        ids: List = [],
+        name: str = "",
+        labels: dict = {}, 
+        skip: int = 0, 
+        ) -> Response:
+        """
+        Return item data from selected signals.
+
+        Parameters
+        ----------
+        - ids: Optional[List]
+            List of item ids to retrieve. Empty list means take all.
+        - name: string default: ""
+            String containing regex of the name of an Item.
+        - labels: dict default: {}
+            Dictionary with labels and keys to be used as a filter
+        - skip: int default: 0
+            Skip first N signals.
+
+        TODO: Update example and response
+        Example
+        -------
+
+            >>> {
+            >>>    "items": {"include":True, "filter": {"id": {"$in": [<item_id>]}} },
+            >>>    "data": {"include": True}
+            >>> }
+
+        """
+        filters = []
+        if len(ids) > 0:
+            filters += [{"id":{"$in": ids}}]
+        if name != "":
+            filters += [{"name": {"$regex": name}}]
+
+    
+        params = {
+            "items": {
+                "include": True,
+                "filter" : {}
+            },
+            "data": {
+                "include": False,  
+            }
+        }
+
+        if len(filters) > 0:
+            params["items"]["filter"]["$or"] = filters
+        if len(labels) > 0:
+            for key, value in labels.items():
+                params["items"]["filter"][f"labels.{key}"] = value
 
         request_data = Request(method=ApiMethod.select_items, params=params)
 
