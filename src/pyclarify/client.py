@@ -642,6 +642,7 @@ class ClarifyClient(APIClient):
         params = {
             "items": {
                 "include": False,
+                "skip": skip,
                 "filter": {
                     "id":{
                         "$in": ids
@@ -741,7 +742,8 @@ class ClarifyClient(APIClient):
         params = {
             "items": {
                 "include": True,
-                "filter" : {}
+                "filter" : {},
+                "skip": skip
             },
             "data": {
                 "include": False,  
