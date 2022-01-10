@@ -6,7 +6,8 @@
       "Published_automatically": ["true"],
       "SDK_version": ["0.2.0"]
     },
-    "gapDetection": "PT5M"
+    "gapDetection": "PT5M",
+    "visible": true
   },
   "empty_response": {
     "jsonrpc": "2.0",

@@ -15,4 +15,4 @@ limitations under the License.
 """
 
 from pyclarify.client import APIClient
-from pyclarify.models.data import Signal, SignalInfo, DataFrame
+from pyclarify.models.data import Signal, SignalInfo, Item, DataFrame

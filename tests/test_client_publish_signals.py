@@ -23,7 +23,7 @@ from unittest.mock import patch
 
 
 sys.path.insert(1, "src/")
-from pyclarify import APIClient, SignalInfo, DataFrame
+from pyclarify import APIClient, Item, DataFrame
 from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
 import pyclarify
 
@@ -46,7 +46,7 @@ class TestClarifySaveClient(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.mock_data["empty_response"]
 
-        item_meta_data = SignalInfo(**self.mock_data["request"])
+        item_meta_data = Item(**self.mock_data["request"])
         resource_not_exist = "c618j7mjkj1ss0rbfqfs"
         result = self.client.publish_signals(
             params={
@@ -66,7 +66,7 @@ class TestClarifySaveClient(unittest.TestCase):
             "publish_one_response"
         ]
 
-        item_meta_data = SignalInfo(**self.mock_data["request"])
+        item_meta_data = Item(**self.mock_data["request"])
         resource_not_exist = "c618j7mjkj1ss0rbfqfs"
         resource_does_exist = "c618rbfqfsj7mjkj0ss1"
 
@@ -88,7 +88,7 @@ class TestClarifySaveClient(unittest.TestCase):
             "publish_two_response"
         ]
 
-        item_meta_data = SignalInfo(**self.mock_data["request"])
+        item_meta_data = Item(**self.mock_data["request"])
 
         resource_does_exist_1 = "c618rbfqfsj7mjkj0ss1"
         resource_does_exist_2 = "c618rbfqfsj7mjkj0ss2"
@@ -114,7 +114,7 @@ class TestClarifySaveClient(unittest.TestCase):
             "update_one_response"
         ]
 
-        item_meta_data = SignalInfo(**self.mock_data["request"])
+        item_meta_data = Item(**self.mock_data["request"])
 
         resource_does_exist = "c618rbfqfsj7mjkj0ss1"
 
