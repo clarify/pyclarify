@@ -35,38 +35,43 @@ def timedelta_isoformat(td: timedelta) -> str:
     )
     return result
 
+
 # Convenient method to convert to string from datetime and vice versa
-time_syntax = '%Y-%m-%dT%H:%M:%SZ'
+time_syntax = "%Y-%m-%dT%H:%M:%SZ"
+
 
 def time_to_string(time):
-    return datetime.strftime(time,time_syntax)
+    return datetime.strftime(time, time_syntax)
+
 
 def string_to_time(string):
     return datetime.strptime(string, time_syntax)
 
+
 def parse_time(time):
     if not time:
-      return time
+        return time
     elif isinstance(time, datetime):
-      return time
+        return time
     elif isinstance(time, str):
-      time = string_to_time(time)
+        time = string_to_time(time)
     elif isinstance(time, int):
-      time = datetime.fromtimestamp(time)
+        time = datetime.fromtimestamp(time)
     else:
-      print(f"could not parse time: {time}")
+        print(f"could not parse time: {time}")
     return time
 
+
 def compute_timewindow(start_time, end_time):
-  start_time = parse_time(start_time)
-  end_time = parse_time(end_time)
+    start_time = parse_time(start_time)
+    end_time = parse_time(end_time)
 
-  if not start_time and end_time:
-    start_time = end_time - timedelta(days=40)
-  elif start_time and not end_time:
-    end_time = start_time + timedelta(days=40)
-  elif not start_time and not end_time:
-    end_time = datetime.now()
-    start_time = end_time - timedelta(days=40)
+    if not start_time and end_time:
+        start_time = end_time - timedelta(days=40)
+    elif start_time and not end_time:
+        end_time = start_time + timedelta(days=40)
+    elif not start_time and not end_time:
+        end_time = datetime.now()
+        start_time = end_time - timedelta(days=40)
 
-  return time_to_string(start_time), time_to_string(end_time)
+    return time_to_string(start_time), time_to_string(end_time)

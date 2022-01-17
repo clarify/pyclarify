@@ -25,11 +25,11 @@ sys.path.insert(1, "src/")
 from pyclarify import ClarifyClient, SignalInfo, DataFrame
 
 
-class TestClarifyClient(unittest.TestCase):
+class TestClarifyClientSelectItems(unittest.TestCase):
     def setUp(self):
         self.client = ClarifyClient("./tests/data/mock-clarify-credentials.json")
 
-        with open("./tests/data/mock-clarify-client.json") as f:
+        with open("./tests/data/mock-clarify-client-select-items.json") as f:
             self.mock_data = json.load(f)
         self.test_cases = self.mock_data["test_cases"]
 
