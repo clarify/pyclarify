@@ -574,12 +574,14 @@ class ClarifyClient(APIClient):
         rollup: Union[timedelta, Literal["window"]] = None,
     ) -> Response:
         """
-        Return item data from selected signals.
+        Return item data from selected items.
 
         Parameters
         ----------
         - ids: Optional[List]
             List of item ids to retrieve. Empty list means take all.
+        - skip: int, default=0
+            Skip first N items.
         - not_before: string(RFC 3339 timestamp), optional default datetime.now() - 40days
             An RFC3339 time describing the inclusive start of the window.
         - before: string(RFC 3339 timestamp), optional default datetime.now()
