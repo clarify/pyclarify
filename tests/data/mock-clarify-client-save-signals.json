@@ -6,9 +6,9 @@
         "jsonrpc": "2.0",
         "id": "1",
         "result": {
-          "signalsByInput": {},
-          "error": null
-        }
+          "signalsByInput": {}
+        },
+        "error": null
       }
     },
     {
@@ -48,10 +48,31 @@
               "id": "c7g2ir7qfsj08glu5c2g",
               "created": true,
               "updated": false
+            },
+            "signal2": {
+              "id": "c7g2ir7qfsj08glu5c2g",
+              "created": true,
+              "updated": false
             }
-          },
-          "error": null
-        }
+          }
+        },
+        "error": null
+      }
+    },
+    {
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "signalsByInput": {
+            "signal1": {
+              "id": "c7g2ir7qfsj08glu5c2g",
+              "created": false,
+              "updated": false
+            }
+          }
+        },
+        "error": null
       }
     }
   ]
