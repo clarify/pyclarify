@@ -9,7 +9,7 @@
     <title>pyclarify.models &#8212; PyClarify 0.1.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?2021.11.1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?2022.1" />
     
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -47,8 +47,9 @@
     <div class="menu-wrapper">
         <nav class="menu" role="navigation" aria-label="main navigation">
             <div class="language_switcher_placeholder"></div>
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">pyclarify.models</a><ul>
 <li><a class="reference internal" href="#module-pyclarify.models.auth">Auth module</a></li>
 <li><a class="reference internal" href="#module-pyclarify.models.data">Data module</a></li>
@@ -58,12 +59,17 @@
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="oauth2.html"
-                        title="previous chapter">PyClarify Auth</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="logging.html"
-                        title="next chapter">PyClarify logging</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="oauth2.html"
+                          title="previous chapter">PyClarify Auth</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="logging.html"
+                          title="next chapter">PyClarify logging</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -280,6 +286,16 @@ limitations under the License.</p>
 <dt class="sig sig-object py" id="pyclarify.models.data.DataFrame.times">
 <span class="sig-name descname"><span class="pre">times</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.data.DataFrame.times" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.models.data.DataFrame.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.DataFrame.to_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the instance into a pandas DataFrame.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>pandas.DataFrame: The pandas DataFrame representing this instance.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -564,6 +580,16 @@ limitations under the License.</p>
 <span class="sig-name descname"><span class="pre">numeric</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'numeric'</span></em><a class="headerlink" href="#pyclarify.models.data.TypeSignal.numeric" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyclarify.models.data.from_pandas">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">from_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.from_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a pandas DataFrame into a Clarify DataFrame.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>pandas.DataFrame: The pandas DataFrame representing this instance.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1040,8 +1066,9 @@ limitations under the License.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">pyclarify.models</a><ul>
 <li><a class="reference internal" href="#module-pyclarify.models.auth">Auth module</a></li>
 <li><a class="reference internal" href="#module-pyclarify.models.data">Data module</a></li>
@@ -1051,12 +1078,17 @@ limitations under the License.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="oauth2.html"
-                        title="previous chapter">PyClarify Auth</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="logging.html"
-                        title="next chapter">PyClarify logging</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="oauth2.html"
+                          title="previous chapter">PyClarify Auth</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="logging.html"
+                          title="next chapter">PyClarify logging</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -1129,8 +1161,8 @@ limitations under the License.</p>
     <br />
     Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
     <br />
-    See <a href="">History and License</a> for more information.
-    <br /><br />
+    
+    <br />
 
     The Python Software Foundation is a non-profit corporation.
 <a href="https://www.python.org/psf/donations/">Please donate.</a>
@@ -1141,7 +1173,7 @@ limitations under the License.</p>
     
     <br />
 
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
     </div>
 
   </body>
