@@ -591,7 +591,6 @@ class ClarifyClient(APIClient):
             (`notBefore` -> `before`) or evenly sized buckets.
             For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_ .
 
-        TODO: Update example and response
         Example
         -------
 
