@@ -254,9 +254,9 @@ class APIClient(RawClient):
                 The SignalInfo object contains metadata for a signal. 
                 Click `here <https://docs.clarify.io/reference/signal>`_ for more information.
 
-            - created_only: bool
-                If True then only published signal with input id equal to input_id will be updated. 
-                If False then all the signal with input id equal to input_id will be updated
+            - createOnly: bool
+                If set to true, skip update of information for existing signals. That is, all Input IDs 
+                that map to existing signals are silently ignored.
         
             Example
             -------
@@ -767,8 +767,8 @@ class ClarifyClient(APIClient):
                 List of SignalInfo object that contains metadata for a signal.
                 Click `here <https://docs.clarify.io/v1.1/reference/signal-info>`_ for more information.
             - create_only: bool Default False
-                If True then only published signal with input id equal to input_id will be updated. 
-                If False then all the signal with input id equal to input_id will be updated.
+                If set to true, skip update of information for existing signals. That is, all Input IDs 
+                that map to existing signals are silently ignored.
             - integration: str Default None 
                 Integration ID in string format. None means using the integration in credential file.
 
