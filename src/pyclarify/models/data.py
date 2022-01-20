@@ -22,6 +22,7 @@ from datetime import datetime, timedelta
 import logging
 from enum import Enum
 from pyclarify.__utils__.convert import timedelta_isoformat
+from pyclarify.__utils__.auxiliary import local_import
 
 # constrained string defined by the API
 InputID = constr(regex=r"^[a-z0-9_-]{1,40}$")
@@ -36,6 +37,38 @@ class DataFrame(BaseModel):
     times: List[datetime] = None
     series: Dict[InputID, NumericalValuesType] = None
 
+    def to_pandas(self):
+        """Convert the instance into a pandas DataFrame.
+
+        Returns:
+            pandas.DataFrame: The pandas DataFrame representing this instance.
+        """
+
+        pd = local_import("pandas")
+
+        df = pd.DataFrame(self.series)
+        df.index = self.times
+        return df
+    
+
+
+@validate_arguments
+def from_pandas(df, time_col=None):
+    """Convert a pandas DataFrame into a Clarify DataFrame.
+
+        Returns:
+            pandas.DataFrame: The pandas DataFrame representing this instance.
+    """
+    pd = local_import("pandas")
+    if isinstance(df, pd.DataFrame):
+        series = df.to_dict(orient="list")
+        if time_col:
+            times = df[time_col].values.tolist()
+        else:
+            times = df.index.values.tolist()
+        return DataFrame(times=times, series=series)
+    else:
+        return False
 
 @validate_arguments
 def merge(dataframes: List[DataFrame]):
@@ -144,3 +177,6 @@ class Signal(SignalInfo):
     item: Union[ResourceID, None]
     inputId: InputID
     meta: ResourceMetadata
+
+class Item(SignalInfo):
+    visible: bool = False

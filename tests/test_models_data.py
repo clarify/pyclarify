@@ -5,7 +5,7 @@ from pydantic.error_wrappers import ValidationError
 
 sys.path.insert(1, "src/")
 from pyclarify.models.data import *
-
+from pyclarify.__utils__.auxiliary import *
 
 class TestSummary(unittest.TestCase):
     def setUp(self):
@@ -98,6 +98,84 @@ class TestMerge(unittest.TestCase):
         merged = merge([self.cdf, self.cdf])
 
         self.assertEqual(merged, self.cdf)
+
+class TestPandas(unittest.TestCase):
+    def setUp(self):
+        with open("./tests/data/mock-models-data.json") as f:
+            self.mock_data = json.load(f)
+
+        self.pd = local_import("pandas")
+        self.mock_data_1 = self.mock_data["mock_data_1"]
+        self.mock_data_2 = self.mock_data["mock_data_2"]
+        self.mock_data_3 = self.mock_data["mock_data_3"]
+
+        self.cdf = DataFrame(
+            times=self.mock_data_1["times"],
+            series={self.mock_data_1["signal"]: self.mock_data_1["values"]},
+        )
+
+        self.cdf2 = DataFrame(
+            times=self.mock_data_2["times"],
+            series={self.mock_data_2["signal"]: self.mock_data_2["values"]},
+        )
+
+        self.cdf3 = DataFrame(
+            times=self.mock_data_3["times"],
+            series={
+                self.mock_data_1["signal"]: self.mock_data_1["values"],
+                self.mock_data_2["signal"]: self.mock_data_2["values"],
+                self.mock_data_3["signal"]: self.mock_data_3["values"]
+                },
+        )
+    
+    def test_convert_single_signal(self):
+        df = self.cdf.to_pandas()
+
+        # Is of type pandas.DataFrame
+        self.assertIsInstance(df, self.pd.DataFrame)
+
+        # Assert that values are correctly transferred
+        signal = list(self.cdf.series.keys())[0]
+
+        # Signal name
+        self.assertEqual(signal, df.columns[0])
+
+        # Values
+        # NB: Change numpy float to native float
+        values = [x.item() for x in df[signal].values]
+   
+        self.assertEqual(self.cdf.series[signal], values)
+
+        # Times
+        # NB: Change both values to timestamp
+        from datetime import datetime
+        # Divide by 10^9 because of microseconds
+        numpy_ts = [int(x/1e9) for x in df.index.values.tolist()]
+        clarify_ts = [datetime.timestamp(x) for x in self.cdf.times]
+        self.assertEqual(clarify_ts, numpy_ts)
+
+    def test_convert_three_signals(self):
+        df = self.cdf3.to_pandas()
+
+        # Is of type pandas.DataFrame
+        self.assertIsInstance(df, self.pd.DataFrame)
+
+        # Assert that values are correctly transferred
+        signals = list(self.cdf3.series.keys())
+
+        # Signal name
+        self.assertEqual(signals, list(df.columns))
+
+        # Values
+        self.assertEqual(list(self.cdf3.series.values()), list(df.to_dict(orient="list").values()))
+
+        # Times
+        # NB: Change both values to timestamp
+        from datetime import datetime
+        # Divide by 10^9 because of microseconds
+        numpy_ts = [int(x/1e9) for x in df.index.values.tolist()]
+        clarify_ts = [datetime.timestamp(x) for x in self.cdf3.times]
+        self.assertEqual(clarify_ts, numpy_ts)
 
 
 if __name__ == "__main__":
