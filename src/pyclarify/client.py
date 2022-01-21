@@ -246,8 +246,7 @@ def send_iter(self, payload):
 
 class RawClient:
     def __init__(
-        self,
-        base_url,
+        self, base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -1099,6 +1098,7 @@ class ClarifyClient(APIClient):
                 >>> )
 
         """
+        not_before, before = compute_timewindow(not_before, before)
 
         # create params dict
         params = {
@@ -1118,6 +1118,9 @@ class ClarifyClient(APIClient):
 
 
         request_data = Request(method=ApiMethod.publish_signals, params=params)
+
+
+        request_data = Request(method=ApiMethod.save_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.make_requests(request_data.json())
