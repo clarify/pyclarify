@@ -54,10 +54,12 @@ class GenericResponse(BaseModel):
 
 
 class Response(GenericResponse):
-    result: Optional[Union[
-        InsertResponse,
-        SaveSignalsResponse,
-        SelectItemsResponse,
-        SelectSignalsResponse,
-        PublishSignalsResponse,
-    ]]
+    result: Optional[
+        Union[
+            InsertResponse,
+            SaveSignalsResponse,
+            SelectItemsResponse,
+            SelectSignalsResponse,
+            PublishSignalsResponse,
+        ]
+    ]

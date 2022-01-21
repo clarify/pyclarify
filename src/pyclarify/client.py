@@ -26,12 +26,16 @@ import requests
 import json
 import logging
 import functools
+from datetime import timedelta
 from pydantic import validate_arguments
-
-from pyclarify.models.data import DataFrame
+from typing import List, Union
+from typing_extensions import Literal
+from pydantic.fields import Optional
+from pyclarify.models.data import DataFrame, SignalInfo
 from pyclarify.models.requests import Request, ApiMethod
 from pyclarify.models.response import Response
 from pyclarify.oauth2 import GetToken
+from pyclarify.__utils__.convert import compute_timewindow
 
 
 def increment_id(func):
@@ -48,6 +52,7 @@ def increment_id(func):
     func : function
         returns the wrapped function.
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         args[0].current_id += 1  # args[0] = self
@@ -58,8 +63,7 @@ def increment_id(func):
 
 class RawClient:
     def __init__(
-        self,
-        base_url,
+        self, base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -250,9 +254,9 @@ class APIClient(RawClient):
                 The SignalInfo object contains metadata for a signal. 
                 Click `here <https://docs.clarify.io/reference/signal>`_ for more information.
 
-            - created_only: bool
-                If True then only published signal with input id equal to input_id will be updated. 
-                If False then all the signal with input id equal to input_id will be updated
+            - createOnly: bool
+                If set to true, skip update of information for existing signals. That is, all Input IDs 
+                that map to existing signals are silently ignored.
         
             Example
             -------
@@ -542,25 +546,84 @@ class APIClient(RawClient):
                 >>>         message = 'Invalid params', 
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
+        """
 
-        Returns
+        # assert integration parameter
+        if not hasattr(params, "integration"):
+            params["integration"] = self.authentication.integration_id
+
+        request_data = Request(method=ApiMethod.publish_signals, params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+        return Response(**result)
+
+
+class ClarifyClient(APIClient):
+    def __init__(self, clarify_credentials):
+        super().__init__(clarify_credentials)
+
+    @increment_id
+    @validate_arguments
+    def select_items_data(
+        self,
+        ids: List = [],
+        skip: int = 0,
+        not_before=None,
+        before=None,
+        rollup: Union[timedelta, Literal["window"]] = None,
+    ) -> Response:
+        """
+        Return item data from selected items.
+
+        Parameters
+        ----------
+        - ids: Optional[List]
+            List of item ids to retrieve. Empty list means take all.
+        - skip: int, default=0
+            Skip first N items.
+        - not_before: string(RFC 3339 timestamp), optional default datetime.now() - 40days
+            An RFC3339 time describing the inclusive start of the window.
+        - before: string(RFC 3339 timestamp), optional default datetime.now()
+            An RFC3339 time describing the exclusive end of the window. 
+        - rollup: RFC 3339 duration or "window", default None
+            If RFC 3339 duration is specified, roll-up the values into either the full time window
+            (`notBefore` -> `before`) or evenly sized buckets.
+            For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_ .
+
+        Example
         -------
+
+            >>> client.select_items_data(
+            >>>     ids=[<item_id>],
+            >>>     skip=0,
+            >>>     not_before="2021-10-01T12:00:00Z"
+            >>>     before="2021-11-10T12:00:00Z"
+            >>>     rollup="P1DT"
+            >>>     )
+        
+
         Response
+        --------
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> {
-                >>>     "jsonrpc": "2.0",
-                >>>     "id": "1", 
-                >>>     "result": {
-                >>>         "itemsBySignal": {
-                >>>             "<signal_id>": {
-                >>>                 "id": "<item_id>",
-                >>>                 "created": true, 
-                >>>                 "updated": false
-                >>>             }
-                >>>         }
-                >>>     }, 
-                >>>     "error": null
+                >>>    "jsonrpc": "2.0",
+                >>>    "id": "1",
+                >>>    "result": {
+                >>>    "items": None,
+                >>>    "data": {
+                >>>        "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+                >>>        "series": {
+                >>>        "item_id_avg": [0.0, 0.0],
+                >>>        "item_id_count": [20.0, 20.0],
+                >>>        "item_id_max": [0.0, 0.0],
+                >>>        "item_id_min": [0.0, 0.0],
+                >>>        "item_id_sum": [0.0, 0.0]
+                >>>        }
+                >>>    },
+                >>>    "error": null
+                >>>    }
                 >>> }
 
             In case of the error the method return a pydantic model with the following format:
@@ -575,12 +638,200 @@ class APIClient(RawClient):
                 >>> )
 
         """
+        not_before, before = compute_timewindow(not_before, before)
+
+        params = {
+            "items": {"include": False, "skip": skip, "filter": {"id": {"$in": ids}}},
+            "data": {
+                "include": True,
+                "notBefore": not_before,
+                "before": before,
+                "rollup": rollup,
+            },
+        }
+
+        if len(ids) < 1:
+            del params["items"]["filter"]
+
+        request_data = Request(method=ApiMethod.select_items, params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+
+        return Response(**result)
+
+    @increment_id
+    @validate_arguments
+    def select_items_metadata(
+        self, ids: List = [], name: str = "", labels: dict = {}, skip: int = 0,
+    ) -> Response:
+        """
+        Return item data from selected signals.
+
+        Parameters
+        ----------
+        - ids: Optional[List]
+            List of item ids to retrieve. Empty list means take all.
+        - name: string default: ""
+            String containing regex of the name of an Item.
+        - labels: dict default: {}
+            Dictionary with labels and keys to be used as a filter
+        - skip: int default: 0
+            Skip first N signals.
+
+       Example
+        -------
+
+            >>> client.select_items_metadata(
+            >>>     ids=[<item_id>],
+            >>>     name="Electricity",
+            >>>     labels={"city":"Trondheim"}
+            >>>     skip=0
+            >>>     )
+        
+
+        Response
+        --------
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> {
+                >>>    "jsonrpc": "2.0",
+                >>>    "id": "1",
+                >>>    "result": {
+                >>>    "items": {
+                >>>        "item_id": {
+                >>>             "name": "item_name",
+                >>>             "type": "numeric",
+                >>>             ...
+                >>>        }
+                >>>    },
+                >>>    "data": None,
+                >>>    "error": null
+                >>>    }
+                >>> }
+
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
+        """
+        filters = []
+        if len(ids) > 0:
+            filters += [{"id": {"$in": ids}}]
+        if name != "":
+            filters += [{"name": {"$regex": name}}]
+
+        params = {
+            "items": {"include": True, "filter": {}, "skip": skip},
+            "data": {"include": False,},
+        }
+
+        if len(filters) > 0:
+            params["items"]["filter"]["$or"] = filters
+        if len(labels) > 0:
+            for key, value in labels.items():
+                params["items"]["filter"][f"labels.{key}"] = value
+
+        request_data = Request(method=ApiMethod.select_items, params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+
+        return Response(**result)
+
+    @increment_id
+    @validate_arguments
+    def save_signals(
+        self,
+        input_ids: List[str],
+        signals: List[SignalInfo],
+        create_only: bool = False,
+        integration: str = None,
+    ) -> Response:
+        """
+        This call inserts metadata for one or multiple signals. The signals are uniquely identified by its <input_ID>.
+        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/v1.1/reference/integrationsavesignals>`_ .
+
+        Parameters
+        ----------
+        params: 
+            - input_ids: List[str]
+                List of strings to be the input ID of the signal. 
+            - signals: List[SignalInfo]
+                List of SignalInfo object that contains metadata for a signal.
+                Click `here <https://docs.clarify.io/v1.1/reference/signal-info>`_ for more information.
+            - create_only: bool Default False
+                If set to true, skip update of information for existing signals. That is, all Input IDs 
+                that map to existing signals are silently ignored.
+            - integration: str Default None 
+                Integration ID in string format. None means using the integration in credential file.
+
+        
+            Example
+            -------
+
+                >>> signal = SignalInfo(
+                >>>    name = "Home temperature",
+                >>>    description = "Temperature in the bedroom",
+                >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+                >>> )
+                >>> save_signals(input_ids=["id1"], signals=[signal], create_only=False)
+
+        Returns
+        -------
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = SaveSignalsResponse(
+                >>>             signalsByInput={
+                >>>                 <INPUT_ID>: SaveSummary(id=<signal_id>, created=True, updated=False)
+                >>>              }
+                >>>          )
+                >>> error = None
+
+            Where SaveSummary is a pydantic model with field id: str (Unique ID of the saved instance), 
+            created: bool (True if a new instance was created) and
+            updated: bool (True if the metadata where updated).
+
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
+
+        """
+
+        # create params dict
+        params = {
+            "inputs": {},
+            "createOnly": create_only,
+            "integration": integration
+        }
+
 
         # assert integration parameter
-        if not hasattr(params, "integration"):
+        if not params["integration"]:
             params["integration"] = self.authentication.integration_id
 
-        request_data = Request(method=ApiMethod.publish_signals, params=params)
+        # populate inputs
+        for input_id, signal in zip(input_ids, signals):
+            params["inputs"][input_id] = signal
+
+
+        request_data = Request(method=ApiMethod.save_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
