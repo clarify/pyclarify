@@ -23,11 +23,12 @@ from datetime import datetime
 from enum import Enum
 from .data import DataFrame, InputID, SignalInfo, Signal, Item
 from pyclarify.__utils__.convert import timedelta_isoformat
+from pyclarify.__utils__.pagination import GetDates
 from datetime import timedelta
 
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
 ResourceID = constr(regex=r"^[a-v0-9]{20}$")
-LimitSelectItems = conint(ge=0, le=50)
+LimitSelectItems = conint(ge=0)
 LimitSelectSignals = conint(ge=0, le=1000)
 
 ### PARAMETERS ###

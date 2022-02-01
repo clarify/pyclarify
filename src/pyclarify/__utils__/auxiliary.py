@@ -17,8 +17,9 @@ limitations under the License.
 import importlib
 from .exceptions import PyClarifyImportError
 
+
 def local_import(module: str):
-        try:
-            return importlib.import_module(module)
-        except ImportError as e:
-            raise PyClarifyImportError(module.split(".")[0]) from e
+    try:
+        return importlib.import_module(module)
+    except ImportError as e:
+        raise PyClarifyImportError(module.split(".")[0]) from e

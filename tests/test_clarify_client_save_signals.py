@@ -58,7 +58,9 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
 
-        response_data = self.client.save_signals(input_ids=self.input_ids[:1], signals=self.signals[:1])
+        response_data = self.client.save_signals(
+            input_ids=self.input_ids[:1], signals=self.signals[:1]
+        )
         for x in response_data.result.signalsByInput:
             self.assertEqual(x, self.input_ids[0])
             break
@@ -70,10 +72,11 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
 
-        response_data = self.client.save_signals(input_ids=self.input_ids, signals=self.signals)
+        response_data = self.client.save_signals(
+            input_ids=self.input_ids, signals=self.signals
+        )
         for i, x in enumerate(response_data.result.signalsByInput):
             self.assertEqual(x, self.input_ids[i])
-
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -85,8 +88,7 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         response_data = self.client.save_signals(input_ids=[], signals=self.signals)
         for x in response_data.result.signalsByInput:
             self.assertEqual(x, {})
-    
-    
+
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_without_signals(self, client_req_mock, get_token_mock):
@@ -97,20 +99,20 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         response_data = self.client.save_signals(input_ids=self.input_ids, signals=[])
         for x in response_data.result.signalsByInput:
             self.assertEqual(x, {})
-    
-    
+
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_with_too_many_input_ids(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
-        
-        response_data = self.client.save_signals(input_ids=self.input_ids * 2, signals=self.signals)
+
+        response_data = self.client.save_signals(
+            input_ids=self.input_ids * 2, signals=self.signals
+        )
         for x in response_data.result.signalsByInput:
             self.assertEqual(x, self.input_ids[0])
             break
-
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -119,11 +121,13 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[2]["response"]
 
-        response_data = self.client.save_signals(input_ids=self.input_ids, signals=self.signals * 2)
+        response_data = self.client.save_signals(
+            input_ids=self.input_ids, signals=self.signals * 2
+        )
         for x in response_data.result.signalsByInput:
             self.assertEqual(x, self.input_ids[0])
             break
-        
+
         self.assertFalse(response_data.result.signalsByInput[x].created)
         self.assertFalse(response_data.result.signalsByInput[x].updated)
 
