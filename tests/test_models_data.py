@@ -7,6 +7,7 @@ sys.path.insert(1, "src/")
 from pyclarify.models.data import *
 from pyclarify.__utils__.auxiliary import *
 
+
 class TestSummary(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models-data.json") as f:
@@ -98,6 +99,7 @@ class TestMerge(unittest.TestCase):
         merged = merge([self.cdf, self.cdf])
 
         self.assertEqual(merged, self.cdf)
+
 
 class TestPandas(unittest.TestCase):
     def setUp(self):

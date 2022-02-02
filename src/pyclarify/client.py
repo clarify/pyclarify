@@ -246,7 +246,8 @@ def send_iter(self, payload):
 
 class RawClient:
     def __init__(
-        self, base_url,
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -1106,7 +1107,6 @@ class ClarifyClient(APIClient):
             "createOnly": create_only,
             "integration": integration
         }
-
 
         # assert integration parameter
         if not params["integration"]:
