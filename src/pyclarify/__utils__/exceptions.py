@@ -14,12 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+
 class PyClarifyException(Exception):
     pass
 
+
 class PyClarifyImportError(PyClarifyException):
     """PyClarify Import Error
-    
+
     Raised if the user attempts to use functionality which requires an uninstalled package.
     Args:
         module (str): Name of the module which could not be imported
@@ -28,8 +30,11 @@ class PyClarifyImportError(PyClarifyException):
 
     def __init__(self, module: str, message: str = None):
         self.module = module
-        self.message = message or "The functionality your are trying to use requires '{}' to be installed.".format(
-            self.module
+        self.message = (
+            message
+            or "The functionality your are trying to use requires '{}' to be installed.".format(
+                self.module
+            )
         )
 
     def __str__(self):

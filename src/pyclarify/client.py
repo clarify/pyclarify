@@ -22,6 +22,8 @@ the Clarify API. Methods for reading and writing to the API is implemented with 
 help of jsonrpcclient framework. 
 """
 
+from http.client import responses
+from urllib import response
 import requests
 import json
 import logging
@@ -33,9 +35,10 @@ from typing_extensions import Literal
 from pydantic.fields import Optional
 from pyclarify.models.data import DataFrame, SignalInfo, Item, InputID, ResourceID
 from pyclarify.models.requests import Request, ApiMethod
-from pyclarify.models.response import Response
+from pyclarify.models.response import Response, GenericResponse
 from pyclarify.oauth2 import GetToken
-from pyclarify.__utils__.convert import compute_timewindow
+from pyclarify.__utils__.pagination import GetItems, GetDates
+from pyclarify.__utils__.convert import datetime_to_str, compute_timewindow
 
 
 def increment_id(func):
@@ -61,14 +64,196 @@ def increment_id(func):
     return wrapper
 
 
+def iterator(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        params = json.loads(args[1])["params"]
+        number_of_items = params["items"]["limit"]
+        skip = params["items"]["skip"]
+        params_tuple = ()
+
+        if params["data"]["include"]:
+            limit = 50
+        else:
+            limit = 1000
+
+        get_item = GetItems(limit, number_of_items, skip)
+        item_iter = iter(get_item)
+
+        for limit, skip in item_iter:
+            params["items"]["limit"] = limit
+            params["items"]["skip"] = skip
+
+            notBefore = params["data"]["notBefore"]
+            before = params["data"]["before"]
+
+            if notBefore and before:
+                get_dates = GetDates([notBefore, before])
+                date_iter = iter(get_dates)
+
+                for notBefore, before in date_iter:
+                    notBefore = datetime_to_str(notBefore)
+                    before = datetime_to_str(before)
+                    params["data"]["notBefore"] = notBefore
+                    params["data"]["before"] = before
+                    params_tuple = params_tuple + (json.dumps(params),)
+                params_list = [json.loads(i) for i in params_tuple]
+            params_tuple = params_tuple + (json.dumps(params),)
+        params_list = [json.loads(i) for i in params_tuple]
+        args[0].params_list = params_list
+
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def pretty_response(response_tuple, error_tuple):
+
+    responses = {}
+    responses["jsonrpc"] = response_tuple[0]["jsonrpc"]
+    responses["id"] = response_tuple[0]["id"]
+
+    if error_tuple:
+        responses["error"] = error_tuple[0]["error"]
+        return responses
+
+    if "error" in response_tuple[0].keys():
+        responses["error"] = response_tuple[0]["error"]
+        return responses
+
+    responses["result"] = {}
+    items = False
+    data = False
+
+    if "items" in response_tuple[0]["result"]:
+        responses["result"].update({"items": {}})
+        items = True
+
+    if "data" in response_tuple[0]["result"]:
+        if len(response_tuple[0]["result"]["data"]["series"]) != 1:
+            responses["result"].update({"data": {"times": [], "series": {}}})
+            series_keys = list(response_tuple[0]["result"]["data"]["series"].keys())
+
+            for key in series_keys:
+                responses["result"]["data"]["series"].update({key: []})
+            data = True
+
+        else:
+            id = list(response_tuple[0]["result"]["data"]["series"].keys())[0]
+            responses["result"].update({"data": {"times": [], "series": {id: []}}})
+            data = True
+
+    for res in response_tuple:
+        if items:
+            responses["result"]["items"].update(res["result"]["items"])
+        if data:
+            if len(response_tuple[0]["result"]["data"]["series"]) != 1:
+                responses["result"]["data"]["times"].extend(
+                    res["result"]["data"]["times"]
+                )
+                series_keys = list(response_tuple[0]["result"]["data"]["series"].keys())
+                for key in series_keys:
+                    responses["result"]["data"]["series"][key].extend(
+                        res["result"]["data"]["series"][key]
+                    )
+            else:
+                if res["result"]:
+                    responses["result"]["data"]["times"].extend(
+                        res["result"]["data"]["times"]
+                    )
+                else:
+                    break
+                responses["result"]["data"]["series"][id].extend(
+                    res["result"]["data"]["series"][id]
+                )
+        if res["result"] == {}:
+            break
+    return responses
+
+
+def iterate_bool(params):
+    def recursive_items(dictionary):
+        for key, value in dictionary.items():
+            if type(value) is dict:
+                yield (key, value)
+                yield from recursive_items(value)
+            else:
+                yield (key, value)
+
+    keys = []
+    for key, _ in recursive_items(params):
+        keys.append(key)
+
+    result = []
+
+    if "items" in params:
+        if "limit" in params["items"]:
+            result.append("iterate_true")
+    if "notBefore" and "before" in keys:
+        result.append("iterate_true")
+    if not result:
+        result.append("iterate_false")
+
+    return result
+
+
+def send_simple(self, payload):
+    logging.info(f"--> {self.base_url}, req: {payload}")
+    response = requests.post(self.base_url, data=payload, headers=self.headers)
+    logging.info(f"<-- {self.base_url} ({response.status_code})")
+    if response.ok:
+        return response.json()
+    else:
+        return {
+            "error": {
+                "code": response.status_code,
+                "message": "HTTP Response Error",
+            }
+        }
+
+
+@iterator
+def send_iter(self, payload):
+
+    responses = ()
+    errors = ()
+
+    for params in self.params_list:
+        new_payload = self.create_payload(
+            method=json.loads(payload)["method"], params=params
+        )
+        res = requests.post(self.base_url, data=new_payload, headers=self.headers)
+
+        if res.ok:
+            if "error" in res.json():
+                responses = responses + (res.json(),)
+                break
+
+            responses = responses + (res.json(),)
+        else:
+            err = {
+                "error": {
+                    "code": res.status_code,
+                    "message": "HTTP Response Error",
+                }
+            }
+            errors = errors + (err,)
+            responses = responses + (res.json(),)
+    res = pretty_response(responses, errors)
+
+    return res
+
+
 class RawClient:
     def __init__(
-        self, base_url,
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
         self.current_id = 0
         self.authentication = None
+        self.params_list = []
 
     def authenticate(self, clarify_credentials):
         """
@@ -102,7 +287,13 @@ class RawClient:
         """
         return self.authentication.get_token()
 
-    def send(self, payload):
+    def make_requests(self, payload) -> GenericResponse:
+        result = iterate_bool(json.loads(payload)["params"])
+        responses = self.send(payload, result)
+
+        return responses
+
+    def send(self, payload, result):
         """
         Uses post request to send JSON RPC payload.
 
@@ -115,33 +306,24 @@ class RawClient:
         -------
         JSON
             JSON dictionary response.
-        """
-        logging.info(f"--> {self.base_url}, req: {payload}")
-        response = requests.post(self.base_url, data=payload, headers=self.headers)
-        logging.info(f"<-- {self.base_url} ({response.status_code})")
 
-        if response.ok:
-            return response.json()
-        else:
-            return {
-                "error": {
-                    "code": response.status_code,
-                    "message": "HTTP Response Error",
-                }
-            }
+        """
+        if "iterate_false" in result:
+            return send_simple(self, payload)
+
+        if "iterate_true" in result:
+            return send_iter(self, payload)
 
     @increment_id
     def create_payload(self, method, params):
         """
         Creates a JSONRPC request payload.
-
         Parameters
         ----------
         method : str
             The RPC method to call.
         params : dict
             The arguments to the method call.
-
         Returns
         -------
         str
@@ -188,12 +370,12 @@ class APIClient(RawClient):
         data : DataFrame
             Dataframe with the fields:
 
-            - times:  List of timestamps 
-                Either as a python datetime or as 
+            - times:  List of timestamps
+                Either as a python datetime or as
                 YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
 
             - values: Dict[InputID, List[Union[None, float, int]]]
-                Map of inputid to Array of data points to insert by Input ID. 
+                Map of inputid to Array of data points to insert by Input ID.
                 The length of each array must match that of the times array.
                 To omit a value for a given timestamp in times, use the value null.
 
@@ -206,7 +388,7 @@ class APIClient(RawClient):
                 >>> id = '1'
                 >>> result = InsertResponse(
                 >>>             signalsByInput = {'id': InsertSummary(id = <signal_id>, created = True)}
-                >>> ) 
+                >>> )
                 >>> error = None
 
             Where InsertSummary is a pydantic model with field id: str (unique ID of the saved instance)
@@ -222,9 +404,9 @@ class APIClient(RawClient):
                 >>> result = None
                 >>> error = Error(
                 >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
+                >>>         message = 'Invalid params',
                 >>>         data = ErrorData(
-                >>>                     trace = <trace_id>, 
+                >>>                     trace = <trace_id>,
                 >>>                     params = {'data.series.id': ['not same length as times']}
                 >>>         )
                 >>> )
@@ -236,7 +418,8 @@ class APIClient(RawClient):
         )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+
+        result = self.make_requests(request_data.json())
         return Response(**result)
 
     @increment_id
@@ -251,13 +434,13 @@ class APIClient(RawClient):
         params: Dict[inputs, createOnly]
 
             - inputs: Dict[InputID, List[SignalInfo]]
-                The SignalInfo object contains metadata for a signal. 
+                The SignalInfo object contains metadata for a signal.
                 Click `here <https://docs.clarify.io/reference/signal>`_ for more information.
 
             - createOnly: bool
-                If set to true, skip update of information for existing signals. That is, all Input IDs 
-                that map to existing signals are silently ignored.
-        
+                 If set to true, skip update of information for existing signals. That is, all Input IDs
+                 that map to existing signals are silently ignored.
+
             Example
             -------
 
@@ -282,7 +465,7 @@ class APIClient(RawClient):
                 >>>          )
                 >>> error = None
 
-            WhereSaveSummary is a pydantic model with field id: str (Unique ID of the saved instance), 
+            WhereSaveSummary is a pydantic model with field id: str (Unique ID of the saved instance),
             created: bool (True if a new instance was created) and
             updated: bool (True if the metadata where updated).
 
@@ -293,7 +476,7 @@ class APIClient(RawClient):
                 >>> result = None
                 >>> error = Error(
                 >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
+                >>>         message = 'Invalid params',
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
 
@@ -306,7 +489,7 @@ class APIClient(RawClient):
         request_data = Request(method=ApiMethod.save_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+        result = self.make_requests(request_data.json())
         return Response(**result)
 
     @increment_id
@@ -398,7 +581,7 @@ class APIClient(RawClient):
                 >>> result = None
                 >>> error = Error(
                 >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
+                >>>         message = 'Invalid params',
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
 
@@ -406,7 +589,7 @@ class APIClient(RawClient):
         request_data = Request(method=ApiMethod.select_items, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+        result = self.make_requests(request_data.json())
 
         return Response(**result)
 
@@ -461,7 +644,7 @@ class APIClient(RawClient):
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> {
-                >>>     "jsonrpc": "2.0", 
+                >>>     "jsonrpc": "2.0",
                 >>>     "id": "1",
                 >>>     "result": {
                 >>>        "signals": {"<signal_id>": Signal},
@@ -476,7 +659,7 @@ class APIClient(RawClient):
                 >>> result = None
                 >>> error = Error(
                 >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
+                >>>         message = 'Invalid params',
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
 
@@ -488,7 +671,7 @@ class APIClient(RawClient):
 
         request_data = Request(method=ApiMethod.select_signals, params=params)
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+        result = self.make_requests(request_data.json())
         return Response(**result)
 
     @increment_id
@@ -501,14 +684,14 @@ class APIClient(RawClient):
         Parameters
         ----------
         params : Dict
-            
+
             - itemsBySignal: Dict
                 Select signals to include (data for).
 
                 - signal_id: SignalInfo
 
             - createOnly: bool
-                
+
             >>> {
             >>>    "itemsBySignal": {
             >>>         "<signal_id>" : SignalInfo(name= "Home temperature")
@@ -523,16 +706,16 @@ class APIClient(RawClient):
 
                 >>> {
                 >>>     "jsonrpc": "2.0",
-                >>>     "id": "1", 
+                >>>     "id": "1",
                 >>>     "result": {
                 >>>         "itemsBySignal": {
                 >>>             "<signal_id>": {
                 >>>                 "id": "<item_id>",
-                >>>                 "created": true, 
+                >>>                 "created": true,
                 >>>                 "updated": false
                 >>>             }
                 >>>         }
-                >>>     }, 
+                >>>     },
                 >>>     "error": null
                 >>> }
 
@@ -543,7 +726,7 @@ class APIClient(RawClient):
                 >>> result = None
                 >>> error = Error(
                 >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
+                >>>         message = 'Invalid params',
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
         """
@@ -555,7 +738,7 @@ class APIClient(RawClient):
         request_data = Request(method=ApiMethod.publish_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+        result = self.make_requests(request_data.json())
         return Response(**result)
 
 
@@ -568,6 +751,7 @@ class ClarifyClient(APIClient):
     def select_items_data(
         self,
         ids: List = [],
+        limit: int = 10,
         skip: int = 0,
         not_before=None,
         before=None,
@@ -580,12 +764,14 @@ class ClarifyClient(APIClient):
         ----------
         - ids: Optional[List]
             List of item ids to retrieve. Empty list means take all.
+         - limit: int, default: 10
+            limit number of items
         - skip: int, default=0
             Skip first N items.
         - not_before: string(RFC 3339 timestamp), optional default datetime.now() - 40days
             An RFC3339 time describing the inclusive start of the window.
         - before: string(RFC 3339 timestamp), optional default datetime.now()
-            An RFC3339 time describing the exclusive end of the window. 
+            An RFC3339 time describing the exclusive end of the window.
         - rollup: RFC 3339 duration or "window", default None
             If RFC 3339 duration is specified, roll-up the values into either the full time window
             (`notBefore` -> `before`) or evenly sized buckets.
@@ -601,7 +787,7 @@ class ClarifyClient(APIClient):
             >>>     before="2021-11-10T12:00:00Z"
             >>>     rollup="P1DT"
             >>>     )
-        
+
 
         Response
         --------
@@ -633,7 +819,7 @@ class ClarifyClient(APIClient):
                 >>> result = None
                 >>> error = Error(
                 >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
+                >>>         message = 'Invalid params',
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
 
@@ -641,7 +827,12 @@ class ClarifyClient(APIClient):
         not_before, before = compute_timewindow(not_before, before)
 
         params = {
-            "items": {"include": False, "skip": skip, "filter": {"id": {"$in": ids}}},
+            "items": {
+                "include": False,
+                "limit": limit,
+                "skip": skip,
+                "filter": {"id": {"$in": ids}},
+            },
             "data": {
                 "include": True,
                 "notBefore": not_before,
@@ -656,70 +847,77 @@ class ClarifyClient(APIClient):
         request_data = Request(method=ApiMethod.select_items, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+        result = self.make_requests(request_data.json())
 
         return Response(**result)
 
     @increment_id
     @validate_arguments
     def select_items_metadata(
-        self, ids: List = [], name: str = "", labels: dict = {}, skip: int = 0,
+        self,
+        ids: List = [],
+        name: str = "",
+        labels: dict = {},
+        limit: int = 10,
+        skip: int = 0,
     ) -> Response:
         """
-        Return item data from selected signals.
+         Return item data from selected items.
 
-        Parameters
-        ----------
-        - ids: Optional[List]
-            List of item ids to retrieve. Empty list means take all.
-        - name: string default: ""
-            String containing regex of the name of an Item.
-        - labels: dict default: {}
-            Dictionary with labels and keys to be used as a filter
-        - skip: int default: 0
-            Skip first N signals.
+         Parameters
+         ----------
+         - ids: Optional[List]
+             List of item ids to retrieve. Empty list means take all.
+         - name: string default: ""
+             String containing regex of the name of an Item.
+         - labels: dict default: {}
+             Dictionary with labels and keys to be used as a filter
+         - limit: int, default: 10
+            limit number of items
+         - skip: int default: 0
+             Skip first N signals.
 
-       Example
-        -------
+        Example
+         -------
 
-            >>> client.select_items_metadata(
-            >>>     ids=[<item_id>],
-            >>>     name="Electricity",
-            >>>     labels={"city":"Trondheim"}
-            >>>     skip=0
-            >>>     )
-        
+             >>> client.select_items_metadata(
+             >>>     ids=[<item_id>],
+             >>>     name="Electricity",
+             >>>     labels={"city":"Trondheim"}
+             >>>     skip=0
+             >>>     )
 
-        Response
-        --------
-            In case of a valid return value, returns a pydantic model with the following format:
 
-                >>> {
-                >>>    "jsonrpc": "2.0",
-                >>>    "id": "1",
-                >>>    "result": {
-                >>>    "items": {
-                >>>        "item_id": {
-                >>>             "name": "item_name",
-                >>>             "type": "numeric",
-                >>>             ...
-                >>>        }
-                >>>    },
-                >>>    "data": None,
-                >>>    "error": null
-                >>>    }
-                >>> }
+         Response
+         --------
+             In case of a valid return value, returns a pydantic model with the following format:
 
-            In case of the error the method return a pydantic model with the following format:
+                 >>> {
+                 >>>    "jsonrpc": "2.0",
+                 >>>    "id": "1",
+                 >>>    "result": {
+                 >>>    "items": {
+                 >>>        "item_id": {
+                 >>>             "name": "item_name",
+                 >>>             "type": "numeric",
+                 >>>             ...
+                 >>>        }
+                 >>>    },
+                 >>>    "data": None,
+                 >>>    "error": null
+                 >>>    }
+                 >>> }
 
-                >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
-                >>>         data = ErrorData(trace = <trace_id>, params = {})
-                >>> )
+             In case of the error the method return a pydantic model with the following format:
+
+                 >>> jsonrpc = '2.0'
+                 >>> id = '1'
+                 >>> result = None
+                 >>> error = Error(
+                 >>>         code = '-32602',
+                 >>>         message = 'Invalid params',
+                 >>>         data = ErrorData(trace = <trace_id>, params = {})
+                 >>> )
         """
         filters = []
         if len(ids) > 0:
@@ -728,8 +926,10 @@ class ClarifyClient(APIClient):
             filters += [{"name": {"$regex": name}}]
 
         params = {
-            "items": {"include": True, "filter": {}, "skip": skip},
-            "data": {"include": False,},
+            "items": {"include": True, "filter": {}, "limit": limit, "skip": skip},
+            "data": {
+                "include": False,
+            },
         }
 
         if len(filters) > 0:
@@ -741,7 +941,7 @@ class ClarifyClient(APIClient):
         request_data = Request(method=ApiMethod.select_items, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+        result = self.make_requests(request_data.json())
 
         return Response(**result)
 
@@ -768,12 +968,12 @@ class ClarifyClient(APIClient):
                 List of SignalInfo object that contains metadata for a signal.
                 Click `here <https://docs.clarify.io/v1.1/reference/signal-info>`_ for more information.
             - create_only: bool Default False
-                If set to true, skip update of information for existing signals. That is, all Input IDs 
+                If set to true, skip update of information for existing signals. That is, all Input IDs
                 that map to existing signals are silently ignored.
-            - integration: str Default None 
+            - integration: str Default None
                 Integration ID in string format. None means using the integration in credential file.
 
-        
+
             Example
             -------
 
@@ -782,7 +982,7 @@ class ClarifyClient(APIClient):
                 >>>    description = "Temperature in the bedroom",
                 >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
                 >>> )
-                >>> save_signals(input_ids=["id1"], signals=[signal], create_only=False)
+                >>> save_signals(input_ids=["id1"], signals=[signal], createOnly=False)
 
         Returns
         -------
@@ -798,7 +998,7 @@ class ClarifyClient(APIClient):
                 >>>          )
                 >>> error = None
 
-            Where SaveSummary is a pydantic model with field id: str (Unique ID of the saved instance), 
+            Where SaveSummary is a pydantic model with field id: str (Unique ID of the saved instance),
             created: bool (True if a new instance was created) and
             updated: bool (True if the metadata where updated).
 
@@ -809,19 +1009,14 @@ class ClarifyClient(APIClient):
                 >>> result = None
                 >>> error = Error(
                 >>>         code = '-32602',
-                >>>         message = 'Invalid params', 
+                >>>         message = 'Invalid params',
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
 
         """
 
         # create params dict
-        params = {
-            "inputs": {},
-            "createOnly": create_only,
-            "integration": integration
-        }
-
+        params = {"inputs": {}, "createOnly": create_only, "integration": integration}
 
         # assert integration parameter
         if not params["integration"]:
@@ -831,11 +1026,10 @@ class ClarifyClient(APIClient):
         for input_id, signal in zip(input_ids, signals):
             params["inputs"][input_id] = signal
 
-
         request_data = Request(method=ApiMethod.save_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+        result = self.make_requests(request_data.json())
         return Response(**result)
 
 

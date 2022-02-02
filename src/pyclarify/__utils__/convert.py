@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
 from datetime import datetime, timedelta
 
 
@@ -75,3 +74,16 @@ def compute_timewindow(start_time, end_time):
         start_time = end_time - timedelta(days=40)
 
     return time_to_string(start_time), time_to_string(end_time)
+
+
+def datetime_to_str(o):
+    date = datetime.strftime(o, "%Y-%m-%dT%H:%M:%SZ")
+    return date
+
+
+def str_to_datetime(date):
+    # from "2021-11-01T21:50:06" to 2021-11-01 21:50:06
+    if date[-1] == "Z":
+        date = date[:-1]
+    date = datetime.fromisoformat(date)
+    return date

@@ -7,6 +7,7 @@ sys.path.insert(1, "src/")
 from pyclarify.models.data import *
 from pyclarify.__utils__.auxiliary import *
 
+
 class TestSummary(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models-data.json") as f:
@@ -99,6 +100,7 @@ class TestMerge(unittest.TestCase):
 
         self.assertEqual(merged, self.cdf)
 
+
 class TestPandas(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-models-data.json") as f:
@@ -124,10 +126,10 @@ class TestPandas(unittest.TestCase):
             series={
                 self.mock_data_1["signal"]: self.mock_data_1["values"],
                 self.mock_data_2["signal"]: self.mock_data_2["values"],
-                self.mock_data_3["signal"]: self.mock_data_3["values"]
-                },
+                self.mock_data_3["signal"]: self.mock_data_3["values"],
+            },
         )
-    
+
     def test_convert_single_signal(self):
         df = self.cdf.to_pandas()
 
@@ -143,14 +145,15 @@ class TestPandas(unittest.TestCase):
         # Values
         # NB: Change numpy float to native float
         values = [x.item() for x in df[signal].values]
-   
+
         self.assertEqual(self.cdf.series[signal], values)
 
         # Times
         # NB: Change both values to timestamp
         from datetime import datetime
+
         # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x/1e9) for x in df.index.values.tolist()]
+        numpy_ts = [int(x / 1e9) for x in df.index.values.tolist()]
         clarify_ts = [datetime.timestamp(x) for x in self.cdf.times]
         self.assertEqual(clarify_ts, numpy_ts)
 
@@ -167,13 +170,16 @@ class TestPandas(unittest.TestCase):
         self.assertEqual(signals, list(df.columns))
 
         # Values
-        self.assertEqual(list(self.cdf3.series.values()), list(df.to_dict(orient="list").values()))
+        self.assertEqual(
+            list(self.cdf3.series.values()), list(df.to_dict(orient="list").values())
+        )
 
         # Times
         # NB: Change both values to timestamp
         from datetime import datetime
+
         # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x/1e9) for x in df.index.values.tolist()]
+        numpy_ts = [int(x / 1e9) for x in df.index.values.tolist()]
         clarify_ts = [datetime.timestamp(x) for x in self.cdf3.times]
         self.assertEqual(clarify_ts, numpy_ts)
 

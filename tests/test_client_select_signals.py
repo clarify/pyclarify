@@ -116,3 +116,7 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
         # Assert no Items or Signals
         self.assertEqual(response_data.result.items, {})
         self.assertEqual(response_data.result.signals, {})
+
+
+if __name__ == "__main__":
+    unittest.main()

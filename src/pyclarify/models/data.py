@@ -49,15 +49,14 @@ class DataFrame(BaseModel):
         df = pd.DataFrame(self.series)
         df.index = self.times
         return df
-    
 
 
 @validate_arguments
 def from_pandas(df, time_col=None):
     """Convert a pandas DataFrame into a Clarify DataFrame.
 
-        Returns:
-            pandas.DataFrame: The pandas DataFrame representing this instance.
+    Returns:
+        pandas.DataFrame: The pandas DataFrame representing this instance.
     """
     pd = local_import("pandas")
     if isinstance(df, pd.DataFrame):
@@ -69,6 +68,7 @@ def from_pandas(df, time_col=None):
         return DataFrame(times=times, series=series)
     else:
         return False
+
 
 @validate_arguments
 def merge(dataframes: List[DataFrame]):
@@ -122,7 +122,9 @@ class DataQuery(BaseModel, extra=Extra.forbid):
 class ResourceQuery(BaseModel, extra=Extra.forbid):
     include: bool = False
     filter: dict  # TODO: ResourceFilter (https://docs.clarify.io/v1.1/reference/filtering)
-    limit: int = 0  # select_items: max=50, default=10 | select_signal: max=1000, default=50
+    limit: int = (
+        0  # select_items: max=50, default=10 | select_signal: max=1000, default=50
+    )
     skip: int = 0
 
 
@@ -177,6 +179,7 @@ class Signal(SignalInfo):
     item: Union[ResourceID, None]
     inputId: InputID
     meta: ResourceMetadata
+
 
 class Item(SignalInfo):
     visible: bool = False
