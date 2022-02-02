@@ -586,8 +586,8 @@ class APIClient(RawClient):
                 >>> )
 
         """
-        request_data = Request(method=ApiMethod.select_items, params=params)
 
+        request_data = Request(method=ApiMethod.select_items, params=params)
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.make_requests(request_data.json())
 
@@ -825,7 +825,6 @@ class ClarifyClient(APIClient):
 
         """
         not_before, before = compute_timewindow(not_before, before)
-
         params = {
             "items": {
                 "include": False,
@@ -840,12 +839,9 @@ class ClarifyClient(APIClient):
                 "rollup": rollup,
             },
         }
-
         if len(ids) < 1:
             del params["items"]["filter"]
-
         request_data = Request(method=ApiMethod.select_items, params=params)
-
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.make_requests(request_data.json())
 
