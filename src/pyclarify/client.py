@@ -1218,5 +1218,5 @@ class ClarifyClient(APIClient):
         request_data = Request(method=ApiMethod.publish_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.send(request_data.json())
+        result = self.make_requests(request_data.json())
         return Response(**result)
