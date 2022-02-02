@@ -1,0 +1,81 @@
+{
+  "test_cases": [
+    {
+      "comments": "No input",
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "itemsBySignal": {}
+        },
+        "error": null
+      }
+    },
+    {
+      "comments": "get all signals with items",
+      "dummy-items": {
+        "c7kmudvqfsjfb27kpr30": {
+          "name": "my test signal",
+          "type": "numeric",
+          "description": "A test Item for debugging.",
+          "labels": {},
+          "annotations": {},
+          "engUnit": "",
+          "sourceType": "measurement",
+          "sampleInterval": null,
+          "gapDetection": null,
+          "enumValues": {},
+          "visible": true
+        },
+        "c7kmudvqfsjfb27kpr3g": {
+          "name": "my test signal 2",
+          "type": "numeric",
+          "description": "A test Item for debugging.",
+          "labels": {},
+          "annotations": {},
+          "engUnit": "",
+          "sourceType": "measurement",
+          "sampleInterval": null,
+          "gapDetection": null,
+          "enumValues": {},
+          "visible": false
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "itemsBySignal": {
+            "c7kmudvqfsjfb27kpr30": {
+              "id": "c7o06mvqfsjalqv80iqg",
+              "created": true,
+              "updated": false
+            },
+            "c7kmudvqfsjfb27kpr3g": {
+              "id": "c7o07lvqfsjalqv80ir0",
+              "created": true,
+              "updated": false
+            }
+          }
+        },
+        "error": null
+      }
+    },
+    {
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "itemsBySignal": {
+            "c7kmudvqfsjfb27kpr30": {
+              "id": "c7o06mvqfsjalqv80iqg",
+              "created": false,
+              "updated": false
+            }
+          }
+        },
+        "error": null
+      }
+    }
+  ]
+}

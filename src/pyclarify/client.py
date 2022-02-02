@@ -31,7 +31,7 @@ from pydantic import validate_arguments
 from typing import List, Union
 from typing_extensions import Literal
 from pydantic.fields import Optional
-from pyclarify.models.data import DataFrame, SignalInfo
+from pyclarify.models.data import DataFrame, SignalInfo, Item, InputID, ResourceID
 from pyclarify.models.requests import Request, ApiMethod
 from pyclarify.models.response import Response
 from pyclarify.oauth2 import GetToken
@@ -749,7 +749,7 @@ class ClarifyClient(APIClient):
     @validate_arguments
     def save_signals(
         self,
-        input_ids: List[str],
+        input_ids: List[InputID],
         signals: List[SignalInfo],
         create_only: bool = False,
         integration: str = None,
@@ -761,8 +761,9 @@ class ClarifyClient(APIClient):
         Parameters
         ----------
         params: 
-            - input_ids: List[str]
-                List of strings to be the input ID of the signal. 
+            - input_ids: List[InputID]
+                List of strings to be the input ID of the signal.
+                Click `here <https://docs.clarify.io/v1.1/reference/input-id>`_ for more information.
             - signals: List[SignalInfo]
                 List of SignalInfo object that contains metadata for a signal.
                 Click `here <https://docs.clarify.io/v1.1/reference/signal-info>`_ for more information.
@@ -832,6 +833,101 @@ class ClarifyClient(APIClient):
 
 
         request_data = Request(method=ApiMethod.save_signals, params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        result = self.send(request_data.json())
+        return Response(**result)
+
+
+    @increment_id
+    @validate_arguments
+    def publish_signals(
+        self,
+        resource_ids: List[ResourceID],
+        items: List[Item],
+        create_only: bool = False,
+        integration: str = None,
+    ) -> Response:
+        """
+        This call creates Item for one or multiple signals. The signals are uniquely identified by its <input_ID>.
+        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/v1.1/reference/adminpublishsignals>`_ .
+
+        Parameters
+        ----------
+        params: 
+            - resource_ids: List[str]
+                List of strings to be the input ID of the signal.
+                Click `here <https://docs.clarify.io/v1.1/reference/resource-id>`_ for more information.
+            - items: List[Item]
+                List of Item object that contains metadata for a Item.
+                Click `here <https://docs.clarify.io/v1.1/reference/item>`_ for more information.
+            - create_only: bool Default False
+                If set to true, skip update of information for existing Items. That is, all Input IDs 
+                that map to existing items are silently ignored.
+            - integration: str Default None 
+                Integration ID in string format. None means using the integration in credential file.
+
+        
+            Example
+            -------
+
+                >>> item = Item(
+                >>>    name = "Home temperature",
+                >>>    description = "Temperature in the bedroom",
+                >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+                >>>    visible=True
+                >>> )
+                >>> client.publishSignals(resource_ids=["id1"], items=[items], create_only=False)
+
+        Returns
+        -------
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = PublishSignalsResponse(
+                >>>             itemsBySignal={
+                >>>                 <RESOURCE_ID>: SaveSummary(id=<item_id>, created=True, updated=False)
+                >>>              }
+                >>>          )
+                >>> error = None
+
+            Where PublishSignalsResponse is a pydantic model with field id: str (Unique ID of the published instance), 
+            created: bool (True if a new instance was created) and
+            updated: bool (True if the metadata where updated).
+
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params', 
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
+
+        """
+
+        # create params dict
+        params = {
+            "itemsBySignal": {},
+            "createOnly": create_only,
+            "integration": integration
+        }
+
+
+        # assert integration parameter
+        if not params["integration"]:
+            params["integration"] = self.authentication.integration_id
+
+        # populate inputs
+        for resource_id, item in zip(resource_ids, items):
+            params["itemsBySignal"][resource_id] = item
+
+
+        request_data = Request(method=ApiMethod.publish_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.send(request_data.json())
