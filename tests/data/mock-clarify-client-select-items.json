@@ -1,0 +1,113 @@
+{
+  "test_cases": [
+    {
+      "comments": "get items matching criteria, return metadata and data (with stats)",
+      "args": {
+        "ids": ["c5vv12btaf7d0qbk0l0g"],
+        "name": "Electricity",
+        "skip": 0,
+        "labels": { "location": "Trondheim" }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "items": {
+            "c5vv12btaf7d0qbk0l0g": {
+              "name": "c5vv12btaf7d0qbk0l0g",
+              "type": "numeric",
+              "description": "Test description",
+              "labels": { "data-source": [], "location": [] },
+              "annotations": {},
+              "engUnit": "",
+              "enumValues": {},
+              "sourceType": "measurement",
+              "sampleInterval": null,
+              "gapDetection": "3600.0"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "get items matching criteria, return only data",
+      "args": {
+        "ids": ["c5vv12btaf7d0qbk0l0g"],
+        "skip": 0,
+        "not_before": "2021-10-10T21:50:06Z",
+        "before": "2021-10-11T22:50:06Z",
+        "rollup": "PT1H"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "data": {
+            "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+            "series": {
+              "item_id_avg": [0.0, 0.0],
+              "item_id_count": [20.0, 20.0],
+              "item_id_max": [0.0, 0.0],
+              "item_id_min": [0.0, 0.0],
+              "item_id_sum": [0.0, 0.0]
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "get 1100 items, return metadata and no data",
+      "args": {
+        "limit": 1100,
+        "skip": 0
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "items": {
+            "c5vv12btaf7d0qbk0l0g": {
+              "name": "c5vv12btaf7d0qbk0l0g",
+              "type": "numeric",
+              "description": "Test description",
+              "labels": { "data-source": [], "location": [] },
+              "annotations": {},
+              "engUnit": "",
+              "enumValues": {},
+              "sourceType": "measurement",
+              "sampleInterval": null,
+              "gapDetection": "3600.0"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "get items matching criteria, using limit and skip",
+      "args": {
+        "ids": ["c5vv12btaf7d0qbk0l0g"],
+        "skip": 0,
+        "limit": 100,
+        "not_before": "2021-10-10T21:50:06Z",
+        "before": "2021-10-11T22:50:06Z",
+        "rollup": "PT1H"
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "data": {
+            "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+            "series": {
+              "item_id_avg": [0.0, 0.0],
+              "item_id_count": [20.0, 20.0],
+              "item_id_max": [0.0, 0.0],
+              "item_id_min": [0.0, 0.0],
+              "item_id_sum": [0.0, 0.0]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

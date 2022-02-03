@@ -21,7 +21,8 @@ from typing_extensions import Literal
 from datetime import datetime, timedelta
 import logging
 from enum import Enum
-from pyclarify.__utils__.convert import timedelta_isoformat
+from pyclarify.__utils__.convert import timedelta_isoformat, time_to_string
+from pyclarify.__utils__.auxiliary import local_import
 
 # constrained string defined by the API
 InputID = constr(regex=r"^[a-z0-9_-]{1,40}$")
@@ -35,6 +36,38 @@ SHA1Hash = constr(regex=r"^[0-9a-f]{5,40}$")
 class DataFrame(BaseModel):
     times: List[datetime] = None
     series: Dict[InputID, NumericalValuesType] = None
+
+    def to_pandas(self):
+        """Convert the instance into a pandas DataFrame.
+
+        Returns:
+            pandas.DataFrame: The pandas DataFrame representing this instance.
+        """
+
+        pd = local_import("pandas")
+
+        df = pd.DataFrame(self.series)
+        df.index = self.times
+        return df
+
+
+@validate_arguments
+def from_pandas(df, time_col=None):
+    """Convert a pandas DataFrame into a Clarify DataFrame.
+
+    Returns:
+        pandas.DataFrame: The pandas DataFrame representing this instance.
+    """
+    pd = local_import("pandas")
+    if isinstance(df, pd.DataFrame):
+        series = df.to_dict(orient="list")
+        if time_col:
+            times = df[time_col].values.tolist()
+        else:
+            times = df.index.values.tolist()
+        return DataFrame(times=times, series=series)
+    else:
+        return False
 
 
 @validate_arguments
@@ -89,7 +122,9 @@ class DataQuery(BaseModel, extra=Extra.forbid):
 class ResourceQuery(BaseModel, extra=Extra.forbid):
     include: bool = False
     filter: dict  # TODO: ResourceFilter (https://docs.clarify.io/v1.1/reference/filtering)
-    limit: int = 0  # select_items: max=50, default=10 | select_signal: max=1000, default=50
+    limit: int = (
+        0  # select_items: max=50, default=10 | select_signal: max=1000, default=50
+    )
     skip: int = 0
 
 
@@ -130,7 +165,10 @@ class SignalInfo(BaseModel):
     gapDetection: timedelta = None
 
     class Config:
-        json_encoders = {timedelta: timedelta_isoformat}
+        json_encoders = {
+            timedelta: timedelta_isoformat,
+            datetime: time_to_string
+            }
         extra = Extra.forbid
 
 
@@ -144,3 +182,7 @@ class Signal(SignalInfo):
     item: Union[ResourceID, None]
     inputId: InputID
     meta: ResourceMetadata
+
+
+class Item(SignalInfo):
+    visible: bool = False
