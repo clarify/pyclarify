@@ -592,64 +592,37 @@ Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference
 <dd><p>Bases: <a class="reference internal" href="#pyclarify.client.APIClient" title="pyclarify.client.APIClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.client.APIClient</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.ClarifyClient.publish_signals">
-<span class="sig-name descname"><span class="pre">publish_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#pyclarify.models.data.Item" title="pyclarify.models.data.Item"><span class="pre">pyclarify.models.data.Item</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.ClarifyClient.publish_signals" title="Permalink to this definition">¶</a></dt>
-<dd><p>This call creates Item for one or multiple signals. The signals are uniquely identified by its &lt;input_ID&gt;.
+<span class="sig-name descname"><span class="pre">publish_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#pyclarify.models.data.Item" title="pyclarify.models.data.Item"><span class="pre">pyclarify.models.data.Item</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.ClarifyClient.publish_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
+Each signal is uniquely identified by its input ID in combination with the integration ID.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminpublishsignals">admin.publishSignals</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>params</strong> – <blockquote>
-<div><ul class="simple">
-<li><dl class="simple">
-<dt>resource_ids: List[str]</dt><dd><p>List of strings to be the input ID of the signal.
-Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/resource-id">here</a> for more information.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>items: List[Item]</dt><dd><p>List of Item object that contains metadata for a Item.
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal_ids</strong> (<em>List</em><em>[</em><em>'&lt;SIGNAL_ID&gt;'</em><em>]</em>) – List of strings to be the input ID of the signal.</p></li>
+<li><p><strong>items</strong> (<em>List</em><em>[ </em><a class="reference internal" href="models.html#pyclarify.models.data.Item" title="pyclarify.models.data.Item"><em>Item</em></a><em> ]</em>) – <p>List of Item object that contains metadata for a Item.
 Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/item">here</a> for more information.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>create_only: bool Default False</dt><dd><p>If set to true, skip update of information for existing Items. That is, all Input IDs
-that map to existing items are silently ignored.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>integration: str Default None</dt><dd><p>Integration ID in string format. None means using the integration in credential file.</p>
-</dd>
-</dl>
-</li>
+</p></li>
+<li><p><strong>create_only</strong> (<em>bool</em><em>, </em><em>default False</em>) – If set to True, skip update of information for existing Items. That is, all Input_ID’s
+that map to existing items are silently ignored.</p></li>
+<li><p><strong>integration</strong> – Integration ID in string format. None means using the integration in credential file.</p></li>
 </ul>
-</div></blockquote>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]}</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">visible</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">publishSignals</span><span class="p">(</span><span class="n">resource_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">],</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">items</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">PublishSignalsResponse</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">itemsBySignal</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="o">&lt;</span><span class="n">RESOURCE_ID</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=&lt;</span><span class="n">item_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>             <span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">itemsBySignal</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                           <span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                                               <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                               <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                               <span class="n">updated</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>                                   <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>                               <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
-<p>Where PublishSignalsResponse is a pydantic model with field id: str (Unique ID of the published instance),
-created: bool (True if a new instance was created) and
-updated: bool (True if the metadata where updated).</p>
 <p>In case of the error the method return a pydantic model with the following format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
