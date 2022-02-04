@@ -196,7 +196,7 @@ Example: Get Item data and metadata
     >>>
     >>> client = APIClient("./clarify-credentials.json")
     >>>
-    >>> items = {"include": True, "filter": {"id": {"$in": ["<ITEM_ID>"]}},  "limit": 10, "skip": 0},
+    >>> items = {"include": True, "filter": {"id": {"$in": ["<ITEM_ID>"]}},  "limit": 10, "skip": 0}
     >>> data = {
     >>>         "include": True,
     >>>          "notBefore":"2021-11-09T21:50:06Z",
@@ -316,5 +316,5 @@ Example: Publish signals
     >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
     >>>    visible=True
     >>> )
-    >>> response = client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[items], create_only=False)
+    >>> response = client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
     >>> print(response.json())
