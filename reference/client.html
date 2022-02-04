@@ -128,9 +128,864 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="module-pyclarify.client.APIClient">
-<span id="pyclarify-client"></span><span id="client"></span><h1>PyClarify Client<a class="headerlink" href="#module-pyclarify.client.APIClient" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-pyclarify.client.ClarifyClient"></span></section>
+  <section id="module-pyclarify.client">
+<span id="pyclarify-client"></span><span id="client"></span><h1>PyClarify Client<a class="headerlink" href="#module-pyclarify.client" title="Permalink to this headline">¶</a></h1>
+<p>Copyright 2021 Clarify</p>
+<p>Licensed under the Apache License, Version 2.0 (the “License”);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.client.APIClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">APIClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.APIClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyclarify.client.RawClient" title="pyclarify.client.RawClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.client.RawClient</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><span class="pre">pyclarify.models.data.DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with
+the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.
+Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/integrationinsert">integration.insert</a> .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="models.html#pyclarify.models.data.DataFrame" title="pyclarify.models.data.DataFrame"><em>DataFrame</em></a>) – <p>Dataframe with the fields:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>series: Dict[InputID, List[Union[None, float, int]]]</dt><dd><p>Map of inputid to Array of data points to insert by Input ID.
+The length of each array must match that of the times array.
+To omit a value for a given timestamp in times, use the value null.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>times:  List of timestamps</dt><dd><p>Either as a python datetime or as
+YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">DataFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2021-11-01T21:50:06Z&quot;</span><span class="p">,</span>  <span class="s2">&quot;2021-11-02T21:50:06Z&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">series</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;input_id_1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;input_id_2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]},</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">times</span><span class="o">=</span><span class="n">date</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">InsertResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">signalsByInput</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;InputID&#39;</span><span class="p">:</span> <span class="n">InsertSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">signal_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>Where:
+- InsertResponse is a a pydantic model with field signalsByInput.
+- signalsByInput is a Dict[InputID, InsertSummary].
+- InsertSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).</p>
+<p>In case of the error (for example not equal length) the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data.series.id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;not same length as times&#39;</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.publish_signals">
+<span class="sig-name descname"><span class="pre">publish_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.publish_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
+Each signal is uniquely identified by its input ID in combination with the integration ID.
+Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminpublishsignals">admin.publishSignals</a> .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – <ul class="simple">
+<li><dl class="simple">
+<dt>itemsBySignal: Dict[‘&lt;SIGNAL_ID&gt;’, SignalInfo]</dt><dd><p>Select signals to publish.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>createOnly: bool</dt><dd><p>If set to true, skip update of information for existing items.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">SignalInfo</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">itemsBySignal</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SignalInfo</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;&lt;item_name&gt;&quot;</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">createOnly</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;itemsBySignal&quot;</span><span class="p">:</span> <span class="n">itemsBySignal</span><span class="p">,</span> <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="n">createOnly</span><span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+</dl>
+<dl>
+<dt>Response</dt><dd><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">PublishSignalsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">itemsBySignal</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                           <span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                                               <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                               <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                               <span class="n">updated</span><span class="o">=</span><span class="kc">False</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>                                   <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>                               <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.save_signals">
+<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.save_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>This call inserts metadata for one or multiple signals. The signals are uniquely identified by its &lt;INPUT_ID&gt;.
+Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/integrationsavesignals">integration.saveSignals</a> .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – <ul class="simple">
+<li><dl class="simple">
+<dt>inputs: Dict[InputID, SignalInfo]</dt><dd><p>The SignalInfo object contains metadata for a signal.
+Click <a class="reference external" href="https://docs.clarify.io/reference/signal">here</a> for more information.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>createOnly: bool</dt><dd><p>If set to true, skip update of information for existing signals. That is, all Input_ID’s
+that map to existing signals are silently ignored.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">SignalInfo</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">signal_1</span> <span class="o">=</span> <span class="n">SignalInfo</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signal_2</span> <span class="o">=</span> <span class="n">SignalInfo</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Office temperature&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;input_id_1&quot;</span><span class="p">:</span> <span class="n">signal_1</span><span class="p">,</span> <span class="s2">&quot;input_id_2&quot;</span><span class="p">:</span> <span class="n">signal_2</span><span class="p">},</span> <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SaveSignalsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">signalsByInput</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="o">&lt;</span><span class="n">INPUT_ID</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>             <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>Where:
+- SaveSignalsResponse is a a pydantic model with field signalsByInput.
+- signalsByInput is a Dict[InputID, SaveSummary].
+- SaveSummary is a a pydantic model with field:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>id: str,</p></li>
+<li><p>created: bool (True if a new instance was created)</p></li>
+<li><p>updated: bool (True if the metadata where updated).</p></li>
+</ul>
+</div></blockquote>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.select_items">
+<span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data and metadata for one or multiple items.
+Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/itemselect">clarify.selectItems</a> .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – <ul class="simple">
+<li><dl class="simple">
+<dt>items: dict</dt><dd><p>Query which items to select and configure inclusion or exclusion of meta-data in the response.
+By default, no meta-data is included.
+For more information click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/resource-query">here</a> .</p>
+<ul>
+<li><dl class="simple">
+<dt>include: bool, default False</dt><dd><p>Set to true to include matched items in the response.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>filter: dict</dt><dd><p>Filter which items to include.
+Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/filtering">here</a> for more information.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>limit: int, default 10</dt><dd><p>Number of items to include in the match.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>skip: int, default 0</dt><dd><p>Skip the n first items.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>data: dict</dt><dd><p>Configure which data to include in the response.
+For more information click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/data-query">here</a> .</p>
+<ul>
+<li><dl class="simple">
+<dt>include: bool, default False</dt><dd><p>Include the timeseries data in the response.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>notBefore: string(RFC 3339 timestamp) or python datetime, optional</dt><dd><p>Describing the inclusive start of the window.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>before: string(RFC 3339 timestamp) or python datetime optional</dt><dd><p>Describing the exclusive end of the window.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>rollup: RFC 3339 duration or “window”, default None</dt><dd><p>If RFC 3339 duration is specified, roll-up the values into either the full time window
+(<cite>notBefore</cite> -&gt; <cite>before</cite>) or evenly sized buckets.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">items</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;ITEM_ID&gt;&quot;</span><span class="p">]}},</span>  <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;skip&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="s2">&quot;notBefore&quot;</span><span class="p">:</span><span class="s2">&quot;2021-11-09T21:50:06Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="s2">&quot;before&quot;</span><span class="p">:</span> <span class="s2">&quot;2021-11-10T21:50:06Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="s2">&quot;rollup&quot;</span><span class="p">:</span> <span class="s2">&quot;PT1H&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">}</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following (example) format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SelectItemsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">items</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span> <span class="p">:</span> <span class="n">SignalInfo</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">times</span> <span class="o">=</span> <span class="p">[</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">series</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_avg&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_count&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_max&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_min&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_sum&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>                                   <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>                           <span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>      <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>In case where <cite>rollup = None</cite>, the response in the DataFrame has the following (example) format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">times</span> <span class="o">=</span> <span class="p">[</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">series</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">)</span>
+</pre></div>
+</div>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.APIClient.select_signals">
+<span class="sig-name descname"><span class="pre">select_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.APIClient.select_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get signal metadata and/or exposed items. This call is a recommend step before doing a publish_signals call.
+Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminselectsignals">admin.selectSignals</a> .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – <ul class="simple">
+<li><dl class="simple">
+<dt>signals: dict</dt><dd><p>Select signals to include (data for).</p>
+<ul>
+<li><dl class="simple">
+<dt>include: bool, default False</dt><dd><p>Set to true to include signal metadata in the response.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>filter: dict</dt><dd><p>Filter which signals to include.
+Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/filtering">here</a> for more information.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>limit: int, default 50</dt><dd><p>Limit number of signals.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>skip: int, default=0</dt><dd><p>Skip first N signals.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>items: dict</dt><dd><p>Configure item inclusion.</p>
+<ul>
+<li><dl class="simple">
+<dt>include: bool, default False</dt><dd><p>Set to true to include items metadata exposed by the selected signals.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signals</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:{</span><span class="s2">&quot;$in&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;SIGNAL_ID&gt;&quot;</span><span class="p">]}},</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;skip&quot;</span><span class="p">:</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">items</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;signals&quot;</span><span class="p">:</span> <span class="n">signals</span><span class="p">,</span> <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SelectSignalsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">items</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SignalInfo</span><span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">signals</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">:</span> <span class="n">Signal</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.client.ClarifyClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">ClarifyClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.ClarifyClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyclarify.client.APIClient" title="pyclarify.client.APIClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.client.APIClient</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.ClarifyClient.publish_signals">
+<span class="sig-name descname"><span class="pre">publish_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#pyclarify.models.data.Item" title="pyclarify.models.data.Item"><span class="pre">pyclarify.models.data.Item</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.ClarifyClient.publish_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>This call creates Item for one or multiple signals. The signals are uniquely identified by its &lt;input_ID&gt;.
+Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminpublishsignals">admin.publishSignals</a> .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> – <blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>resource_ids: List[str]</dt><dd><p>List of strings to be the input ID of the signal.
+Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/resource-id">here</a> for more information.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>items: List[Item]</dt><dd><p>List of Item object that contains metadata for a Item.
+Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/item">here</a> for more information.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>create_only: bool Default False</dt><dd><p>If set to true, skip update of information for existing Items. That is, all Input IDs
+that map to existing items are silently ignored.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>integration: str Default None</dt><dd><p>Integration ID in string format. None means using the integration in credential file.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">visible</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">publishSignals</span><span class="p">(</span><span class="n">resource_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id1&quot;</span><span class="p">],</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">items</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">PublishSignalsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">itemsBySignal</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="o">&lt;</span><span class="n">RESOURCE_ID</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=&lt;</span><span class="n">item_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>             <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>Where PublishSignalsResponse is a pydantic model with field id: str (Unique ID of the published instance),
+created: bool (True if a new instance was created) and
+updated: bool (True if the metadata where updated).</p>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.ClarifyClient.save_signals">
+<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="models.html#pyclarify.models.data.SignalInfo" title="pyclarify.models.data.SignalInfo"><span class="pre">pyclarify.models.data.SignalInfo</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.ClarifyClient.save_signals" title="Permalink to this definition">¶</a></dt>
+<dd><p>This call inserts metadata to one or multiple signals. The signals are uniquely identified by its &lt;INPUT_ID&gt;.
+Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/v1.1/reference/integrationsavesignals">integration.saveSignals</a> .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_ids</strong> (<em>List</em><em>[</em><em>'&lt;INPUT_ID&gt;'</em><em>]</em>) – <p>List of strings to be the input ID of the signal.
+Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/input-id">here</a> for more information.</p>
+</p></li>
+<li><p><strong>signals</strong> (<em>List</em><em>[</em><a class="reference internal" href="models.html#pyclarify.models.data.SignalInfo" title="pyclarify.models.data.SignalInfo"><em>SignalInfo</em></a><em>]</em>) – <p>List of SignalInfo object that contains metadata for a signal.
+Click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/signal-info">here</a> for more information.</p>
+</p></li>
+<li><p><strong>create_only</strong> (<em>bool</em><em>, </em><em>default False</em>) – If set to true, skip update of information for existing signals. That is, all Input_ID’s
+that map to existing signals are silently ignored.</p></li>
+<li><p><strong>integration</strong> (<em>str</em><em>, </em><em>default None</em>) – Integration ID in string format. None means using the integration in credential file.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">SignalInfo</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span> <span class="o">=</span> <span class="n">SignalInfo</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_signals</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;INPUT_ID&gt;&#39;</span><span class="p">],</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SaveSignalsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">signalsByInput</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="o">&lt;</span><span class="n">INPUT_ID</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>             <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response">Response</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.ClarifyClient.select_items_data">
+<span class="sig-name descname"><span class="pre">select_items_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_before</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rollup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.timedelta</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'window'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.ClarifyClient.select_items_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return item data from selected items.
+For more information click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/data-query">here</a> .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> (<em>list</em><em>, </em><em>optional</em>) – List of item ids to retrieve. Empty list means take all.</p></li>
+<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>default 10</em>) – Number of items to include in the match.</p></li>
+<li><p><strong>skip</strong> (<em>int</em><em>, </em><em>default 0</em>) – Skip first N items.</p></li>
+<li><p><strong>not_before</strong> (<em>string</em><em>(</em><em>RFC 3339 timestamp</em><em>) or </em><em>python datetime</em><em>, </em><em>optional</em><em>, </em><em>default datetime.now</em><em>(</em><em>) </em><em>- 40days</em>) – An RFC3339 time describing the inclusive start of the window.</p></li>
+<li><p><strong>before</strong> (<em>string</em><em>(</em><em>RFC 3339 timestamp</em><em>) or </em><em>python datetime</em><em>, </em><em>optional</em><em>, </em><em>default datetime.now</em><em>(</em><em>)</em>) – An RFC3339 time describing the exclusive end of the window.</p></li>
+<li><p><strong>rollup</strong> (<em>RFC 3339 duration</em><em> or </em><em>&quot;window&quot;</em><em>, </em><em>default None</em>) – If RFC 3339 duration is specified, roll-up the values into either the full time window
+(<cite>notBefore</cite> -&gt; <cite>before</cite>) or evenly sized buckets.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_items_data</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">not_before</span> <span class="o">=</span> <span class="s2">&quot;2021-10-01T12:00:00Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">before</span> <span class="o">=</span> <span class="s2">&quot;2021-11-10T12:00:00Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rollup</span> <span class="o">=</span> <span class="s2">&quot;P1DT&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SelectItemsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">items</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">times</span> <span class="o">=</span> <span class="p">[</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                              <span class="n">series</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_avg&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_count&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_max&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_min&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                                        <span class="s1">&#39;&lt;ITEM_ID&gt;_sum&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>                                   <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>                           <span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span>      <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>In case where <cite>rollup = None</cite>, the response in the DataFrame has the following (example) format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">times</span> <span class="o">=</span> <span class="p">[</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">series</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">478.19</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">)</span>
+</pre></div>
+</div>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.ClarifyClient.select_items_metadata">
+<span class="sig-name descname"><span class="pre">select_items_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.Response" title="pyclarify.models.response.Response"><span class="pre">pyclarify.models.response.Response</span></a></span></span><a class="headerlink" href="#pyclarify.client.ClarifyClient.select_items_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return item metadata from selected items.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> (<em>list</em><em>, </em><em>optional</em>) – List of item ids to retrieve. Empty list means take all.</p></li>
+<li><p><strong>name</strong> (<em>string</em><em>, </em><em>default: &quot;&quot;</em>) – String containing regex of the name of an Item.</p></li>
+<li><p><strong>labels</strong> (<em>dict default: {}</em>) – Dictionary with labels and keys to be used as a filter</p></li>
+<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>default: 10</em>) – Number of items to include in the match.</p></li>
+<li><p><strong>skip</strong> (<em>int default: 0</em>) – Skip first N items.</p></li>
+<li><p><strong>Example</strong> – <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_items_metadata</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Electricity&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;city&quot;</span><span class="p">:</span> <span class="s2">&quot;Trondheim&quot;</span><span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">skip</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SelectSignalsResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">items</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SignalInfo</span><span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="n">signals</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.client.RawClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">RawClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.authenticate">
+<span class="sig-name descname"><span class="pre">authenticate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authenticates the client by using the GetToken class (see oauth2.py).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>clarify_credentials</strong> (<em>str/dict</em>) – The path to the clarify_credentials.json downloaded from the Clarify app,
+or json/dictionary of the content in clarify_credentials.json.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if valid credentials is passed otherwise False.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.create_payload">
+<span class="sig-name descname"><span class="pre">create_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.create_payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a JSONRPC request payload.
+:param method: The RPC method to call.
+:type method: str
+:param params: The arguments to the method call.
+:type params: dict</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Payload string in JSONRPC format.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.get_token">
+<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.get_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using the GetToken class (see oauth2.py) to get a new authentication token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Access token.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.make_requests">
+<span class="sig-name descname"><span class="pre">make_requests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="models.html#pyclarify.models.response.GenericResponse" title="pyclarify.models.response.GenericResponse"><span class="pre">pyclarify.models.response.GenericResponse</span></a></span></span><a class="headerlink" href="#pyclarify.client.RawClient.make_requests" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses post request to send JSON RPC payload.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>payload</strong> (<em>JSON RPC dictionary</em>) – A dictionary in the form of a JSONRPC request.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>JSON dictionary response.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.RawClient.update_headers">
+<span class="sig-name descname"><span class="pre">update_headers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.RawClient.update_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates headers of client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>headers</strong> (<em>dict</em>) – The headers to be added with key being parameter and value being value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyclarify.client.increment_id">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">increment_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.increment_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator which increments the current id variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>function</em>) – Decorator wraps around function using &#64;increment_id.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>func</strong> – returns the wrapped function.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyclarify.client.iterate_bool">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">iterate_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.iterate_bool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyclarify.client.iterator">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.iterator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyclarify.client.pretty_response">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">pretty_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_tuple</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.pretty_response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyclarify.client.send_iter">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">send_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.send_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyclarify.client.send_simple">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">send_simple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.send_simple" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
 
 
             <div class="clearer"></div>

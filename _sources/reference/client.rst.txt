@@ -8,12 +8,7 @@ PyClarify Client
 .. currentmodule:: pyclarify
 
 
-.. automodule:: pyclarify.client.APIClient
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-.. automodule:: pyclarify.client.ClarifyClient
+.. automodule:: pyclarify.client
    :members:
    :undoc-members:
    :show-inheritance:
