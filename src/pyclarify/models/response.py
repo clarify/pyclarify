@@ -42,22 +42,25 @@ class SelectSignalsResponse(BaseModel, extra=Extra.forbid):
     items: Optional[Dict[ResourceID, SignalInfo]]
 
 
+
 class PublishSignalsResponse(BaseModel, extra=Extra.forbid):
     itemsBySignal: Dict[ResourceID, SaveSummary]
 
 
-class GenericResponse(BaseModel):
+class GenericResponse(BaseModel, extra=Extra.forbid):
     jsonrpc: str = "2.0"
     id: str
     result: Optional[Dict]
     error: Optional[Error]
 
 
-class Response(GenericResponse):
-    result: Optional[Union[
-        InsertResponse,
-        SaveSignalsResponse,
-        SelectItemsResponse,
-        SelectSignalsResponse,
-        PublishSignalsResponse,
-    ]]
+class Response(GenericResponse, extra=Extra.forbid):
+    result: Optional[
+        Union[
+            InsertResponse,
+            SaveSignalsResponse,
+            SelectItemsResponse,
+            SelectSignalsResponse,
+            PublishSignalsResponse,
+        ]
+    ]

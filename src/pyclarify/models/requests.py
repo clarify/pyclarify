@@ -21,13 +21,14 @@ from typing import List, Union, Dict
 from typing_extensions import Literal
 from datetime import datetime
 from enum import Enum
-from .data import DataFrame, InputID, SignalInfo, Signal
-from pyclarify.__utils__.convert import timedelta_isoformat
+from .data import DataFrame, InputID, SignalInfo, Signal, Item
+from pyclarify.__utils__.convert import timedelta_isoformat, time_to_string
+from pyclarify.__utils__.pagination import GetDates
 from datetime import timedelta
 
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
 ResourceID = constr(regex=r"^[a-v0-9]{20}$")
-LimitSelectItems = conint(ge=0, le=50)
+LimitSelectItems = conint(ge=0)
 LimitSelectSignals = conint(ge=0, le=1000)
 
 ### PARAMETERS ###
@@ -97,7 +98,7 @@ class AdminParams(RequestParams):
 
 
 class PublishSignalsParams(AdminParams):
-    itemsBySignal: Dict[ResourceID, SignalInfo]
+    itemsBySignal: Dict[ResourceID, Item]
     createOnly: Optional[bool] = False
 
 
@@ -122,7 +123,10 @@ class JSONRPCRequest(BaseModel):
     params: Dict = {}
 
     class Config:
-        json_encoders = {timedelta: timedelta_isoformat}
+        json_encoders = {
+            timedelta: timedelta_isoformat,
+            datetime: time_to_string
+            }
 
 
 @validate_arguments
