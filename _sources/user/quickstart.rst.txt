@@ -76,8 +76,6 @@ Now, you should be able to see the newly created signal in Clarify.
 Insert data into a signal
 =========================
 Inserts data to one or multiple signals.
-=======
-
 
 
 Example: Insert data into a signal
