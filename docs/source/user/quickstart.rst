@@ -31,14 +31,9 @@ Using the APIClient class
 *************************
 
 Add Signal metadata
-###################
-
-To add or update the signal's metadata, use the :py:meth:`~pyclarify.client.APIClient.save_signals` method. 
-
-Step 1 : Create a :py:meth:`~pyclarify.models.data.SignalInfo` model. 
-
-Step 2 : Use the  :py:meth:`~pyclarify.client.APIClient.save_signals` method.
-
+===================
+Inserts metadata for one or multiple signals.
+The signals are uniquely identified by its INPUT_ID.
 
 Example: Add Signal metadata 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -76,16 +71,13 @@ Now, you should be able to see the newly created signal in Clarify.
 |
 
 
-Insert data into Clarify
-=======================
-
-Step 1: Create a :py:meth:`~pyclarify.models.data.DataFrame` model. 
-
-Step 2: Use the  :py:meth:`~pyclarify.client.APIClient.insert` method which takes as an argument the DataFrame model.
+Insert data into a signal
+=========================
+Inserts data to one or multiple signals.
 
 
-Example: Insert data into Clarify
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Example: Insert data into a signal
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -114,14 +106,14 @@ Now, you should be able to see the newly created signal in Clarify.
 |
 
 
-Get Signal meta-data
+Get Signal metadata
 ====================
 This call retrieves signal metadata and/or exposed items.
 This call is a recommend step before doing a publishSignals call.
 For more information click `here <https://docs.clarify.io/v1.1/reference/adminselectsignals>`_ .
 
 
-Example: Get Signal meta-data
+Example: Get Signal metadata
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
@@ -148,7 +140,6 @@ Publish signals
 ===============
 Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
 Each signal is uniquely identified by its input ID in combination with the integration ID.
-Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/v1.1/reference/adminpublishsignals>`_ .
 
 
 Example: Publish signals
@@ -214,6 +205,98 @@ Example: Get Item data and metadata
 Using the ClarifyClient class
 *****************************
 
+Save signals  
+============
+Inserts metadata to one or multiple signals. The signals are uniquely identified by its <INPUT_ID>.
+
+Example: Get Item metadata
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    >>> from pyclarify import ClarifyClient, SignalInfo
+    >>>
+    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>>
+    >>> signal = SignalInfo(
+    >>>    name = "Home temperature",
+    >>>    description = "Temperature in the bedroom",
+    >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+    >>> )
+    >>> response = client.save_signals(input_ids=['<INPUT_ID>'], signals=[signal], create_only=False)
+    >>> print(response.json())
+
+
+Insert data into a signal
+=========================
+Inserts data to one or multiple signals. 
+
+
+Example: Insert data into a signal
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    >>> from pyclarify import DataFrame, ClarifyClient
+    >>>
+    >>> client = APIClient("./clarify-credentials.json")
+    >>>
+    >>> date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+    >>>
+    >>> data = DataFrame(
+    >>>     series={"id1": [1, None], "id2": [None, 5]},
+    >>>     times = date,
+    >>> )
+    >>>
+    >>> response = client.insert(data)
+    >>> print(response.json())
+
+
+
+Get metadata from signals / items
+=================================
+Get metadata from selected signals and/or item.
+This call is a recommend step before doing a publish_signals call.
+
+Example: Get metadata from signals / items
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    >>> from pyclarify import ClarifyClient
+    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>> client.select_signals(
+    >>>     ids = ['<SIGNAL_ID>'],
+    >>>     limit = 10,
+    >>>     skip = 0
+    >>> )
+
+
+Publish signals  
+===============
+Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
+Each signal is uniquely identified by its input ID in combination with the integration ID.
+
+Example: Publish signals 
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    >>> from pyclarify import ClarifyClient, Item
+    >>>
+    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>>
+    >>> item = Item(
+    >>>    name = "Home temperature",
+    >>>    description = "Temperature in the bedroom",
+    >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
+    >>>    visible=True
+    >>> )
+    >>> response = client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
+    >>> print(response.json())
+
+
+
 Get Item data  
 =============
 Get data for one or multiple items.
@@ -271,50 +354,4 @@ Example: Get Item metadata
     >>>     limit = 10,
     >>>     skip = 0
     >>> )
-    >>> print(response.json())
-
-
-Save signals  
-============
-Inserts metadata to one or multiple signals. The signals are uniquely identified by its <INPUT_ID>.
-
-Example: Get Item metadata
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-
-    >>> from pyclarify import ClarifyClient, SignalInfo
-    >>>
-    >>> client = ClarifyClient("./clarify-credentials.json")
-    >>>
-    >>> signal = SignalInfo(
-    >>>    name = "Home temperature",
-    >>>    description = "Temperature in the bedroom",
-    >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
-    >>> )
-    >>> response = client.save_signals(input_ids=['<INPUT_ID>'], signals=[signal], create_only=False)
-    >>> print(response.json())
-
-
-Publish signals  
-===============
-Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
-Each signal is uniquely identified by its input ID in combination with the integration ID.
-
-Example: Publish signals 
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-
-    >>> from pyclarify import ClarifyClient, Item
-    >>>
-    >>> client = ClarifyClient("./clarify-credentials.json")
-    >>>
-    >>> item = Item(
-    >>>    name = "Home temperature",
-    >>>    description = "Temperature in the bedroom",
-    >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
-    >>>    visible=True
-    >>> )
-    >>> response = client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
     >>> print(response.json())
