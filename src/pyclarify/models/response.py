@@ -38,8 +38,8 @@ class SelectItemsResponse(BaseModel, extra=Extra.forbid):
 
 
 class SelectSignalsResponse(BaseModel, extra=Extra.forbid):
-    signals: Optional[Dict[ResourceID, Signal]]
     items: Optional[Dict[ResourceID, SignalInfo]]
+    signals: Optional[Dict[ResourceID, Signal]]
 
 
 class PublishSignalsResponse(BaseModel, extra=Extra.forbid):
@@ -58,8 +58,8 @@ class Response(GenericResponse, extra=Extra.forbid):
         Union[
             InsertResponse,
             SaveSignalsResponse,
-            SelectItemsResponse,
             SelectSignalsResponse,
+            SelectItemsResponse,
             PublishSignalsResponse,
         ]
     ]

@@ -106,11 +106,6 @@ class TestPandas(unittest.TestCase):
         with open("./tests/data/mock-models-data.json") as f:
             self.mock_data = json.load(f)
 
-class TestPandas(unittest.TestCase):
-    def setUp(self):
-        with open("./tests/data/mock-models-data.json") as f:
-            self.mock_data = json.load(f)
-
         self.pd = local_import("pandas")
         self.mock_data_1 = self.mock_data["mock_data_1"]
         self.mock_data_2 = self.mock_data["mock_data_2"]
