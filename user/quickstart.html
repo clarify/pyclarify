@@ -63,6 +63,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#insert-data-into-a-signal">Insert data into a signal</a></li>
+<li><a class="reference internal" href="#inserts-data-to-one-or-multiple-signals">Inserts data to one or multiple signals.</a></li>
 <li><a class="reference internal" href="#get-signal-metadata">Get Signal metadata</a></li>
 <li><a class="reference internal" href="#publish-signals">Publish signals</a></li>
 <li><a class="reference internal" href="#get-item-data-and-metadata">Get Item data and metadata</a><ul>
@@ -72,9 +73,14 @@
 <li><a class="reference internal" href="#save-signals">Save signals</a></li>
 <li><a class="reference internal" href="#id1">Insert data into a signal</a></li>
 <li><a class="reference internal" href="#get-metadata-from-signals-items">Get metadata from signals / items</a></li>
-<li><a class="reference internal" href="#id2">Publish signals</a></li>
+<li><a class="reference internal" href="#id2">Publish signals</a><ul>
+<li><a class="reference internal" href="#id3">Using the ClarifyClient class</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#get-item-data">Get Item data</a></li>
 <li><a class="reference internal" href="#get-item-metadata">Get Item metadata</a></li>
+<li><a class="reference internal" href="#id4">Save signals</a></li>
+<li><a class="reference internal" href="#id5">Publish signals</a></li>
 </ul>
 </li>
 </ul>
@@ -222,7 +228,9 @@ The signals are uniquely identified by its INPUT_ID.</p>
 </section>
 <section id="insert-data-into-a-signal">
 <h2>Insert data into a signal<a class="headerlink" href="#insert-data-into-a-signal" title="Permalink to this headline">¶</a></h2>
-<p>Inserts data to one or multiple signals.</p>
+</section>
+<section id="inserts-data-to-one-or-multiple-signals">
+<h2>Inserts data to one or multiple signals.<a class="headerlink" href="#inserts-data-to-one-or-multiple-signals" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">APIClient</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
@@ -391,6 +399,9 @@ Each signal is uniquely identified by its input ID in combination with the integ
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
+<section id="id3">
+<h3>Using the ClarifyClient class<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+</section>
 </section>
 <section id="get-item-data">
 <h2>Get Item data<a class="headerlink" href="#get-item-data" title="Permalink to this headline">¶</a></h2>
@@ -439,6 +450,42 @@ To get the data from an item, you must first have an integration with reading ac
 </pre></div>
 </div>
 </section>
+<section id="id4">
+<h2>Save signals<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>Inserts metadata to one or multiple signals. The signals are uniquely identified by its &lt;INPUT_ID&gt;.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ClarifyClient</span><span class="p">,</span> <span class="n">SignalInfo</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">ClarifyClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span> <span class="o">=</span> <span class="n">SignalInfo</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">save_signals</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;INPUT_ID&gt;&#39;</span><span class="p">],</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h2>Publish signals<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<p>Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
+Each signal is uniquely identified by its input ID in combination with the integration ID.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ClarifyClient</span><span class="p">,</span> <span class="n">Item</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">ClarifyClient</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]},</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">visible</span><span class="o">=</span><span class="bp">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">publish_signals</span><span class="p">(</span><span class="n">signal_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">],</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -464,6 +511,7 @@ To get the data from an item, you must first have an integration with reading ac
 </ul>
 </li>
 <li><a class="reference internal" href="#insert-data-into-a-signal">Insert data into a signal</a></li>
+<li><a class="reference internal" href="#inserts-data-to-one-or-multiple-signals">Inserts data to one or multiple signals.</a></li>
 <li><a class="reference internal" href="#get-signal-metadata">Get Signal metadata</a></li>
 <li><a class="reference internal" href="#publish-signals">Publish signals</a></li>
 <li><a class="reference internal" href="#get-item-data-and-metadata">Get Item data and metadata</a><ul>
@@ -473,9 +521,14 @@ To get the data from an item, you must first have an integration with reading ac
 <li><a class="reference internal" href="#save-signals">Save signals</a></li>
 <li><a class="reference internal" href="#id1">Insert data into a signal</a></li>
 <li><a class="reference internal" href="#get-metadata-from-signals-items">Get metadata from signals / items</a></li>
-<li><a class="reference internal" href="#id2">Publish signals</a></li>
+<li><a class="reference internal" href="#id2">Publish signals</a><ul>
+<li><a class="reference internal" href="#id3">Using the ClarifyClient class</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#get-item-data">Get Item data</a></li>
 <li><a class="reference internal" href="#get-item-metadata">Get Item metadata</a></li>
+<li><a class="reference internal" href="#id4">Save signals</a></li>
+<li><a class="reference internal" href="#id5">Publish signals</a></li>
 </ul>
 </li>
 </ul>

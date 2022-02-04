@@ -35,6 +35,8 @@ Add Signal metadata
 Inserts metadata for one or multiple signals.
 The signals are uniquely identified by its INPUT_ID.
 
+
+
 Example: Add Signal metadata 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -74,10 +76,13 @@ Now, you should be able to see the newly created signal in Clarify.
 Insert data into a signal
 =========================
 Inserts data to one or multiple signals.
+=======
+
 
 
 Example: Insert data into a signal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 .. code-block:: python
 
@@ -297,6 +302,10 @@ Example: Publish signals
 
 
 
+*****************************
+Using the ClarifyClient class
+*****************************
+
 Get Item data  
 =============
 Get data for one or multiple items.
@@ -354,4 +363,50 @@ Example: Get Item metadata
     >>>     limit = 10,
     >>>     skip = 0
     >>> )
+    >>> print(response.json())
+
+
+Save signals  
+============
+Inserts metadata to one or multiple signals. The signals are uniquely identified by its <INPUT_ID>.
+
+Example: Get Item metadata
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    >>> from pyclarify import ClarifyClient, SignalInfo
+    >>>
+    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>>
+    >>> signal = SignalInfo(
+    >>>    name = "Home temperature",
+    >>>    description = "Temperature in the bedroom",
+    >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+    >>> )
+    >>> response = client.save_signals(input_ids=['<INPUT_ID>'], signals=[signal], create_only=False)
+    >>> print(response.json())
+
+
+Publish signals  
+===============
+Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
+Each signal is uniquely identified by its input ID in combination with the integration ID.
+
+Example: Publish signals 
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    >>> from pyclarify import ClarifyClient, Item
+    >>>
+    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>>
+    >>> item = Item(
+    >>>    name = "Home temperature",
+    >>>    description = "Temperature in the bedroom",
+    >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
+    >>>    visible=True
+    >>> )
+    >>> response = client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
     >>> print(response.json())
