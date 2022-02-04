@@ -78,7 +78,7 @@ class TestRawClient(unittest.TestCase):
         payload = self.client.create_payload(
             self.mock_data["mock_method"], self.mock_data["mock_params"]
         )
-        response = self.client.send(payload)
+        response = self.client.make_requests(payload)
         payload = json.loads(payload)
 
         # assert valid response type

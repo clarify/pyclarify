@@ -23,20 +23,30 @@ from unittest.mock import patch
 
 
 sys.path.insert(1, "src/")
-from pyclarify import APIClient, Signal, SignalInfo
+from pyclarify import ClarifyClient, Signal, SignalInfo
 
 
-class TestClarifySelectSignalsClient(unittest.TestCase):
+class TestClarifyClientSelectSignals(unittest.TestCase):
     def setUp(self):
-        self.client = APIClient("./tests/data/mock-clarify-credentials.json")
+        self.client = ClarifyClient("./tests/data/mock-clarify-credentials.json")
 
-        with open("./tests/data/mock-select-signals.json") as f:
+        with open("./tests/data/mock-clarify-client-select-signals.json") as f:
             self.mock_data = json.load(f)
         self.test_cases = self.mock_data["test_cases"]
 
         with open("./tests/data/mock-client-common.json") as f:
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
+
+    """
+    ids: List = [],
+    name: str = "",
+    labels: dict = {},
+    limit: int = 10,
+    skip: int = 0,
+    include_items: bool = False
+    """
+
 
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -46,7 +56,7 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_signals(test_case["args"])
+        response_data = self.client.select_signals(**test_case["args"])
 
         # Assert content of return
         for key, signal in response_data.result.signals.items():
@@ -63,60 +73,28 @@ class TestClarifySelectSignalsClient(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_signals(test_case["args"])
+        response_data = self.client.select_signals(**test_case["args"])
 
         # Assert content of return
         for key, signal in response_data.result.signals.items():
             self.assertIsInstance(signal, Signal)
 
+
     @patch("pyclarify.client.RawClient.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_only_items(self, client_req_mock, get_token_mock):
+    def get_nothing(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[2]
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_signals(test_case["args"])
-
-        # Assert no Signals
-        self.assertEqual(response_data.result.signals, {})
-
-        # Assert content of return
-        for key, item in response_data.result.items.items():
-            self.assertIsInstance(item, SignalInfo)
-
-    @patch("pyclarify.client.RawClient.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_only_signals(self, client_req_mock, get_token_mock):
-        test_case = self.test_cases[3]
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: test_case["response"]
-
-        response_data = self.client.select_signals(test_case["args"])
-
-        # Assert no Items
-        self.assertEqual(response_data.result.items, {})
-
-        # Assert content of return
-        for key, signal in response_data.result.signals.items():
-            self.assertIsInstance(signal, Signal)
-
-    @patch("pyclarify.client.RawClient.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_include_false(self, client_req_mock, get_token_mock):
-        test_case = self.test_cases[4]
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: test_case["response"]
-
-        response_data = self.client.select_signals(test_case["args"])
+        response_data = self.client.select_signals(**test_case["args"])
 
         # Assert no Items or Signals
         self.assertEqual(response_data.result.items, {})
         self.assertEqual(response_data.result.signals, {})
 
+#TODO: Write more rigorous tests
 
 if __name__ == "__main__":
     unittest.main()

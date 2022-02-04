@@ -17,11 +17,13 @@ Now when running for example:
 
 .. code-block:: python
 
+    >>> from pyclarify import APIClient, DataFrame
     >>> client = APIClient("./clarify-credentials.json")
 
     >>> data = DataFrame(
     >>>         times=["2021-03-11T21:50:06Z", "2021-04-11T21:50:06Z"],
     >>>         series={"id": [1, 2]})
+
     >>> client.insert(data=data)
 
 A new file is created called client.log with containing the loggings. 

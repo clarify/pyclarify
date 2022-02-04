@@ -46,7 +46,6 @@ class TestClarifySelectItemsClient(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_items(test_case["args"])
-
         for x in response_data.result.items:
             self.assertIsInstance(response_data.result.items[x], SignalInfo)
 
@@ -91,6 +90,45 @@ class TestClarifySelectItemsClient(unittest.TestCase):
         self.assertIsNone(response_data.result.data)
         self.assertIsNone(response_data.error)
 
+    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_get_78_items_data_include_false(self, client_req_mock, get_token_mock):
+        test_case = self.test_cases[4]
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: test_case["response"]
+
+        response_data = self.client.select_items(test_case["args"])
+
+        for x in response_data.result.items:
+            self.assertIsInstance(response_data.result.items[x], SignalInfo)
+        self.assertIsInstance(response_data.result.data, DataFrame)
+
+    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_get_1100_items_data_include_false(self, client_req_mock, get_token_mock):
+        test_case = self.test_cases[5]
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: test_case["response"]
+
+        response_data = self.client.select_items(test_case["args"])
+
+        for x in response_data.result.items:
+            self.assertIsInstance(response_data.result.items[x], SignalInfo)
+
+    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_get_items_data_only(self, client_req_mock, get_token_mock):
+        test_case = self.test_cases[6]
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: test_case["response"]
+
+        response_data = self.client.select_items(test_case["args"])
+
+        self.assertIsNone(response_data.result.items)
+        self.assertIsInstance(response_data.result.data, DataFrame)
 
 if __name__ == "__main__":
     unittest.main()
