@@ -26,10 +26,8 @@
               "sampleInterval": null,
               "gapDetection": null
             }
-          },
-          "data": null
-        },
-        "error": null
+          }
+        }
       }
     },
     {
@@ -79,15 +77,14 @@
               "item_id_sum": [0.0, 0.0]
             }
           }
-        },
-        "error": null
+        }
       }
     },
     {
       "comments": "get items matching criteria, return only data",
       "args": {
         "items": {
-          "include": true,
+          "include": false,
           "filter": {
             "id": {
               "$in": ["c5vv12btaf7d0qbk0l0g"]
@@ -97,27 +94,20 @@
         "data": {
           "include": true,
           "notBefore": "2021-10-10T21:50:06Z",
-          "before": "2021-10-11T22:50:06Z",
-          "rollup": "PT1H"
+          "before": "2021-10-11T22:50:06Z"
         }
       },
       "response": {
         "jsonrpc": "2.0",
         "id": "1",
         "result": {
-          "items": null,
           "data": {
             "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
             "series": {
-              "item_id_avg": [0.0, 0.0],
-              "item_id_count": [20.0, 20.0],
-              "item_id_max": [0.0, 0.0],
-              "item_id_min": [0.0, 0.0],
-              "item_id_sum": [0.0, 0.0]
+              "c5vv12btaf7d0qbk0l0g": [0.0, 0.0]
             }
           }
-        },
-        "error": null
+        }
       }
     },
     {
@@ -141,8 +131,116 @@
       "response": {
         "jsonrpc": "2.0",
         "id": "1",
-        "result": { "items": null, "data": null },
-        "error": null
+        "result": {}
+      }
+    },
+    {
+      "comments": "get 78 items, data include is true",
+      "args": {
+        "items": {
+          "include": true,
+          "limit": 78
+        },
+        "data": {
+          "include": true,
+          "notBefore": "2021-10-10T21:50:06Z",
+          "before": "2021-10-11T22:50:06Z"
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "items": {
+            "c5vv12btaf7d0qbk0l0g": {
+              "name": "c5vv12btaf7d0qbk0l0g",
+              "type": "numeric",
+              "description": "Test description",
+              "labels": { "data-source": [], "location": [] },
+              "annotations": {},
+              "engUnit": "",
+              "enumValues": {},
+              "sourceType": "measurement",
+              "sampleInterval": null,
+              "gapDetection": "3600.0"
+            }
+          },
+          "data": {
+            "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+            "series": {
+              "c5vv12btaf7d0qbk0l0g": [0.0, 0.0]
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "get 1100 items, data include is false",
+      "args": {
+        "items": {
+          "include": true,
+          "limit": 1100
+        },
+        "data": {
+          "include": false,
+          "notBefore": "2021-10-10T21:50:06Z",
+          "before": "2021-10-11T22:50:06Z"
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "items": {
+            "c5vv12btaf7d0qbk0l0g": {
+              "name": "c5vv12btaf7d0qbk0l0g",
+              "type": "numeric",
+              "description": "Test description",
+              "labels": { "data-source": [], "location": [] },
+              "annotations": {},
+              "engUnit": "",
+              "enumValues": {},
+              "sourceType": "measurement",
+              "sampleInterval": null,
+              "gapDetection": "3600.0"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "get items matching criteria, return only data",
+      "args": {
+        "items": {
+          "include": false,
+          "filter": {
+            "id": {
+              "$in": ["c5vv12btaf7d0qbk0l0g"]
+            }
+          }
+        },
+        "data": {
+          "include": true,
+          "notBefore": "2021-10-10T21:50:06Z",
+          "before": "2021-10-11T22:50:06Z",
+          "rollup": "PT1H"
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "data": {
+            "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+            "series": {
+              "item_id_avg": [0.0, 0.0],
+              "item_id_count": [20.0, 20.0],
+              "item_id_max": [0.0, 0.0],
+              "item_id_min": [0.0, 0.0],
+              "item_id_sum": [0.0, 0.0]
+            }
+          }
+        }
       }
     }
   ]
