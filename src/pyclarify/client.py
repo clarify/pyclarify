@@ -361,7 +361,7 @@ class APIClient(RawClient):
         """
         This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.
-        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/v1.1/reference/integrationinsert>`_ .
+        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/api/methods/integration/insert>`_ .
 
         Parameters
         ----------
@@ -381,9 +381,8 @@ class APIClient(RawClient):
             -------
                 >>> from pyclarify import DataFrame
                 >>> date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
-
                 >>> data = DataFrame(
-                >>>             series={"input_id_1": [1, 2], "input_id_2": [3, 4]},
+                >>>             series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
                 >>>             times=date
                 >>>          )
 
@@ -395,11 +394,12 @@ class APIClient(RawClient):
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> result = InsertResponse(
-                >>>             signalsByInput = {'InputID': InsertSummary(id = <signal_id>, created = True)}
+                >>>             signalsByInput = {'<INPUT_ID_1>': InsertSummary(id = '<SIGNAL_ID_1>', created = True), '<INPUT_ID_2>': InsertSummary(id = '<SIGNAL_ID_2>', created = True)}
                 >>> )
                 >>> error = None
 
             Where:
+
             - InsertResponse is a a pydantic model with field signalsByInput.
             - signalsByInput is a Dict[InputID, InsertSummary].
             - InsertSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).
@@ -434,7 +434,7 @@ class APIClient(RawClient):
     def save_signals(self, params: dict) -> Response:
         """
         This call inserts metadata for one or multiple signals. The signals are uniquely identified by its <INPUT_ID>.
-        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/v1.1/reference/integrationsavesignals>`_ .
+        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/api/methods/integration/save-signals>`_ .
 
         Parameters
         ----------
@@ -442,10 +442,10 @@ class APIClient(RawClient):
 
             - inputs: Dict[InputID, SignalInfo]
                 The SignalInfo object contains metadata for a signal.
-                Click `here <https://docs.clarify.io/reference/signal>`_ for more information.
+                Click `here <https://docs.clarify.io/api/datatypes/signal>`_ for more information.
 
             - createOnly: bool
-                If set to true, skip update of information for existing signals. That is, all Input_ID's
+                If set to true, skip update of information for existing signals. That is, all input id's
                 that map to existing signals are silently ignored.
 
             Example
@@ -457,10 +457,12 @@ class APIClient(RawClient):
                 >>>    description = "Temperature in the bedroom",
                 >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
                 >>> )
-
                 >>> signal_2 = SignalInfo(name = "Office temperature")
-
-                >>> params = {"inputs": {"input_id_1": signal_1, "input_id_2": signal_2}, "createOnly": False}
+                >>> params = {
+                >>>     "inputs": {"<INPUT_ID_1>": signal_1,
+                >>>     "<INPUT_ID_2>": signal_2}, 
+                >>>     "createOnly": False
+                >>>     }
 
         Returns
         -------
@@ -471,12 +473,13 @@ class APIClient(RawClient):
                 >>> id = '1'
                 >>> result = SaveSignalsResponse(
                 >>>             signalsByInput={
-                >>>                 <INPUT_ID>: SaveSummary(id='<SIGNAL_ID>', created=True, updated=False)
+                >>>                 '<INPUT_ID>': SaveSummary(id='<SIGNAL_ID>', created=True, updated=False)
                 >>>              }
                 >>>          )
                 >>> error = None
 
             Where:
+
             - SaveSignalsResponse is a a pydantic model with field signalsByInput.
             - signalsByInput is a Dict[InputID, SaveSummary].
             - SaveSummary is a a pydantic model with field:
@@ -512,7 +515,7 @@ class APIClient(RawClient):
     def select_items(self, params: dict) -> Response:
         """
         Get data and metadata for one or multiple items.
-        Mirroring the Clarify API call `clarify.selectItems <https://docs.clarify.io/v1.1/reference/itemselect>`_ .
+        Mirroring the Clarify API call `clarify.selectItems <https://docs.clarify.io/api/next/methods/clarify/select-items>`_ .
 
         Parameters
         ----------
@@ -521,14 +524,14 @@ class APIClient(RawClient):
             - items: dict
                 Query which items to select and configure inclusion or exclusion of meta-data in the response.
                 By default, no meta-data is included.
-                For more information click `here <https://docs.clarify.io/v1.1/reference/resource-query>`_ .
+                For more information click `here <https://docs.clarify.io/api/next/datatypes/resource-query>`_ .
 
                 - include: bool, default False
                     Set to true to include matched items in the response.
 
                 - filter: dict
                     Filter which items to include.
-                    Click `here <https://docs.clarify.io/v1.1/reference/filtering>`_ for more information.
+                    Click `here <https://docs.clarify.io/api/next/general/filtering>`_ for more information.
 
                 - limit: int, default 10
                     Number of items to include in the match.
@@ -538,7 +541,7 @@ class APIClient(RawClient):
 
             - data: dict
                 Configure which data to include in the response.
-                For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_ .
+                For more information click `here <https://docs.clarify.io/api/next/datatypes/data-query>`_ .
 
                 - include: bool, default False
                     Include the timeseries data in the response.
@@ -578,24 +581,24 @@ class APIClient(RawClient):
                 >>>                 '<ITEM_ID>' : SignalInfo
                 >>>             },
                 >>>             data = DataFrame( 
-                >>>                               times = [ datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc) ],
-                >>>                               series = {
-                >>>                                         '<ITEM_ID>_avg': [478.19], 
-                >>>                                         '<ITEM_ID>_count': [1.0], 
-                >>>                                         '<ITEM_ID>_max': [478.19], 
-                >>>                                         '<ITEM_ID>_min': [478.19], 
-                >>>                                         '<ITEM_ID>_sum': [478.19]
-                >>>                                    }
-                >>>                            )
+                >>>                 times = [datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc)],
+                >>>                 series = {
+                >>>                      '<ITEM_ID>_avg': [478.19], 
+                >>>                      '<ITEM_ID>_count': [1.0], 
+                >>>                      '<ITEM_ID>_max': [478.19], 
+                >>>                      '<ITEM_ID>_min': [478.19], 
+                >>>                      '<ITEM_ID>_sum': [478.19]
+                >>>                      }
+                >>>                  )
                 >>>
-                >>>       )
+                >>>          )
                 >>> error = None
 
             In case where `rollup = None`, the response in the DataFrame has the following (example) format: 
 
                 >>>  data = DataFrame(
-                >>>                    times = [ datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc) ],
-                >>>                    series = {'<ITEM_ID>': [478.19]}
+                >>>          times = [datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc)],
+                >>>          series = {'<ITEM_ID>': [478.19]}
                 >>>         )
 
             In case of the error the method return a pydantic model with the following format:
@@ -622,7 +625,7 @@ class APIClient(RawClient):
     def select_signals(self, params: dict) -> Response:
         """
         Get signal metadata and/or exposed items. This call is a recommend step before doing a publish_signals call.
-        Mirroring the Clarify API call `admin.selectSignals <https://docs.clarify.io/v1.1/reference/adminselectsignals>`_ .
+        Mirroring the Clarify API call `admin.selectSignals <https://docs.clarify.io/api/next/methods/admin/select-signals>`_ .
 
         Parameters
         ----------
@@ -636,7 +639,7 @@ class APIClient(RawClient):
 
                     - filter: dict
                         Filter which signals to include.
-                        Click `here <https://docs.clarify.io/v1.1/reference/filtering>`_ for more information.
+                        Click `here <https://docs.clarify.io/api/next/general/filtering>`_ for more information.
 
                     - limit: int, default 50
                         Limit number of signals.
@@ -701,9 +704,9 @@ class APIClient(RawClient):
     @validate_arguments
     def publish_signals(self, params: dict) -> Response:
         """
-        Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
+        Publishes one or multiple signals to create one or multiple items.
         Each signal is uniquely identified by its input ID in combination with the integration ID.
-        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/v1.1/reference/adminpublishsignals>`_ .
+        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/api/next/methods/admin/publish-signals>`_ .
 
         Parameters
         ----------
@@ -724,7 +727,8 @@ class APIClient(RawClient):
                 >>>  
                 >>> params = {"itemsBySignal": itemsBySignal, "createOnly": createOnly}   
 
-
+        Returns
+        -------
         Response
             In case of a valid return value, returns a pydantic model with the following format:
 
@@ -780,7 +784,7 @@ class ClarifyClient(APIClient):
     ) -> Response:
         """
         Return item data from selected items.
-        For more information click `here <https://docs.clarify.io/v1.1/reference/data-query>`_ .
+        For more information click `here <https://docs.clarify.io/api/next/datatypes/data-query>`_ .
 
         Parameters
         ----------
@@ -817,8 +821,9 @@ class ClarifyClient(APIClient):
             >>> )
 
 
-        Response
+        Returns
         --------
+        Response
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
@@ -826,17 +831,14 @@ class ClarifyClient(APIClient):
                 >>> result = SelectItemsResponse(
                 >>>             items = None,
                 >>>             data = DataFrame( 
-                >>>                               times = [ datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc) ],
-                >>>                               series = {
-                >>>                                         '<ITEM_ID>_avg': [478.19], 
-                >>>                                         '<ITEM_ID>_count': [1.0], 
-                >>>                                         '<ITEM_ID>_max': [478.19], 
-                >>>                                         '<ITEM_ID>_min': [478.19], 
-                >>>                                         '<ITEM_ID>_sum': [478.19]
-                >>>                                    }
-                >>>                            )
-                >>>
-                >>>       )
+                >>>                 times = [datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc)],
+                >>>                 series = {
+                >>>                    '<ITEM_ID>_avg': [478.19], 
+                >>>                    '<ITEM_ID>_count': [1.0], 
+                >>>                    '<ITEM_ID>_max': [478.19], 
+                >>>                    '<ITEM_ID>_min': [478.19], 
+                >>>                    '<ITEM_ID>_sum': [478.19]
+                >>>                 }))
                 >>> error = None
 
             In case where `rollup = None`, the response in the DataFrame has the following (example) format: 
@@ -912,7 +914,7 @@ class ClarifyClient(APIClient):
             Skip first N items.
 
         Example
-         -------
+        -------
 
             >>> client.select_items_metadata(
             >>>     ids = ['<ITEM_ID>'],
@@ -922,9 +924,9 @@ class ClarifyClient(APIClient):
             >>>     skip = 0
             >>> )
 
-         Response
-         --------
-             In case of a valid return value, returns a pydantic model with the following format:
+        Response
+        --------
+            In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
@@ -934,7 +936,7 @@ class ClarifyClient(APIClient):
                 >>>          )
                 >>> error = None
 
-             In case of the error the method return a pydantic model with the following format:
+            In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
@@ -982,17 +984,17 @@ class ClarifyClient(APIClient):
     ) -> Response:
         """
         This call inserts metadata to one or multiple signals. The signals are uniquely identified by its <INPUT_ID>.
-        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/v1.1/reference/integrationsavesignals>`_ .
+        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/api/next/methods/integration/save-signals>`_ .
 
         Parameters
         ----------
         input_ids: List['<INPUT_ID>']
             List of strings to be the input ID of the signal.
-            Click `here <https://docs.clarify.io/v1.1/reference/input-id>`_ for more information.
+            Click `here <https://docs.clarify.io/api/next/datatypes/input-id>`_ for more information.
 
         signals: List[SignalInfo]
             List of SignalInfo object that contains metadata for a signal.
-            Click `here <https://docs.clarify.io/v1.1/reference/signal-info>`_ for more information.
+            Click `here <https://docs.clarify.io/api/next/datatypes/signal-info>`_ for more information.
         
         create_only: bool, default False
             If set to true, skip update of information for existing signals. That is, all Input_ID's
@@ -1022,7 +1024,7 @@ class ClarifyClient(APIClient):
                 >>> id = '1'
                 >>> result = SaveSignalsResponse(
                 >>>             signalsByInput={
-                >>>                 <INPUT_ID>: SaveSummary(id='<SIGNAL_ID>', created=True, updated=False)
+                >>>                 '<INPUT_ID>': SaveSummary(id='<SIGNAL_ID>', created=True, updated=False)
                 >>>              }
                 >>>          )
                 >>> error = None
@@ -1069,7 +1071,7 @@ class ClarifyClient(APIClient):
         """
         Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
         Each signal is uniquely identified by its input ID in combination with the integration ID.
-        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/v1.1/reference/adminpublishsignals>`_ .
+        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/api/next/methods/admin/publish-signals>`_ .
 
         Parameters
         ----------
@@ -1078,7 +1080,7 @@ class ClarifyClient(APIClient):
         
         items: List[ Item ]
             List of Item object that contains metadata for a Item.
-            Click `here <https://docs.clarify.io/v1.1/reference/item>`_ for more information.
+            Click `here <https://docs.clarify.io/api/next/datatypes/item>`_ for more information.
         
         create_only: bool, default False
             If set to True, skip update of information for existing Items. That is, all Input_ID's
@@ -1088,17 +1090,17 @@ class ClarifyClient(APIClient):
           Integration ID in string format. None means using the integration in credential file.
 
 
-            Example
-            -------
-                >>> from pyclairfy import Item
-                >>> 
-                >>> item = Item(
-                >>>    name = "Home temperature",
-                >>>    description = "Temperature in the bedroom",
-                >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
-                >>>    visible=True
-                >>> )
-                >>> client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
+        Example
+        -------
+            >>> from pyclairfy import Item
+            >>> 
+            >>> item = Item(
+            >>>    name = "Home temperature",
+            >>>    description = "Temperature in the bedroom",
+            >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
+            >>>    visible=True
+            >>> )
+            >>> client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
 
         Returns
         -------
@@ -1108,13 +1110,10 @@ class ClarifyClient(APIClient):
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> result = PublishSignalsResponse(
-                >>>                    itemsBySignal = {
-                >>>                            '<SIGNAL_ID>': SaveSummary(
-                >>>                                                id='<ITEM_ID>',
-                >>>                                                created=True, 
-                >>>                                                updated=False )
-                >>>                                    }
-                >>>                                ) 
+                >>>                    itemsBySignal = {'<SIGNAL_ID>': SaveSummary(
+                >>>                           id='<ITEM_ID>',
+                >>>                           created=True, 
+                >>>                           updated=False )}) 
                 >>> error = None
 
             In case of the error the method return a pydantic model with the following format:
@@ -1182,23 +1181,27 @@ class ClarifyClient(APIClient):
         skip: int default: 0
             Skip first N signals.
 
+        include_items: bool default: False
+            If set to true, include items metadata in the response.
+
         integration: str Default None
             Integration ID in string format. None means using the integration in credential file.
 
         Example
-         -------
+        -------
 
             >>> client.select_signals(
             >>>     ids = ['<SIGNAL_ID>'],
             >>>     name = "Electricity",
             >>>     labels = {"city": "Trondheim"},
             >>>     limit = 10,
-            >>>     skip = 0
+            >>>     skip = 0,
+            >>>     include_items = False
             >>> )
 
-         Response
-         --------
-             In case of a valid return value, returns a pydantic model with the following format:
+        Response
+        --------
+            In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
@@ -1208,7 +1211,7 @@ class ClarifyClient(APIClient):
                 >>>          )
                 >>> error = None
 
-             In case of the error the method return a pydantic model with the following format:
+            In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
