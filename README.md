@@ -14,7 +14,7 @@
 
 - [PyClarify SDK](https://pypi.org/project/pyclarify/)
 - [PyClarify documentation](https://clarify.github.io/pyclarify/)
-- [Clarify Developer documentation](https://docs.clarify.io/reference/http)
+- [Clarify Developer documentation](https://docs.clarify.io/developers/welcome)
 - [Basic tutorial on using Python with Clarify](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb)
 - [Clarify Forecast tutorial](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Forecasting.ipynb)
 - [Pattern Recognition tutorial](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Pattern%20Recognition.ipynb)
@@ -38,134 +38,126 @@ To install this package:
 
 # Interact with Clarify
 
-PyClarify provides a fast and easy way to write data into Clarify, create or update the signal metadata and get item data, by using the `APIClient` class.
+PyClarify provides a fast and easy way to interact with Clarify using the `APIClient` and `ClarifyClient` class.
 This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.
 
+The `APIClient` and `ClarifyClient` class can do the almost the same operations, but the `ClarifyClient` provides a more pythonic way.
+
 For information about the Clarify Developer documentation
-click [her](https://docs.clarify.io/reference).
+click [here](https://docs.clarify.io/developers/welcome).
 
-# Add Signal metadata
+## **Using Python with Clarify**
 
-To add or update the signal's metadata, use the `save_signals` method.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb)
 
-Step 1 : Create a `SignalInfo` model.
+Use colab to learn fast end easy how to interact with Clarify using Python. In this introduction tutorial you will learn all the basics to get you started.
 
-Step 2 : Use the `save_signals` method.
+## Quickstart
 
-**Example: Add Signal metadata**
+**Save signals**
 
-    >>> from pyclarify import APIClient, SignalInfo
+**Example:**
 
-    >>> client = APIClient("./clarify-credentials.json")
+    from pyclarify import ClarifyClient, SignalInfo
 
-    >>> signal_1 = SignalInfo(
-    >>>    name="Home temperature",
-    >>>    description="Temperature in the bedroom",
-    >>>    labels={"data-source": ["Raspberry Pi"], "location": ["Home"]},
-    >>> )
+    client = ClarifyClient("./clarify-credentials.json")
 
-    >>> signal_2 = SignalInfo(
-    >>>    name="Home humidity",
-    >>>    description="Humidity in the living room",
-    >>>    labels={"data-source": ["Raspberry Pi"], "location": ["Home"]},
-    >>> )
+    signal = SignalInfo(
+       name = "Home temperature",
+       description = "Temperature in the bedroom",
+       labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+    )
 
-    >>> response = client.save_signals(
-    >>>     params={"inputs": {"id1": signal_1, "id2": signal_2}, "createOnly": False}
-    >>> )
-    >>> print(response.json())
+    response = client.save_signals(input_ids=["<INPUT_ID>"], signals=[signal], create_only=False)
+    print(response.json())
 
-# Write data into Clarify
+**Insert data into a signal**
 
-Step 1: Create a `DataFrame` model.
+**Example:**
 
-Step 2: Use the `insert` method which takes as an argument the DataFrame model.
+    from pyclarify import DataFrame, ClarifyClient
 
-**Example: Write data into Clarify**
+    client = APIClient("./clarify-credentials.json")
 
-    >>> from pyclarify import DataFrame, APIClient
+    date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
 
-    >>> client = APIClient("./clarify-credentials.json")
-    >>> data = DataFrame(
-    >>>     series={"id1": [1, 2, 3, None], "id2": [3, 4, None, 5]},
-    >>>     times=[
-    >>>         "2021-11-09T21:50:06Z",
-    >>>         "2021-11-10T21:50:06Z",
-    >>>         "2021-11-12T21:50:06Z",
-    >>>         "2021-11-12T21:50:06Z",
-    >>>     ],
-    >>> )
-    >>> response = client.insert(data)
-    >>> print(response.json())
+    data = DataFrame(
+        series={"<INPUT_ID_1>": [1, None], "<INPUT_ID_2>": [None, 5]},
+        times = date,
+    )
 
-# Get Signal meta-data
+    response = client.insert(data)
+    print(response.json())
 
-This call retrieves signal meta-data and/or exposed items.
-This call is a recommend step before doing a publishSignals call. For more information click [here](https://docs.clarify.io/v1.1/reference/adminselectsignals).
+**Get metadata from signals and/or items**
 
-Step 1: Create the params dictionary.
+**Example:**
 
-Step 2: Call the `select_signals` method.
+    from pyclarify import ClarifyClient
 
-**Example: Get Signal meta-data**
+    client = ClarifyClient("./clarify-credentials.json")
 
-    >>> from pyclarify import APIClient
+    response = client.select_signals(
+                    ids = ['<SIGNAL_ID>'],
+                    name = "Electricity",
+                    labels = {"city": "Trondheim"},
+                    limit = 10,
+                    skip = 0,
+                    include_items = False
+    )
+    print(response.json())
 
-    >>> client = APIClient("./clarify-credentials.json")
+**Publish signals**
 
-    >>> response = client.select_signals(
-    >>>     params={
-    >>>         "signals": {
-    >>>             "include": True,
-    >>>             "filter": {"id": {"$in": ["<signal_id>"]}},
-    >>>         },
-    >>>         "items": {
-    >>>             "include": True,
-    >>>         },
-    >>>     }
-    >>> )
-    >>> print(response.json())
+**Example:**
 
-# Publish signals
+    from pyclarify import ClarifyClient, Item
 
-Publish one or more Signals by providing the SignalInfo, which will add metadata to your created Item.
+    client = ClarifyClient("./clarify-credentials.json")
 
-**Example: Publish signals**
+    item = Item(
+       name = "Home temperature",
+       description = "Temperature in the bedroom",
+       labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
+       visible=True
+    )
+    response = client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
+    print(response.json())
 
-    >>> from pyclarify import APIClient, SignalInfo
+**Get Item data**
 
-    >>> client = APIClient("./clarify-credentials.json")
+**Example:**
 
-    >>> response = client.publish_signals(
-    >>>     params={
-    >>>         "itemsBySignal": {"<signal_id>": SignalInfo(name="<item_name>")},
-    >>>         "createOnly": False,
-    >>>     }
-    >>> )
-    >>> print(response.json())
+    from pyclarify import ClarifyClient
 
-# Get Item data
+    client = ClarifyClient("./clarify-credentials.json")
 
-To get the data from an item, you must first have an integration with reading access.
-Once reading access is enabled, use the `select_items` method.
+    response = client.select_items_data(
+        ids = ['<ITEM_ID>'],
+        limit = 10,
+        skip = 0,
+        not_before = "2021-10-01T12:00:00Z",
+        before = "2021-11-10T12:00:00Z",
+        rollup = "P1DT"
+    )
+    print(response.json())
 
-Step 1: Create the params dictionary.
+**Get Item metadata**
 
-Step 2: Call the `select_items` method.
+**Example:**
 
-**Example: Get Item data**
+    from pyclarify import ClarifyClient
 
-    >>> from pyclarify import APIClient
+    client = ClarifyClient("./clarify-credentials.json")
 
-    >>> client = APIClient("./clarify-credentials.json")
-
-    >>> response = client.select_items(
-    >>>    params={
-    >>>        "items": {"include": True, "filter": {"id": {"$in": ["<item_id>"]}}},
-    >>>        "data": {"include": True},
-    >>>     }
-    >>> )
-    >>> print(response.json())
+    response = client.select_items_metadata(
+        ids = ['<ITEM_ID>'],
+        name = "Electricity",
+        labels = {"city": "Trondheim"},
+        limit = 10,
+        skip = 0
+    )
+    print(response.json())
 
 # Changelog
 

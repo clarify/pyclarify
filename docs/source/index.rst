@@ -1,6 +1,6 @@
-PyClarify v0.1.0 Manual
+PyClarify v0.3.0 Manual
 =====================================
-Welcome to PyClarify's documentation, last updated 22 Nov, 2021
+Welcome to PyClarify's documentation, last updated 15 Feb, 2022
 
 .. toctree::
    :maxdepth: 1
