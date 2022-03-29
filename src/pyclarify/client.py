@@ -37,8 +37,8 @@ from pyclarify.models.data import DataFrame, SignalInfo, Item, InputID, Resource
 from pyclarify.models.requests import Request, ApiMethod
 from pyclarify.models.response import Response, GenericResponse
 from pyclarify.oauth2 import GetToken
-from pyclarify.__utils__.pagination import GetItems, GetDates
-from pyclarify.__utils__.convert import datetime_to_str, compute_timewindow
+from pyclarify.__utils__.pagination import ItemIterator, TimeIterator
+from pyclarify.__utils__.time import time_to_string, compute_iso_timewindow
 
 
 def increment_id(func):
@@ -63,24 +63,24 @@ def increment_id(func):
 
     return wrapper
 
-
+#TODO: Tidy up
 def iterator(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         params = json.loads(args[1])["params"]
-        number_of_items = params["items"]["limit"]
+        user_limit = params["items"]["limit"]
         skip = params["items"]["skip"]
         params_tuple = ()
 
         if params["data"]["include"]:
-            limit = 50
+            API_LIMIT = 50
         else:
-            limit = 1000
+            API_LIMIT = 1000
 
-        get_item = GetItems(limit, number_of_items, skip)
+        get_item = ItemIterator(user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip)
         item_iter = iter(get_item)
 
-        for limit, skip in item_iter:
+        for skip, limit in item_iter:
             params["items"]["limit"] = limit
             params["items"]["skip"] = skip
 
@@ -88,12 +88,12 @@ def iterator(func):
             before = params["data"]["before"]
 
             if notBefore and before:
-                get_dates = GetDates([notBefore, before])
+                get_dates = TimeIterator(notBefore, before)
                 date_iter = iter(get_dates)
 
                 for notBefore, before in date_iter:
-                    notBefore = datetime_to_str(notBefore)
-                    before = datetime_to_str(before)
+                    notBefore = time_to_string(notBefore)
+                    before = time_to_string(before)
                     params["data"]["notBefore"] = notBefore
                     params["data"]["before"] = before
                     params_tuple = params_tuple + (json.dumps(params),)
@@ -861,7 +861,7 @@ class ClarifyClient(APIClient):
                 >>> )
 
         """
-        not_before, before = compute_timewindow(not_before, before)
+        not_before, before = compute_iso_timewindow(not_before, before)
         params = {
             "items": {
                 "include": False,
