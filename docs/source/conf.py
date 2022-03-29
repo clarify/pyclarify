@@ -27,7 +27,7 @@ copyright = "2021, Clarify"
 author = "Alexia Artemis Baikas, Eliezer de Souza da Silva, Odd Gunnar Aspaas"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.0"
+release = "0.3.0"
 
 
 # -- General configuration ---------------------------------------------------

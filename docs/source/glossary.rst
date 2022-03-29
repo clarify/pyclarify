@@ -14,6 +14,4 @@ Glossary
         one that has the temperature in Fahrenheit and one which has the temperature in celsius units.
 
     Metadata 
-        Metadata is where you can put information abouy the signal or the item. 
-        In the current version you can add or update the metadata of the signal usign the PyClarify package. 
-        To add or update metadata of the item you have to go to the Clarify website.
+        Metadata is where you can put information about the signal or the item.

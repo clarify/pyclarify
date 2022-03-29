@@ -56,7 +56,7 @@ Example: Add Signal metadata
     >>>    labels={"data-source": ["Raspberry Pi"], "location": ["Home"]},
     >>> )
     >>>
-    >>> params = {"inputs": {"id1": signal_1, "id2": signal_2}, "createOnly": False}
+    >>> params = {"inputs": {"<INPUT_ID_1>": signal_1, "<INPUT_ID_2>": signal_2}, "createOnly": False}
     >>>
     >>> response = client.save_signals(params= params)
     >>> print(response.json())
@@ -88,7 +88,7 @@ Example: Insert data into a signal
     >>> date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
     >>>
     >>> data = DataFrame(
-    >>>     series={"id1": [1, None], "id2": [None, 5]},
+    >>>     series={"<INPUT_ID_1>": [1, None], "<INPUT_ID_2>": [None, 5]},
     >>>     times = date,
     >>> )
     >>>
@@ -244,7 +244,7 @@ Example: Insert data into a signal
     >>> date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
     >>>
     >>> data = DataFrame(
-    >>>     series={"id1": [1, None], "id2": [None, 5]},
+    >>>     series={"<INPUT_ID_1>": [1, None], "<INPUT_ID_2>": [None, 5]},
     >>>     times = date,
     >>> )
     >>>
@@ -253,23 +253,27 @@ Example: Insert data into a signal
 
 
 
-Get metadata from signals / items
-=================================
-Get metadata from selected signals and/or item.
+Get metadata from signals and/or items
+======================================
+Get metadata from selected signals and/or items.
 This call is a recommend step before doing a publish_signals call.
 
-Example: Get metadata from signals / items
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Example: Get metadata from signals and/or items
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
     >>> from pyclarify import ClarifyClient
     >>> client = ClarifyClient("./clarify-credentials.json")
-    >>> client.select_signals(
-    >>>     ids = ['<SIGNAL_ID>'],
-    >>>     limit = 10,
-    >>>     skip = 0
+    >>> response = client.select_signals(
+    >>>                 ids = ['<SIGNAL_ID>'],
+    >>>                 name = "Electricity",
+    >>>                 labels = {"city": "Trondheim"},
+    >>>                 limit = 10,
+    >>>                 skip = 0,
+    >>>                 include_items = True
     >>> )
+    >>> print(response.json())
 
 
 Publish signals  
