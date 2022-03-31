@@ -17,6 +17,10 @@ class TimeIterator:
         The global end time of the API call. This is the time that the user put in the before parameter. 
         It is the final date to be returned from the API.
 
+    rollup: RFC 3339 duration or "window", default None
+                    If RFC 3339 duration is specified, roll-up the values into either the full time window
+                    (`notBefore` -> `before`) or evenly sized buckets.
+                    
     Returns
     -------
     current_start_time
@@ -24,18 +28,24 @@ class TimeIterator:
     current_end_time 
         The before parameter to be used in an API call
     """
-    def __init__(self, start_time, end_time):
+    def __init__(self, start_time, end_time, rollup=None):
         self.current_start_time = time.parse_to_datetime(start_time)
         self.GLOBAL_END_TIME = time.parse_to_datetime(end_time)
         
-        # CONSTRAINT: Timewindow from an API call cannot be longer than 40 days
-        self.API_LIMIT = timedelta(days=40)
-
+        # CONSTRAINT: Timewindow from an API call cannot be longer than 40 days if rollup is smaller than 1 minute
+        # 400 days contraint if rollup is larger than 1 minute
+        self.API_LIMIT = timedelta(days=40) if time.rfc3339_to_timedelta(rollup) <= timedelta(minutes=1) else timedelta(days=400)
+        self.rollup = rollup
     def __iter__(self):
         self.ending_condition = False
         return self
     
     def __next__(self):
+        # EDGE CONDITION: if rollup = "window" the API call should just return 1 timestamp
+        if self.rollup == "window":
+            self.ending_condition = True
+            return self.current_start_time, self.GLOBAL_END_TIME
+
         if self.ending_condition:
             raise StopIteration
         

@@ -34,6 +34,39 @@ def timedelta_isoformat(td: timedelta) -> str:
     )
     return result
 
+def rfc3339_to_timedelta(rfc):
+    # if timedelta is none or edge condition
+    if not rfc or rfc=="window":
+        return timedelta(seconds=0)
+
+    # split RFC to days and time of day
+    days, time = rfc.split("T")
+    # create kwargs for timedelta
+    kwargs = {}
+
+    # Filter out number of days
+    days = ''.join(filter(str.isdigit, days))
+    if days != "":
+        # add number of days to kwargs
+        kwargs["days"] = eval(days)
+
+    # translate RFC3339 lingo to datetime.timedelta jargon
+    translate = {
+        "h" : "hours",
+        "m" : "minutes",
+        "s" : "seconds"
+    }
+    tmp = ""
+    # iterate through time of day portion
+    for c in time:
+        if c.isalpha():
+            kwargs[translate[c.lower()]] = eval(tmp)
+            tmp = ""
+        else:
+            tmp += c
+
+    return timedelta(**kwargs)
+
 
 # Convenient method to time to string from datetime and vice versa
 time_syntax = "%Y-%m-%dT%H:%M:%SZ"

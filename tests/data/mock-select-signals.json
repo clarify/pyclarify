@@ -6,7 +6,7 @@
         "signals": {
           "include": true,
           "filter": {},
-          "limit": null,
+          "limit": 10,
           "skip": null
         },
         "items": {
@@ -106,7 +106,7 @@
               "$in": ["c5vv12btaf7d0qbk0l0g"]
             }
           },
-          "limit": null,
+          "limit": 10,
           "skip": null
         },
         "items": {
