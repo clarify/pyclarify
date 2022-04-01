@@ -27,3 +27,9 @@ Changes are grouped as follows
 ## Fixed
 
 - Fix import dependency for python version 3.7.
+
+# [0.3.1] - 2022-04-01
+
+## Fixed
+
+- Update versioning of API to 1.1beta1 (All prior versions of SDK will not work due API version 1.1 introducing non backwards compatible changes)
