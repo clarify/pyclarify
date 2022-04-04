@@ -108,7 +108,7 @@ def iterator(func):
 
 
 def pretty_response(response_tuple, error_tuple):
-
+    print(response_tuple)
     responses = {}
     responses["jsonrpc"] = response_tuple[0]["jsonrpc"]
     responses["id"] = response_tuple[0]["id"]
@@ -351,7 +351,7 @@ class RawClient:
 class APIClient(RawClient):
     def __init__(self, clarify_credentials):
         super().__init__(None)
-        self.update_headers({"X-API-Version": "v1.1beta1"})
+        self.update_headers({"X-API-Version": "1.1beta1"})
         self.authentication = GetToken(clarify_credentials)
         self.base_url = f"{self.authentication.api_url}rpc"
 
