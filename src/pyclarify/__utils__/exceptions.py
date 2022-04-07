@@ -39,3 +39,30 @@ class PyClarifyImportError(PyClarifyException):
 
     def __str__(self):
         return self.message
+
+
+class PyClarifyFilterError(PyClarifyException):
+    """PyClarify Filter Error
+
+    Raised if the user attempts to create Filter with operator that does not refelct the values.
+    Args:
+        field (str): Name of the field which produced the error
+        values :
+        message (str): The error message to output.
+    """
+
+    def __init__(self, field: str, desired_type, actual_values, message: str = None):
+        self.field = field
+        self.desired_type = desired_type
+        self.actual_values = actual_values
+        self.message = (
+            message
+            or "The operator '{}' does not allow values of type '{}'. You used '{}'.".format(
+                self.field,
+                self.desired_type,
+                self.actual_values
+            )
+        )
+
+    def __str__(self):
+        return self.message
