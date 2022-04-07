@@ -52,14 +52,13 @@ class SelectItemsResponse(BaseModel, extra=Extra.forbid):
                             main_items[key] = value
                 if other.items and not self.items:
                     main_items = deepcopy(other.items)                
-                
             
                 if other.data:
                     other_data = other.data
                     main_df = other_data
                     if self.data:
                         main_df = merge([self.data, other_data])
-                if self.data:
+                if self.data and not other.data:
                     main_df = self.data
             
             return SelectItemsResponse(items=main_items, data=main_df)
