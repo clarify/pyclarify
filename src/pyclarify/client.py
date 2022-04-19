@@ -70,6 +70,7 @@ def iterator(func):
         LEGAL_ITERATOR_TYPES = [ApiMethod.select_items]
         payload_list = []
         payload = json.loads(args[1])
+        
         if payload["method"] in LEGAL_ITERATOR_TYPES:
             # Contraints from API (https://docs.clarify.io/api/next/general/limits-and-quotas#rpc-limits)
             if payload["method"] == ApiMethod.select_items:
@@ -78,31 +79,30 @@ def iterator(func):
                 if payload["params"]["data"]["include"]:
                     API_LIMIT = 1000
 
-            user_limit = payload["params"][selector]["limit"]
-            skip = payload["params"][selector]["skip"]
-            notBefore, before = compute_iso_timewindow(
-                start_time=payload["params"]["data"]["notBefore"], 
-                end_time=payload["params"]["data"]["before"]
-            )
-            rollup = payload["params"]["data"]["rollup"]
-            
-            for skip, limit in ItemIterator(user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip):
-                current_payload = deepcopy(payload)
-                current_payload["params"][selector]["limit"] = limit
-                current_payload["params"][selector]["skip"] = skip
+                user_limit = payload["params"][selector]["limit"]
+                skip = payload["params"][selector]["skip"]
+                notBefore, before = compute_iso_timewindow(
+                    start_time=payload["params"]["data"]["notBefore"], 
+                    end_time=payload["params"]["data"]["before"]
+                )
+                rollup = payload["params"]["data"]["rollup"]
 
-                for current_notBefore, current_before in TimeIterator(start_time=notBefore, end_time=before, rollup=rollup):
-                    current_notBefore, current_before = compute_iso_timewindow(current_notBefore, current_before)  
+                for skip, limit in ItemIterator(user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip):
+                    current_payload = deepcopy(payload)
+                    current_payload["params"][selector]["limit"] = limit
+                    current_payload["params"][selector]["skip"] = skip
 
-                    current_payload["params"]["data"]["notBefore"] = notBefore
-                    current_payload["params"]["data"]["before"] = before
-
-
-                payload_list += [current_payload]
+                    for current_notBefore, current_before in TimeIterator(start_time=notBefore, end_time=before, rollup=rollup):
+                        current_payload = deepcopy(current_payload)
+                        current_notBefore, current_before = compute_iso_timewindow(current_notBefore, current_before)  
+                        current_payload["params"]["data"]["notBefore"] = current_notBefore
+                        current_payload["params"]["data"]["before"] = current_before
+                        payload_list += [current_payload]
             else:
                 payload_list += [payload]
         else:
             payload_list = [payload]
+
 
         args[0].payload_list = payload_list
 
@@ -173,7 +173,7 @@ class RawClient:
         """
         for payload in self.payload_list:
             logging.debug(f"--> {self.base_url}, req: {payload}")
-            res = requests.post(self.base_url, data=payload, headers=self.headers)
+            res = requests.post(self.base_url, data=json.dumps(payload), headers=self.headers)
             logging.debug(f"<-- {self.base_url} ({res.status_code})")
             if not res.ok:
                 err = {
@@ -182,6 +182,9 @@ class RawClient:
                     "data": res.text
                 }
                 res = Response(id=payload["id"],error=Error(**err))
+
+            elif hasattr(res.json(), "error"):
+                res = Response(id=payload["id"], error=res.json()["error"])
             else:
                 res = Response(**res.json())
             if "responses" in locals():

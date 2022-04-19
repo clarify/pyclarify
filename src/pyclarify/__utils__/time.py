@@ -90,7 +90,7 @@ def parse_to_datetime(time):
     elif isinstance(time, int):
         time = datetime.fromtimestamp(time)
     else:
-        print(f"could not parse time: {time}")
+        print(f"could not parse time: {time}") # TODO: Throw exception
     return time
 
 

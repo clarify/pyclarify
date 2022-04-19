@@ -36,6 +36,7 @@ class TimeIterator:
         # 400 days contraint if rollup is larger than 1 minute
         self.API_LIMIT = timedelta(days=40) if time.rfc3339_to_timedelta(rollup) <= timedelta(minutes=1) else timedelta(days=400)
         self.rollup = rollup
+        
     def __iter__(self):
         self.ending_condition = False
         return self
