@@ -13,11 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
+from .exceptions import PyClarifyFilterError
 from pydantic.class_validators import root_validator
-from pydantic import BaseModel
+from pydantic import BaseModel, Extra
 from pydantic.fields import Optional
-from typing import ForwardRef
+from typing import ForwardRef, Union, List, Dict
 from enum import Enum
 
 class LegalOperators(str, Enum):
@@ -43,26 +43,25 @@ class Comparison(BaseModel):
     ] = None
     operator: Optional[LegalOperators]
 
-    @root_validator(pre=True)
+    @root_validator(pre=False)
     def field_must_reflect_operator(cls, values):
         value = values["value"]
-        
-        if hasattr(cls, "operator"):
-            operator = cls.operator
-            # Value should be list
+        operator = values["operator"] if "operator" in values.keys() else None
+        if operator:
+            # Field value should be list
             if operator in [LegalOperators.IN, LegalOperators.NIN]:
                 if not isinstance(value, list):
                     raise PyClarifyFilterError(operator, list, value)
 
-            # Value should not be list
+            # Field value should not be list
             if operator not in [LegalOperators.IN, LegalOperators.NIN]:
                 if isinstance(value, list):
                     raise PyClarifyFilterError(operator, list, value)
 
-            # No operator means Equals
-            else:
-                if values == list:
-                    raise PyClarifyFilterError("Equals (None)", list, value)
+        # No operator means Equals
+        else:
+            if isinstance(value, list):
+                raise PyClarifyFilterError("Equals (None)", list, value)
         return values
 
     class Config:
@@ -74,7 +73,7 @@ class Equal(Comparison):
     pass
 
 class NotEqual(Comparison):
-    operator = LegalOperatrs.NE
+    operator = LegalOperators.NE
 
 class Regex(Comparison):
     operator = LegalOperators.REGEX
@@ -91,7 +90,7 @@ class LessThan(Comparison):
 class GreaterThan(Comparison):
     operator = LegalOperators.GT
 
-class GreaterOrEqualThan(Comparison):
+class GreaterThanOrEqual(Comparison):
     operator = LegalOperators.GTE
 
 
