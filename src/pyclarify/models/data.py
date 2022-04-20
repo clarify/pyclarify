@@ -157,7 +157,7 @@ class SignalInfo(BaseModel):
     type: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
-    annotations: Dict[AnnotationKey, str] = {}
+    annotations: Optional[Dict[AnnotationKey, str]] = {}
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
     sourceType: SourceTypeSignal = SourceTypeSignal.measurement

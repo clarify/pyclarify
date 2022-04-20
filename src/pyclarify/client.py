@@ -76,7 +76,7 @@ def iterator(func):
             if payload["method"] == ApiMethod.select_items:
                 API_LIMIT = 50
                 selector = "items"
-                if payload["params"]["data"]["include"]:
+                if not payload["params"]["data"]["include"]:
                     API_LIMIT = 1000
 
                 user_limit = payload["params"][selector]["limit"]
@@ -757,9 +757,11 @@ class ClarifyClient(APIClient):
                 "rollup": rollup,
             },
         }
-        if len(ids) < 1:
-            del params["items"]["filter"]
-        request_data = Request(method=ApiMethod.select_items, params=params)
+        if isinstance(ids, list):
+            if len(ids) > 0:
+                params["items"]["filter"] = {"id": {"$in": ids}}
+
+        request_data = Request(id=self.current_id, method=ApiMethod.select_items, params=params)
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
 
@@ -830,8 +832,10 @@ class ClarifyClient(APIClient):
                 >>> )
         """
         filters = []
-        if len(ids) > 0:
-            filters += [{"id": {"$in": ids}}]
+        if isinstance(ids,list):
+            if len(ids) > 0:
+                filters += [{"id": {"$in": ids}}]
+        
         if name != "":
             filters += [{"name": {"$regex": name}}]
 
@@ -844,6 +848,7 @@ class ClarifyClient(APIClient):
 
         if len(filters) > 0:
             params["items"]["filter"]["$or"] = filters
+
         if len(labels) > 0:
             for key, value in labels.items():
                 params["items"]["filter"][f"labels.{key}"] = value
