@@ -134,3 +134,6 @@ dmypy.json
 # Credentials
 clarify-credentials.json
 clarify-credentials-dev.json
+
+# test files
+test.py

@@ -39,3 +39,26 @@ class PyClarifyImportError(PyClarifyException):
 
     def __str__(self):
         return self.message
+
+class PyClarifyTypeError(PyClarifyException):
+    """PyClarify Type Error
+
+    Raised if the user attempts to use functionality which combines the content of two Clarify Models.
+    Args:
+        module (str): Name of the module which could not be imported
+        message (str): The error message to output.
+    """
+
+    def __init__(self, source, other, message: str = None):
+        self.other = other
+        self.source = source
+        self.message = (
+            message
+            or "The objects you are trying to combine do not have the same type '{}' and '{}'.".format(
+                type(self.other),
+                type(self.source)
+            )
+        )
+
+    def __str__(self):
+        return self.message

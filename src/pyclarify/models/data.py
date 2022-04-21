@@ -21,7 +21,7 @@ from typing_extensions import Literal
 from datetime import datetime, timedelta
 import logging
 from enum import Enum
-from pyclarify.__utils__.convert import timedelta_isoformat, time_to_string
+from pyclarify.__utils__.time import timedelta_isoformat, time_to_string
 from pyclarify.__utils__.auxiliary import local_import
 
 # constrained string defined by the API
@@ -157,7 +157,7 @@ class SignalInfo(BaseModel):
     type: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
-    annotations: Dict[AnnotationKey, str] = {}
+    annotations: Optional[Dict[AnnotationKey, str]] = {}
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
     sourceType: SourceTypeSignal = SourceTypeSignal.measurement

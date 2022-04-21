@@ -17,9 +17,11 @@ limitations under the License.
 import sys
 import unittest
 import json
+from unittest.mock import patch
 
 sys.path.insert(1, "src/")
 from pyclarify.client import RawClient
+from pyclarify.models.response import Response
 
 
 class TestRawClient(unittest.TestCase):
@@ -29,6 +31,9 @@ class TestRawClient(unittest.TestCase):
 
         self.client = RawClient(base_url=self.mock_data["mock_url"])
         self.content_type_headers = {"content-type": "application/json"}
+
+        with open("./tests/data/mock-client-common.json") as f:
+            self.mock_access_token = json.load(f)["mock_access_token"]
 
     def test_update_header(self):
         """
@@ -74,21 +79,73 @@ class TestRawClient(unittest.TestCase):
         payload_2 = json.loads(payload_2)
         self.assertEqual(payload_2["id"], 2)
 
-    def test_send_request(self):
+    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_send_request_no_iteration(self, client_req_mock, get_token_mock):
+        
         payload = self.client.create_payload(
-            self.mock_data["mock_method"], self.mock_data["mock_params"]
+            "clarify.selectItems", self.mock_data["no_iterations"]["args"]
         )
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: self.mock_data["no_iterations"]["response"]
+
         response = self.client.make_requests(payload)
         payload = json.loads(payload)
-
         # assert valid response type
-        self.assertIsInstance(response, dict)
+        self.assertIsInstance(response, Response)
 
         # assert is JSONRPC
-        self.assertEqual(response["jsonrpc"], "2.0")
+        self.assertEqual(response.jsonrpc, "2.0")
 
         # assert is correct id
-        self.assertEqual(response["id"], payload["id"])
+        self.assertEqual(response.id, str(payload["id"]))
+
+    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_send_request_one_iteration(self, client_req_mock, get_token_mock):
+        
+        payload = self.client.create_payload(
+            "clarify.selectItems", self.mock_data["one_iterations"]["args"]
+        )
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: self.mock_data["one_iterations"]["response"]
+
+        response = self.client.make_requests(payload)
+        payload = json.loads(payload)
+        # assert valid response type
+        self.assertIsInstance(response, Response)
+
+        # assert is JSONRPC
+        self.assertEqual(response.jsonrpc, "2.0")
+
+        # assert is correct id
+        self.assertEqual(response.id, str(payload["id"]))
+
+    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_send_request_many_iteration(self, client_req_mock, get_token_mock):
+        
+        payload = self.client.create_payload(
+            "clarify.selectItems", self.mock_data["many_iterations"]["args"]
+        )
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: self.mock_data["many_iterations"]["response"]
+
+        response = self.client.make_requests(payload)
+        payload = json.loads(payload)
+        # assert valid response type
+        self.assertIsInstance(response, Response)
+
+        # assert is JSONRPC
+        self.assertEqual(response.jsonrpc, "2.0")
+
+        # assert is correct id
+        self.assertEqual(response.id, str(payload["id"]))
+
+
 
     def test_authentication(self):
         read = self.client.authenticate("./tests/data/mock-clarify-credentials.json")
