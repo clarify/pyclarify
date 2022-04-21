@@ -99,7 +99,6 @@ class TestClarifySelectItemsClient(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_items(test_case["args"])
-
         for x in response_data.result.items:
             self.assertIsInstance(response_data.result.items[x], SignalInfo)
         self.assertIsInstance(response_data.result.data, DataFrame)
@@ -126,7 +125,7 @@ class TestClarifySelectItemsClient(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_items(test_case["args"])
-
+        
         self.assertIsNone(response_data.result.items)
         self.assertIsInstance(response_data.result.data, DataFrame)
 
