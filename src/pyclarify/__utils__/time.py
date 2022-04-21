@@ -34,9 +34,10 @@ def timedelta_isoformat(td: timedelta) -> str:
     )
     return result
 
+
 def rfc3339_to_timedelta(rfc):
     # if timedelta is none or edge condition
-    if not rfc or rfc=="window":
+    if not rfc or rfc == "window":
         return timedelta(seconds=0)
 
     # split RFC to days and time of day
@@ -45,17 +46,13 @@ def rfc3339_to_timedelta(rfc):
     kwargs = {}
 
     # Filter out number of days
-    days = ''.join(filter(str.isdigit, days))
+    days = "".join(filter(str.isdigit, days))
     if days != "":
         # add number of days to kwargs
         kwargs["days"] = eval(days)
 
     # translate RFC3339 lingo to datetime.timedelta jargon
-    translate = {
-        "h" : "hours",
-        "m" : "minutes",
-        "s" : "seconds"
-    }
+    translate = {"h": "hours", "m": "minutes", "s": "seconds"}
     tmp = ""
     # iterate through time of day portion
     for c in time:
@@ -90,7 +87,7 @@ def parse_to_datetime(time):
     elif isinstance(time, int):
         time = datetime.fromtimestamp(time)
     else:
-        print(f"could not parse time: {time}") # TODO: Throw exception
+        print(f"could not parse time: {time}")  # TODO: Throw exception
     return time
 
 
@@ -108,13 +105,13 @@ def compute_iso_timewindow(start_time, end_time):
 
     return time_to_string(start_time), time_to_string(end_time)
 
+
 def compute_timedelta(start_time, end_time):
     start_time = parse_to_datetime(start_time)
     end_time = parse_to_datetime(end_time)
     return end_time - start_time
-    
+
 
 def datetime_to_str(o):
     date = datetime.strftime(o, "%Y-%m-%dT%H:%M:%SZ")
     return date
-

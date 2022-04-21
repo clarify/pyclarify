@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pydantic import BaseModel, constr
+from pydantic import BaseModel
 from pydantic.fields import Optional
-from typing import List, Union, Dict
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
 class OAuthRequestBody(BaseModel):
