@@ -12,22 +12,19 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
 
-"""
 Oauth2 module for authentication client.
 
 The module provides a class for setting reading clarify credentials used to authenticate
-the API client. This module also handles getting access tokens with expiry date. 
+the API client. This module also handles getting access tokens with expiry date.
 """
 
 import requests
 import datetime
-import logging
 import json
 from os import path
 
-from pyclarify.models.auth import OAuthResponse, OAuthRequestBody, ClarifyCredential
+from pyclarify.models.auth import OAuthResponse, OAuthRequestBody
 
 
 class GetToken:
@@ -94,9 +91,7 @@ class GetToken:
             Access token.
         """
         response = requests.post(
-            url=self.auth_endpoint,
-            headers=self.headers,
-            data=self.credentials.dict(),
+            url=self.auth_endpoint, headers=self.headers, data=self.credentials.dict(),
         )
 
         if response.ok:

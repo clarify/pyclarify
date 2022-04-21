@@ -19,7 +19,6 @@ from pydantic.fields import Optional
 from typing import List, Union, Dict
 from typing_extensions import Literal
 from datetime import datetime, timedelta
-import logging
 from enum import Enum
 from pyclarify.__utils__.time import timedelta_isoformat, time_to_string
 from pyclarify.__utils__.auxiliary import local_import
@@ -165,10 +164,7 @@ class SignalInfo(BaseModel):
     gapDetection: timedelta = None
 
     class Config:
-        json_encoders = {
-            timedelta: timedelta_isoformat,
-            datetime: time_to_string
-            }
+        json_encoders = {timedelta: timedelta_isoformat, datetime: time_to_string}
         extra = Extra.forbid
 
 
