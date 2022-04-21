@@ -22,8 +22,8 @@ from typing_extensions import Literal
 from datetime import datetime
 from enum import Enum
 from .data import DataFrame, InputID, SignalInfo, Signal, Item
-from pyclarify.__utils__.convert import timedelta_isoformat, time_to_string
-from pyclarify.__utils__.pagination import GetDates
+from pyclarify.__utils__.time import timedelta_isoformat, time_to_string
+from pyclarify.__utils__.pagination import TimeIterator
 from datetime import timedelta
 
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
