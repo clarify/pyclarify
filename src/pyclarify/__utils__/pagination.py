@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from datetime import timedelta
 from . import time
 
 
@@ -28,19 +28,24 @@ class TimeIterator:
     current_end_time 
         The before parameter to be used in an API call
     """
+
     def __init__(self, start_time, end_time, rollup=None):
         self.current_start_time = time.parse_to_datetime(start_time)
         self.GLOBAL_END_TIME = time.parse_to_datetime(end_time)
-        
+
         # CONSTRAINT: Timewindow from an API call cannot be longer than 40 days if rollup is smaller than 1 minute
         # 400 days contraint if rollup is larger than 1 minute
-        self.API_LIMIT = timedelta(days=40) if time.rfc3339_to_timedelta(rollup) <= timedelta(minutes=1) else timedelta(days=400)
+        self.API_LIMIT = (
+            timedelta(days=40)
+            if time.rfc3339_to_timedelta(rollup) <= timedelta(minutes=1)
+            else timedelta(days=400)
+        )
         self.rollup = rollup
-        
+
     def __iter__(self):
         self.ending_condition = False
         return self
-    
+
     def __next__(self):
         # EDGE CONDITION: if rollup = "window" the API call should just return 1 timestamp
         if self.rollup == "window":
@@ -49,9 +54,11 @@ class TimeIterator:
 
         if self.ending_condition:
             raise StopIteration
-        
+
         # compute time window of current timestamps
-        time_window = time.compute_timedelta(self.current_start_time, self.GLOBAL_END_TIME)
+        time_window = time.compute_timedelta(
+            self.current_start_time, self.GLOBAL_END_TIME
+        )
 
         if time_window > self.API_LIMIT:
             self.current_start_time += self.API_LIMIT
@@ -61,6 +68,7 @@ class TimeIterator:
             # If timewindow is smaller than API limit we end iterator
             self.ending_condition = True
             return self.current_start_time, self.GLOBAL_END_TIME
+
 
 class ItemIterator:
     """
@@ -86,6 +94,7 @@ class ItemIterator:
     limit 
         The number of items to retrieve
     """
+
     def __init__(self, user_limit, limit_per_call, skip):
         self.remaining_items = user_limit
         self.LIMIT_PER_CALL = limit_per_call

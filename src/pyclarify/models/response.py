@@ -38,7 +38,7 @@ class SaveSignalsResponse(BaseModel, extra=Extra.forbid):
 class SelectItemsResponse(BaseModel, extra=Extra.forbid):
     items: Optional[Dict[InputID, SignalInfo]]
     data: Optional[DataFrame]
-    
+
     def __add__(self, other):
         try:
             if isinstance(other, SelectItemsResponse):
@@ -51,8 +51,8 @@ class SelectItemsResponse(BaseModel, extra=Extra.forbid):
                         for key, value in other.items.items():
                             main_items[key] = value
                 if other.items and not self.items:
-                    main_items = deepcopy(other.items)                
-            
+                    main_items = deepcopy(other.items)
+
                 if other.data:
                     other_data = other.data
                     main_df = other_data
@@ -60,11 +60,11 @@ class SelectItemsResponse(BaseModel, extra=Extra.forbid):
                         main_df = merge([self.data, other_data])
                 if self.data and not other.data:
                     main_df = self.data
-            
+
             return SelectItemsResponse(items=main_items, data=main_df)
 
         except TypeError as e:
-            raise PyClarifyTypeError(source=self,other=other) from e
+            raise PyClarifyTypeError(source=self, other=other) from e
 
 
 class SelectSignalsResponse(BaseModel, extra=Extra.forbid):
@@ -93,7 +93,6 @@ class GenericResponse(BaseModel, extra=Extra.forbid):
             elif other.result:
                 results = other.result
 
-
             if self.error:
                 errors = self.error
                 if other.error:
@@ -102,7 +101,7 @@ class GenericResponse(BaseModel, extra=Extra.forbid):
                             errors = self.error + other.error
                         else:
                             errors = self.error + [other.error]
-                    elif isinstance(other.error, List): 
+                    elif isinstance(other.error, List):
                         errors = [self.error] + other.error
                     else:
                         errors = [self.error, other.error]
@@ -110,13 +109,10 @@ class GenericResponse(BaseModel, extra=Extra.forbid):
                 errors = other.error
 
             return Response(
-                jsonrpc=self.jsonrpc, 
-                id=self.id, 
-                result=results, 
-                error=errors
+                jsonrpc=self.jsonrpc, id=self.id, result=results, error=errors
             )
         except TypeError as e:
-            raise PyClarifyTypeError(source=self,other=other) from e
+            raise PyClarifyTypeError(source=self, other=other) from e
 
 
 class Response(GenericResponse, extra=Extra.forbid):

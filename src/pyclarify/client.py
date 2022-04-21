@@ -22,8 +22,6 @@ the Clarify API. Methods for reading and writing to the API is implemented with 
 help of jsonrpcclient framework. 
 """
 
-from http.client import responses
-from urllib import response
 import requests
 import json
 import logging
@@ -33,13 +31,12 @@ from datetime import timedelta
 from pydantic import validate_arguments
 from typing import List, Union
 from typing_extensions import Literal
-from pydantic.fields import Optional
 from pyclarify.models.data import DataFrame, SignalInfo, Item, InputID, ResourceID
 from pyclarify.models.requests import Request, ApiMethod
-from pyclarify.models.response import Response, GenericResponse, Error
+from pyclarify.models.response import Response, Error
 from pyclarify.oauth2 import GetToken
 from pyclarify.__utils__.pagination import ItemIterator, TimeIterator
-from pyclarify.__utils__.time import time_to_string, compute_iso_timewindow
+from pyclarify.__utils__.time import compute_iso_timewindow
 
 
 def increment_id(func):
@@ -64,13 +61,14 @@ def increment_id(func):
 
     return wrapper
 
+
 def iterator(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         LEGAL_ITERATOR_TYPES = [ApiMethod.select_items]
         payload_list = []
         payload = json.loads(args[1])
-        
+
         if payload["method"] in LEGAL_ITERATOR_TYPES:
             # Contraints from API (https://docs.clarify.io/api/next/general/limits-and-quotas#rpc-limits)
             if payload["method"] == ApiMethod.select_items:
@@ -82,20 +80,28 @@ def iterator(func):
                 user_limit = payload["params"][selector]["limit"]
                 skip = payload["params"][selector]["skip"]
                 notBefore, before = compute_iso_timewindow(
-                    start_time=payload["params"]["data"]["notBefore"], 
-                    end_time=payload["params"]["data"]["before"]
+                    start_time=payload["params"]["data"]["notBefore"],
+                    end_time=payload["params"]["data"]["before"],
                 )
                 rollup = payload["params"]["data"]["rollup"]
 
-                for skip, limit in ItemIterator(user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip):
+                for skip, limit in ItemIterator(
+                    user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
+                ):
                     current_payload = deepcopy(payload)
                     current_payload["params"][selector]["limit"] = limit
                     current_payload["params"][selector]["skip"] = skip
 
-                    for current_notBefore, current_before in TimeIterator(start_time=notBefore, end_time=before, rollup=rollup):
+                    for current_notBefore, current_before in TimeIterator(
+                        start_time=notBefore, end_time=before, rollup=rollup
+                    ):
                         current_payload = deepcopy(current_payload)
-                        current_notBefore, current_before = compute_iso_timewindow(current_notBefore, current_before)  
-                        current_payload["params"]["data"]["notBefore"] = current_notBefore
+                        current_notBefore, current_before = compute_iso_timewindow(
+                            current_notBefore, current_before
+                        )
+                        current_payload["params"]["data"][
+                            "notBefore"
+                        ] = current_notBefore
                         current_payload["params"]["data"]["before"] = current_before
                         payload_list += [current_payload]
             else:
@@ -103,19 +109,16 @@ def iterator(func):
         else:
             payload_list = [payload]
 
-
         args[0].payload_list = payload_list
 
         return func(*args, **kwargs)
 
     return wrapper
 
-    
 
 class RawClient:
     def __init__(
-        self,
-        base_url,
+        self, base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -173,26 +176,27 @@ class RawClient:
         """
         for payload in self.payload_list:
             logging.debug(f"--> {self.base_url}, req: {payload}")
-            res = requests.post(self.base_url, data=json.dumps(payload), headers=self.headers)
+            res = requests.post(
+                self.base_url, data=json.dumps(payload), headers=self.headers
+            )
             logging.debug(f"<-- {self.base_url} ({res.status_code})")
             if not res.ok:
                 err = {
                     "code": res.status_code,
                     "message": f"HTTP Response Error {res.reason}",
-                    "data": res.text
+                    "data": res.text,
                 }
-                res = Response(id=payload["id"],error=Error(**err))
+                res = Response(id=payload["id"], error=Error(**err))
 
             elif hasattr(res.json(), "error"):
                 res = Response(id=payload["id"], error=res.json()["error"])
             else:
                 res = Response(**res.json())
-            if "responses" in locals():
-                responses += res
-            else:
+            if "responses" not in locals():
                 responses = res
+            else:
+                responses += res
         return responses
-        
 
     @increment_id
     def create_payload(self, method, params):
@@ -310,7 +314,6 @@ class APIClient(RawClient):
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
 
         return self.make_requests(request_data.json())
-        
 
     @increment_id
     @validate_arguments
@@ -391,7 +394,6 @@ class APIClient(RawClient):
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
-        
 
     @increment_id
     @validate_arguments
@@ -580,7 +582,7 @@ class APIClient(RawClient):
 
         request_data = Request(method=ApiMethod.select_signals, params=params)
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        return self.make_requests(request_data.json()) 
+        return self.make_requests(request_data.json())
 
     @increment_id
     @validate_arguments
@@ -646,7 +648,6 @@ class APIClient(RawClient):
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
-        
 
 
 class ClarifyClient(APIClient):
@@ -744,11 +745,7 @@ class ClarifyClient(APIClient):
         """
         not_before, before = compute_iso_timewindow(not_before, before)
         params = {
-            "items": {
-                "include": False,
-                "limit": limit,
-                "skip": skip
-            },
+            "items": {"include": False, "limit": limit, "skip": skip},
             "data": {
                 "include": True,
                 "notBefore": not_before,
@@ -760,10 +757,11 @@ class ClarifyClient(APIClient):
             if len(ids) > 0:
                 params["items"]["filter"] = {"id": {"$in": ids}}
 
-        request_data = Request(id=self.current_id, method=ApiMethod.select_items, params=params)
+        request_data = Request(
+            id=self.current_id, method=ApiMethod.select_items, params=params
+        )
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
-
 
     @increment_id
     @validate_arguments
@@ -831,18 +829,16 @@ class ClarifyClient(APIClient):
                 >>> )
         """
         filters = []
-        if isinstance(ids,list):
+        if isinstance(ids, list):
             if len(ids) > 0:
                 filters += [{"id": {"$in": ids}}]
-        
+
         if name != "":
             filters += [{"name": {"$regex": name}}]
 
         params = {
             "items": {"include": True, "filter": {}, "limit": limit, "skip": skip},
-            "data": {
-                "include": False,
-            },
+            "data": {"include": False}
         }
 
         if len(filters) > 0:
@@ -852,11 +848,12 @@ class ClarifyClient(APIClient):
             for key, value in labels.items():
                 params["items"]["filter"][f"labels.{key}"] = value
 
-        request_data = Request(id=self.current_id, method=ApiMethod.select_items, params=params)
+        request_data = Request(
+            id=self.current_id, method=ApiMethod.select_items, params=params
+        )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
-
 
     @increment_id
     @validate_arguments
@@ -942,7 +939,6 @@ class ClarifyClient(APIClient):
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
-        
 
     @increment_id
     @validate_arguments
@@ -1018,7 +1014,7 @@ class ClarifyClient(APIClient):
         params = {
             "itemsBySignal": {},
             "createOnly": create_only,
-            "integration": integration
+            "integration": integration,
         }
 
         # assert integration parameter
@@ -1033,18 +1029,18 @@ class ClarifyClient(APIClient):
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
-        
 
     @increment_id
     @validate_arguments
-    def select_signals(self,
+    def select_signals(
+        self,
         ids: List = [],
         name: str = "",
         labels: dict = {},
         limit: int = 10,
         skip: int = 0,
         include_items: bool = False,
-        integration: str = None
+        integration: str = None,
     ) -> Response:
         """
         Return signal metadata from selected signals and/or item.
@@ -1116,11 +1112,8 @@ class ClarifyClient(APIClient):
 
         params = {
             "signals": {"include": True, "filter": {}, "limit": limit, "skip": skip},
-            "items": {
-                "include": include_items,
-            },
+            "items": {"include": include_items},
             "integration": integration
-
         }
 
         # assert integration parameter
@@ -1136,4 +1129,4 @@ class ClarifyClient(APIClient):
         request_data = Request(method=ApiMethod.select_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        return self.make_requests(request_data.json()) 
+        return self.make_requests(request_data.json())

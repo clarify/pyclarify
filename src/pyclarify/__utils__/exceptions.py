@@ -31,8 +31,7 @@ class PyClarifyImportError(PyClarifyException):
     def __init__(self, module: str, message: str = None):
         self.module = module
         self.message = (
-            message
-            or "The functionality your are trying to use requires '{}' to be installed.".format(
+            message or "The functionality your are trying to use requires '{}' to be installed.".format(
                 self.module
             )
         )
@@ -56,11 +55,15 @@ class PyClarifyFilterError(PyClarifyException):
         self.desired_type = desired_type
         self.actual_values = actual_values
         self.message = (
-            message
-            or "The operator '{}' does not allow values of type '{}'. You used '{}'.".format(
+            message or "The operator '{}' does not allow values of type '{}'. You used '{}'.".format(
                 self.field,
                 self.desired_type,
                 self.actual_values
+            )
+        )
+
+    def __str__(self):
+        return self.message
 
              
 class PyClarifyTypeError(PyClarifyException):
@@ -76,10 +79,8 @@ class PyClarifyTypeError(PyClarifyException):
         self.other = other
         self.source = source
         self.message = (
-            message
-            or "The objects you are trying to combine do not have the same type '{}' and '{}'.".format(
-                type(self.other),
-                type(self.source)
+            message or "The objects you are trying to combine do not have the same type '{}' and '{}'.".format(
+                type(self.other), type(self.source)
             )
         )
 
