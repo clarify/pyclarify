@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pydantic import BaseModel, constr, validate_arguments, Extra
+from pydantic import BaseModel, constr, validate_arguments, Extra, validator
 from pydantic.fields import Optional
 from typing import List, Union, Dict
 from typing_extensions import Literal
@@ -31,11 +31,17 @@ AnnotationKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
 NumericalValuesType = List[Union[float, int, None]]
 SHA1Hash = constr(regex=r"^[0-9a-f]{5,40}$")
 
-
 class DataFrame(BaseModel):
     times: List[datetime] = None
     series: Dict[InputID, NumericalValuesType] = None
 
+    @validator('series')
+    def convert_numpy_to_native(cls, v):
+        if isinstance(v, Dict):
+            for key, value in v.items():
+                v[key] = [None if x != x else x for x in value]
+        return v
+        
     def to_pandas(self):
         """Convert the instance into a pandas DataFrame.
 
