@@ -17,3 +17,4 @@ limitations under the License.
 
 from pyclarify.client import APIClient, ClarifyClient
 from pyclarify.models.data import Signal, SignalInfo, Item, DataFrame
+import pyclarify.__utils__.filter as filter
