@@ -22,23 +22,21 @@ the Clarify API. Methods for reading and writing to the API is implemented with 
 help of jsonrpcclient framework. 
 """
 
-from http.client import responses
-from urllib import response
 import requests
 import json
 import logging
 import functools
+from copy import deepcopy
 from datetime import timedelta
 from pydantic import validate_arguments
 from typing import List, Union
 from typing_extensions import Literal
-from pydantic.fields import Optional
 from pyclarify.models.data import DataFrame, SignalInfo, Item, InputID, ResourceID
 from pyclarify.models.requests import Request, ApiMethod
-from pyclarify.models.response import Response, GenericResponse
+from pyclarify.models.response import Response, Error
 from pyclarify.oauth2 import GetToken
-from pyclarify.__utils__.pagination import GetItems, GetDates
-from pyclarify.__utils__.convert import datetime_to_str, compute_timewindow
+from pyclarify.__utils__.pagination import ItemIterator, TimeIterator
+from pyclarify.__utils__.time import compute_iso_timewindow
 
 
 def increment_id(func):
@@ -67,185 +65,60 @@ def increment_id(func):
 def iterator(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        params = json.loads(args[1])["params"]
-        number_of_items = params["items"]["limit"]
-        skip = params["items"]["skip"]
-        params_tuple = ()
+        LEGAL_ITERATOR_TYPES = [ApiMethod.select_items]
+        payload_list = []
+        payload = json.loads(args[1])
 
-        if params["data"]["include"]:
-            limit = 50
+        if payload["method"] in LEGAL_ITERATOR_TYPES:
+            # Contraints from API (https://docs.clarify.io/api/next/general/limits-and-quotas#rpc-limits)
+            if payload["method"] == ApiMethod.select_items:
+                API_LIMIT = 50
+                selector = "items"
+                if not payload["params"]["data"]["include"]:
+                    API_LIMIT = 1000
+
+                user_limit = payload["params"][selector]["limit"]
+                skip = payload["params"][selector]["skip"]
+                notBefore, before = compute_iso_timewindow(
+                    start_time=payload["params"]["data"]["notBefore"],
+                    end_time=payload["params"]["data"]["before"],
+                )
+                rollup = payload["params"]["data"]["rollup"]
+
+                for skip, limit in ItemIterator(
+                    user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
+                ):
+                    current_payload = deepcopy(payload)
+                    current_payload["params"][selector]["limit"] = limit
+                    current_payload["params"][selector]["skip"] = skip
+
+                    for current_notBefore, current_before in TimeIterator(
+                        start_time=notBefore, end_time=before, rollup=rollup
+                    ):
+                        current_payload = deepcopy(current_payload)
+                        current_notBefore, current_before = compute_iso_timewindow(
+                            current_notBefore, current_before
+                        )
+                        current_payload["params"]["data"][
+                            "notBefore"
+                        ] = current_notBefore
+                        current_payload["params"]["data"]["before"] = current_before
+                        payload_list += [current_payload]
+            else:
+                payload_list += [payload]
         else:
-            limit = 1000
+            payload_list = [payload]
 
-        get_item = GetItems(limit, number_of_items, skip)
-        item_iter = iter(get_item)
-
-        for limit, skip in item_iter:
-            params["items"]["limit"] = limit
-            params["items"]["skip"] = skip
-
-            notBefore = params["data"]["notBefore"]
-            before = params["data"]["before"]
-
-            if notBefore and before:
-                get_dates = GetDates([notBefore, before])
-                date_iter = iter(get_dates)
-
-                for notBefore, before in date_iter:
-                    notBefore = datetime_to_str(notBefore)
-                    before = datetime_to_str(before)
-                    params["data"]["notBefore"] = notBefore
-                    params["data"]["before"] = before
-                    params_tuple = params_tuple + (json.dumps(params),)
-                params_list = [json.loads(i) for i in params_tuple]
-            params_tuple = params_tuple + (json.dumps(params),)
-        params_list = [json.loads(i) for i in params_tuple]
-        args[0].params_list = params_list
+        args[0].payload_list = payload_list
 
         return func(*args, **kwargs)
 
     return wrapper
 
 
-def pretty_response(response_tuple, error_tuple):
-    print(response_tuple)
-    responses = {}
-    responses["jsonrpc"] = response_tuple[0]["jsonrpc"]
-    responses["id"] = response_tuple[0]["id"]
-
-    if error_tuple:
-        responses["error"] = error_tuple[0]["error"]
-        return responses
-
-    if "error" in response_tuple[0].keys():
-        responses["error"] = response_tuple[0]["error"]
-        return responses
-
-    responses["result"] = {}
-    items = False
-    data = False
-
-    if "items" in response_tuple[0]["result"]:
-        responses["result"].update({"items": {}})
-        items = True
-
-    if "data" in response_tuple[0]["result"]:
-        if len(response_tuple[0]["result"]["data"]["series"]) != 1:
-            responses["result"].update({"data": {"times": [], "series": {}}})
-            series_keys = list(response_tuple[0]["result"]["data"]["series"].keys())
-
-            for key in series_keys:
-                responses["result"]["data"]["series"].update({key: []})
-            data = True
-
-        else:
-            id = list(response_tuple[0]["result"]["data"]["series"].keys())[0]
-            responses["result"].update({"data": {"times": [], "series": {id: []}}})
-            data = True
-
-    for res in response_tuple:
-        if items:
-            responses["result"]["items"].update(res["result"]["items"])
-        if data:
-            if len(response_tuple[0]["result"]["data"]["series"]) != 1:
-                responses["result"]["data"]["times"].extend(
-                    res["result"]["data"]["times"]
-                )
-                series_keys = list(response_tuple[0]["result"]["data"]["series"].keys())
-                for key in series_keys:
-                    responses["result"]["data"]["series"][key].extend(
-                        res["result"]["data"]["series"][key]
-                    )
-            else:
-                if res["result"]:
-                    responses["result"]["data"]["times"].extend(
-                        res["result"]["data"]["times"]
-                    )
-                else:
-                    break
-                responses["result"]["data"]["series"][id].extend(
-                    res["result"]["data"]["series"][id]
-                )
-        if res["result"] == {}:
-            break
-    return responses
-
-
-def iterate_bool(params):
-    def recursive_items(dictionary):
-        for key, value in dictionary.items():
-            if type(value) is dict:
-                yield (key, value)
-                yield from recursive_items(value)
-            else:
-                yield (key, value)
-
-    keys = []
-    for key, _ in recursive_items(params):
-        keys.append(key)
-
-    result = []
-
-    if "items" in params:
-        if "limit" in params["items"]:
-            result.append("iterate_true")
-    if "notBefore" and "before" in keys:
-        result.append("iterate_true")
-    if not result:
-        result.append("iterate_false")
-
-    return result
-
-
-def send_simple(self, payload):
-    logging.info(f"--> {self.base_url}, req: {payload}")
-    response = requests.post(self.base_url, data=payload, headers=self.headers)
-    logging.info(f"<-- {self.base_url} ({response.status_code})")
-    if response.ok:
-        return response.json()
-    else:
-        return {
-            "error": {
-                "code": response.status_code,
-                "message": "HTTP Response Error",
-            }
-        }
-
-
-@iterator
-def send_iter(self, payload):
-    responses = ()
-    errors = ()
-    for params in self.params_list:
-        new_payload = self.create_payload(
-            method=json.loads(payload)["method"], params=params
-        )
-        res = requests.post(self.base_url, data=new_payload, headers=self.headers)
-
-        if res.ok:
-            if "error" in res.json():
-                responses = responses + (res.json(),)
-                break
-
-            responses = responses + (res.json(),)
-        else:
-            err = {
-                "error": {
-                    "code": res.status_code,
-                    "message": "HTTP Response Error",
-                }
-            }
-            errors = errors + (err,)
-            responses = responses + (res.json(),)
-    res = pretty_response(responses, errors)
-
-    return res
-
-
 class RawClient:
     def __init__(
-        self,
-        base_url,
+        self, base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -285,13 +158,8 @@ class RawClient:
         """
         return self.authentication.get_token()
 
-    def make_requests(self, payload) -> GenericResponse:
-        result = iterate_bool(json.loads(payload)["params"])
-        responses = self.send(payload, result)
-
-        return responses
-
-    def send(self, payload, result):
+    @iterator
+    def make_requests(self, payload) -> Response:
         """
         Uses post request to send JSON RPC payload.
 
@@ -306,11 +174,29 @@ class RawClient:
             JSON dictionary response.
 
         """
-        if "iterate_false" in result:
-            return send_simple(self, payload)
+        for payload in self.payload_list:
+            logging.debug(f"--> {self.base_url}, req: {payload}")
+            res = requests.post(
+                self.base_url, data=json.dumps(payload), headers=self.headers
+            )
+            logging.debug(f"<-- {self.base_url} ({res.status_code})")
+            if not res.ok:
+                err = {
+                    "code": res.status_code,
+                    "message": f"HTTP Response Error {res.reason}",
+                    "data": res.text,
+                }
+                res = Response(id=payload["id"], error=Error(**err))
 
-        if "iterate_true" in result:
-            return send_iter(self, payload)
+            elif hasattr(res.json(), "error"):
+                res = Response(id=payload["id"], error=res.json()["error"])
+            else:
+                res = Response(**res.json())
+            if "responses" not in locals():
+                responses = res
+            else:
+                responses += res
+        return responses
 
     @increment_id
     def create_payload(self, method, params):
@@ -427,8 +313,7 @@ class APIClient(RawClient):
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
 
-        result = self.make_requests(request_data.json())
-        return Response(**result)
+        return self.make_requests(request_data.json())
 
     @increment_id
     @validate_arguments
@@ -508,8 +393,7 @@ class APIClient(RawClient):
         request_data = Request(method=ApiMethod.save_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.make_requests(request_data.json())
-        return Response(**result)
+        return self.make_requests(request_data.json())
 
     @increment_id
     @validate_arguments
@@ -619,7 +503,7 @@ class APIClient(RawClient):
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         result = self.make_requests(request_data.json())
 
-        return Response(**result)
+        return result
 
     @increment_id
     @validate_arguments
@@ -698,8 +582,7 @@ class APIClient(RawClient):
 
         request_data = Request(method=ApiMethod.select_signals, params=params)
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.make_requests(request_data.json())
-        return Response(**result)
+        return self.make_requests(request_data.json())
 
     @increment_id
     @validate_arguments
@@ -764,8 +647,7 @@ class APIClient(RawClient):
         request_data = Request(method=ApiMethod.publish_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.make_requests(request_data.json())
-        return Response(**result)
+        return self.make_requests(request_data.json())
 
 
 class ClarifyClient(APIClient):
@@ -861,14 +743,9 @@ class ClarifyClient(APIClient):
                 >>> )
 
         """
-        not_before, before = compute_timewindow(not_before, before)
+        not_before, before = compute_iso_timewindow(not_before, before)
         params = {
-            "items": {
-                "include": False,
-                "limit": limit,
-                "skip": skip,
-                "filter": {"id": {"$in": ids}},
-            },
+            "items": {"include": False, "limit": limit, "skip": skip},
             "data": {
                 "include": True,
                 "notBefore": not_before,
@@ -876,13 +753,15 @@ class ClarifyClient(APIClient):
                 "rollup": rollup,
             },
         }
-        if len(ids) < 1:
-            del params["items"]["filter"]
-        request_data = Request(method=ApiMethod.select_items, params=params)
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.make_requests(request_data.json())
+        if isinstance(ids, list):
+            if len(ids) > 0:
+                params["items"]["filter"] = {"id": {"$in": ids}}
 
-        return Response(**result)
+        request_data = Request(
+            id=self.current_id, method=ApiMethod.select_items, params=params
+        )
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        return self.make_requests(request_data.json())
 
     @increment_id
     @validate_arguments
@@ -950,30 +829,31 @@ class ClarifyClient(APIClient):
                 >>> )
         """
         filters = []
-        if len(ids) > 0:
-            filters += [{"id": {"$in": ids}}]
+        if isinstance(ids, list):
+            if len(ids) > 0:
+                filters += [{"id": {"$in": ids}}]
+
         if name != "":
             filters += [{"name": {"$regex": name}}]
 
         params = {
             "items": {"include": True, "filter": {}, "limit": limit, "skip": skip},
-            "data": {
-                "include": False,
-            },
+            "data": {"include": False}
         }
 
         if len(filters) > 0:
             params["items"]["filter"]["$or"] = filters
+
         if len(labels) > 0:
             for key, value in labels.items():
                 params["items"]["filter"][f"labels.{key}"] = value
 
-        request_data = Request(method=ApiMethod.select_items, params=params)
+        request_data = Request(
+            id=self.current_id, method=ApiMethod.select_items, params=params
+        )
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.make_requests(request_data.json())
-
-        return Response(**result)
+        return self.make_requests(request_data.json())
 
     @increment_id
     @validate_arguments
@@ -1058,8 +938,7 @@ class ClarifyClient(APIClient):
         request_data = Request(method=ApiMethod.save_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.make_requests(request_data.json())
-        return Response(**result)
+        return self.make_requests(request_data.json())
 
     @increment_id
     @validate_arguments
@@ -1135,7 +1014,7 @@ class ClarifyClient(APIClient):
         params = {
             "itemsBySignal": {},
             "createOnly": create_only,
-            "integration": integration
+            "integration": integration,
         }
 
         # assert integration parameter
@@ -1149,19 +1028,19 @@ class ClarifyClient(APIClient):
         request_data = Request(method=ApiMethod.publish_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.make_requests(request_data.json())
-        return Response(**result)
+        return self.make_requests(request_data.json())
 
     @increment_id
     @validate_arguments
-    def select_signals(self,
+    def select_signals(
+        self,
         ids: List = [],
         name: str = "",
         labels: dict = {},
         limit: int = 10,
         skip: int = 0,
         include_items: bool = False,
-        integration: str = None
+        integration: str = None,
     ) -> Response:
         """
         Return signal metadata from selected signals and/or item.
@@ -1233,11 +1112,8 @@ class ClarifyClient(APIClient):
 
         params = {
             "signals": {"include": True, "filter": {}, "limit": limit, "skip": skip},
-            "items": {
-                "include": include_items,
-            },
+            "items": {"include": include_items},
             "integration": integration
-
         }
 
         # assert integration parameter
@@ -1253,6 +1129,4 @@ class ClarifyClient(APIClient):
         request_data = Request(method=ApiMethod.select_signals, params=params)
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        result = self.make_requests(request_data.json())
-
-        return Response(**result)
+        return self.make_requests(request_data.json())

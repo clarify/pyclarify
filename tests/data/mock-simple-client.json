@@ -12,5 +12,110 @@
     "params": {
       "height": 1
     }
+  },
+  "no_iterations": {
+    "args": {
+      "items": {
+        "include": true,
+        "limit": 1,
+        "skip": 10
+      },
+      "data": {
+        "include": true,
+        "notBefore": "2021-10-10T21:50:06Z",
+        "before": "2021-10-11T22:50:06Z",
+        "rollup": null
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "result": {
+        "items": {
+          "c5vv12btaf7d0qbk0l0g": {
+            "name": "c5vv12btaf7d0qbk0l0g",
+            "type": "numeric",
+            "description": "Test description",
+            "labels": { "data-source": [], "location": [] },
+            "annotations": {},
+            "engUnit": "",
+            "enumValues": {},
+            "sourceType": "measurement",
+            "sampleInterval": null,
+            "gapDetection": "3600.0"
+          }
+        }
+      }
+    }
+  },
+  "one_iterations": {
+    "args": {
+      "items": {
+        "include": true,
+        "limit": 51,
+        "skip": 10
+      },
+      "data": {
+        "include": true,
+        "notBefore": "2021-10-10T21:50:06Z",
+        "before": "2021-10-11T22:50:06Z",
+        "rollup": null
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "result": {
+        "items": {
+          "c5vv12btaf7d0qbk0l0g": {
+            "name": "c5vv12btaf7d0qbk0l0g",
+            "type": "numeric",
+            "description": "Test description",
+            "labels": { "data-source": [], "location": [] },
+            "annotations": {},
+            "engUnit": "",
+            "enumValues": {},
+            "sourceType": "measurement",
+            "sampleInterval": null,
+            "gapDetection": "3600.0"
+          }
+        }
+      }
+    }
+  },
+  "many_iterations": {
+    "args": {
+      "items": {
+        "include": true,
+        "limit": 1100,
+        "skip": 10
+      },
+      "data": {
+        "include": false,
+        "notBefore": "2021-10-10T21:50:06Z",
+        "before": "2021-10-11T22:50:06Z",
+        "rollup": null
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "result": {
+        "items": {
+          "c5vv12btaf7d0qbk0l0g": {
+            "name": "c5vv12btaf7d0qbk0l0g",
+            "type": "numeric",
+            "description": "Test description",
+            "labels": { "data-source": [], "location": [] },
+            "annotations": {},
+            "engUnit": "",
+            "enumValues": {},
+            "sourceType": "measurement",
+            "sampleInterval": null,
+            "gapDetection": "3600.0"
+          }
+        }
+      }
+    }
   }
 }
