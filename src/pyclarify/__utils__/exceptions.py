@@ -19,7 +19,7 @@ class PyClarifyException(Exception):
     pass
 
 
-class PyClarifyImportError(PyClarifyException):
+class ImportError(PyClarifyException):
     """PyClarify Import Error
 
     Raised if the user attempts to use functionality which requires an uninstalled package.
@@ -40,7 +40,7 @@ class PyClarifyImportError(PyClarifyException):
         return self.message
 
 
-class PyClarifyFilterError(PyClarifyException):
+class FilterError(PyClarifyException):
     """PyClarify Filter Error
 
     Raised if the user attempts to create Filter with operator that does not refelct the values.
@@ -66,7 +66,7 @@ class PyClarifyFilterError(PyClarifyException):
         return self.message
 
              
-class PyClarifyTypeError(PyClarifyException):
+class TypeError(PyClarifyException):
     """PyClarify Type Error
 
     Raised if the user attempts to use functionality which combines the content of two Clarify Models.

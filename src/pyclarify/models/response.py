@@ -13,7 +13,7 @@ from .data import (
     ResourceID,
     Signal,
 )
-from pyclarify.__utils__.exceptions import PyClarifyTypeError
+from pyclarify.__utils__.exceptions import TypeError
 
 
 class ErrorData(BaseModel):
@@ -64,7 +64,7 @@ class SelectItemsResponse(BaseModel, extra=Extra.forbid):
             return SelectItemsResponse(items=main_items, data=main_df)
 
         except TypeError as e:
-            raise PyClarifyTypeError(source=self, other=other) from e
+            raise TypeError(source=self, other=other) from e
 
 
 class SelectSignalsResponse(BaseModel, extra=Extra.forbid):
@@ -112,7 +112,7 @@ class GenericResponse(BaseModel, extra=Extra.forbid):
                 jsonrpc=self.jsonrpc, id=self.id, result=results, error=errors
             )
         except TypeError as e:
-            raise PyClarifyTypeError(source=self, other=other) from e
+            raise TypeError(source=self, other=other) from e
 
 
 class Response(GenericResponse, extra=Extra.forbid):

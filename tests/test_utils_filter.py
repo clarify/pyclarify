@@ -2,8 +2,8 @@ import unittest
 import sys
 
 sys.path.insert(1, "src/")
-import pyclarify.__utils__.filter as filter
-from pyclarify.__utils__.exceptions import PyClarifyFilterError
+import pyclarify.query.filter as filter
+from pyclarify.__utils__.exceptions import FilterError
 
 
 
@@ -30,53 +30,53 @@ class TestFilter(unittest.TestCase):
 
     def testIllegalComparions(self):
         # Not Equal
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.NotEqual(value=["list", "not", "valid"])
 
 
         # Not In
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.NotIn(value=42)
         
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.NotIn(value="invalid")
 
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.NotIn(value=b'bytes')
 
 
         # In
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.In(value=42)
         
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.In(value="invalid")
 
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.In(value=b'bytes')
 
 
         # Regex 
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.Regex(value=["list", "not", "valid"])
 
         # Comparison
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.Comparison(value=["list", "not", "valid"])
         
         
         # Less Than
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.LessThan(value=["list", "not", "valid"])
         
 
         # GreaterThan
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.GreaterThan(value=["list", "not", "valid"])
         
 
         # Greater Than or Equal
-        with self.assertRaises(PyClarifyFilterError):
+        with self.assertRaises(FilterError):
             filter.GreaterThanOrEqual(value=["list", "not", "valid"])
         
 
