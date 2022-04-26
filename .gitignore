@@ -137,6 +137,3 @@ clarify-credentials-dev.json
 
 # test files
 test.py
-
-# Editor
-.editorconfig
