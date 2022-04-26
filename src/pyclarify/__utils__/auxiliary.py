@@ -1,5 +1,5 @@
 """
-Copyright 2021 Clarify
+Copyright 2022 Searis AS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@ limitations under the License.
 """
 
 import importlib
-from .exceptions import PyClarifyImportError
+from .exceptions import ImportError
 
 
 def local_import(module: str):
     try:
         return importlib.import_module(module)
     except ImportError as e:
-        raise PyClarifyImportError(module.split(".")[0]) from e
+        raise ImportError(module.split(".")[0]) from e

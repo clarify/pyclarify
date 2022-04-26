@@ -1,5 +1,5 @@
 """
-Copyright 2021 Clarify
+Copyright 2022 Searis AS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+
 from datetime import datetime, timedelta
 
 
@@ -35,7 +36,37 @@ def timedelta_isoformat(td: timedelta) -> str:
     return result
 
 
-# Convenient method to convert to string from datetime and vice versa
+def rfc3339_to_timedelta(rfc):
+    # if timedelta is none or edge condition
+    if not rfc or rfc == "window":
+        return timedelta(seconds=0)
+
+    # split RFC to days and time of day
+    days, time = rfc.split("T")
+    # create kwargs for timedelta
+    kwargs = {}
+
+    # Filter out number of days
+    days = "".join(filter(str.isdigit, days))
+    if days != "":
+        # add number of days to kwargs
+        kwargs["days"] = eval(days)
+
+    # translate RFC3339 lingo to datetime.timedelta jargon
+    translate = {"h": "hours", "m": "minutes", "s": "seconds"}
+    tmp = ""
+    # iterate through time of day portion
+    for c in time:
+        if c.isalpha():
+            kwargs[translate[c.lower()]] = eval(tmp)
+            tmp = ""
+        else:
+            tmp += c
+
+    return timedelta(**kwargs)
+
+
+# Convenient method to time to string from datetime and vice versa
 time_syntax = "%Y-%m-%dT%H:%M:%SZ"
 
 
@@ -47,7 +78,7 @@ def string_to_time(string):
     return datetime.strptime(string, time_syntax)
 
 
-def parse_time(time):
+def parse_to_datetime(time):
     if not time:
         return time
     elif isinstance(time, datetime):
@@ -57,13 +88,13 @@ def parse_time(time):
     elif isinstance(time, int):
         time = datetime.fromtimestamp(time)
     else:
-        print(f"could not parse time: {time}")
+        print(f"could not parse time: {time}")  # TODO: Throw exception
     return time
 
 
-def compute_timewindow(start_time, end_time):
-    start_time = parse_time(start_time)
-    end_time = parse_time(end_time)
+def compute_iso_timewindow(start_time, end_time):
+    start_time = parse_to_datetime(start_time)
+    end_time = parse_to_datetime(end_time)
 
     if not start_time and end_time:
         start_time = end_time - timedelta(days=40)
@@ -76,14 +107,12 @@ def compute_timewindow(start_time, end_time):
     return time_to_string(start_time), time_to_string(end_time)
 
 
+def compute_timedelta(start_time, end_time):
+    start_time = parse_to_datetime(start_time)
+    end_time = parse_to_datetime(end_time)
+    return end_time - start_time
+
+
 def datetime_to_str(o):
     date = datetime.strftime(o, "%Y-%m-%dT%H:%M:%SZ")
-    return date
-
-
-def str_to_datetime(date):
-    # from "2021-11-01T21:50:06" to 2021-11-01 21:50:06
-    if date[-1] == "Z":
-        date = date[:-1]
-    date = datetime.fromisoformat(date)
     return date

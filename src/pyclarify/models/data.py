@@ -1,5 +1,5 @@
 """
-Copyright 2021 Clarify
+Copyright 2022 Searis AS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pydantic import BaseModel, constr, validate_arguments, Extra
+from pydantic import BaseModel, constr, validate_arguments, Extra, validator
 from pydantic.fields import Optional
 from typing import List, Union, Dict
 from typing_extensions import Literal
 from datetime import datetime, timedelta
-import logging
 from enum import Enum
-from pyclarify.__utils__.convert import timedelta_isoformat, time_to_string
+from pyclarify.__utils__.time import timedelta_isoformat, time_to_string
 from pyclarify.__utils__.auxiliary import local_import
 
 # constrained string defined by the API
@@ -32,11 +31,17 @@ AnnotationKey = constr(regex=r"^[A-Za-z0-9-_/]{1,40}$")
 NumericalValuesType = List[Union[float, int, None]]
 SHA1Hash = constr(regex=r"^[0-9a-f]{5,40}$")
 
-
 class DataFrame(BaseModel):
     times: List[datetime] = None
     series: Dict[InputID, NumericalValuesType] = None
 
+    @validator('series')
+    def convert_numpy_to_native(cls, v):
+        if isinstance(v, Dict):
+            for key, value in v.items():
+                v[key] = [None if x != x else x for x in value]
+        return v
+        
     def to_pandas(self):
         """Convert the instance into a pandas DataFrame.
 
@@ -157,7 +162,7 @@ class SignalInfo(BaseModel):
     type: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
-    annotations: Dict[AnnotationKey, str] = {}
+    annotations: Optional[Dict[AnnotationKey, str]] = {}
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
     sourceType: SourceTypeSignal = SourceTypeSignal.measurement
@@ -165,10 +170,7 @@ class SignalInfo(BaseModel):
     gapDetection: timedelta = None
 
     class Config:
-        json_encoders = {
-            timedelta: timedelta_isoformat,
-            datetime: time_to_string
-            }
+        json_encoders = {timedelta: timedelta_isoformat, datetime: time_to_string}
         extra = Extra.forbid
 
 
