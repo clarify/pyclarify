@@ -33,3 +33,76 @@ Changes are grouped as follows
 ## Fixed
 
 - Update versioning of API to 1.1beta1 (All prior versions of SDK will not work due API version 1.1 introducing non backwards compatible changes)
+
+# [0.3.2] - 2022-04-01
+
+## Fixed
+
+- Hotfix bug in version header
+
+# [0.3.3] - 2022-04-26
+
+## Changed
+
+- Renamed file `convert.py` to `time.py`.
+- Refactored `pagination.GetDates` and changed name to `pagination.TimeIterator`.
+- Refactored `pagination.GetItems` and changed name to `pagination.ItemIterator`.
+- Minor changes to names in `time.py` to be more precise.
+- Refactored `@iterator` wrapper to use said iterators.
+- `pyclarify.client.make_request()` now uses iterator and is only method for sending requests.
+- Extended `models.response.Response` to handle add operation.
+- Refactored return on all methods in `client.ClarifyClient` and `client.APIClient`.
+
+## Removed
+
+- `pyclarify.__utils__.convert.str_to_datetime()`
+- `pyclarify.client.pretty_response()`
+- `pyclarify.client.iterate_bool()`
+- `pyclarify.client.send_simple()`
+- `pyclarify.client.send_iter()`
+
+## Added
+
+- RFC3339 to time delta function in time.py.
+- `__add__()` functionality to SelectItemsResponse model and GenericResponse model.
+- Filter model to create filters and combining them.
+  Filter is based on MongoDB filters and works as described in [the docs](https://docs.clarify.io/api/1.1beta1/methods/filter-syntax).
+
+  Usage:
+
+  ```python
+  from pyclarify import filter
+
+  f1 = filter.Filter(fields={"name": filter.NotEqual(value="Lufttemperatur")})
+  f2 = filter.Filter(fields={"labels.unit-type": filter.NotIn(value=["Flåte", "Merde 5"])})
+
+  f1.to_query()
+  >>> {'name': {'$ne': 'Lufttemperatur'}}
+
+  f3 = f1 & f2
+  f3.to_query()
+  >>> {
+  >>>     '$and': [
+  >>>         {'name': {'$ne': 'Lufttemperatur'}},
+  >>>         {'labels.unit-type': {'$nin': ['Flåte', 'Merde 5']}}
+  >>>     ]
+  >>>}
+  ```
+
+  Complete list of operators:
+
+  - Equal
+  - NotEqual
+  - Regex
+  - In
+  - NotIn
+  - LessThan
+  - GreaterThan
+  - GreaterThanOrEqual
+
+- Exception class for `FilterError` and `TypeError` both located in `__utils__.exceptions`.
+
+## Fixed
+
+- Validator on `models.data.DataFrame` now converts `numpy.nan` to native python `none` .
+- `annotations` field on `models.data.SignalInfo` is now optional.

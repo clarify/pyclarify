@@ -13,14 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from .exceptions import PyClarifyFilterError
+from pyclarify.__utils__.exceptions import FilterError
 from pydantic.class_validators import root_validator
 from pydantic import BaseModel, Extra
 from pydantic.fields import Optional
 from typing import ForwardRef, Union, List, Dict
 from enum import Enum
 
-class LegalOperators(str, Enum):
+class Operators(str, Enum):
     NE = "$ne"
     REGEX = "$regex"
     IN = "$in"
@@ -41,7 +41,7 @@ class Comparison(BaseModel):
         bool,
         None
     ] = None
-    operator: Optional[LegalOperators]
+    operator: Optional[Operators]
 
     @root_validator(pre=False)
     def field_must_reflect_operator(cls, values):
@@ -49,19 +49,19 @@ class Comparison(BaseModel):
         operator = values["operator"] if "operator" in values.keys() else None
         if operator:
             # Field value should be list
-            if operator in [LegalOperators.IN, LegalOperators.NIN]:
+            if operator in [Operators.IN, Operators.NIN]:
                 if not isinstance(value, list):
-                    raise PyClarifyFilterError(operator, list, value)
+                    raise FilterError(operator, list, value)
 
             # Field value should not be list
-            if operator not in [LegalOperators.IN, LegalOperators.NIN]:
+            if operator not in [Operators.IN, Operators.NIN]:
                 if isinstance(value, list):
-                    raise PyClarifyFilterError(operator, list, value)
+                    raise FilterError(operator, list, value)
 
         # No operator means Equals
         else:
             if isinstance(value, list):
-                raise PyClarifyFilterError("Equals (None)", list, value)
+                raise FilterError("Equals (None)", list, value)
         return values
 
     class Config:
@@ -73,25 +73,25 @@ class Equal(Comparison):
     pass
 
 class NotEqual(Comparison):
-    operator = LegalOperators.NE
+    operator = Operators.NE
 
 class Regex(Comparison):
-    operator = LegalOperators.REGEX
+    operator = Operators.REGEX
 
 class In(Comparison):
-    operator = LegalOperators.IN
+    operator = Operators.IN
 
 class NotIn(Comparison):
-    operator = LegalOperators.NIN
+    operator = Operators.NIN
 
 class LessThan(Comparison):
-    operator = LegalOperators.LT
+    operator = Operators.LT
 
 class GreaterThan(Comparison):
-    operator = LegalOperators.GT
+    operator = Operators.GT
 
 class GreaterThanOrEqual(Comparison):
-    operator = LegalOperators.GTE
+    operator = Operators.GTE
 
 
 Filter = ForwardRef('Filter')
