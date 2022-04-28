@@ -44,7 +44,7 @@ class Comparison(BaseModel):
     ] = None
     operator: Optional[Operators]
 
-    @root_validator(pre=False)
+    @root_validator(pre=False, allow_reuse=True)
     def field_must_reflect_operator(cls, values):
         value = values["value"]
         operator = values["operator"] if "operator" in values.keys() else None

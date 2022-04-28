@@ -26,17 +26,22 @@ import requests
 import json
 import logging
 import functools
+
 from copy import deepcopy
 from datetime import timedelta
 from pydantic import validate_arguments
+from pydantic.fields import Optional
 from typing import List, Union
 from typing_extensions import Literal
+
 from pyclarify.models.data import DataFrame, SignalInfo, Item, InputID, ResourceID
 from pyclarify.models.requests import Request, ApiMethod
 from pyclarify.models.response import Response, Error
 from pyclarify.oauth2 import GetToken
 from pyclarify.__utils__.pagination import ItemIterator, TimeIterator
 from pyclarify.__utils__.time import compute_iso_timewindow
+from pyclarify.__utils__ import warnings
+from pyclarify.query import Filter
 
 
 def increment_id(func):
@@ -233,7 +238,7 @@ class RawClient:
         for key, value in headers.items():
             self.headers[key] = value
 
-
+@warnings.deprecated("Use ClarifyClient instead.")
 class APIClient(RawClient):
     def __init__(self, clarify_credentials):
         super().__init__(None)
@@ -649,11 +654,14 @@ class APIClient(RawClient):
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
 
-
-class ClarifyClient(APIClient):
+class ClarifyClient(RawClient):
     def __init__(self, clarify_credentials):
-        super().__init__(clarify_credentials)
+        super().__init__(None)
+        self.update_headers({"X-API-Version": "1.1beta1"})
+        self.authentication = GetToken(clarify_credentials)
+        self.base_url = f"{self.authentication.api_url}rpc"
 
+    @warnings.deprecated("Use select_items() with include_metada=False instead.")
     @increment_id
     @validate_arguments
     def select_items_data(
@@ -668,38 +676,224 @@ class ClarifyClient(APIClient):
         """
         Return item data from selected items.
         For more information click `here <https://docs.clarify.io/api/next/datatypes/data-query>`_ .
-
         Parameters
         ----------
         ids: list, optional
             List of item ids to retrieve. Empty list means take all.
-
         limit: int, default 10
             Number of items to include in the match.
-
         skip: int, default 0
             Skip first N items.
-
         not_before: string(RFC 3339 timestamp) or python datetime, optional, default datetime.now() - 40days
             An RFC3339 time describing the inclusive start of the window.
-
         before: string(RFC 3339 timestamp) or python datetime, optional, default datetime.now()
             An RFC3339 time describing the exclusive end of the window.
             
         rollup: RFC 3339 duration or "window", default None
             If RFC 3339 duration is specified, roll-up the values into either the full time window
             (`notBefore` -> `before`) or evenly sized buckets.
-
-
         Example
         -------
-
             >>> client.select_items_data(
             >>>     ids = ['<ITEM_ID>'],
             >>>     limit = 10,
             >>>     skip = 0,
             >>>     not_before = "2021-10-01T12:00:00Z",
             >>>     before = "2021-11-10T12:00:00Z",
+            >>>     rollup = "P1DT"
+            >>> )
+        Returns
+        -------
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = SelectItemsResponse(
+                >>>             items = None,
+                >>>             data = DataFrame( 
+                >>>                 times = [datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc)],
+                >>>                 series = {
+                >>>                    '<ITEM_ID>_avg': [478.19], 
+                >>>                    '<ITEM_ID>_count': [1.0], 
+                >>>                    '<ITEM_ID>_max': [478.19], 
+                >>>                    '<ITEM_ID>_min': [478.19], 
+                >>>                    '<ITEM_ID>_sum': [478.19]
+                >>>                 }))
+                >>> error = None
+            In case where `rollup = None`, the response in the DataFrame has the following (example) format: 
+                >>>  data = DataFrame(
+                >>>                    times = [ datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc) ],
+                >>>                    series = {'<ITEM_ID>': [478.19]}
+                >>>         )
+            In case of the error the method return a pydantic model with the following format:
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params',
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
+        """
+        not_before, before = compute_iso_timewindow(not_before, before)
+        params = {
+            "items": {"include": False, "limit": limit, "skip": skip},
+            "data": {
+                "include": True,
+                "notBefore": not_before,
+                "before": before,
+                "rollup": rollup,
+            },
+        }
+        if isinstance(ids, list):
+            if len(ids) > 0:
+                params["items"]["filter"] = {"id": {"$in": ids}}
+
+        request_data = Request(
+            id=self.current_id, method=ApiMethod.select_items, params=params
+        )
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        return self.make_requests(request_data.json())
+    
+    @warnings.deprecated("Use select_items() with include_dataframe=False instead.")
+    @increment_id
+    @validate_arguments
+    def select_items_metadata(
+        self,
+        ids: List = [],
+        name: str = "",
+        labels: dict = {},
+        limit: int = 10,
+        skip: int = 0,
+    ) -> Response:
+        """
+        Return item metadata from selected items.
+        Parameters
+        ----------
+        ids: list, optional
+            List of item ids to retrieve. Empty list means take all.
+        name: string, default: ""
+            String containing regex of the name of an Item.
+        labels: dict default: {}
+            Dictionary with labels and keys to be used as a filter
+        
+        limit: int, default: 10
+            Number of items to include in the match.
+        
+        skip: int default: 0
+            Skip first N items.
+        Example
+        -------
+            >>> client.select_items_metadata(
+            >>>     ids = ['<ITEM_ID>'],
+            >>>     name = "Electricity",
+            >>>     labels = {"city": "Trondheim"},
+            >>>     limit = 10,
+            >>>     skip = 0
+            >>> )
+        Returns
+        -------
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = SelectSignalsResponse(
+                >>>             items = {'<ITEM_ID>': SignalInfo},
+                >>>             signals = None
+                >>>          )
+                >>> error = None
+            In case of the error the method return a pydantic model with the following format:
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params',
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
+        """
+        filters = []
+        if isinstance(ids, list):
+            if len(ids) > 0:
+                filters += [{"id": {"$in": ids}}]
+
+        if name != "":
+            filters += [{"name": {"$regex": name}}]
+
+        params = {
+            "items": {"include": True, "filter": {}, "limit": limit, "skip": skip},
+            "data": {"include": False}
+        }
+
+        if len(filters) > 0:
+            params["items"]["filter"]["$or"] = filters
+
+        if len(labels) > 0:
+            for key, value in labels.items():
+                params["items"]["filter"][f"labels.{key}"] = value
+
+        request_data = Request(
+            id=self.current_id, method=ApiMethod.select_items, params=params
+        )
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        return self.make_requests(request_data.json())
+
+
+    @increment_id
+    @validate_arguments
+    def select_items(
+        self,
+        filter: Optional[Filter] = None,
+        include_dataframe: bool = True,
+        include_metadata: bool = True,
+        not_before=None,
+        before=None,
+        skip: int = 0,
+        limit: int = 10,
+        rollup: Union[timedelta, Literal["window"]] = None,
+    ) -> Response:
+        """
+        Return item data from selected items.
+        For more information click `here <https://docs.clarify.io/api/next/datatypes/data-query>`_ .
+
+        Parameters
+        ----------
+        filter: Filter, optional
+            A Filter Model that describes a mongodb filter to be applied.
+
+        include_dataframe: bool
+            A boolean deciding whether to include dataframe from item or not.
+            
+        include_metadata: bool
+            A boolean deciding whether to include metadata from item or not.
+        
+        not_before: string(RFC 3339 timestamp) or python datetime, optional, default datetime.now() - 40days
+            An RFC3339 time describing the inclusive start of the window.
+
+        before: string(RFC 3339 timestamp) or python datetime, optional, default datetime.now()
+            An RFC3339 time describing the exclusive end of the window.
+
+        skip: int, default 0
+            Integer describing how many of the first N items to exclude from response.
+
+        limit: int, default 10
+            Number of items to include in the match.        
+            
+        rollup: timedelta or string(RFC 3339 duration) or "window", default None
+            If RFC 3339 duration is specified, roll-up the values into either the full time window
+            (`notBefore` -> `before`) or evenly sized buckets.
+
+
+        Example
+        -------
+            >>> client.select_items(
+            >>>     filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
+            >>>     include_metadata = False,
+            >>>     not_before = "2021-10-01T12:00:00Z",
+            >>>     before = "2021-11-10T12:00:00Z",
+            >>>     skip = 0,
+            >>>     limit = 10,
             >>>     rollup = "P1DT"
             >>> )
 
@@ -745,113 +939,23 @@ class ClarifyClient(APIClient):
         """
         not_before, before = compute_iso_timewindow(not_before, before)
         params = {
-            "items": {"include": False, "limit": limit, "skip": skip},
+            "items": {
+                "include": include_metadata, 
+                "limit": limit, 
+                "skip": skip,
+                "filter": filter.to_query() if isinstance(filter, Filter) else {}
+            },
             "data": {
-                "include": True,
+                "include": include_dataframe,
                 "notBefore": not_before,
                 "before": before,
                 "rollup": rollup,
             },
         }
-        if isinstance(ids, list):
-            if len(ids) > 0:
-                params["items"]["filter"] = {"id": {"$in": ids}}
 
         request_data = Request(
             id=self.current_id, method=ApiMethod.select_items, params=params
         )
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
-        return self.make_requests(request_data.json())
-
-    @increment_id
-    @validate_arguments
-    def select_items_metadata(
-        self,
-        ids: List = [],
-        name: str = "",
-        labels: dict = {},
-        limit: int = 10,
-        skip: int = 0,
-    ) -> Response:
-        """
-        Return item metadata from selected items.
-
-        Parameters
-        ----------
-        ids: list, optional
-            List of item ids to retrieve. Empty list means take all.
-
-        name: string, default: ""
-            String containing regex of the name of an Item.
-
-        labels: dict default: {}
-            Dictionary with labels and keys to be used as a filter
-        
-        limit: int, default: 10
-            Number of items to include in the match.
-        
-        skip: int default: 0
-            Skip first N items.
-
-        Example
-        -------
-
-            >>> client.select_items_metadata(
-            >>>     ids = ['<ITEM_ID>'],
-            >>>     name = "Electricity",
-            >>>     labels = {"city": "Trondheim"},
-            >>>     limit = 10,
-            >>>     skip = 0
-            >>> )
-
-        Returns
-        -------
-        Response
-            In case of a valid return value, returns a pydantic model with the following format:
-
-                >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = SelectSignalsResponse(
-                >>>             items = {'<ITEM_ID>': SignalInfo},
-                >>>             signals = None
-                >>>          )
-                >>> error = None
-
-            In case of the error the method return a pydantic model with the following format:
-
-                >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params',
-                >>>         data = ErrorData(trace = <trace_id>, params = {})
-                >>> )
-        """
-        filters = []
-        if isinstance(ids, list):
-            if len(ids) > 0:
-                filters += [{"id": {"$in": ids}}]
-
-        if name != "":
-            filters += [{"name": {"$regex": name}}]
-
-        params = {
-            "items": {"include": True, "filter": {}, "limit": limit, "skip": skip},
-            "data": {"include": False}
-        }
-
-        if len(filters) > 0:
-            params["items"]["filter"]["$or"] = filters
-
-        if len(labels) > 0:
-            for key, value in labels.items():
-                params["items"]["filter"][f"labels.{key}"] = value
-
-        request_data = Request(
-            id=self.current_id, method=ApiMethod.select_items, params=params
-        )
-
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
 
@@ -1030,6 +1134,7 @@ class ClarifyClient(APIClient):
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
 
+    @warnings.deprecated("Use Filter based method instead")
     @increment_id
     @validate_arguments
     def select_signals(
@@ -1044,15 +1149,12 @@ class ClarifyClient(APIClient):
     ) -> Response:
         """
         Return signal metadata from selected signals and/or item.
-
         Parameters
         ----------
         ids: list, optional
             List of signals ids to retrieve. Empty list means take all.
-
         name: string, default: ""
             String containing regex of the name of an Signal.
-
         labels: dict default: {}
             Dictionary with labels and keys to be used as a filter
         
@@ -1061,16 +1163,12 @@ class ClarifyClient(APIClient):
         
         skip: int default: 0
             Skip first N signals.
-
         include_items: bool default: False
             If set to true, include items metadata in the response.
-
         integration: str Default None
             Integration ID in string format. None means using the integration in credential file.
-
         Example
         -------
-
             >>> client.select_signals(
             >>>     ids = ['<SIGNAL_ID>'],
             >>>     name = "Electricity",
@@ -1079,12 +1177,10 @@ class ClarifyClient(APIClient):
             >>>     skip = 0,
             >>>     include_items = False
             >>> )
-
         Returns
         -------
         Response
             In case of a valid return value, returns a pydantic model with the following format:
-
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> result = SelectSignalsResponse(
@@ -1092,9 +1188,7 @@ class ClarifyClient(APIClient):
                 >>>             items = None
                 >>>          )
                 >>> error = None
-
             In case of the error the method return a pydantic model with the following format:
-
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> result = None
@@ -1125,6 +1219,85 @@ class ClarifyClient(APIClient):
         if len(labels) > 0:
             for key, value in labels.items():
                 params["signals"]["filter"][f"labels.{key}"] = value
+
+        request_data = Request(method=ApiMethod.select_signals, params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        return self.make_requests(request_data.json())
+
+    @increment_id
+    @validate_arguments
+    def select_signals_filter(
+        self,
+        filter: Optional[Filter] = None,
+        include_items: bool = False,
+        skip: int = 0,
+        limit: int = 10,
+        integration: str = None,
+    ) -> Response:
+        """
+        Return signal metadata from selected signals and/or item.
+
+        Parameters
+        ----------
+        filter: Filter, optional
+            A Filter Model that describes a mongodb filter to be applied.
+
+        include_items: bool default: False
+            If set to true, include items metadata in the response.
+
+        skip: int default: 0
+            Skip first N signals.
+
+        limit: int, default: 10
+            Number of signals to include in the match.
+        
+        integration: str Default None
+            Integration ID in string format. None means using the integration in credential file.
+
+        Example
+        -------
+
+            >>> client.select_signals(
+            >>>     filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
+            >>>     limit = 10,
+            >>>     skip = 0,
+            >>>     include_items = False
+            >>> )
+
+        Returns
+        -------
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = SelectSignalsResponse(
+                >>>             signals = {'<SIGNAL_ID>': SignalInfo},
+                >>>             items = None
+                >>>          )
+                >>> error = None
+
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params',
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
+        """
+        params = {
+            "integration": integration,
+            "signals": {"include": True, "filter": {}, "limit": limit, "skip": skip},
+            "items": {"include": include_items},
+        }
+
+        # assert integration parameter
+        if not params["integration"]:
+            params["integration"] = self.authentication.integration_id
 
         request_data = Request(method=ApiMethod.select_signals, params=params)
 

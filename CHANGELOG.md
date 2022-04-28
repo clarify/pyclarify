@@ -24,21 +24,46 @@ Changes are grouped as follows
 
 # [0.2.1] - 2021-11-23
 
+## Added
+
+- Copyright
+- `pyclarify.models.response.Response` encapsulating all response types.
+
+# [0.2.2] - 2021-11-23
+
 ## Fixed
 
 - Fix import dependency for python version 3.7.
+
+# [0.3.0] - 2022-02-04
+
+## Added
+
+- Iterators for sending multiple JSONRPC requests, constrained by API limits.
+- `pyclarify.client.ClarifyClient` containing all methods supported by `APIClient`, but written in a pythonic manner.
+- `pyclarify.data.DataFrame` now has `to_pandas()` and `from_pandas()` methods.
+- `pyclarify.data.Item` class supporting `visible` attribute.
+-
+
+## Fix
+
+- Docstrings on several methods in `pyclarify.client.py`.
+
+## Changed
+
+- `pyclarify.models.requests.PublishSignalsParams` changed type attribute from `SignalInfo` to `Item`.
 
 # [0.3.1] - 2022-04-01
 
 ## Fixed
 
-- Update versioning of API to 1.1beta1 (All prior versions of SDK will not work due API version 1.1 introducing non backwards compatible changes)
+- Update versioning of API to 1.1beta1 (All prior versions of SDK will not work due API version 1.1 introducing non backwards compatible changes).
 
 # [0.3.2] - 2022-04-01
 
 ## Fixed
 
-- Hotfix bug in version header
+- Hotfix bug in version header.
 
 # [0.3.3] - 2022-04-26
 
@@ -106,3 +131,23 @@ Changes are grouped as follows
 
 - Validator on `models.data.DataFrame` now converts `numpy.nan` to native python `none` .
 - `annotations` field on `models.data.SignalInfo` is now optional.
+
+# [0.3.4] - 2022-04-27
+
+## Added
+
+- `pyclarify.client.ClarifyClient.select_items()` using `query.Filter` model.
+- `pyclarify.client.ClarifyClient.select_signals_filter()` using `query.Filter` model. NB! Will be renamed `pyclarify.client.ClarifyClient.select_signals()` in the future and replace current `select_signals()` method.
+- Deprication warning module in `pyclarify.__utils__.warnings`
+
+## Changed
+
+- Replaced custom time parse methods with `pydantic.datetime_parse` methods.
+- ContentHash is constrained as plain string and not SHA1.
+
+## Deprecated
+
+- `pyclarify.client.ClarifyClient.select_items_metadata()`
+- `pyclarify.client.ClarifyClient.select_items_data()`
+- `pyclarify.client.ClarifyClient.select_signals()`
+- `pyclarify.client.APIClient`
