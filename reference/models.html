@@ -393,11 +393,11 @@ limitations under the License.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pyclarify.models.data.ResourceMetadata">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">ResourceMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contentHash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pyclarify.models.data.ConstrainedStrValue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updatedAt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createdAt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.ResourceMetadata" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.models.data.</span></span><span class="sig-name descname"><span class="pre">ResourceMetadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contentHash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updatedAt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createdAt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.models.data.ResourceMetadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyclarify.models.data.ResourceMetadata.contentHash">
-<span class="sig-name descname"><span class="pre">contentHash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pyclarify.models.data.ConstrainedStrValue</span></em><a class="headerlink" href="#pyclarify.models.data.ResourceMetadata.contentHash" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">contentHash</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyclarify.models.data.ResourceMetadata.contentHash" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -491,7 +491,7 @@ limitations under the License.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyclarify.models.data.SignalInfo.Config.json_encoders">
-<span class="sig-name descname"><span class="pre">json_encoders</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{&lt;class</span> <span class="pre">'datetime.timedelta'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">timedelta_isoformat&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'datetime.datetime'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">time_to_string&gt;}</span></em><a class="headerlink" href="#pyclarify.models.data.SignalInfo.Config.json_encoders" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">json_encoders</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{&lt;class</span> <span class="pre">'datetime.timedelta'&gt;:</span> <span class="pre">&lt;cyfunction</span> <span class="pre">timedelta_isoformat&gt;}</span></em><a class="headerlink" href="#pyclarify.models.data.SignalInfo.Config.json_encoders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -619,7 +619,7 @@ Inserts none value to series not containing entry at a given timestamp.</p>
 </section>
 <section id="module-pyclarify.models.requests">
 <span id="requests-module"></span><h2>Requests module<a class="headerlink" href="#module-pyclarify.models.requests" title="Permalink to this headline">¶</a></h2>
-<p>Copyright 2022 Searis AS</p>
+<p>Copyright 2021 Clarify</p>
 <p>Licensed under the Apache License, Version 2.0 (the “License”);
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at</p>
@@ -729,7 +729,7 @@ limitations under the License.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyclarify.models.requests.JSONRPCRequest.Config.json_encoders">
-<span class="sig-name descname"><span class="pre">json_encoders</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{&lt;class</span> <span class="pre">'datetime.timedelta'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">timedelta_isoformat&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'datetime.datetime'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">time_to_string&gt;}</span></em><a class="headerlink" href="#pyclarify.models.requests.JSONRPCRequest.Config.json_encoders" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">json_encoders</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{&lt;class</span> <span class="pre">'datetime.timedelta'&gt;:</span> <span class="pre">&lt;cyfunction</span> <span class="pre">timedelta_isoformat&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'datetime.datetime'&gt;:</span> <span class="pre">&lt;function</span> <span class="pre">time_to_string&gt;}</span></em><a class="headerlink" href="#pyclarify.models.requests.JSONRPCRequest.Config.json_encoders" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -790,7 +790,7 @@ limitations under the License.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyclarify.models.requests.QueryParams.filter">
-<span class="sig-name descname"><span class="pre">filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pyclarify.models.requests.QueryParams.filter" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.models.requests.QueryParams.filter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
