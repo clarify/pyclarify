@@ -47,7 +47,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_signals(**test_case["args"])
+        response_data = self.client.select_signals_filter(**test_case["args"])
 
         # Assert content of return
         for key, signal in response_data.result.signals.items():
@@ -66,7 +66,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_signals(
+        response_data = self.client.select_signals_filter(
             filter=filter,
             include_items=include_items
         )
@@ -86,7 +86,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_signals(
+        response_data = self.client.select_signals_filter(
             filter=filter,
             include_items=include_items
         )
@@ -108,7 +108,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_signals(
+        response_data = self.client.select_signals_filter(
             filter=filter,
             include_items=include_items,
             skip=skip,
