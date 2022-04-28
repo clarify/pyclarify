@@ -15,7 +15,7 @@ limitations under the License.
 """
 
 from datetime import timedelta
-from . import time
+from pydantic.datetime_parse import parse_datetime, parse_duration
 
 
 class TimeIterator:
@@ -46,35 +46,38 @@ class TimeIterator:
     """
 
     def __init__(self, start_time, end_time, rollup=None):
-        self.current_start_time = time.parse_to_datetime(start_time)
-        self.GLOBAL_END_TIME = time.parse_to_datetime(end_time)
+        self.current_start_time = parse_datetime(start_time).replace(tzinfo=None)
+        self.GLOBAL_END_TIME = parse_datetime(end_time).replace(tzinfo=None)
 
         # CONSTRAINT: Timewindow from an API call cannot be longer than 40 days if rollup is smaller than 1 minute
-        # 400 days contraint if rollup is larger than 1 minute
-        self.API_LIMIT = (
-            timedelta(days=40)
-            if time.rfc3339_to_timedelta(rollup) <= timedelta(minutes=1)
-            else timedelta(days=400)
-        )
-        self.rollup = rollup
+        self.API_LIMIT = timedelta(days=40)
+        if rollup:
+            if rollup == "window":
+                self.rollup = rollup
+            else:
+                self.rollup = parse_duration(rollup)
+                # CONSTRAINT: 400 days contraint if rollup is larger than 1 minute
+                if self.rollup > timedelta(minutes=1):
+                    self.API_LIMIT = timedelta(days=400)
+        else:
+            self.rollup = rollup
+        
 
     def __iter__(self):
         self.ending_condition = False
         return self
 
     def __next__(self):
+        if self.ending_condition:
+            raise StopIteration
+        
         # EDGE CONDITION: if rollup = "window" the API call should just return 1 timestamp
         if self.rollup == "window":
             self.ending_condition = True
             return self.current_start_time, self.GLOBAL_END_TIME
 
-        if self.ending_condition:
-            raise StopIteration
-
         # compute time window of current timestamps
-        time_window = time.compute_timedelta(
-            self.current_start_time, self.GLOBAL_END_TIME
-        )
+        time_window = self.GLOBAL_END_TIME - self.current_start_time
 
         if time_window > self.API_LIMIT:
             self.current_start_time += self.API_LIMIT

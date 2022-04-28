@@ -1,5 +1,5 @@
 """
-Copyright 2022 Searis AS
+Copyright 2021 Clarify
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@ limitations under the License.
 """
 
 from pydantic import BaseModel, constr, conint, Extra, validate_arguments
-from pydantic.fields import Optional
 import pydantic
+from pydantic.fields import Optional
+from pydantic.json import timedelta_isoformat
 from typing import Union, Dict
 from typing_extensions import Literal
 from datetime import datetime
 from enum import Enum
 from .data import DataFrame, InputID, SignalInfo, Item
-from pyclarify.__utils__.time import timedelta_isoformat, time_to_string
+from pyclarify.__utils__.time import time_to_string
 from datetime import timedelta
 
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
@@ -34,7 +35,7 @@ LimitSelectSignals = conint(ge=0, le=1000)
 # Generic Query Parameters #
 class QueryParams(BaseModel):
     include: Optional[bool] = False
-    filter: dict = {}
+    filter: Optional[dict] = {}
     skip: Optional[int] = 0
 
 
