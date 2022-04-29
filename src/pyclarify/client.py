@@ -661,7 +661,7 @@ class ClarifyClient(RawClient):
         self.authentication = GetToken(clarify_credentials)
         self.base_url = f"{self.authentication.api_url}rpc"
 
-    @warnings.deprecated("Use select_items() with include_metada=False instead.")
+    @warnings.deprecated("Use select_items() with include_metadata=False instead.")
     @increment_id
     @validate_arguments
     def select_items_data(
@@ -888,7 +888,7 @@ class ClarifyClient(RawClient):
         Example
         -------
             >>> client.select_items(
-            >>>     filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
+            >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
             >>>     include_metadata = False,
             >>>     not_before = "2021-10-01T12:00:00Z",
             >>>     before = "2021-11-10T12:00:00Z",
@@ -1291,7 +1291,12 @@ class ClarifyClient(RawClient):
         """
         params = {
             "integration": integration,
-            "signals": {"include": True, "filter": {}, "limit": limit, "skip": skip},
+            "signals": {
+                "include": True, 
+                "filter": filter.to_query() if isinstance(filter, Filter) else {}, 
+                "limit": limit, 
+                "skip": skip
+            },
             "items": {"include": include_items},
         }
 
