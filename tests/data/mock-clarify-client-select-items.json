@@ -3,10 +3,10 @@
     {
       "comments": "get items matching criteria, return metadata and data (with stats)",
       "args": {
-        "ids": ["c5vv12btaf7d0qbk0l0g"],
-        "name": "Electricity",
-        "skip": 0,
-        "labels": { "location": "Trondheim" }
+        "filter": {
+          "fields": { "name": { "value": ["Electricity"], "operator": "$in" } }
+        },
+        "skip": 0
       },
       "response": {
         "jsonrpc": "2.0",
@@ -32,7 +32,9 @@
     {
       "comments": "get items matching criteria, return only data",
       "args": {
-        "ids": ["c5vv12btaf7d0qbk0l0g"],
+        "filter": {
+          "fields": { "name": { "value": ["Electricity"], "operator": "$in" } }
+        },
         "skip": 0,
         "not_before": "2021-10-10T21:50:06Z",
         "before": "2021-10-11T22:50:06Z",
@@ -59,7 +61,8 @@
       "comments": "get 1100 items, return metadata and no data",
       "args": {
         "limit": 1100,
-        "skip": 0
+        "skip": 0,
+        "include_dataframe": false
       },
       "response": {
         "jsonrpc": "2.0",
@@ -85,7 +88,9 @@
     {
       "comments": "get items matching criteria, using limit and skip",
       "args": {
-        "ids": ["c5vv12btaf7d0qbk0l0g"],
+        "filter": {
+          "fields": { "name": { "value": ["Electricity"], "operator": "$in" } }
+        },
         "skip": 0,
         "limit": 100,
         "not_before": "2021-10-10T21:50:06Z",

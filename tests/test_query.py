@@ -2,7 +2,7 @@ import unittest
 import sys
 
 sys.path.insert(1, "src/")
-import pyclarify.query.filter as filter
+from pyclarify import query
 from pyclarify.__utils__.exceptions import FilterError
 
 
@@ -10,14 +10,14 @@ from pyclarify.__utils__.exceptions import FilterError
 
 class TestFilter(unittest.TestCase):
     def setUp(self):
-        self.f1 = filter.Filter(fields={"name": filter.NotEqual(value="Lufttemperatur")})
-        self.f2 = filter.Filter(fields={"labels.unit-type": filter.NotIn(value=["Flåte", "Merde 5"])})
-        self.f3 = filter.Filter(fields={"labels.unit_id": filter.In(value=["1"])})
-        self.f4 = filter.Filter(fields={"labels.topic": filter.Regex(value="efb")})
-        self.f5 = filter.Filter(fields={"name": filter.Comparison(value="Trondheim")})
-        self.f6 = filter.Filter(fields={"depth": filter.LessThan(value=5)})
-        self.f7 = filter.Filter(fields={"labels.unit_id": filter.GreaterThan(value=2)})
-        self.f8 = filter.Filter(fields={"gapDetection": filter.GreaterThanOrEqual(value="PT15M")})
+        self.f1 = query.Filter(fields={"name": query.NotEqual(value="Lufttemperatur")})
+        self.f2 = query.Filter(fields={"labels.unit-type": query.NotIn(value=["Flåte", "Merde 5"])})
+        self.f3 = query.Filter(fields={"labels.unit_id": query.In(value=["1"])})
+        self.f4 = query.Filter(fields={"labels.topic": query.Regex(value="efb")})
+        self.f5 = query.Filter(fields={"name": query.Equal(value="Trondheim")})
+        self.f6 = query.Filter(fields={"depth": query.LessThan(value=5)})
+        self.f7 = query.Filter(fields={"labels.unit_id": query.GreaterThan(value=2)})
+        self.f8 = query.Filter(fields={"gapDetection": query.GreaterThanOrEqual(value="PT15M")})
 
     
     def testSingleFilters(self):
@@ -31,53 +31,53 @@ class TestFilter(unittest.TestCase):
     def testIllegalComparions(self):
         # Not Equal
         with self.assertRaises(FilterError):
-            filter.NotEqual(value=["list", "not", "valid"])
+            query.NotEqual(value=["list", "not", "valid"])
 
 
         # Not In
         with self.assertRaises(FilterError):
-            filter.NotIn(value=42)
+            query.NotIn(value=42)
         
         with self.assertRaises(FilterError):
-            filter.NotIn(value="invalid")
+            query.NotIn(value="invalid")
 
         with self.assertRaises(FilterError):
-            filter.NotIn(value=b'bytes')
+            query.NotIn(value=b'bytes')
 
 
         # In
         with self.assertRaises(FilterError):
-            filter.In(value=42)
+            query.In(value=42)
         
         with self.assertRaises(FilterError):
-            filter.In(value="invalid")
+            query.In(value="invalid")
 
         with self.assertRaises(FilterError):
-            filter.In(value=b'bytes')
+            query.In(value=b'bytes')
 
 
         # Regex 
         with self.assertRaises(FilterError):
-            filter.Regex(value=["list", "not", "valid"])
+            query.Regex(value=["list", "not", "valid"])
 
-        # Comparison
+        # Equal
         with self.assertRaises(FilterError):
-            filter.Comparison(value=["list", "not", "valid"])
+            query.Equal(value=["list", "not", "valid"])
         
         
         # Less Than
         with self.assertRaises(FilterError):
-            filter.LessThan(value=["list", "not", "valid"])
+            query.LessThan(value=["list", "not", "valid"])
         
 
         # GreaterThan
         with self.assertRaises(FilterError):
-            filter.GreaterThan(value=["list", "not", "valid"])
+            query.GreaterThan(value=["list", "not", "valid"])
         
 
         # Greater Than or Equal
         with self.assertRaises(FilterError):
-            filter.GreaterThanOrEqual(value=["list", "not", "valid"])
+            query.GreaterThanOrEqual(value=["list", "not", "valid"])
         
 
 
@@ -86,7 +86,7 @@ class TestFilter(unittest.TestCase):
         self.assertEqual(self.f2.to_query(), {'labels.unit-type': {'$nin': ['Flåte', 'Merde 5']}})
 
         f = self.f1 & self.f2
-        self.assertIsInstance(f, filter.Filter)
+        self.assertIsInstance(f, query.Filter)
 
         self.assertEqual(f.to_query(), {
             '$and': [
