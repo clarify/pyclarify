@@ -151,3 +151,9 @@ Changes are grouped as follows
 - `pyclarify.client.ClarifyClient.select_items_data()`
 - `pyclarify.client.ClarifyClient.select_signals()`
 - `pyclarify.client.APIClient`
+
+# [0.3.5] - 2022-05-13
+
+## Fixed
+
+- Adding `insert` method to `pyclarify.client.ClarifyClient`
