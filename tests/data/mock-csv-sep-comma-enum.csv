@@ -1,0 +1,5 @@
+Timestamp,Mock Test - Oxygen,Mock Test - Temperature, Mock Test - Enum Cat
+2021-11-01T21:50:06Z, 0.5 , 20.1 , Anomaly
+2021-11-02T21:50:06Z, 0.6 , 22.2 , Normal
+2021-11-03T21:50:06Z, 0.5 , 20.3 , Anomaly
+2021-11-04T21:50:06Z, 0.7 , 26.4 , Normal
