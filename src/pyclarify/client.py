@@ -842,6 +842,80 @@ class ClarifyClient(RawClient):
 
     @increment_id
     @validate_arguments
+    def insert(self, data: DataFrame) -> Response:
+        """
+        This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with
+        the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.
+        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/api/methods/integration/insert>`_ .
+
+        Parameters
+        ----------
+        data : DataFrame
+            Dataframe with the fields:
+
+            - series: Dict[InputID, List[Union[None, float, int]]]
+                Map of inputid to Array of data points to insert by Input ID.
+                The length of each array must match that of the times array.
+                To omit a value for a given timestamp in times, use the value null.
+
+            - times:  List of timestamps
+                Either as a python datetime or as
+                YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
+
+            Example
+            -------
+                >>> from pyclarify import DataFrame
+                >>> date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+                >>> data = DataFrame(
+                >>>             series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
+                >>>             times=date
+                >>>          )
+
+        Returns
+        -------
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>>             signalsByInput = {
+                >>>                      '<INPUT_ID_1>': InsertSummary(id = '<SIGNAL_ID_1>', created = True),
+                >>>                      '<INPUT_ID_2>': InsertSummary(id = '<SIGNAL_ID_2>', created = True)
+                >>>                       }
+                >>> error = None
+
+            Where:
+
+            - InsertResponse is a a pydantic model with field signalsByInput.
+            - signalsByInput is a Dict[InputID, InsertSummary].
+            - InsertSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).
+
+            In case of the error (for example not equal length) the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params',
+                >>>         data = ErrorData(
+                >>>                     trace = <trace_id>,
+                >>>                     params = {'data.series.id': ['not same length as times']}
+                >>>         )
+                >>> )
+
+        """
+        request_data = Request(
+            method=ApiMethod.insert,
+            params={"integration": self.authentication.integration_id, "data": data},
+        )
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+
+        return self.make_requests(request_data.json())
+
+    @increment_id
+    @validate_arguments
     def select_items(
         self,
         filter: Optional[Filter] = None,
@@ -1134,7 +1208,7 @@ class ClarifyClient(RawClient):
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
 
-    @warnings.deprecated("Use Filter based method instead")
+    @warnings.deprecated("Use Filter based method instead. (select_signals_filter)")
     @increment_id
     @validate_arguments
     def select_signals(
