@@ -88,6 +88,49 @@ class CsvImporter:
     source: str/IO file
         str with path to a file, or an IO file
 
+    Examples 
+    ----------
+    Examples of CSV files with timeseries data can be found the
+     `project repository test/data folder <https://github.com/clarify/pyclarify/tree/main/tests/data>`_
+    
+    Simple usage with default configurations:
+        >>> import pyclarify
+        >>> client = pyclarify.ClarifyClient("clarify-credentials.json")
+        >>> csv_importer = pyclarify.importer.CsvImporter("data.csv")
+        >>> csv_importer.read_csv().insert_csv_data(client)
+
+    Custom configuration with semicolon as delimiter and time data in the second column of the CSV file:
+        >>> csv_importer2 = pyclarify.importer.CsvImporter("tests/data/mock-csv-sep-semicolon-time-col2.csv")
+        >>> csv_importer2.read_csv(delimiter=";", time_index_column=1).insert_csv_data(client)
+
+    Custom configuration with semicolon as delimiter and time data in the second column of the CSV file:
+        >>> csv_importer2 = pyclarify.importer.CsvImporter("tests/data/mock-csv-sep-semicolon-time-col2.csv")
+        >>> csv_importer2.read_csv(delimiter=";", time_index_column=1).insert_csv_data(client)
+
+    Custom configuration with conversion function for custom datetime format, conversion function for processing floats using comma 
+    as decimal separator (the default being a dot), semicolon as delimiter and time data in the third column of the CSV file:
+        >>> convert_date = lambda date_time_str: datetime.strptime(
+        >>>     date_time_str, "%d/%m/%Y %H:%M:%S"
+        >>> )
+        >>> convert_float = lambda float_str: float(float_str.replace(",", "."))
+        >>> csv_importer3 = pyclarify.importer.CsvImporter(
+        >>>     "tests/data/mock-csv-convert-time-convert-vals.csv"
+        >>> )
+        >>> csv_importer3.read_csv(
+        >>>     delimiter=";",
+        >>>     time_index_column=2,
+        >>>     time_converter=convert_date,
+        >>>     values_converter={0: convert_float, 1: convert_float},
+        >>> ).insert_csv_data(client)
+
+    Custom configuration and example with enum data (no configuration is needed for processing enum data, 
+    the only requirement is that the original data be the string labels only, in this example the data is "Anomaly" and "Normal").
+    The enum data is converted to an int index, and the enum labels are stored in the Clarify database. In this configuration the
+    CSV file have the time data in the 4th column, and we using the `labels_dict` to add the custom label `number_of_enums` 
+    associated with the respective column in the CSV file (the enum data is in the 3rd column, thus have the index 2).
+        >>> csv_importer4 = pyclarify.importer.CsvImporter("tests/data/mock-csv-sep-comma-enum.csv")
+        >>> csv_importer4.read_csv(time_index_column=3)
+        >>> csv_importer4.insert_csv_data(client, labels_dict={2: {"number_of_enums": ["2"]}})
     """
 
     def __init__(self, source: Union[IO, str]):
