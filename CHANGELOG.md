@@ -157,3 +157,15 @@ Changes are grouped as follows
 ## Fixed
 
 - Adding `insert` method to `pyclarify.client.ClarifyClient`
+
+# [0.4.0] - 2022-07-12
+
+## Added
+
+- `fields` folder containing all fields used internally
+- `views` folder containing all models for communicating with the API
+- `jsonrpc` folder containing all underlying functionality for the `ClarifyClient`
+
+## Removed
+
+- `APIClient`
