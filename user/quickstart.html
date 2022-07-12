@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>PyClarify quickstart &#8212; PyClarify 0.3.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -14,6 +14,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
@@ -101,7 +102,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </nav>
     </div>
 </div>
@@ -157,28 +158,28 @@
           <div class="body" role="main">
             
   <section id="pyclarify-quickstart">
-<h1>PyClarify quickstart<a class="headerlink" href="#pyclarify-quickstart" title="Permalink to this headline">¶</a></h1>
+<h1>PyClarify quickstart<a class="headerlink" href="#pyclarify-quickstart" title="Permalink to this heading">¶</a></h1>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyclarify</span>
 </pre></div>
 </div>
 <section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
 <p>You’ll need to know a bit of Python. For a refresher, see the <a class="reference external" href="https://docs.python.org/tutorial/">Python
 tutorial</a>.</p>
 <p>You’ll need your Clarify credentials. Click <a class="reference internal" href="getcredentials.html#getcredentials"><span class="std std-ref">here</span></a> for how to find them.</p>
 </section>
 <section id="interact-with-clarify">
-<h2>Interact with Clarify<a class="headerlink" href="#interact-with-clarify" title="Permalink to this headline">¶</a></h2>
+<h2>Interact with Clarify<a class="headerlink" href="#interact-with-clarify" title="Permalink to this heading">¶</a></h2>
 <p>PyClarify provides a fast and easy way to interact with Clarify using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">APIClient()</span></code> and <a class="reference internal" href="../reference/client.html#pyclarify.client.ClarifyClient" title="pyclarify.client.ClarifyClient"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ClarifyClient()</span></code></a> class .
 This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.</p>
 <p>For information about the Clarify Developer documentation
 click <a class="reference external" href="https://docs.clarify.io/reference">here</a>.</p>
 <section id="using-the-apiclient-class">
-<h3>Using the APIClient class<a class="headerlink" href="#using-the-apiclient-class" title="Permalink to this headline">¶</a></h3>
+<h3>Using the APIClient class<a class="headerlink" href="#using-the-apiclient-class" title="Permalink to this heading">¶</a></h3>
 </section>
 </section>
 <section id="add-signal-metadata">
-<h2>Add Signal metadata<a class="headerlink" href="#add-signal-metadata" title="Permalink to this headline">¶</a></h2>
+<h2>Add Signal metadata<a class="headerlink" href="#add-signal-metadata" title="Permalink to this heading">¶</a></h2>
 <p>Inserts metadata for one or multiple signals.
 The signals are uniquely identified by its INPUT_ID.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">APIClient</span><span class="p">,</span> <span class="n">SignalInfo</span>
@@ -213,7 +214,7 @@ The signals are uniquely identified by its INPUT_ID.</p>
 </div>
 </section>
 <section id="insert-data-into-a-signal">
-<h2>Insert data into a signal<a class="headerlink" href="#insert-data-into-a-signal" title="Permalink to this headline">¶</a></h2>
+<h2>Insert data into a signal<a class="headerlink" href="#insert-data-into-a-signal" title="Permalink to this heading">¶</a></h2>
 <p>Inserts data to one or multiple signals.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">APIClient</span>
 <span class="go">&gt;&gt;&gt;</span>
@@ -240,7 +241,7 @@ The signals are uniquely identified by its INPUT_ID.</p>
 </div>
 </section>
 <section id="get-signal-metadata">
-<h2>Get Signal metadata<a class="headerlink" href="#get-signal-metadata" title="Permalink to this headline">¶</a></h2>
+<h2>Get Signal metadata<a class="headerlink" href="#get-signal-metadata" title="Permalink to this heading">¶</a></h2>
 <p>This call retrieves signal metadata and/or exposed items.
 This call is a recommend step before doing a publishSignals call.
 For more information click <a class="reference external" href="https://docs.clarify.io/v1.1/reference/adminselectsignals">here</a> .</p>
@@ -264,7 +265,7 @@ For more information click <a class="reference external" href="https://docs.clar
 </div>
 </section>
 <section id="publish-signals">
-<h2>Publish signals<a class="headerlink" href="#publish-signals" title="Permalink to this headline">¶</a></h2>
+<h2>Publish signals<a class="headerlink" href="#publish-signals" title="Permalink to this heading">¶</a></h2>
 <p>Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
 Each signal is uniquely identified by its input ID in combination with the integration ID.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">APIClient</span><span class="p">,</span> <span class="n">SignalInfo</span>
@@ -282,7 +283,7 @@ Each signal is uniquely identified by its input ID in combination with the integ
 </div>
 </section>
 <section id="get-item-data-and-metadata">
-<h2>Get Item data and metadata<a class="headerlink" href="#get-item-data-and-metadata" title="Permalink to this headline">¶</a></h2>
+<h2>Get Item data and metadata<a class="headerlink" href="#get-item-data-and-metadata" title="Permalink to this heading">¶</a></h2>
 <p>Get data and metadata for one or multiple items.
 To get the data from an item, you must first have an integration with reading access.</p>
 <p>To enable it, go to Clarify -&gt; Intergrations, select the Intergration you want to use, and enable <em>Access to item data</em></p>
@@ -312,11 +313,11 @@ To get the data from an item, you must first have an integration with reading ac
 </pre></div>
 </div>
 <section id="using-the-clarifyclient-class">
-<h3>Using the ClarifyClient class<a class="headerlink" href="#using-the-clarifyclient-class" title="Permalink to this headline">¶</a></h3>
+<h3>Using the ClarifyClient class<a class="headerlink" href="#using-the-clarifyclient-class" title="Permalink to this heading">¶</a></h3>
 </section>
 </section>
 <section id="save-signals">
-<h2>Save signals<a class="headerlink" href="#save-signals" title="Permalink to this headline">¶</a></h2>
+<h2>Save signals<a class="headerlink" href="#save-signals" title="Permalink to this heading">¶</a></h2>
 <p>Inserts metadata to one or multiple signals. The signals are uniquely identified by its &lt;INPUT_ID&gt;.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ClarifyClient</span><span class="p">,</span> <span class="n">SignalInfo</span>
 <span class="go">&gt;&gt;&gt;</span>
@@ -333,7 +334,7 @@ To get the data from an item, you must first have an integration with reading ac
 </div>
 </section>
 <section id="id1">
-<h2>Insert data into a signal<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>Insert data into a signal<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <p>Inserts data to one or multiple signals.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">ClarifyClient</span>
 <span class="go">&gt;&gt;&gt;</span>
@@ -352,7 +353,7 @@ To get the data from an item, you must first have an integration with reading ac
 </div>
 </section>
 <section id="get-metadata-from-signals-and-or-items">
-<h2>Get metadata from signals and/or items<a class="headerlink" href="#get-metadata-from-signals-and-or-items" title="Permalink to this headline">¶</a></h2>
+<h2>Get metadata from signals and/or items<a class="headerlink" href="#get-metadata-from-signals-and-or-items" title="Permalink to this heading">¶</a></h2>
 <p>Get metadata from selected signals and/or items.
 This call is a recommend step before doing a publish_signals call.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ClarifyClient</span>
@@ -370,7 +371,7 @@ This call is a recommend step before doing a publish_signals call.</p>
 </div>
 </section>
 <section id="id2">
-<h2>Publish signals<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<h2>Publish signals<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
 <p>Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
 Each signal is uniquely identified by its input ID in combination with the integration ID.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ClarifyClient</span><span class="p">,</span> <span class="n">Item</span>
@@ -389,7 +390,7 @@ Each signal is uniquely identified by its input ID in combination with the integ
 </div>
 </section>
 <section id="get-item-data">
-<h2>Get Item data<a class="headerlink" href="#get-item-data" title="Permalink to this headline">¶</a></h2>
+<h2>Get Item data<a class="headerlink" href="#get-item-data" title="Permalink to this heading">¶</a></h2>
 <p>Get data for one or multiple items.
 To get the data from an item, you must first have an integration with reading access.</p>
 <p>To enable it, go to Clarify -&gt; Intergrations, select the Intergration you want to use, and enable <em>Access to item data</em></p>
@@ -418,7 +419,7 @@ To get the data from an item, you must first have an integration with reading ac
 </div>
 </section>
 <section id="get-item-metadata">
-<h2>Get Item metadata<a class="headerlink" href="#get-item-metadata" title="Permalink to this headline">¶</a></h2>
+<h2>Get Item metadata<a class="headerlink" href="#get-item-metadata" title="Permalink to this heading">¶</a></h2>
 <p>Get metadata for one or multiple items.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ClarifyClient</span>
 <span class="go">&gt;&gt;&gt;</span>
@@ -498,7 +499,7 @@ To get the data from an item, you must first have an integration with reading ac
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -566,7 +567,7 @@ To get the data from an item, you must first have an integration with reading ac
     
     <br />
 
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
     </div>
 
   </body>

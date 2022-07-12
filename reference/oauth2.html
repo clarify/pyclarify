@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>PyClarify Auth &#8212; PyClarify 0.3.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -14,6 +14,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
@@ -73,7 +74,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </nav>
     </div>
 </div>
@@ -128,8 +129,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="module-pyclarify.oauth2">
-<span id="pyclarify-auth"></span><h1>PyClarify Auth<a class="headerlink" href="#module-pyclarify.oauth2" title="Permalink to this headline">¶</a></h1>
+  <section id="module-pyclarify.jsonrpc.oauth2">
+<span id="pyclarify-auth"></span><h1>PyClarify Auth<a class="headerlink" href="#module-pyclarify.jsonrpc.oauth2" title="Permalink to this heading">¶</a></h1>
 <p>Copyright 2022 Searis AS</p>
 <p>Licensed under the Apache License, Version 2.0 (the “License”);
 you may not use this file except in compliance with the License.
@@ -142,58 +143,51 @@ distributed under the License is distributed on an “AS IS” BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="pyclarify.oauth2.AuthError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.oauth2.</span></span><span class="sig-name descname"><span class="pre">AuthError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_description</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.oauth2.AuthError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Error class that is generated when an authentication error appear</p>
-</dd></dl>
-
 <dl class="py class">
-<dt class="sig sig-object py" id="pyclarify.oauth2.GetToken">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.oauth2.</span></span><span class="sig-name descname"><span class="pre">GetToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.oauth2.GetToken" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.jsonrpc.oauth2.GetToken">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.jsonrpc.oauth2.</span></span><span class="sig-name descname"><span class="pre">GetToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.jsonrpc.oauth2.GetToken" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.oauth2.GetToken.get_new_token">
-<span class="sig-name descname"><span class="pre">get_new_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.oauth2.GetToken.get_new_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.jsonrpc.oauth2.GetToken.get_new_token">
+<span class="sig-name descname"><span class="pre">get_new_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.jsonrpc.oauth2.GetToken.get_new_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a new token using the users credentials.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Access token.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.oauth2.GetToken.get_token">
-<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.oauth2.GetToken.get_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.jsonrpc.oauth2.GetToken.get_token">
+<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.jsonrpc.oauth2.GetToken.get_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if token exists or has expired, if yes get a new one, else return the old one.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Access token.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.oauth2.GetToken.read_credentials">
-<span class="sig-name descname"><span class="pre">read_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.oauth2.GetToken.read_credentials" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyclarify.jsonrpc.oauth2.GetToken.read_credentials">
+<span class="sig-name descname"><span class="pre">read_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.jsonrpc.oauth2.GetToken.read_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read user credentials.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>clarify_credentials</strong> (<em>str/dict</em>) – The path to the clarify_credentials.json downloaded from the Clarify app,
 or json/dictionary of the content in clarify_credentials.json</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dictionary of the user credentials.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
@@ -236,7 +230,7 @@ or json/dictionary of the content in clarify_credentials.json</p>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -304,7 +298,7 @@ or json/dictionary of the content in clarify_credentials.json</p>
     
     <br />
 
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.0.2.
     </div>
 
   </body>
