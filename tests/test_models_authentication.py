@@ -3,7 +3,7 @@ import sys
 import json
 
 sys.path.insert(1, "src/")
-from pyclarify.models.auth import *
+from pyclarify.fields.authentication import *
 
 
 class TestOauthModels(unittest.TestCase):

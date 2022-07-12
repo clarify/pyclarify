@@ -21,7 +21,7 @@ from unittest.mock import patch
 
 sys.path.insert(1, "src/")
 
-from pyclarify.oauth2 import GetToken
+from pyclarify.jsonrpc.oauth2 import GetToken
 
 
 class TestGetToken(unittest.TestCase):
@@ -70,7 +70,7 @@ class TestGetToken(unittest.TestCase):
         """
         self.assertRaises(TypeError, GetToken)
 
-    @patch("pyclarify.oauth2.requests.post")
+    @patch("pyclarify.jsonrpc.oauth2.requests.post")
     def test_get_token(self, mock_request):
         """
         Test that it can get and update the token

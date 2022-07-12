@@ -21,6 +21,7 @@ from pydantic.fields import Optional
 from typing import ForwardRef, Union, List, Dict
 from enum import Enum
 
+
 class Operators(str, Enum):
     NE = "$ne"
     REGEX = "$regex"
@@ -32,16 +33,7 @@ class Operators(str, Enum):
 
 
 class Comparison(BaseModel):
-    value: Union[
-        str, 
-        List[str], 
-        int, 
-        List[int], 
-        float, 
-        List[float], 
-        bool,
-        None
-    ] = None
+    value: Union[str, List[str], int, List[int], float, List[float], bool, None] = None
     operator: Optional[Operators]
 
     @root_validator(pre=False, allow_reuse=True)
@@ -67,35 +59,43 @@ class Comparison(BaseModel):
 
     class Config:
         use_enum_values = True
-        extra=Extra.forbid
+        extra = Extra.forbid
 
 
 class Equal(Comparison):
     pass
 
+
 class NotEqual(Comparison):
     operator = Operators.NE
+
 
 class Regex(Comparison):
     operator = Operators.REGEX
 
+
 class In(Comparison):
     operator = Operators.IN
+
 
 class NotIn(Comparison):
     operator = Operators.NIN
 
+
 class LessThan(Comparison):
     operator = Operators.LT
 
+
 class GreaterThan(Comparison):
     operator = Operators.GT
+
 
 class GreaterThanOrEqual(Comparison):
     operator = Operators.GTE
 
 
-Filter = ForwardRef('Filter')
+Filter = ForwardRef("Filter")
+
 
 class Filter(BaseModel):
     and_list: Optional[List[Filter]]
@@ -110,7 +110,7 @@ class Filter(BaseModel):
 
         if self.or_list != None or self.fields != None:
             _tmp.append(self)
-        
+
         if other.and_list != None:
             _tmp += other.and_list
 
@@ -124,24 +124,24 @@ class Filter(BaseModel):
 
         if self.or_list != None:
             _tmp += self.or_list
-    
+
         if self.and_list != None or self.fields != None:
             _tmp.append(self)
-        
+
         if other.or_list != None:
             _tmp += other.or_list
         if other.and_list != None or other.fields != None:
             _tmp.append(other)
-        
+
         return Filter(or_list=_tmp)
-    
+
     def field_to_query(self, field):
         field, comparison = list(field.items())[0]
         comparison = comparison.dict()
         if comparison["operator"]:
             return {field: {comparison["operator"]: comparison["value"]}}
         return {field: {comparison["value"]}}
-    
+
     def to_query(self):
         q = {}
         if self.and_list:
@@ -150,10 +150,11 @@ class Filter(BaseModel):
             q["$or"] = [f.to_query() for f in self.or_list]
         if not self.fields:
             return q
-        
+
         if self.fields and q == {}:
             return self.field_to_query(self.fields)
 
         return q
+
 
 Filter.update_forward_refs()

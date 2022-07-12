@@ -14,7 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from . import data
-from . import requests
-from . import response
-from . import auth
+from pydantic import BaseModel, Extra
+from typing import Dict
+from pyclarify.fields.constraints import InputID, ResourceID, IntegrationID
+from pyclarify.fields.dataframe import DataFrame
+
+
+class InsertParams(BaseModel):
+    integration: IntegrationID
+    data: DataFrame
+
+class InsertSummary(BaseModel, extra=Extra.forbid):
+    id: ResourceID
+    created: bool
+
+
+class InsertResponse(BaseModel, extra=Extra.forbid):
+    signalsByInput: Dict[InputID, InsertSummary]

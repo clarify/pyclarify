@@ -26,7 +26,8 @@ import datetime
 import json
 from os import path
 
-from pyclarify.models.auth import OAuthResponse, OAuthRequestBody
+from pyclarify.fields.authentication import OAuthResponse, OAuthRequestBody
+from pyclarify.__utils__.exceptions import AuthError
 
 
 class GetToken:
@@ -119,18 +120,3 @@ class GetToken:
             return self.get_new_token()
         elif self._expire_token > datetime.datetime.now():
             return self.access_token
-
-
-class AuthError(Exception):
-    """
-    Error class that is generated when an authentication error appear
-    """
-
-    def __init__(self, error, error_description):
-        self.error = error
-        self.error_description = error_description
-
-    def __str__(self):
-        return (
-            f"Authentication error: {self.error}. Description: {self.error_description}"
-        )

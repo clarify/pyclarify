@@ -40,7 +40,7 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_no_signal(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -51,7 +51,7 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         for x in response_data.result.signalsByInput:
             self.assertEqual(x, {})
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_one_signal(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -65,7 +65,7 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
             self.assertEqual(x, self.input_ids[0])
             break
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_multiple_signals(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -78,7 +78,7 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         for i, x in enumerate(response_data.result.signalsByInput):
             self.assertEqual(x, self.input_ids[i])
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_without_input_ids(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -89,7 +89,7 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         for x in response_data.result.signalsByInput:
             self.assertEqual(x, {})
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_without_signals(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -100,7 +100,7 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
         for x in response_data.result.signalsByInput:
             self.assertEqual(x, {})
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_with_too_many_input_ids(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -114,7 +114,7 @@ class TestClarifyClientSaveSignals(unittest.TestCase):
             self.assertEqual(x, self.input_ids[0])
             break
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_save_with_too_many_signals(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token

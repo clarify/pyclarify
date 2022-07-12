@@ -39,7 +39,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         self.mock_access_token = self.mock_data["mock_access_token"]
 
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_empty_request(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[0]
@@ -56,7 +56,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         for key, item in response_data.result.items.items():
             self.assertIsInstance(item, SignalInfo)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_filter(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
@@ -76,7 +76,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
             self.assertIsInstance(signal, Signal)
 
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_filter_returning_nothing(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[2]
@@ -94,7 +94,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         self.assertEqual(response_data.result.items, {})
         self.assertEqual(response_data.result.signals, {})
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_all_inputs_returning_nothing(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[3]

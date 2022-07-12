@@ -20,16 +20,16 @@ import json
 from unittest.mock import patch
 
 sys.path.insert(1, "src/")
-from pyclarify.client import RawClient
-from pyclarify.models.response import Response
+from pyclarify.client import JSONRPCClient
+from pyclarify.views.generics import Response
 
 
-class TestRawClient(unittest.TestCase):
+class TestJSONRPCClient(unittest.TestCase):
     def setUp(self):
         with open("./tests/data/mock-simple-client.json") as f:
             self.mock_data = json.load(f)
 
-        self.client = RawClient(base_url=self.mock_data["mock_url"])
+        self.client = JSONRPCClient(base_url=self.mock_data["mock_url"])
         self.content_type_headers = {"content-type": "application/json"}
 
         with open("./tests/data/mock-client-common.json") as f:
@@ -79,7 +79,7 @@ class TestRawClient(unittest.TestCase):
         payload_2 = json.loads(payload_2)
         self.assertEqual(payload_2["id"], 2)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_no_iteration(self, client_req_mock, get_token_mock):
         
@@ -101,7 +101,7 @@ class TestRawClient(unittest.TestCase):
         # assert is correct id
         self.assertEqual(response.id, str(payload["id"]))
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_one_iteration(self, client_req_mock, get_token_mock):
         
@@ -123,7 +123,7 @@ class TestRawClient(unittest.TestCase):
         # assert is correct id
         self.assertEqual(response.id, str(payload["id"]))
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_many_iteration(self, client_req_mock, get_token_mock):
         
