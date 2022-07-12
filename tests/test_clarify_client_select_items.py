@@ -22,8 +22,8 @@ from unittest.mock import patch
 # Standard library imports...
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyClient, SignalInfo, DataFrame
-from pyclarify.models.response import Response, SelectItemsResponse
+from pyclarify import ClarifyClient, ItemInfo, DataFrame
+from pyclarify.views.generics import Response, SelectItemsResponse
 from pyclarify.query import Filter
 
 
@@ -39,7 +39,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_all_item_data(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[0]
@@ -50,9 +50,9 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         response_data = self.client.select_items()
 
         for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], SignalInfo)
+            self.assertIsInstance(response_data.result.items[x], ItemInfo)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_metadata_with_filter(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[0]
@@ -63,9 +63,9 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         response_data = self.client.select_items(filter=Filter(**test_case["args"]["filter"]))
 
         for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], SignalInfo)
+            self.assertIsInstance(response_data.result.items[x], ItemInfo)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_metadata_with_all(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[0]
@@ -76,9 +76,9 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         response_data = self.client.select_items(**test_case["args"])
 
         for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], SignalInfo)
+            self.assertIsInstance(response_data.result.items[x], ItemInfo)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_data_with_none(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
@@ -91,7 +91,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         self.assertIsNone(response_data.result.items)
         self.assertIsInstance(response_data.result.data, DataFrame)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_data_with_ids(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
@@ -107,7 +107,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         self.assertIsNone(response_data.result.items)
         self.assertIsInstance(response_data.result.data, DataFrame)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_data_with_not_before(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
@@ -123,7 +123,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         self.assertIsNone(response_data.result.items)
         self.assertIsInstance(response_data.result.data, DataFrame)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_data_with_before(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
@@ -139,7 +139,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         self.assertIsNone(response_data.result.items)
         self.assertIsInstance(response_data.result.data, DataFrame)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_data_with_rollup(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
@@ -155,7 +155,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         self.assertIsNone(response_data.result.items)
         self.assertIsInstance(response_data.result.data, DataFrame)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_items_data_metadata_with_all(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
@@ -175,7 +175,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         self.assertIsInstance(response_data.result.data, DataFrame)
         self.assertIsNone(response_data.error)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_get_1100_items_metadata_only(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[2]
@@ -186,7 +186,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         response_data = self.client.select_items(**test_case["args"])
 
         for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], SignalInfo)
+            self.assertIsInstance(response_data.result.items[x], ItemInfo)
 
 if __name__ == "__main__":
     unittest.main()

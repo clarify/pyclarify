@@ -2,7 +2,7 @@ import unittest
 import sys
 
 sys.path.insert(1, "src/")
-from pyclarify.__utils__.pagination import TimeIterator, ItemIterator
+from pyclarify.jsonrpc.pagination import TimeIterator, ItemIterator
 import datetime
 
 

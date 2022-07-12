@@ -2,10 +2,23 @@ import unittest
 import sys
 import json
 from pydantic.error_wrappers import ValidationError
+from datetime import datetime, timedelta
 
 sys.path.insert(1, "src/")
-from pyclarify.models.requests import *
-
+from pyclarify.fields.constraints import ApiMethod
+from pyclarify.views.generics import Request, JSONRPCRequest
+from pyclarify.views.dataframe import InsertParams
+from pyclarify.fields.query import QueryParams, SelectSignalsSignalsParams, SelectItemsItemsParams
+from pyclarify.views.items import (
+    SelectItemsParams,
+    PublishSignalsParams,
+    SelectItemsDataParams,
+    SaveSummary
+)
+from pyclarify.views.signals import (
+    SelectSignalsParams,
+    SaveSignalsParams,
+)
 
 class TestQueryParams(unittest.TestCase):
     def setUp(self):
@@ -68,14 +81,14 @@ class TestInclusionParams(unittest.TestCase):
         )  # after
         self.before = datetime.now().astimezone().isoformat()
 
-    def test_generic_inclusion_params_creation(self):
-        test_model = InclusionParams()
-        test_model_default = InclusionParams(**self.generic_inclusion_params)
+    # def test_generic_inclusion_params_creation(self):
+    #     test_model = InclusionParams()
+    #     test_model_default = InclusionParams(**self.generic_inclusion_params)
 
-        self.assertEqual(test_model, test_model_default)
+    #     self.assertEqual(test_model, test_model_default)
 
-        # assert plain json
-        self.assertEqual(test_model.json(), json.dumps(self.generic_inclusion_params))
+    #     # assert plain json
+    #     self.assertEqual(test_model.json(), json.dumps(self.generic_inclusion_params))
 
     def test_select_items_data_params(self):
         # notBefore, before, rollup [timedelta, Literal["window"]]

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+
 class PyClarifyException(Exception):
     pass
 
@@ -30,7 +31,8 @@ class ImportError(PyClarifyException):
     def __init__(self, module: str, message: str = None):
         self.module = module
         self.message = (
-            message or "The functionality your are trying to use requires '{}' to be installed.".format(
+            message
+            or "The functionality your are trying to use requires '{}' to be installed.".format(
                 self.module
             )
         )
@@ -54,17 +56,16 @@ class FilterError(PyClarifyException):
         self.desired_type = desired_type
         self.actual_values = actual_values
         self.message = (
-            message or "The operator '{}' does not allow values of type '{}'. You used '{}'.".format(
-                self.field,
-                self.desired_type,
-                self.actual_values
+            message
+            or "The operator '{}' does not allow values of type '{}'. You used '{}'.".format(
+                self.field, self.desired_type, self.actual_values
             )
         )
 
     def __str__(self):
         return self.message
 
-             
+
 class TypeError(PyClarifyException):
     """PyClarify Type Error
 
@@ -78,10 +79,26 @@ class TypeError(PyClarifyException):
         self.other = other
         self.source = source
         self.message = (
-            message or "The objects you are trying to combine do not have the same type '{}' and '{}'.".format(
+            message
+            or "The objects you are trying to combine do not have the same type '{}' and '{}'.".format(
                 type(self.other), type(self.source)
             )
         )
 
     def __str__(self):
         return self.message
+
+
+class AuthError(PyClarifyException):
+    """
+    Error class that is generated when an authentication error appear
+    """
+
+    def __init__(self, error, error_description):
+        self.error = error
+        self.error_description = error_description
+
+    def __str__(self):
+        return (
+            f"Authentication error: {self.error}. Description: {self.error_description}"
+        )

@@ -21,6 +21,7 @@ def time_to_string(time):
     time_syntax = "%Y-%m-%dT%H:%M:%SZ"
     return datetime.strftime(time, time_syntax)
 
+
 def compute_iso_timewindow(start_time, end_time):
     if not start_time and end_time:
         end_time = parse_datetime(end_time)

@@ -14,8 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pyclarify.client import ClarifyClient
-from pyclarify.views.signals import Signal, SignalInfo
-from pyclarify.views.items import Item, ItemInfo
-from pyclarify.fields.dataframe import DataFrame
-import pyclarify.query
+from pydantic.fields import Optional
+from pydantic import BaseModel
+from typing import List, Union, Dict
+
+
+class ErrorData(BaseModel):
+    trace: str
+    params: Optional[Dict[str, List[str]]]
+
+
+class Error(BaseModel):
+    code: str
+    message: str
+    data: Optional[Union[ErrorData, str]]

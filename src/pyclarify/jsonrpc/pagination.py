@@ -61,7 +61,6 @@ class TimeIterator:
                     self.API_LIMIT = timedelta(days=400)
         else:
             self.rollup = rollup
-        
 
     def __iter__(self):
         self.ending_condition = False
@@ -70,7 +69,7 @@ class TimeIterator:
     def __next__(self):
         if self.ending_condition:
             raise StopIteration
-        
+
         # EDGE CONDITION: if rollup = "window" the API call should just return 1 timestamp
         if self.rollup == "window":
             self.ending_condition = True

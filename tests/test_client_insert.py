@@ -21,13 +21,13 @@ from datetime import datetime, timedelta
 from unittest.mock import patch
 
 sys.path.insert(1, "src/")
-from pyclarify.client import APIClient
+from pyclarify.client import ClarifyClient
 from pyclarify import DataFrame
 
 
-class TestAPIClient(unittest.TestCase):
+class TestClarifyClient(unittest.TestCase):
     def setUp(self):
-        self.client = APIClient("./tests/data/mock-clarify-credentials.json")
+        self.client = ClarifyClient("./tests/data/mock-clarify-credentials.json")
 
         with open("./tests/data/mock-client-common.json") as f:
             self.mock_data = json.load(f)
@@ -44,7 +44,7 @@ class TestAPIClient(unittest.TestCase):
 
         self.values = [0.6, 1.0]
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -57,7 +57,7 @@ class TestAPIClient(unittest.TestCase):
         result = self.client.insert(data)
         self.assertIn(signal_id, result.result.signalsByInput)
 
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_2(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token

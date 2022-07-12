@@ -14,82 +14,63 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pydantic import BaseModel, Extra
-from copy import deepcopy
-
+from datetime import datetime, timedelta
+import pydantic
+from pydantic import BaseModel, constr, conint, validate_arguments, Extra
+from pydantic.json import timedelta_isoformat
+from pyclarify.__utils__.time import time_to_string
 from pydantic.fields import Optional
-from typing import List, Union, Dict
-from .data import (
-    InputID,
-    InsertSummary,
-    SaveSummary,
-    SignalInfo,
-    DataFrame,
-    merge,
-    ResourceID,
-    Signal,
+from typing import List, Dict, Union
+from pyclarify.fields.constraints import ApiMethod
+from pyclarify.fields.error import Error
+from .dataframe import InsertParams, InsertResponse
+from .items import (
+    SelectItemsParams,
+    SelectItemsResponse,
+    PublishSignalsParams,
+    PublishSignalsResponse,
 )
-from pyclarify.__utils__.exceptions import TypeError
+from .signals import (
+    SelectSignalsParams,
+    SelectSignalsResponse,
+    SaveSignalsParams,
+    SaveSignalsResponse,
+)
 
 
-class ErrorData(BaseModel):
-    trace: str
-    params: Optional[Dict[str, List[str]]]
+class JSONRPCRequest(BaseModel):
+    jsonrpc: str = "2.0"
+    method: ApiMethod = ApiMethod.select_items
+    id: str = "1"
+    params: Dict = {}
+
+    class Config:
+        json_encoders = {timedelta: timedelta_isoformat, datetime: time_to_string}
 
 
-class Error(BaseModel):
-    code: str
-    message: str
-    data: Optional[Union[ErrorData, str]]
+@validate_arguments
+class Request(JSONRPCRequest):
+    method: ApiMethod
 
-
-class InsertResponse(BaseModel, extra=Extra.forbid):
-    signalsByInput: Dict[InputID, InsertSummary]
-
-
-class SaveSignalsResponse(BaseModel, extra=Extra.forbid):
-    signalsByInput: Dict[InputID, SaveSummary]
-
-
-class SelectItemsResponse(BaseModel, extra=Extra.forbid):
-    items: Optional[Dict[InputID, SignalInfo]]
-    data: Optional[DataFrame]
-
-    def __add__(self, other):
-        try:
-            if isinstance(other, SelectItemsResponse):
-                main_items = None
-                main_df = None
-                if self.items:
-                    source_items = self.items
-                    main_items = deepcopy(source_items)
-                    if other.items:
-                        for key, value in other.items.items():
-                            main_items[key] = value
-                if other.items and not self.items:
-                    main_items = deepcopy(other.items)
-
-                if other.data:
-                    other_data = other.data
-                    main_df = other_data
-                    if self.data:
-                        main_df = merge([self.data, other_data])
-                if self.data and not other.data:
-                    main_df = self.data
-
-            return SelectItemsResponse(items=main_items, data=main_df)
-
-        except TypeError as e:
-            raise TypeError(source=self, other=other) from e
-
-
-class SelectSignalsResponse(BaseModel, extra=Extra.forbid):
-    signals: Optional[Dict[ResourceID, Signal]]
-    items: Optional[Dict[ResourceID, SignalInfo]]
-
-
-class PublishSignalsResponse(BaseModel, extra=Extra.forbid):
-    itemsBySignal: Dict[ResourceID, SaveSummary]
+    @pydantic.root_validator(allow_reuse=True)
+    @classmethod
+    def use_correct_params_based_on_method(cls, values):
+        if values["method"] == ApiMethod.insert:
+            values["params"] = InsertParams(**values["params"])
+            return values
+        elif values["method"] == ApiMethod.save_signals:
+            values["params"] = SaveSignalsParams(**values["params"])
+            return values
+        elif values["method"] == ApiMethod.select_items:
+            values["params"] = SelectItemsParams(**values["params"])
+            return values
+        elif values["method"] == ApiMethod.select_signals:
+            values["params"] = SelectSignalsParams(**values["params"])
+            return values
+        elif values["method"] == ApiMethod.publish_signals:
+            values["params"] = PublishSignalsParams(**values["params"])
+            return values
+        return values
 
 
 class GenericResponse(BaseModel, extra=Extra.forbid):
