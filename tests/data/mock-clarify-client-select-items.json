@@ -15,7 +15,7 @@
           "items": {
             "c5vv12btaf7d0qbk0l0g": {
               "name": "c5vv12btaf7d0qbk0l0g",
-              "type": "numeric",
+              "valueType": "numeric",
               "description": "Test description",
               "labels": { "data-source": [], "location": [] },
               "annotations": {},
@@ -71,7 +71,7 @@
           "items": {
             "c5vv12btaf7d0qbk0l0g": {
               "name": "c5vv12btaf7d0qbk0l0g",
-              "type": "numeric",
+              "valueType": "numeric",
               "description": "Test description",
               "labels": { "data-source": [], "location": [] },
               "annotations": {},

@@ -19,7 +19,7 @@ Client module is the main module of PyClarify.
 
 The module provides a class for setting up a JSONRPCClient which will communicate with
 the Clarify API. Methods for reading and writing to the API is implemented with the
-help of jsonrpcclient framework. 
+help of jsonrpcclient framework.
 """
 import requests
 from datetime import timedelta
@@ -31,12 +31,11 @@ from typing_extensions import Literal
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.fields.dataframe import DataFrame
 from pyclarify.views.items import Item
-from pyclarify.views.signals import Signal, SignalInfo
+from pyclarify.views.signals import SignalInfo
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
 from pyclarify.jsonrpc.oauth2 import GetToken
 from pyclarify.__utils__.time import compute_iso_timewindow
-from pyclarify.__utils__ import warnings
 from pyclarify.query import Filter
 
 

@@ -16,7 +16,7 @@ limitations under the License.
 from pydantic.datetime_parse import parse_datetime
 from datetime import datetime, timedelta
 
-# Convenient method to time to string from datetime and vice versa
+
 def time_to_string(time):
     time_syntax = "%Y-%m-%dT%H:%M:%SZ"
     return datetime.strftime(time, time_syntax)

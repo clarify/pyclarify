@@ -4,14 +4,11 @@ import json
 from pydantic.error_wrappers import ValidationError
 
 sys.path.insert(1, "src/")
-from pyclarify.fields.dataframe import *
+from pyclarify.fields.dataframe import DataFrame, merge
 from pyclarify.views.items import (
-    SelectItemsParams,
-    PublishSignalsParams,
-    SelectItemsDataParams,
     SaveSummary,
 )
-from pyclarify.__utils__.auxiliary import *
+from pyclarify.__utils__.auxiliary import local_import
 
 
 class TestSummary(unittest.TestCase):
