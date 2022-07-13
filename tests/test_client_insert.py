@@ -44,7 +44,7 @@ class TestClarifyClient(unittest.TestCase):
 
         self.values = [0.6, 1.0]
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -57,7 +57,7 @@ class TestClarifyClient(unittest.TestCase):
         result = self.client.insert(data)
         self.assertIn(signal_id, result.result.signalsByInput)
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_2(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
