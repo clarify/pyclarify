@@ -47,9 +47,11 @@ class SourceTypeSignal(str, Enum):
     aggregation = "aggregation"
     prediction = "prediction"
 
+
 class TypeSignal(str, Enum):
     numeric = "numeric"
     enum = "enum"
+
 
 class ResourceMetadata(BaseModel):
     contentHash: str

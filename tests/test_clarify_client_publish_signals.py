@@ -58,7 +58,9 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
 
-        response_data = self.client.publish_signals(signal_ids=self.signal_ids[:1], items=self.items[:1])
+        response_data = self.client.publish_signals(
+            signal_ids=self.signal_ids[:1], items=self.items[:1]
+        )
         for x in response_data.result.itemsBySignal:
             self.assertEqual(x, self.signal_ids[0])
             break
@@ -70,10 +72,11 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
 
-        response_data = self.client.publish_signals(signal_ids=self.signal_ids, items=self.items)
+        response_data = self.client.publish_signals(
+            signal_ids=self.signal_ids, items=self.items
+        )
         for i, x in enumerate(response_data.result.itemsBySignal):
             self.assertEqual(x, self.signal_ids[i])
-
 
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -85,8 +88,7 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         response_data = self.client.publish_signals(signal_ids=[], items=self.items)
         for x in response_data.result.itemsBySignal:
             self.assertEqual(x, {})
-    
-    
+
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_without_items(self, client_req_mock, get_token_mock):
@@ -94,23 +96,25 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[0]["response"]
 
-        response_data = self.client.publish_signals(signal_ids=self.signal_ids, items=[])
+        response_data = self.client.publish_signals(
+            signal_ids=self.signal_ids, items=[]
+        )
         for x in response_data.result.itemsBySignal:
             self.assertEqual(x, {})
-    
-    
+
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_with_too_many_signal_ids(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
-        
-        response_data = self.client.publish_signals(signal_ids=self.signal_ids * 2, items=self.items)
+
+        response_data = self.client.publish_signals(
+            signal_ids=self.signal_ids * 2, items=self.items
+        )
         for x in response_data.result.itemsBySignal:
             self.assertEqual(x, self.signal_ids[0])
             break
-
 
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -119,11 +123,13 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: self.test_cases[2]["response"]
 
-        response_data = self.client.publish_signals(signal_ids=self.signal_ids, items=self.items * 2)
+        response_data = self.client.publish_signals(
+            signal_ids=self.signal_ids, items=self.items * 2
+        )
         for x in response_data.result.itemsBySignal:
             self.assertEqual(x, self.signal_ids[0])
             break
-        
+
         self.assertFalse(response_data.result.itemsBySignal[x].created)
         self.assertFalse(response_data.result.itemsBySignal[x].updated)
 

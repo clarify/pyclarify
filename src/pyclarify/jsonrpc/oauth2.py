@@ -94,7 +94,9 @@ class GetToken:
             Access token.
         """
         response = requests.post(
-            url=self.auth_endpoint, headers=self.headers, data=self.credentials.dict(),
+            url=self.auth_endpoint,
+            headers=self.headers,
+            data=self.credentials.dict(),
         )
 
         if response.ok:

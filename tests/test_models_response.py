@@ -17,6 +17,7 @@ from pyclarify.views.signals import (
     SaveSignalsResponse,
 )
 
+
 class TestError(unittest.TestCase):
     # TODO: Make more thorough
     def setUp(self):

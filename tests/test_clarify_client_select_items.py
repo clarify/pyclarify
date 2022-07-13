@@ -60,7 +60,9 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_items(filter=Filter(**test_case["args"]["filter"]))
+        response_data = self.client.select_items(
+            filter=Filter(**test_case["args"]["filter"])
+        )
 
         for x in response_data.result.items:
             self.assertIsInstance(response_data.result.items[x], ItemInfo)
@@ -100,8 +102,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_items(
-            include_metadata=False, 
-            filter=Filter(**test_case["args"]["filter"])
+            include_metadata=False, filter=Filter(**test_case["args"]["filter"])
         )
 
         self.assertIsNone(response_data.result.items)
@@ -116,8 +117,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_items(
-            include_metadata=False,
-            not_before=test_case["args"]["not_before"]
+            include_metadata=False, not_before=test_case["args"]["not_before"]
         )
 
         self.assertIsNone(response_data.result.items)
@@ -132,8 +132,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_items(
-            include_metadata=False,
-            before=test_case["args"]["before"]
+            include_metadata=False, before=test_case["args"]["before"]
         )
 
         self.assertIsNone(response_data.result.items)
@@ -148,8 +147,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_items(
-            include_metadata=False,
-            rollup=test_case["args"]["rollup"]
+            include_metadata=False, rollup=test_case["args"]["rollup"]
         )
 
         self.assertIsNone(response_data.result.items)
@@ -165,10 +163,10 @@ class TestClarifyClientSelectItems(unittest.TestCase):
 
         response_data = self.client.select_items(
             filter=Filter(**test_case["args"]["filter"]),
-            skip =  test_case["args"]["skip"],
-            not_before= test_case["args"]["not_before"],
-            before = test_case["args"]["before"],
-            rollup = test_case["args"]["rollup"]
+            skip=test_case["args"]["skip"],
+            not_before=test_case["args"]["not_before"],
+            before=test_case["args"]["before"],
+            rollup=test_case["args"]["rollup"],
         )
 
         self.assertIsNone(response_data.result.items)
@@ -187,6 +185,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
 
         for x in response_data.result.items:
             self.assertIsInstance(response_data.result.items[x], ItemInfo)
+
 
 if __name__ == "__main__":
     unittest.main()

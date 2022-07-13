@@ -24,6 +24,7 @@ class InsertParams(BaseModel):
     integration: IntegrationID
     data: DataFrame
 
+
 class InsertSummary(BaseModel, extra=Extra.forbid):
     id: ResourceID
     created: bool

@@ -8,17 +8,22 @@ sys.path.insert(1, "src/")
 from pyclarify.fields.constraints import ApiMethod
 from pyclarify.views.generics import Request, JSONRPCRequest
 from pyclarify.views.dataframe import InsertParams
-from pyclarify.fields.query import QueryParams, SelectSignalsSignalsParams, SelectItemsItemsParams
+from pyclarify.fields.query import (
+    QueryParams,
+    SelectSignalsSignalsParams,
+    SelectItemsItemsParams,
+)
 from pyclarify.views.items import (
     SelectItemsParams,
     PublishSignalsParams,
     SelectItemsDataParams,
-    SaveSummary
+    SaveSummary,
 )
 from pyclarify.views.signals import (
     SelectSignalsParams,
     SaveSignalsParams,
 )
+
 
 class TestQueryParams(unittest.TestCase):
     def setUp(self):
