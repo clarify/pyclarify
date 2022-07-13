@@ -15,7 +15,7 @@ limitations under the License.
 """
 
 from pydantic import BaseModel, constr, conint
-from typing import List, Union, Dict
+from typing import List, Union
 from enum import Enum
 from datetime import datetime
 

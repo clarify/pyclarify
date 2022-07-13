@@ -105,16 +105,16 @@ class Filter(BaseModel):
     def __and__(self, other):
         _tmp = []
 
-        if self.and_list != None:
+        if self.and_list is not None:
             _tmp += self.and_list
 
-        if self.or_list != None or self.fields != None:
+        if self.or_list is not None or self.fields is not None:
             _tmp.append(self)
 
-        if other.and_list != None:
+        if other.and_list is not None:
             _tmp += other.and_list
 
-        if other.or_list != None or other.fields != None:
+        if other.or_list is not None or other.fields is not None:
             _tmp.append(other)
 
         return Filter(and_list=_tmp)
@@ -122,15 +122,15 @@ class Filter(BaseModel):
     def __or__(self, other):
         _tmp = []
 
-        if self.or_list != None:
+        if self.or_list is not None:
             _tmp += self.or_list
 
-        if self.and_list != None or self.fields != None:
+        if self.and_list is not None or self.fields is not None:
             _tmp.append(self)
 
-        if other.or_list != None:
+        if other.or_list is not None:
             _tmp += other.or_list
-        if other.and_list != None or other.fields != None:
+        if other.and_list is not None or other.fields is not None:
             _tmp.append(other)
 
         return Filter(or_list=_tmp)

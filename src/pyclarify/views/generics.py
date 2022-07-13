@@ -16,7 +16,7 @@ limitations under the License.
 
 from datetime import datetime, timedelta
 import pydantic
-from pydantic import BaseModel, constr, conint, validate_arguments, Extra
+from pydantic import BaseModel, validate_arguments, Extra
 from pydantic.json import timedelta_isoformat
 from pyclarify.__utils__.time import time_to_string
 from pydantic.fields import Optional

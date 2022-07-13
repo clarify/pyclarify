@@ -16,7 +16,7 @@
       "dummy-items": {
         "c7kmudvqfsjfb27kpr30": {
           "name": "my test signal",
-          "type": "numeric",
+          "valueType": "numeric",
           "description": "A test Item for debugging.",
           "labels": {},
           "annotations": {},
@@ -29,7 +29,7 @@
         },
         "c7kmudvqfsjfb27kpr3g": {
           "name": "my test signal 2",
-          "type": "numeric",
+          "valueType": "numeric",
           "description": "A test Item for debugging.",
           "labels": {},
           "annotations": {},
