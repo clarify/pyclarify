@@ -17,6 +17,7 @@ class TestPagination(unittest.TestCase):
         self.assertEqual(next(item_iter), (145, 23))
         with self.assertRaises(StopIteration):
             next(item_iter)
+
     def test_in_for_loop(self):
         i = 0
         for skip, limit in ItemIterator(user_limit=123, limit_per_call=50, skip=45):
@@ -30,10 +31,12 @@ class TestPagination(unittest.TestCase):
                 self.assertEqual(skip, 145)
                 self.assertEqual(limit, 23)
             i += 1
-    
+
     def test_time_iterator(self):
 
-        dates = TimeIterator(start_time="2020-10-06T17:48:04Z", end_time="2021-01-10T21:50:06Z")
+        dates = TimeIterator(
+            start_time="2020-10-06T17:48:04Z", end_time="2021-01-10T21:50:06Z"
+        )
         dates_iter = iter(dates)
 
         self.assertEqual(
@@ -59,10 +62,14 @@ class TestPagination(unittest.TestCase):
         )
         with self.assertRaises(StopIteration):
             next(dates_iter)
-    
+
     def test_time_iterator_rollup(self):
 
-        dates = TimeIterator(start_time="2020-10-06T17:48:04Z", end_time="2021-01-10T21:50:06Z", rollup="P1DT")
+        dates = TimeIterator(
+            start_time="2020-10-06T17:48:04Z",
+            end_time="2021-01-10T21:50:06Z",
+            rollup="P1DT",
+        )
         dates_iter = iter(dates)
 
         self.assertEqual(
@@ -72,9 +79,10 @@ class TestPagination(unittest.TestCase):
                 datetime.datetime(2021, 1, 10, 21, 50, 6),
             ),
         )
-        
+
         with self.assertRaises(StopIteration):
             next(dates_iter)
+
 
 if __name__ == "__main__":
     unittest.main()

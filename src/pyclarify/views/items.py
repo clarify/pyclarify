@@ -41,7 +41,7 @@ from pyclarify.fields.query import SelectItemsItemsParams
 
 class ItemInfo(BaseModel):
     name: str
-    type: TypeSignal = TypeSignal.numeric
+    valueType: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
     annotations: Optional[Dict[AnnotationKey, str]] = {}
@@ -109,13 +109,12 @@ class PublishSignalsParams(BaseModel):
     itemsBySignal: Dict[ResourceID, Item]
     createOnly: Optional[bool] = False
 
+
 class SaveSummary(BaseModel, extra=Extra.forbid):
     id: ResourceID
     created: bool
     updated: bool
 
+
 class PublishSignalsResponse(BaseModel, extra=Extra.forbid):
     itemsBySignal: Dict[ResourceID, SaveSummary]
-
-
-

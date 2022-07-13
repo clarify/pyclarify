@@ -41,7 +41,6 @@ from .oauth2 import GetToken
 from .pagination import ItemIterator, TimeIterator
 
 
-
 def increment_id(func):
     """
     Decorator which increments the current id variable.
@@ -121,7 +120,8 @@ def iterator(func):
 
 class JSONRPCClient:
     def __init__(
-        self, base_url,
+        self,
+        base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}

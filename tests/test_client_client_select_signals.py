@@ -26,6 +26,7 @@ sys.path.insert(1, "src/")
 from pyclarify import ClarifyClient, Signal, SignalInfo
 from pyclarify.query import Filter
 
+
 class TestClarifyClientSelectSignals(unittest.TestCase):
     def setUp(self):
         self.client = ClarifyClient("./tests/data/mock-clarify-credentials.json")
@@ -37,7 +38,6 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         with open("./tests/data/mock-client-common.json") as f:
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
-
 
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -67,14 +67,12 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_signals_filter(
-            filter=filter,
-            include_items=include_items
+            filter=filter, include_items=include_items
         )
 
         # Assert content of return
         for key, signal in response_data.result.signals.items():
             self.assertIsInstance(signal, Signal)
-
 
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -87,8 +85,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_signals_filter(
-            filter=filter,
-            include_items=include_items
+            filter=filter, include_items=include_items
         )
         # Assert no Items or Signals
         self.assertEqual(response_data.result.items, {})
@@ -113,7 +110,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
             include_items=include_items,
             skip=skip,
             limit=limit,
-            integration=integration
+            integration=integration,
         )
         # Assert no Items or Signals
         self.assertEqual(response_data.result.items, {})

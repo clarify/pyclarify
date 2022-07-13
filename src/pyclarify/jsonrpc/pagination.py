@@ -20,28 +20,28 @@ from pydantic.datetime_parse import parse_datetime, parse_duration
 
 class TimeIterator:
     """
-    Computes the total time window off an API call and chucks it into legal segments as constrained by the API. The 
+    Computes the total time window off an API call and chucks it into legal segments as constrained by the API. The
     iterator returns the next legal chunk of time and separates them into notBefore and before parameters.
 
     Parameters
     ----------
-    start_time: str/datetime 
+    start_time: str/datetime
         The global start time of the API call. This is the time that the user put in the notBefore parameter.
         It is the first date to be returned from the API.
 
     end_time: str/datetime
-        The global end time of the API call. This is the time that the user put in the before parameter. 
+        The global end time of the API call. This is the time that the user put in the before parameter.
         It is the final date to be returned from the API.
 
     rollup: RFC 3339 duration or "window", default None
                     If RFC 3339 duration is specified, roll-up the values into either the full time window
                     (`notBefore` -> `before`) or evenly sized buckets.
-                    
+
     Returns
     -------
     current_start_time
         The notBefore parameter to be used in an API call.
-    current_end_time 
+    current_end_time
         The before parameter to be used in an API call
     """
 
@@ -90,26 +90,26 @@ class TimeIterator:
 
 class ItemIterator:
     """
-    The iterator chucks items into legal segments as constrained by the API. The iterator returns the next legal chunk 
+    The iterator chucks items into legal segments as constrained by the API. The iterator returns the next legal chunk
     of items and separates them into the starting point(skip) and how many items to retrieve (limit).
 
     Parameters
     ----------
-    user_limit: int 
+    user_limit: int
         The number describing how many items the user wants to be returned.
 
     limit_per_call: int
         An int desribing the limit of how many items can be returned by the API.
-    
+
     skip: int
-        How many items to skip starting from the beginning of the returned list of items. 
+        How many items to skip starting from the beginning of the returned list of items.
         Think of this as the starting point.
 
     Returns
     -------
     skip
         The starting point of where to retrieve items
-    limit 
+    limit
         The number of items to retrieve
     """
 

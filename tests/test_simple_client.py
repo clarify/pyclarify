@@ -82,13 +82,15 @@ class TestJSONRPCClient(unittest.TestCase):
     @patch("pyclarify.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_no_iteration(self, client_req_mock, get_token_mock):
-        
+
         payload = self.client.create_payload(
             "clarify.selectItems", self.mock_data["no_iterations"]["args"]
         )
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: self.mock_data["no_iterations"]["response"]
+        client_req_mock.return_value.json = lambda: self.mock_data["no_iterations"][
+            "response"
+        ]
 
         response = self.client.make_requests(payload)
         payload = json.loads(payload)
@@ -104,13 +106,15 @@ class TestJSONRPCClient(unittest.TestCase):
     @patch("pyclarify.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_one_iteration(self, client_req_mock, get_token_mock):
-        
+
         payload = self.client.create_payload(
             "clarify.selectItems", self.mock_data["one_iterations"]["args"]
         )
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: self.mock_data["one_iterations"]["response"]
+        client_req_mock.return_value.json = lambda: self.mock_data["one_iterations"][
+            "response"
+        ]
 
         response = self.client.make_requests(payload)
         payload = json.loads(payload)
@@ -126,13 +130,15 @@ class TestJSONRPCClient(unittest.TestCase):
     @patch("pyclarify.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_many_iteration(self, client_req_mock, get_token_mock):
-        
+
         payload = self.client.create_payload(
             "clarify.selectItems", self.mock_data["many_iterations"]["args"]
         )
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: self.mock_data["many_iterations"]["response"]
+        client_req_mock.return_value.json = lambda: self.mock_data["many_iterations"][
+            "response"
+        ]
 
         response = self.client.make_requests(payload)
         payload = json.loads(payload)
@@ -144,8 +150,6 @@ class TestJSONRPCClient(unittest.TestCase):
 
         # assert is correct id
         self.assertEqual(response.id, str(payload["id"]))
-
-
 
     def test_authentication(self):
         read = self.client.authenticate("./tests/data/mock-clarify-credentials.json")

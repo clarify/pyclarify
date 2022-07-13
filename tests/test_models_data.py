@@ -9,7 +9,7 @@ from pyclarify.views.items import (
     SelectItemsParams,
     PublishSignalsParams,
     SelectItemsDataParams,
-    SaveSummary
+    SaveSummary,
 )
 from pyclarify.__utils__.auxiliary import *
 

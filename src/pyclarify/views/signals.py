@@ -81,10 +81,12 @@ class SaveSignalsParams(BaseModel, extra=Extra.forbid):
     inputs: Dict[InputID, SignalInfo]
     createOnly: Optional[bool] = False
 
+
 class SaveSummary(BaseModel, extra=Extra.forbid):
     id: ResourceID
     created: bool
     updated: bool
+
 
 class SaveSignalsResponse(BaseModel, extra=Extra.forbid):
     signalsByInput: Dict[InputID, SaveSummary]
