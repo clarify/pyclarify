@@ -136,7 +136,7 @@ class TestClarifyNamespaceParams(unittest.TestCase):
             self.fail("SelectItemsParams raised ValidationError unexpectedly!")
 
         try:
-            SelectItemsParams(items={}, data={})
+            SelectItemsParams(query= {"filter": {}}, include=[], groupIncludedByType = False)
         except ValidationError:
             self.fail("SelectItemsParams raised ValidationError unexpectedly!")
 

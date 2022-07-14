@@ -29,9 +29,10 @@ from pyclarify.fields.constraints import (
     InputID,
     ResourceID,
     IntegrationID,
+    ResourceMetadata
 )
 from .dataframe import DataFrame
-from pyclarify.fields.query import SelectItemsItemsParams
+from pyclarify.fields.query import ResourceQuery
 
 
 class ItemInfo(BaseModel):
@@ -39,7 +40,6 @@ class ItemInfo(BaseModel):
     valueType: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
-    annotations: Optional[Dict[AnnotationKey, str]] = {}
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
     sourceType: SourceTypeSignal = SourceTypeSignal.measurement
@@ -63,45 +63,55 @@ class SelectItemsDataParams(BaseModel, extra=Extra.forbid):
 
 
 class SelectItemsParams(BaseModel, extra=Extra.forbid):
-    items: SelectItemsItemsParams
-    data: SelectItemsDataParams
+    query: Optional[ResourceQuery] = {}
+    include: Optional[List[str]] = []
+    groupIncludedByType: Optional[bool] = False
+
+class ItemSelectView(BaseModel):
+    type: str
+    id: str
+    meta: ResourceMetadata
+    attributes: Item
+    relationships: Dict = {}
+
+class ItemSaveView(Item):
+    annotations: Optional[Dict[AnnotationKey, str]] = {}
 
 
 class SelectItemsResponse(BaseModel, extra=Extra.forbid):
-    items: Optional[Dict[InputID, ItemInfo]]
-    data: Optional[DataFrame]
+    meta: Dict
+    data: Optional[List[ItemSelectView]]
 
-    def __add__(self, other):
-        try:
-            if isinstance(other, SelectItemsResponse):
-                main_items = None
-                main_df = None
-                if self.items:
-                    source_items = self.items
-                    main_items = deepcopy(source_items)
-                    if other.items:
-                        for key, value in other.items.items():
-                            main_items[key] = value
-                if other.items and not self.items:
-                    main_items = deepcopy(other.items)
+    # def __add__(self, other):
+    #     try:
+    #         if isinstance(other, SelectItemsResponse):
+    #             main_items = None
+    #             main_df = None
+    #             if self.items:
+    #                 source_items = self.items
+    #                 main_items = deepcopy(source_items)
+    #                 if other.items:
+    #                     for key, value in other.items.items():
+    #                         main_items[key] = value
+    #             if other.items and not self.items:
+    #                 main_items = deepcopy(other.items)
+    #             if other.data:
+    #                 other_data = other.data
+    #                 main_df = other_data
+    #                 if self.data:
+    #                     main_df = DataFrame.merge([self.data, other_data])
+    #             if self.data and not other.data:
+    #                 main_df = self.data
 
-                if other.data:
-                    other_data = other.data
-                    main_df = other_data
-                    if self.data:
-                        main_df = DataFrame.merge([self.data, other_data])
-                if self.data and not other.data:
-                    main_df = self.data
+    #         return SelectItemsResponse(items=main_items, data=main_df)
 
-            return SelectItemsResponse(items=main_items, data=main_df)
-
-        except TypeError as e:
-            raise TypeError(source=self, other=other) from e
+    #     except TypeError as e:
+    #         raise TypeError(source=self, other=other) from e
 
 
 class PublishSignalsParams(BaseModel):
     integration: IntegrationID
-    itemsBySignal: Dict[ResourceID, Item]
+    itemsBySignal: Dict[ResourceID, ItemSaveView]
     createOnly: Optional[bool] = False
 
 
@@ -113,3 +123,6 @@ class SaveSummary(BaseModel, extra=Extra.forbid):
 
 class PublishSignalsResponse(BaseModel, extra=Extra.forbid):
     itemsBySignal: Dict[ResourceID, SaveSummary]
+
+
+

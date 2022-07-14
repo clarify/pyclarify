@@ -21,8 +21,9 @@ from pydantic.fields import Optional
 from pydantic import BaseModel, Extra
 from enum import Enum
 from typing import Union, List, Dict
-from datetime import datetime
 from pydantic.class_validators import root_validator
+from typing_extensions import Literal
+from datetime import datetime, timedelta
 
 
 class QueryParams(BaseModel):
@@ -126,3 +127,9 @@ class DateField(BaseModel):
 
     class Config:
         extra = Extra.forbid
+class ResourceQuery(BaseModel, extra=Extra.forbid):
+    sort: List[str] = []
+    filter: dict  # TODO: ResourceFilter (https://docs.clarify.io/v1.1/reference/filtering)
+    limit: int = 10
+    skip: int = 0
+    total: bool = False

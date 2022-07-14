@@ -21,16 +21,19 @@ The module provides a class for setting up a JSONRPCClient which will communicat
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework.
 """
+
+
+
+
 import requests
 from datetime import timedelta
 from pydantic import validate_arguments
 from pydantic.fields import Optional
 from typing import List, Union
 from typing_extensions import Literal
-
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
-from pyclarify.views.items import Item
+from pyclarify.views.items import Item, ItemSaveView
 from pyclarify.views.signals import SignalInfo
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
@@ -42,10 +45,9 @@ from pyclarify.query import Filter
 class ClarifyClient(JSONRPCClient):
     def __init__(self, clarify_credentials):
         super().__init__(None)
-        self.update_headers({"X-API-Version": "1.1beta1"})
+        self.update_headers({"X-API-Version": "1.1beta2"})
         self.authentication = GetToken(clarify_credentials)
         self.base_url = f"{self.authentication.api_url}rpc"
-
 
     @validate_arguments
     def insert(self, data: DataFrame) -> Response:
@@ -124,28 +126,26 @@ class ClarifyClient(JSONRPCClient):
     def select_items(
         self,
         filter: Optional[Filter] = None,
-        include_dataframe: bool = True,
-        include_metadata: bool = True,
+        include:  Optional[List] = [],
         not_before=None,
         before=None,
         skip: int = 0,
         limit: int = 10,
+        sort: List[str] = [],
         rollup: Union[timedelta, Literal["window"]] = None,
+        groupIncludedByType: Optional[bool] = False,
     ) -> Response:
         """
         Return item data from selected items.
-        For more information click `here <https://docs.clarify.io/api/next/datatypes/data-query>`_ .
+        For more information click `here <https://docs.clarify.io/api/1.1beta2/methods/clarify/select-items>`_ .
 
         Parameters
         ----------
         filter: Filter, optional
             A Filter Model that describes a mongodb filter to be applied.
 
-        include_dataframe: bool
-            A boolean deciding whether to include dataframe from item or not.
-
-        include_metadata: bool
-            A boolean deciding whether to include metadata from item or not.
+        include: List of strings, optional
+            A list of strings specifying which relationships to be included in the response.
 
         not_before: string(RFC 3339 timestamp) or python datetime, optional, default datetime.now() - 40days
             An RFC3339 time describing the inclusive start of the window.
@@ -159,10 +159,15 @@ class ClarifyClient(JSONRPCClient):
         limit: int, default 10
             Number of items to include in the match.
 
+        sort: list of strings
+            List of strings describing the order in which to sort the items in the response.
+
         rollup: timedelta or string(RFC 3339 duration) or "window", default None
             If RFC 3339 duration is specified, roll-up the values into either the full time window
             (`notBefore` -> `before`) or evenly sized buckets.
 
+        groupIncludedByType: bool, optional, default False
+            Boolean indicating whether or not to include groupIncludedByType in the response.
 
         Example
         -------
@@ -218,18 +223,15 @@ class ClarifyClient(JSONRPCClient):
         """
         not_before, before = compute_iso_timewindow(not_before, before)
         params = {
-            "items": {
-                "include": include_metadata,
+            "query": {
+                "filter": filter.to_query() if isinstance(filter, Filter) else {},
                 "limit": limit,
                 "skip": skip,
-                "filter": filter.to_query() if isinstance(filter, Filter) else {},
+                "sort": sort
             },
-            "data": {
-                "include": include_dataframe,
-                "notBefore": not_before,
-                "before": before,
-                "rollup": rollup,
-            },
+            "include": include,
+            "groupIncludedByType": groupIncludedByType
+
         }
 
         request_data = Request(
@@ -307,7 +309,8 @@ class ClarifyClient(JSONRPCClient):
         """
 
         # create params dict
-        params = {"inputs": {}, "createOnly": create_only, "integration": integration}
+        params = {"inputs": {}, "createOnly": create_only,
+                  "integration": integration}
 
         # assert integration parameter
         if not params["integration"]:
@@ -326,7 +329,7 @@ class ClarifyClient(JSONRPCClient):
     def publish_signals(
         self,
         signal_ids: List[ResourceID],
-        items: List[Item],
+        items: List[ItemSaveView],
         create_only: bool = False,
         integration: str = None,
     ) -> Response:
@@ -410,7 +413,6 @@ class ClarifyClient(JSONRPCClient):
 
         self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())
-
 
     @validate_arguments
     def select_signals(

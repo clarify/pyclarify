@@ -22,7 +22,7 @@ from unittest.mock import patch
 # Standard library imports...
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyClient, SignalInfo, DataFrame
+from pyclarify import ClarifyClient, DataFrame
 
 
 class TestClarifyClientPublishSignals(unittest.TestCase):
