@@ -15,5 +15,7 @@ limitations under the License.
 """
 
 from pyclarify.client import ClarifyClient
-from pyclarify.views import Signal, SignalInfo, Item, ItemInfo, DataFrame
+from pyclarify.views.signals import Signal, SignalInfo
+from pyclarify.views.items import Item, ItemInfo
+from pyclarify.fields.dataframe import DataFrame
 import pyclarify.query
