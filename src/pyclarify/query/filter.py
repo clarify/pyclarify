@@ -14,84 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pyclarify.__utils__.exceptions import FilterError
+from pyclarify.fields.query import Comparison, DateField, Operators
 from pydantic.class_validators import root_validator
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel
 from pydantic.fields import Optional
 from typing import ForwardRef, Union, List, Dict
-from enum import Enum
-
-
-class Operators(str, Enum):
-    NE = "$ne"
-    REGEX = "$regex"
-    IN = "$in"
-    NIN = "$nin"
-    LT = "$lt"
-    GT = "$gt"
-    GTE = "$gte"
-
-
-class Comparison(BaseModel):
-    value: Union[str, List[str], int, List[int], float, List[float], bool, None] = None
-    operator: Optional[Operators]
-
-    @root_validator(pre=False, allow_reuse=True)
-    def field_must_reflect_operator(cls, values):
-        value = values["value"]
-        operator = values["operator"] if "operator" in values.keys() else None
-        if operator:
-            # Field value should be list
-            if operator in [Operators.IN, Operators.NIN]:
-                if not isinstance(value, list):
-                    raise FilterError(operator, list, value)
-
-            # Field value should not be list
-            if operator not in [Operators.IN, Operators.NIN]:
-                if isinstance(value, list):
-                    raise FilterError(operator, list, value)
-
-        # No operator means Equals
-        else:
-            if isinstance(value, list):
-                raise FilterError("Equals (None)", list, value)
-        return values
-
-    class Config:
-        use_enum_values = True
-        extra = Extra.forbid
-
-
-class Equal(Comparison):
-    pass
-
-
-class NotEqual(Comparison):
-    operator = Operators.NE
-
-
-class Regex(Comparison):
-    operator = Operators.REGEX
-
-
-class In(Comparison):
-    operator = Operators.IN
-
-
-class NotIn(Comparison):
-    operator = Operators.NIN
-
-
-class LessThan(Comparison):
-    operator = Operators.LT
-
-
-class GreaterThan(Comparison):
-    operator = Operators.GT
-
-
-class GreaterThanOrEqual(Comparison):
-    operator = Operators.GTE
+from datetime import datetime
 
 
 Filter = ForwardRef("Filter")
@@ -158,3 +86,30 @@ class Filter(BaseModel):
 
 
 Filter.update_forward_refs()
+
+
+class DataFilter(BaseModel):
+    gte: Optional[Union[str, datetime]] = None
+    lt: Optional[Union[str, datetime]] = None
+
+    @root_validator(pre=False, allow_reuse=True)
+    def field_must_reflect_operator(cls, values):
+        gte = values["gte"] if "gte" in values.keys() else None
+        lt = values["lt"] if "lt" in values.keys() else None
+
+        if gte:
+            values["gte"] = DateField(operator=Operators.GTE, time=gte)
+        if lt:
+            values["lt"] = DateField(operator=Operators.LT, time=lt)
+
+        return values
+
+    def to_query(self):
+        q = {}
+        if self.gte:
+            gte = self.gte.dict()["query"]
+            q.update(gte)
+        if self.lt:
+            lt = self.lt.dict()["query"]
+            q.update(lt)
+        return {"times": q}

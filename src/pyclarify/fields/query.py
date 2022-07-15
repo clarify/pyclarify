@@ -16,11 +16,13 @@ limitations under the License.
 
 
 from .constraints import LimitSelectItems, LimitSelectSignals
+from pyclarify.__utils__.exceptions import FilterError
 from pydantic.fields import Optional
 from pydantic import BaseModel, Extra
-from typing_extensions import Literal
-from typing import Union
-from datetime import datetime, timedelta
+from enum import Enum
+from typing import Union, List, Dict
+from datetime import datetime
+from pydantic.class_validators import root_validator
 
 
 class QueryParams(BaseModel):
@@ -37,17 +39,90 @@ class SelectItemsItemsParams(QueryParams, extra=Extra.forbid):
     limit: Optional[LimitSelectItems] = 10
 
 
-class DataQuery(BaseModel, extra=Extra.forbid):
-    include: bool = False
-    notBefore: Optional[datetime]
-    before: Optional[datetime]
-    rollup: Union[timedelta, Literal["window"]] = None
+class Operators(str, Enum):
+    NE = "$ne"
+    REGEX = "$regex"
+    IN = "$in"
+    NIN = "$nin"
+    LT = "$lt"
+    GT = "$gt"
+    GTE = "$gte"
 
 
-class ResourceQuery(BaseModel, extra=Extra.forbid):
-    include: bool = False
-    filter: dict  # TODO: ResourceFilter (https://docs.clarify.io/v1.1/reference/filtering)
-    limit: int = (
-        0  # select_items: max=50, default=10 | select_signal: max=1000, default=50
-    )
-    skip: int = 0
+class Comparison(BaseModel):
+    value: Union[str, List[str], int, List[int], float, List[float], bool, None] = None
+    operator: Optional[Operators]
+
+    @root_validator(pre=False, allow_reuse=True)
+    def field_must_reflect_operator(cls, values):
+        value = values["value"]
+        operator = values["operator"] if "operator" in values.keys() else None
+        if operator:
+            # Field value should be list
+            if operator in [Operators.IN, Operators.NIN]:
+                if not isinstance(value, list):
+                    raise FilterError(operator, list, value)
+
+            # Field value should not be list
+            if operator not in [Operators.IN, Operators.NIN]:
+                if isinstance(value, list):
+                    raise FilterError(operator, list, value)
+
+        # No operator means Equals
+        else:
+            if isinstance(value, list):
+                raise FilterError("Equals (None)", list, value)
+        return values
+
+    class Config:
+        use_enum_values = True
+        extra = Extra.forbid
+
+
+class Equal(Comparison):
+    pass
+
+
+class NotEqual(Comparison):
+    operator = Operators.NE
+
+
+class Regex(Comparison):
+    operator = Operators.REGEX
+
+
+class In(Comparison):
+    operator = Operators.IN
+
+
+class NotIn(Comparison):
+    operator = Operators.NIN
+
+
+class LessThan(Comparison):
+    operator = Operators.LT
+
+
+class GreaterThan(Comparison):
+    operator = Operators.GT
+
+
+class GreaterThanOrEqual(Comparison):
+    operator = Operators.GTE
+
+
+class DateField(BaseModel):
+    operator: Optional[Operators]
+    time: Optional[Union[str, datetime]]
+    query: Dict = {}
+
+    @root_validator(pre=True, allow_reuse=True)
+    def refomat_payload(cls, values):
+        op = values["operator"]
+        time = values["time"]
+        values["query"] = {op.value: time}
+
+        return values
+
+    class Config:
+        extra = Extra.forbid
