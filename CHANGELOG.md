@@ -166,6 +166,10 @@ Changes are grouped as follows
 - `views` folder containing all models for communicating with the API
 - `jsonrpc` folder containing all underlying functionality for the `ClarifyClient`
 
+## Changed
+
+- `merge`, `to_pandas` and`from_pandas` methods are now class methods on the `pyclarify.views.DataFrame` Class.
+
 ## Removed
 
 - `APIClient`
