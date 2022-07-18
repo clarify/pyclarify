@@ -4,7 +4,7 @@ import json
 from pydantic.error_wrappers import ValidationError
 
 sys.path.insert(1, "src/")
-from pyclarify.fields.dataframe import DataFrame, merge
+from pyclarify.views.dataframe import DataFrame
 from pyclarify.views.items import (
     SaveSummary,
 )
@@ -72,25 +72,25 @@ class TestMerge(unittest.TestCase):
         )
 
     def test_merge_single_input(self):
-        merged = merge([self.cdf])
+        merged = self.cdf.merge([self.cdf])
 
         # expect merged to be same as single input
         self.assertEqual(merged, self.cdf)
 
     def test_merge_two_inputs(self):
-        merged = merge([self.cdf, self.cdf2])
-        merged_reverse = merge([self.cdf2, self.cdf])
+        merged = self.cdf.merge([self.cdf, self.cdf2])
+        merged_reverse = DataFrame.merge([self.cdf2, self.cdf])
 
         self.assertEqual(merged, merged_reverse)
 
     def test_merge_multiple_inputs(self):
 
-        merged = merge([self.cdf, self.cdf2, self.cdf3])
-        merged2 = merge([self.cdf, self.cdf3, self.cdf2])
-        merged3 = merge([self.cdf2, self.cdf, self.cdf3])
-        merged4 = merge([self.cdf2, self.cdf3, self.cdf])
-        merged5 = merge([self.cdf3, self.cdf, self.cdf2])
-        merged6 = merge([self.cdf3, self.cdf2, self.cdf])
+        merged = DataFrame().merge([self.cdf, self.cdf2, self.cdf3])
+        merged2 = DataFrame().merge([self.cdf, self.cdf3, self.cdf2])
+        merged3 = DataFrame().merge([self.cdf2, self.cdf, self.cdf3])
+        merged4 = DataFrame().merge([self.cdf2, self.cdf3, self.cdf])
+        merged5 = DataFrame().merge([self.cdf3, self.cdf, self.cdf2])
+        merged6 = DataFrame().merge([self.cdf3, self.cdf2, self.cdf])
 
         self.assertEqual(merged, merged2)
         self.assertEqual(merged, merged3)
@@ -99,7 +99,7 @@ class TestMerge(unittest.TestCase):
         self.assertEqual(merged, merged6)
 
     def test_merge_equal_input(self):
-        merged = merge([self.cdf, self.cdf])
+        merged = DataFrame().merge([self.cdf, self.cdf])
 
         self.assertEqual(merged, self.cdf)
 
