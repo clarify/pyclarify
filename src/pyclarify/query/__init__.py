@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from .filter import (
-    Filter,
+from pyclarify.fields.query import (
     Equal,
     NotEqual,
     Regex,
@@ -27,3 +26,5 @@ from .filter import (
     Operators,
     Comparison,
 )
+
+from .filter import Filter

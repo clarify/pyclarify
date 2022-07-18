@@ -13,3 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from pydantic.fields import Optional
+from pydantic import BaseModel, Extra
+from typing import Union, List, Dict
+from datetime import timedelta
+from typing_extensions import Literal
+
+
+class DataQuery(BaseModel, extra=Extra.forbid):
+    filter: Optional[Dict] = {}
+    last: Optional[int] = -1
+    rollup: Union[timedelta, Literal["window"]] = None
+
+
+class ResourceQuery(BaseModel, extra=Extra.forbid):
+    filter: Optional[Dict] = {}
+    sort: Optional[List[str]]
+    limit: Optional[int]
+    skip: Optional[int]
+    total: Optional[bool]
