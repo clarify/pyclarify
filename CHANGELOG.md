@@ -165,7 +165,13 @@ Changes are grouped as follows
 - `fields` folder containing all fields used internally
 - `views` folder containing all models for communicating with the API
 - `jsonrpc` folder containing all underlying functionality for the `ClarifyClient`
+- `pyclarify.query.filter.DataFilter`
+
+## Changed
+
+- Moved `ResourceQuery` and `DataQuery` models to `pyclarify.query.query`
+- Moved `Comparison` and `Operators` to `pyclarify.fields.query`
 
 ## Removed
 
-- `APIClient`
+- `pyclarify.client.APIClient`
