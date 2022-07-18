@@ -89,7 +89,7 @@ class SelectItemsResponse(BaseModel, extra=Extra.forbid):
                     other_data = other.data
                     main_df = other_data
                     if self.data:
-                        main_df = self.data.merge(other_data)
+                        main_df = DataFrame.merge([self.data, other_data])
                 if self.data and not other.data:
                     main_df = self.data
 
