@@ -29,7 +29,7 @@ from typing import List, Union
 from typing_extensions import Literal
 
 from pyclarify.jsonrpc.client import JSONRPCClient
-from pyclarify.fields.dataframe import DataFrame
+from pyclarify.views.dataframe import DataFrame
 from pyclarify.views.items import Item
 from pyclarify.views.signals import SignalInfo
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod

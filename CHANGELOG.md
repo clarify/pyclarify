@@ -172,6 +172,26 @@ Changes are grouped as follows
 - Moved `ResourceQuery` and `DataQuery` models to `pyclarify.query.query`
 - Moved `Comparison` and `Operators` to `pyclarify.fields.query`
 
+## Changed
+
+- Moved `DataFrame` and all sub methods to `pyclarify.views.dataframe`
+- `merge`, `to_pandas` and`from_pandas` methods are now class methods on the `pyclarify.views.DataFrame` Class.
+  Usage:
+
+  ```python
+  from pyclarify import DataFrame
+
+  series = {"signal_1" : [1, 2]}
+  times = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+  df = DataFrame(series=series, times=times)
+
+  panda_df = df.to_pandas()
+
+  new_df = DataFrame.from_pandas(panda_df)
+
+  merged = DataFrame.merge([df, new_df])
+  ```
+
 ## Removed
 
 - `pyclarify.client.APIClient`
