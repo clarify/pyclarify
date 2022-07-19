@@ -166,6 +166,8 @@ Changes are grouped as follows
 - `views` folder containing all models for communicating with the API
 - `jsonrpc` folder containing all underlying functionality for the `ClarifyClient`
 - `pyclarify.query.filter.DataFilter`
+- `pyclarify.client.ClarifyClient.select_dataframe()` for selecting dataframes.
+
 
 ## Changed
 
