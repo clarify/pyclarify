@@ -30,19 +30,22 @@ from pyclarify.fields.constraints import (
     IntegrationID,
 )
 from pyclarify.fields.query import SelectSignalsSignalsParams
+from pyclarify.fields.resource import BaseResource
 
 
-class SignalInfo(BaseModel):
+class SignalInfo(BaseResource):
     name: str
-    type: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
-    annotations: Optional[Dict[AnnotationKey, str]] = {}
+    sourceType: SourceTypeSignal = SourceTypeSignal.measurement
+    valueType: TypeSignal = TypeSignal.numeric
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
-    sourceType: SourceTypeSignal = SourceTypeSignal.measurement
     sampleInterval: timedelta = None
     gapDetection: timedelta = None
+    input: InputID
+    integration: IntegrationID
+    item: Union[ResourceID, None]
 
     class Config:
         json_encoders = {timedelta: timedelta_isoformat}

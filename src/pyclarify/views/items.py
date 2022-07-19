@@ -30,25 +30,23 @@ from pyclarify.fields.constraints import (
     ResourceID,
     IntegrationID,
 )
-from .dataframe import DataFrame
 from pyclarify.fields.query import SelectItemsItemsParams
+from pyclarify.fields.resource import BaseResource
+from .dataframe import DataFrame
 
 
-class ItemInfo(BaseModel):
+class ItemInfo(BaseResource):
     name: str
     valueType: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
-    annotations: Optional[Dict[AnnotationKey, str]] = {}
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
-    sourceType: SourceTypeSignal = SourceTypeSignal.measurement
     sampleInterval: timedelta = None
     gapDetection: timedelta = None
 
     class Config:
         json_encoders = {timedelta: timedelta_isoformat}
-        extra = Extra.forbid
 
 
 class Item(ItemInfo):

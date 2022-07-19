@@ -42,7 +42,7 @@ from pyclarify.query import Filter
 class ClarifyClient(JSONRPCClient):
     def __init__(self, clarify_credentials):
         super().__init__(None)
-        self.update_headers({"X-API-Version": "1.1beta1"})
+        self.update_headers({"X-API-Version": "1.1beta2"})
         self.authentication = GetToken(clarify_credentials)
         self.base_url = f"{self.authentication.api_url}rpc"
 
@@ -416,10 +416,11 @@ class ClarifyClient(JSONRPCClient):
     def select_signals(
         self,
         filter: Optional[Filter] = None,
-        include_items: bool = False,
+        include: List = [],
         skip: int = 0,
         limit: int = 10,
         integration: str = None,
+        groupIncludedByType: bool = False
     ) -> Response:
         """
         Return signal metadata from selected signals and/or item.
@@ -477,13 +478,13 @@ class ClarifyClient(JSONRPCClient):
         """
         params = {
             "integration": integration,
-            "signals": {
-                "include": True,
+            "include": include,
+            "query":{
                 "filter": filter.to_query() if isinstance(filter, Filter) else {},
                 "limit": limit,
                 "skip": skip,
             },
-            "items": {"include": include_items},
+            "groupIncludedByType": groupIncludedByType
         }
 
         # assert integration parameter
