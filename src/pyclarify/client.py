@@ -26,7 +26,7 @@ help of jsonrpcclient framework.
 
 
 import requests
-from datetime import timedelta
+from datetime import timedelta, datetime
 from pydantic import validate_arguments
 from pydantic.fields import Optional
 from typing import List, Union
@@ -507,4 +507,135 @@ class ClarifyClient(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
+        return self.make_requests(request_data.json())
+
+    @validate_arguments
+    def select_dataframe(
+        self,
+        filter: Optional[Filter] = None,
+        sort: List[str]= [],
+        limit: int = 20,
+        skip: int = 0,
+        total: bool = False,
+        gte: datetime = None,
+        lt: datetime = None,
+        rollup: timedelta = None,
+        include: List[str] = [],
+        groupIncludedByType: bool = False,
+    ) -> Response:
+        """
+        Return dataframe for items.
+
+        Time selection:
+        - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
+        - Maximum window size is 400 days (400 * 24 hours) whenrollup is greater than or equal to PT1M (1 minute).
+        - No maximum window size if rollup is window.
+
+        Parameters
+        ----------
+        filter: Filter, optional
+            A Filter Model that describes a mongodb filter to be applied.
+
+        sort: list of strings
+            List of strings describing the order in which to sort the items in the response.
+
+        limit: int, default 20
+            The maximum number of resources to select. Negative numbers means no limit, which may or may not be allowed.
+
+        skip: int default: 0
+            Skip the first N matches. A negative skip is treated as 0.
+
+        total: bool default: False
+            When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
+
+        gte: string(RFC 3339 timestamp) or python datetime, optional, default <now - 7 days>
+            An RFC3339 time describing the inclusive start of the window.
+        
+        lt: string(RFC 3339 timestamp) or python datetime, optional, default <now + 7 days>
+            An RFC3339 time describing the exclusive end of the window.
+        
+        rollup: timedelta or string(RFC 3339 duration) or "window", default None
+            If RFC 3339 duration is specified, roll-up the values into either the full time window
+            (`gte` -> `lt`) or evenly sized buckets.
+
+        include: List of strings, optional
+            A list of strings specifying which relationships to be included in the response.
+
+        groupIncludedByType: bool, optional, default False
+            Boolean indicating whether or not to include groupIncludedByType in the response.
+
+        Example
+        -------
+
+            >>> client.select_dataframe(
+            >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
+            >>>     sort = ["-id"],
+            >>>     limit = 5,
+            >>>     skip = 3,
+            >>>     total = False,
+            >>>     gte="2022-01-01T01:01:01Z",
+            >>>     lt="2022-01-09T01:01:01Z",
+            >>>     rollup="PT24H",
+            >>>     include = ["item],
+            >>>     groupIncludedByType = False,
+            >>> )
+
+        Returns
+        -------
+        Response
+            In case of a valid return value, returns a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = SelectDataFrameResponse(
+                >>>    meta={
+                >>>        'total': -1, 
+                >>>        'groupIncludedByType': False
+                >>>    }, 
+                >>>    data=DataFrame(
+                >>>        times=[datetime.datetime(2022, 7, 12, 12, 0, tzinfo=datetime.timezone.utc),..],
+                >>>        series={
+                >>>            'c5ep6ojsbu8cohpih9bg': [0.18616, 0.18574000000000002, ...,],
+                >>>            ...
+                >>>        }
+                >>>     )
+                >>>     included=None
+                >>> ),
+                >>> error = None
+
+            In case of the error the method return a pydantic model with the following format:
+
+                >>> jsonrpc = '2.0'
+                >>> id = '1'
+                >>> result = None
+                >>> error = Error(
+                >>>         code = '-32602',
+                >>>         message = 'Invalid params',
+                >>>         data = ErrorData(trace = <trace_id>, params = {})
+                >>> )
+        """
+        params = {
+            "query": {
+                "filter": filter.to_query() if isinstance(filter, Filter) else {},
+                "sort": sort,
+                "limit": limit,
+                "skip": skip,
+                "total": total
+            },
+            "data": {
+                "filter":{
+                    "times": {
+                        "$gte": gte,
+                        "$lt": lt,
+                    }
+                },
+                "rollup": rollup
+            },
+        "include": include,
+        "groupIncludedByType": groupIncludedByType
+        }
+
+        request_data = Request(method=ApiMethod.select_dataframe, params=params)
+
+        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
         return self.make_requests(request_data.json())

@@ -23,7 +23,7 @@ from pydantic.fields import Optional
 from typing import List, Dict, Union
 from pyclarify.fields.constraints import ApiMethod
 from pyclarify.fields.error import Error
-from .dataframe import InsertParams, InsertResponse
+from .dataframe import InsertParams, InsertResponse, SelectDataFrameParams, SelectDataFrameResponse
 from .items import (
     SelectItemsParams,
     SelectItemsResponse,
@@ -73,6 +73,9 @@ class Request(JSONRPCRequest):
         elif values["method"] == ApiMethod.publish_signals:
             values["params"] = PublishSignalsParams(**values["params"])
             return values
+        elif values["method"] == ApiMethod.select_dataframe:
+            values["params"] = SelectDataFrameParams(**values["params"])
+            return values
         return values
 
 
@@ -121,6 +124,7 @@ class Response(GenericResponse, extra=Extra.forbid):
             InsertResponse,
             SaveSignalsResponse,
             SelectItemsResponse,
+            SelectDataFrameResponse,
             SelectSignalsResponse,
             PublishSignalsResponse,
         ]
