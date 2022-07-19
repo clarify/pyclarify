@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from __future__ import annotations
-from inspect import Attribute
 from pydantic import BaseModel, constr, conint
 from typing import List, Union, Dict
 from enum import Enum
