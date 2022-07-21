@@ -127,12 +127,9 @@ class ClarifyClient(JSONRPCClient):
         self,
         filter: Optional[Filter] = None,
         include:  Optional[List] = [],
-        not_before=None,
-        before=None,
         skip: int = 0,
         limit: int = 10,
         sort: List[str] = [],
-        rollup: Union[timedelta, Literal["window"]] = None,
         groupIncludedByType: Optional[bool] = False,
     ) -> Response:
         """
@@ -147,12 +144,6 @@ class ClarifyClient(JSONRPCClient):
         include: List of strings, optional
             A list of strings specifying which relationships to be included in the response.
 
-        not_before: string(RFC 3339 timestamp) or python datetime, optional, default datetime.now() - 40days
-            An RFC3339 time describing the inclusive start of the window.
-
-        before: string(RFC 3339 timestamp) or python datetime, optional, default datetime.now()
-            An RFC3339 time describing the exclusive end of the window.
-
         skip: int, default 0
             Integer describing how many of the first N items to exclude from response.
 
@@ -162,10 +153,6 @@ class ClarifyClient(JSONRPCClient):
         sort: list of strings
             List of strings describing the order in which to sort the items in the response.
 
-        rollup: timedelta or string(RFC 3339 duration) or "window", default None
-            If RFC 3339 duration is specified, roll-up the values into either the full time window
-            (`notBefore` -> `before`) or evenly sized buckets.
-
         groupIncludedByType: bool, optional, default False
             Boolean indicating whether or not to include groupIncludedByType in the response.
 
@@ -173,12 +160,11 @@ class ClarifyClient(JSONRPCClient):
         -------
             >>> client.select_items(
             >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
-            >>>     include_metadata = False,
-            >>>     not_before = "2021-10-01T12:00:00Z",
-            >>>     before = "2021-11-10T12:00:00Z",
+            >>>     include = ["signals"],
             >>>     skip = 0,
             >>>     limit = 10,
-            >>>     rollup = "P1DT"
+            >>>     sort = ["-id", "name"],
+            >>>     groupIncludedByType=False
             >>> )
 
 
@@ -190,24 +176,41 @@ class ClarifyClient(JSONRPCClient):
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> result = SelectItemsResponse(
-                >>>             items = None,
-                >>>             data = DataFrame(
-                >>>                 times = [datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc)],
-                >>>                 series = {
-                >>>                    '<ITEM_ID>_avg': [478.19],
-                >>>                    '<ITEM_ID>_count': [1.0],
-                >>>                    '<ITEM_ID>_max': [478.19],
-                >>>                    '<ITEM_ID>_min': [478.19],
-                >>>                    '<ITEM_ID>_sum': [478.19]
-                >>>                 }))
-                >>> error = None
+                >>>     meta={
+                >>>         'total': -1, 
+                >>>         'groupIncludedByType': True
+                >>>     }, 
+                >>>     data=[
+                >>>         ItemSelectView(
+                >>>             type='items', 
+                >>>             id='cb8hjnrfgirpojeq0uv0', 
+                >>>             meta=ResourceMetadata(
+                >>>                 annotations={}, 
+                >>>                 attributesHash='bd1554f5f6893165f086943adaad176590985b70', 
+                >>>                 relationshipsHash='5f36b2ea290645ee34d943220a14b54ee5ea5be5', 
+                >>>                 updatedAt=datetime.datetime(2022, 7, 15, 7, 40, 15, 899000, tzinfo=datetime.timezone.utc), 
+                >>>                 createdAt=datetime.datetime(2022, 7, 15, 7, 40, 15, 899000, tzinfo=datetime.timezone.utc)
+                >>>             ), 
+                >>>             attributes=Item(
+                >>>                 name='test55', 
+                >>>                 valueType=<TypeSignal.numeric: 'numeric'>, 
+                >>>                 description='', 
+                >>>                 labels={'data-source': [], 'location': [], 'type': []}, 
+                >>>                 engUnit='', 
+                >>>                 enumValues={}, 
+                >>>                 sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
+                >>>                 sampleInterval=None, 
+                >>>                 gapDetection=None, 
+                >>>                 visible=True
+                >>>             ), 
+                >>>             relationships={}
+                >>>         ), 
+                >>>         ItemSelectView(...),
+                >>>         ...
+                >>>     ]
+                >>> ), 
+                >>> error=None
 
-            In case where `rollup = None`, the response in the DataFrame has the following (example) format:
-
-                >>>  data = DataFrame(
-                >>>                    times = [ datetime.datetime(2020, 6, 1, 10, 0, tzinfo=datetime.timezone.utc) ],
-                >>>                    series = {'<ITEM_ID>': [478.19]}
-                >>>         )
 
             In case of the error the method return a pydantic model with the following format:
 
@@ -221,7 +224,7 @@ class ClarifyClient(JSONRPCClient):
                 >>> )
 
         """
-        not_before, before = compute_iso_timewindow(not_before, before)
+
         params = {
             "query": {
                 "filter": filter.to_query() if isinstance(filter, Filter) else {},
