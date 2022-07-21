@@ -179,11 +179,11 @@ class JSONRPCClient:
         """
         for payload in self.payload_list:
             
-            print(f"--> {self.base_url}, req: {payload}")
+            logging.debug(f"--> {self.base_url}, req: {payload}")
             res = requests.post(
                 self.base_url, data=json.dumps(payload), headers=self.headers
             )
-            print(f"<-- {self.base_url} ({res.status_code})")
+            logging.debug(f"<-- {self.base_url} ({res.status_code})")
             if not res.ok:
                 err = {
                     "code": res.status_code,
