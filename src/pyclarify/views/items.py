@@ -29,7 +29,8 @@ from pyclarify.fields.constraints import (
     InputID,
     ResourceID,
     IntegrationID,
-    ResourceMetadata
+    ResourceMetadata,
+    SelectionMeta
 )
 from .dataframe import DataFrame
 from pyclarify.fields.query import ResourceQuery
@@ -79,9 +80,9 @@ class ItemSaveView(Item):
 
 
 class SelectItemsResponse(BaseModel, extra=Extra.forbid):
-    meta: Dict
+    meta: SelectionMeta
     data: Optional[List[ItemSelectView]]
-
+    
     # def __add__(self, other):
     #     try:
     #         if isinstance(other, SelectItemsResponse):
