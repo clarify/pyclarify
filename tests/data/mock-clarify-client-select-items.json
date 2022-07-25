@@ -12,51 +12,42 @@
         "jsonrpc": "2.0",
         "id": "1",
         "result": {
-          "items": {
-            "c5vv12btaf7d0qbk0l0g": {
-              "name": "c5vv12btaf7d0qbk0l0g",
-              "valueType": "numeric",
-              "description": "Test description",
-              "labels": { "data-source": [], "location": [] },
-              "annotations": {},
-              "engUnit": "",
-              "enumValues": {},
-              "sourceType": "measurement",
-              "sampleInterval": null,
-              "gapDetection": "3600.0"
+          "meta": { "total": -1, "groupIncludedByType": false },
+          "data": [
+            {
+              "type": "items",
+              "id": "c5ep6ojsbu8cohpih9bg",
+              "meta": {
+                "attributesHash": "df105ac1e2dde32794909e3be8c6e435ab1c12f3",
+                "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+                "annotations": { "clarify/industry-type": "mysterybox" },
+                "createdAt": "2021-10-06T12:15:30.344Z",
+                "updatedAt": "2022-03-25T09:58:19.598Z"
+              },
+              "attributes": {
+                "name": "Electricity price",
+                "description": "Used by Demo data timeline: Mystery box.",
+                "valueType": "numeric",
+                "sourceType": "prediction",
+                "engUnit": "EUR/kWh",
+                "sampleInterval": null,
+                "gapDetection": "PT2H",
+                "labels": {
+                  "city": ["Oslo"],
+                  "country": ["Norway"],
+                  "data-source": ["Nordpool"],
+                  "location": ["Oslo"]
+                },
+                "enumValues": {},
+                "visible": true
+              },
+              "relationships": {}
             }
-          }
+          ]
         }
       }
     },
-    {
-      "comments": "get items matching criteria, return only data",
-      "args": {
-        "filter": {
-          "fields": { "name": { "value": ["Electricity"], "operator": "$in" } }
-        },
-        "skip": 0,
-        "not_before": "2021-10-10T21:50:06Z",
-        "before": "2021-10-11T22:50:06Z",
-        "rollup": "PT1H"
-      },
-      "response": {
-        "jsonrpc": "2.0",
-        "id": "1",
-        "result": {
-          "data": {
-            "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
-            "series": {
-              "item_id_avg": [0.0, 0.0],
-              "item_id_count": [20.0, 20.0],
-              "item_id_max": [0.0, 0.0],
-              "item_id_min": [0.0, 0.0],
-              "item_id_sum": [0.0, 0.0]
-            }
-          }
-        }
-      }
-    },
+    
     {
       "comments": "get 1100 items, return metadata and no data",
       "args": {
@@ -68,20 +59,38 @@
         "jsonrpc": "2.0",
         "id": "1",
         "result": {
-          "items": {
-            "c5vv12btaf7d0qbk0l0g": {
-              "name": "c5vv12btaf7d0qbk0l0g",
-              "valueType": "numeric",
-              "description": "Test description",
-              "labels": { "data-source": [], "location": [] },
-              "annotations": {},
-              "engUnit": "",
-              "enumValues": {},
-              "sourceType": "measurement",
-              "sampleInterval": null,
-              "gapDetection": "3600.0"
+          "meta": { "total": -1, "groupIncludedByType": false },
+          "data": [
+            {
+              "type": "items",
+              "id": "c5ep6ojsbu8cohpih9bg",
+              "meta": {
+                "attributesHash": "df105ac1e2dde32794909e3be8c6e435ab1c12f3",
+                "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+                "annotations": { "clarify/industry-type": "mysterybox" },
+                "createdAt": "2021-10-06T12:15:30.344Z",
+                "updatedAt": "2022-03-25T09:58:19.598Z"
+              },
+              "attributes": {
+                "name": "Electricity price",
+                "description": "Used by Demo data timeline: Mystery box.",
+                "valueType": "numeric",
+                "sourceType": "prediction",
+                "engUnit": "EUR/kWh",
+                "sampleInterval": null,
+                "gapDetection": "PT2H",
+                "labels": {
+                  "city": ["Oslo"],
+                  "country": ["Norway"],
+                  "data-source": ["Nordpool"],
+                  "location": ["Oslo"]
+                },
+                "enumValues": {},
+                "visible": true
+              },
+              "relationships": {}
             }
-          }
+          ]
         }
       }
     },
@@ -92,25 +101,44 @@
           "fields": { "name": { "value": ["Electricity"], "operator": "$in" } }
         },
         "skip": 0,
-        "limit": 100,
-        "not_before": "2021-10-10T21:50:06Z",
-        "before": "2021-10-11T22:50:06Z",
-        "rollup": "PT1H"
+        "limit": 100
       },
       "response": {
         "jsonrpc": "2.0",
         "id": "1",
         "result": {
-          "data": {
-            "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
-            "series": {
-              "item_id_avg": [0.0, 0.0],
-              "item_id_count": [20.0, 20.0],
-              "item_id_max": [0.0, 0.0],
-              "item_id_min": [0.0, 0.0],
-              "item_id_sum": [0.0, 0.0]
+          "meta": { "total": -1, "groupIncludedByType": false },
+          "data": [
+            {
+              "type": "items",
+              "id": "c5ep6ojsbu8cohpih9bg",
+              "meta": {
+                "attributesHash": "df105ac1e2dde32794909e3be8c6e435ab1c12f3",
+                "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+                "annotations": { "clarify/industry-type": "mysterybox" },
+                "createdAt": "2021-10-06T12:15:30.344Z",
+                "updatedAt": "2022-03-25T09:58:19.598Z"
+              },
+              "attributes": {
+                "name": "Electricity price",
+                "description": "Used by Demo data timeline: Mystery box.",
+                "valueType": "numeric",
+                "sourceType": "prediction",
+                "engUnit": "EUR/kWh",
+                "sampleInterval": null,
+                "gapDetection": "PT2H",
+                "labels": {
+                  "city": ["Oslo"],
+                  "country": ["Norway"],
+                  "data-source": ["Nordpool"],
+                  "location": ["Oslo"]
+                },
+                "enumValues": {},
+                "visible": true
+              },
+              "relationships": {}
             }
-          }
+          ]
         }
       }
     }

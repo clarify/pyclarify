@@ -45,7 +45,10 @@ class JSONRPCRequest(BaseModel):
     params: Dict = {}
 
     class Config:
-        json_encoders = {timedelta: timedelta_isoformat, datetime: time_to_string}
+        json_encoders = {
+            timedelta: timedelta_isoformat,
+            datetime: time_to_string
+        }
 
 
 @validate_arguments

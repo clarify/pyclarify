@@ -15,7 +15,7 @@ limitations under the License.
 """
 
 from pydantic import BaseModel, constr, conint
-from typing import List, Union
+from typing import List, Union, Dict
 from enum import Enum
 from datetime import datetime
 
@@ -54,6 +54,14 @@ class TypeSignal(str, Enum):
 
 
 class ResourceMetadata(BaseModel):
+    annotations: Dict[AnnotationKey, str]
+    attributesHash: str
+    relationshipsHash: str
+    updatedAt: datetime
+    createdAt: datetime
+
+# TODO: Will be removed when we have a proper select method
+class SignalResourceMetadata(BaseModel):
     contentHash: str
     updatedAt: datetime
     createdAt: datetime

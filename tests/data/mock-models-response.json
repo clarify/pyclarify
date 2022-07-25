@@ -36,31 +36,94 @@
     }
   },
   "select_items_response": {
-    "items": {
-      "c5vv12btaf7d0qbk0l0g": {
-        "name": "c5vv12btaf7d0qbk0l0g",
-        "valueType": "numeric",
-        "description": "Test description",
-        "labels": { "data-source": [], "location": [] },
-        "annotations": {},
-        "engUnit": "",
-        "enumValues": {},
-        "sourceType": "measurement",
-        "sampleInterval": null,
-        "gapDetection": "3600.0"
-      }
-    },
-
-    "data": {
-      "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
-      "series": {
-        "item_id_avg": [0.0, 0.0],
-        "item_id_count": [20.0, 20.0],
-        "item_id_max": [0.0, 0.0],
-        "item_id_min": [0.0, 0.0],
-        "item_id_sum": [0.0, 0.0]
-      }
-    }
+      "meta": { "total": -1, "groupIncludedByType": false },
+      "data": [
+        {
+          "type": "items",
+          "id": "c5ep6ojsbu8cohpih9dg",
+          "meta": {
+            "attributesHash": "2a72c40f64110ecb61f3c6dfea1356d8e3ac009b",
+            "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+            "annotations": { "clarify/industry-type": "mysterybox" },
+            "createdAt": "2021-10-06T12:15:30.349Z",
+            "updatedAt": "2022-03-25T09:58:19.603Z"
+          },
+          "attributes": {
+            "name": "Airborne particulate matter (PM10)",
+            "description": "Used by Demo data timeline: Mystery box.",
+            "valueType": "numeric",
+            "sourceType": "measurement",
+            "engUnit": "µg/m³",
+            "sampleInterval": null,
+            "gapDetection": "PT6H",
+            "labels": {
+              "city": ["Trondheim"],
+              "country": ["NO"],
+              "data-source": ["Open AQ"],
+              "location": ["Trondheim"]
+            },
+            "enumValues": {},
+            "visible": true
+          },
+          "relationships": {}
+        },
+        {
+          "type": "items",
+          "id": "c5ep6ojsbu8cohpih9f0",
+          "meta": {
+            "attributesHash": "136ea320a5bfa8d7928a19562449d88fd1cbaf39",
+            "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+            "annotations": { "clarify/industry-type": "mysterybox" },
+            "createdAt": "2021-10-06T12:15:30.351Z",
+            "updatedAt": "2022-03-25T09:58:19.607Z"
+          },
+          "attributes": {
+            "name": "Passing cars",
+            "description": "Used by Demo data timeline: Mystery box.",
+            "valueType": "numeric",
+            "sourceType": "measurement",
+            "engUnit": "nbr/h",
+            "sampleInterval": null,
+            "gapDetection": "PT2H",
+            "labels": {
+              "city": ["Trondheim"],
+              "country": ["Norway"],
+              "data-source": ["Traffic data"],
+              "location": ["Væretunnelen"]
+            },
+            "enumValues": {},
+            "visible": true
+          },
+          "relationships": {}
+        },
+        {
+          "type": "items",
+          "id": "c5ep6ojsbu8cohpih9g0",
+          "meta": {
+            "attributesHash": "e7949437562e4319d79c9878890ea34bf0829eec",
+            "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+            "annotations": { "clarify/industry-type": "mysterybox" },
+            "createdAt": "2021-10-06T12:15:30.353Z",
+            "updatedAt": "2022-03-25T09:58:19.61Z"
+          },
+          "attributes": {
+            "name": "Average Wind Speed",
+            "description": "Used by Demo data timeline: Maritime & Mystery box.",
+            "valueType": "numeric",
+            "sourceType": "measurement",
+            "engUnit": "m/s",
+            "sampleInterval": null,
+            "gapDetection": "PT2H",
+            "labels": {
+              "data-source": ["Live Port Weather data provider"],
+              "location": ["Port B"]
+            },
+            "enumValues": {},
+            "visible": true
+          },
+          "relationships": {}
+        }
+      ]
   },
   "select_signals_response": {
     "signals": {
