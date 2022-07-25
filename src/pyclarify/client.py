@@ -131,6 +131,7 @@ class ClarifyClient(JSONRPCClient):
         skip: int = 0,
         limit: int = 10,
         sort: List[str] = [],
+        total: Optional[bool] = False,
         groupIncludedByType: Optional[bool] = False,
     ) -> Response:
         """
@@ -165,6 +166,7 @@ class ClarifyClient(JSONRPCClient):
             >>>     skip = 0,
             >>>     limit = 10,
             >>>     sort = ["-id", "name"],
+            >>>     total=True,
             >>>     groupIncludedByType=False
             >>> )
 
@@ -231,7 +233,8 @@ class ClarifyClient(JSONRPCClient):
                 "filter": filter.to_query() if isinstance(filter, Filter) else {},
                 "limit": limit,
                 "skip": skip,
-                "sort": sort
+                "sort": sort,
+                "total": total
             },
             "include": include,
             "groupIncludedByType": groupIncludedByType
