@@ -67,7 +67,7 @@ def increment_id(func):
 def iterator(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        LEGAL_ITERATOR_TYPES = [ApiMethod.select_items]
+        LEGAL_ITERATOR_TYPES = [] # No methods use iterator as of now.
         payload_list = []
         payload = json.loads(args[1])
 
@@ -178,6 +178,7 @@ class JSONRPCClient:
 
         """
         for payload in self.payload_list:
+            
             logging.debug(f"--> {self.base_url}, req: {payload}")
             res = requests.post(
                 self.base_url, data=json.dumps(payload), headers=self.headers

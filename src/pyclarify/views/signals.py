@@ -20,7 +20,7 @@ from pydantic.fields import Optional
 from pydantic.json import timedelta_isoformat
 from typing import List, Dict, Union
 from pyclarify.fields.constraints import (
-    ResourceMetadata,
+    SignalResourceMetadata,
     TypeSignal,
     SourceTypeSignal,
     LabelsKey,
@@ -52,7 +52,7 @@ class SignalInfo(BaseModel):
 class Signal(SignalInfo):
     item: Union[ResourceID, None]
     inputId: InputID
-    meta: ResourceMetadata
+    meta: SignalResourceMetadata
 
 
 class SelectSignalsItemsParams(BaseModel, extra=Extra.forbid):

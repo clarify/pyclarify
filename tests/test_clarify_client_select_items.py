@@ -22,7 +22,8 @@ from unittest.mock import patch
 # Standard library imports...
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyClient, ItemInfo, DataFrame
+from pyclarify import ClarifyClient, DataFrame
+from pyclarify.views.items import ItemSelectView
 from pyclarify.views.generics import Response, SelectItemsResponse
 from pyclarify.query import Filter
 
@@ -49,8 +50,8 @@ class TestClarifyClientSelectItems(unittest.TestCase):
 
         response_data = self.client.select_items()
 
-        for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], ItemInfo)
+        for x in response_data.result.data:
+            self.assertIsInstance(x, ItemSelectView)
 
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -64,8 +65,8 @@ class TestClarifyClientSelectItems(unittest.TestCase):
             filter=Filter(**test_case["args"]["filter"])
         )
 
-        for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], ItemInfo)
+        for x in response_data.result.data:
+            self.assertIsInstance(x, ItemSelectView)
 
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -77,101 +78,100 @@ class TestClarifyClientSelectItems(unittest.TestCase):
 
         response_data = self.client.select_items(**test_case["args"])
 
-        for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], ItemInfo)
+        for x in response_data.result.data:
+            self.assertIsInstance(x, ItemSelectView)
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_get_items_data_with_none(self, client_req_mock, get_token_mock):
-        test_case = self.test_cases[1]
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: test_case["response"]
+    # @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    # @patch("pyclarify.client.requests.post")
+    # def test_get_items_data_with_none(self, client_req_mock, get_token_mock):
+    #     test_case = self.test_cases[1]
+    #     get_token_mock.return_value = self.mock_access_token
+    #     client_req_mock.return_value.ok = True
+    #     client_req_mock.return_value.json = lambda: test_case["response"]
 
-        response_data = self.client.select_items(include_metadata=False)
+    #     response_data = self.client.select_items()
+    #     self.assertIsNone(response_data.result.data)
+    #     self.assertIsInstance(response_data.result.data, DataFrame)
 
-        self.assertIsNone(response_data.result.items)
-        self.assertIsInstance(response_data.result.data, DataFrame)
+    # @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    # @patch("pyclarify.client.requests.post")
+    # def test_get_items_data_with_ids(self, client_req_mock, get_token_mock):
+    #     test_case = self.test_cases[1]
+    #     get_token_mock.return_value = self.mock_access_token
+    #     client_req_mock.return_value.ok = True
+    #     client_req_mock.return_value.json = lambda: test_case["response"]
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_get_items_data_with_ids(self, client_req_mock, get_token_mock):
-        test_case = self.test_cases[1]
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: test_case["response"]
+    #     response_data = self.client.select_items(
+    #         filter=Filter(**test_case["args"]["filter"])
+    #     )
 
-        response_data = self.client.select_items(
-            include_metadata=False, filter=Filter(**test_case["args"]["filter"])
-        )
+    #     self.assertIsNone(response_data.result.data)
+    #     self.assertIsInstance(response_data.result.data, DataFrame)
 
-        self.assertIsNone(response_data.result.items)
-        self.assertIsInstance(response_data.result.data, DataFrame)
+    # @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    # @patch("pyclarify.client.requests.post")
+    # def test_get_items_data_with_not_before(self, client_req_mock, get_token_mock):
+    #     test_case = self.test_cases[1]
+    #     get_token_mock.return_value = self.mock_access_token
+    #     client_req_mock.return_value.ok = True
+    #     client_req_mock.return_value.json = lambda: test_case["response"]
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_get_items_data_with_not_before(self, client_req_mock, get_token_mock):
-        test_case = self.test_cases[1]
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: test_case["response"]
+    #     response_data = self.client.select_items(
+    #         not_before=test_case["args"]["not_before"]
+    #     )
 
-        response_data = self.client.select_items(
-            include_metadata=False, not_before=test_case["args"]["not_before"]
-        )
+    #     self.assertIsNone(response_data.result.data)
+    #     self.assertIsInstance(response_data.result.data, DataFrame)
 
-        self.assertIsNone(response_data.result.items)
-        self.assertIsInstance(response_data.result.data, DataFrame)
+    # @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    # @patch("pyclarify.client.requests.post")
+    # def test_get_items_data_with_before(self, client_req_mock, get_token_mock):
+    #     test_case = self.test_cases[1]
+    #     get_token_mock.return_value = self.mock_access_token
+    #     client_req_mock.return_value.ok = True
+    #     client_req_mock.return_value.json = lambda: test_case["response"]
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_get_items_data_with_before(self, client_req_mock, get_token_mock):
-        test_case = self.test_cases[1]
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: test_case["response"]
+    #     response_data = self.client.select_items(
+    #         before=test_case["args"]["before"]
+    #     )
 
-        response_data = self.client.select_items(
-            include_metadata=False, before=test_case["args"]["before"]
-        )
+    #     self.assertIsNone(response_data.result.data)
+    #     self.assertIsInstance(response_data.result.data, DataFrame)
 
-        self.assertIsNone(response_data.result.items)
-        self.assertIsInstance(response_data.result.data, DataFrame)
+    # @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    # @patch("pyclarify.client.requests.post")
+    # def test_get_items_data_with_rollup(self, client_req_mock, get_token_mock):
+    #     test_case = self.test_cases[1]
+    #     get_token_mock.return_value = self.mock_access_token
+    #     client_req_mock.return_value.ok = True
+    #     client_req_mock.return_value.json = lambda: test_case["response"]
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_get_items_data_with_rollup(self, client_req_mock, get_token_mock):
-        test_case = self.test_cases[1]
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: test_case["response"]
+    #     response_data = self.client.select_items(
+    #         rollup=test_case["args"]["rollup"]
+    #     )
 
-        response_data = self.client.select_items(
-            include_metadata=False, rollup=test_case["args"]["rollup"]
-        )
+    #     self.assertIsNone(response_data.result.data)
+    #     self.assertIsInstance(response_data.result.data, DataFrame)
 
-        self.assertIsNone(response_data.result.items)
-        self.assertIsInstance(response_data.result.data, DataFrame)
+    # @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    # @patch("pyclarify.client.requests.post")
+    # def test_get_items_data_metadata_with_all(self, client_req_mock, get_token_mock):
+    #     test_case = self.test_cases[1]
+    #     get_token_mock.return_value = self.mock_access_token
+    #     client_req_mock.return_value.ok = True
+    #     client_req_mock.return_value.json = lambda: test_case["response"]
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_get_items_data_metadata_with_all(self, client_req_mock, get_token_mock):
-        test_case = self.test_cases[1]
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: test_case["response"]
+    #     response_data = self.client.select_items(
+    #         filter=Filter(**test_case["args"]["filter"]),
+    #         skip=test_case["args"]["skip"],
+    #         not_before=test_case["args"]["not_before"],
+    #         before=test_case["args"]["before"],
+    #         rollup=test_case["args"]["rollup"],
+    #     )
 
-        response_data = self.client.select_items(
-            filter=Filter(**test_case["args"]["filter"]),
-            skip=test_case["args"]["skip"],
-            not_before=test_case["args"]["not_before"],
-            before=test_case["args"]["before"],
-            rollup=test_case["args"]["rollup"],
-        )
-
-        self.assertIsNone(response_data.result.items)
-        self.assertIsInstance(response_data.result.data, DataFrame)
-        self.assertIsNone(response_data.error)
+    #     self.assertIsNone(response_data.result.data)
+    #     self.assertIsInstance(response_data.result.data, DataFrame)
+    #     self.assertIsNone(response_data.error)
 
     @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
     @patch("pyclarify.client.requests.post")
@@ -183,8 +183,8 @@ class TestClarifyClientSelectItems(unittest.TestCase):
 
         response_data = self.client.select_items(**test_case["args"])
 
-        for x in response_data.result.items:
-            self.assertIsInstance(response_data.result.items[x], ItemInfo)
+        for x in response_data.result.data:
+            self.assertIsInstance(x, ItemSelectView)
 
 
 if __name__ == "__main__":

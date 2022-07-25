@@ -192,6 +192,9 @@ Changes are grouped as follows
   merged = DataFrame.merge([df, new_df])
   ```
 
+## Changed
+- `pyclarify.client.ClarifyClient.select_items()` now responds with `JSON:API` format. 
+
 ## Removed
 
 - `pyclarify.client.APIClient`

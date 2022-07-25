@@ -8,8 +8,11 @@
     "include": false
   },
   "select_items_params": {
-    "items": {},
-    "data": {}
+    "query": {
+      "filter": {}
+    },
+    "include": [],
+    "groupIncludedByType": false
   },
   "insert_params": {
     "integration": "c618rbfqfsj7mjkj0ss1",
