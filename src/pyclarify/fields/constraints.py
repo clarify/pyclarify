@@ -65,3 +65,7 @@ class SignalResourceMetadata(BaseModel):
     contentHash: str
     updatedAt: datetime
     createdAt: datetime
+
+class SelectionMeta(BaseModel):
+    total: int
+    groupIncludedByType: bool
