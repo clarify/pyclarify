@@ -79,7 +79,7 @@ class TestJSONRPCClient(unittest.TestCase):
         payload_2 = json.loads(payload_2)
         self.assertEqual(payload_2["id"], 2)
 
-    @patch("pyclarify.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_no_iteration(self, client_req_mock, get_token_mock):
 
@@ -103,7 +103,7 @@ class TestJSONRPCClient(unittest.TestCase):
         # assert is correct id
         self.assertEqual(response.id, str(payload["id"]))
 
-    @patch("pyclarify.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_one_iteration(self, client_req_mock, get_token_mock):
 
@@ -127,7 +127,7 @@ class TestJSONRPCClient(unittest.TestCase):
         # assert is correct id
         self.assertEqual(response.id, str(payload["id"]))
 
-    @patch("pyclarify.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_send_request_many_iteration(self, client_req_mock, get_token_mock):
 

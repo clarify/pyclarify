@@ -193,8 +193,14 @@ Changes are grouped as follows
   ```
 
 ## Changed
-- `pyclarify.client.ClarifyClient.select_items()` now responds with `JSON:API` format. 
+
+- `pyclarify.client.ClarifyClient.select_items()` now responds with `JSON:API` format.
+
+## Changed
+
+- `GetToken` method renamed to `Authenticator`.
 
 ## Removed
 
 - `pyclarify.client.APIClient`
+- `pyclarify.client.ClarifyClient.get_token()`

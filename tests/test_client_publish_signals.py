@@ -40,7 +40,7 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_no_item(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -51,7 +51,7 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         for x in response_data.result.itemsBySignal:
             self.assertEqual(x, {})
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_one_item(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -65,7 +65,7 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
             self.assertEqual(x, self.signal_ids[0])
             break
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_multiple_signals(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -78,7 +78,7 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         for i, x in enumerate(response_data.result.itemsBySignal):
             self.assertEqual(x, self.signal_ids[i])
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_without_signal_ids(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -89,7 +89,7 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         for x in response_data.result.itemsBySignal:
             self.assertEqual(x, {})
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_without_items(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -102,7 +102,7 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
         for x in response_data.result.itemsBySignal:
             self.assertEqual(x, {})
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_with_too_many_signal_ids(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
@@ -116,7 +116,7 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
             self.assertEqual(x, self.signal_ids[0])
             break
 
-    @patch("pyclarify.jsonrpc.client.JSONRPCClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_publish_with_too_many_items(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token

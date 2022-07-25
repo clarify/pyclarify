@@ -37,7 +37,7 @@ from pyclarify.fields.error import Error
 from pyclarify.views.generics import Response
 from pyclarify.__utils__.time import compute_iso_timewindow
 
-from .oauth2 import GetToken
+from .oauth2 import Authenticator
 from .pagination import ItemIterator, TimeIterator
 
 
@@ -131,7 +131,7 @@ class JSONRPCClient:
 
     def authenticate(self, clarify_credentials):
         """
-        Authenticates the client by using the GetToken class (see oauth2.py).
+        Authenticates the client by using the Authenticator class (see oauth2.py).
 
         Parameters
         ----------
@@ -145,21 +145,10 @@ class JSONRPCClient:
             True if valid credentials is passed otherwise False.
         """
         try:
-            self.authentication = GetToken(clarify_credentials)
+            self.authentication = Authenticator(clarify_credentials)
             return True
         except AuthError:
             return False
-
-    def get_token(self):
-        """
-        Using the GetToken class (see oauth2.py) to get a new authentication token.
-
-        Returns
-        -------
-        str
-            Access token.
-        """
-        return self.authentication.get_token()
 
     @iterator
     def make_requests(self, payload) -> Response:

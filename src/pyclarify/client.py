@@ -37,7 +37,6 @@ from pyclarify.views.items import Item, ItemSaveView
 from pyclarify.views.signals import SignalInfo
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
-from pyclarify.jsonrpc.oauth2 import GetToken
 from pyclarify.__utils__.time import compute_iso_timewindow
 from pyclarify.query import Filter
 
@@ -46,7 +45,7 @@ class ClarifyClient(JSONRPCClient):
     def __init__(self, clarify_credentials):
         super().__init__(None)
         self.update_headers({"X-API-Version": "1.1beta2"})
-        self.authentication = GetToken(clarify_credentials)
+        self.authenticate(clarify_credentials)
         self.base_url = f"{self.authentication.api_url}rpc"
 
     @validate_arguments
@@ -118,7 +117,9 @@ class ClarifyClient(JSONRPCClient):
             params={"integration": self.authentication.integration_id, "data": data},
         )
 
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
 
         return self.make_requests(request_data.json())
 
@@ -240,7 +241,9 @@ class ClarifyClient(JSONRPCClient):
         request_data = Request(
             id=self.current_id, method=ApiMethod.select_items, params=params
         )
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
         return self.make_requests(request_data.json())
 
     @validate_arguments
@@ -325,7 +328,9 @@ class ClarifyClient(JSONRPCClient):
 
         request_data = Request(method=ApiMethod.save_signals, params=params)
 
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
         return self.make_requests(request_data.json())
 
     @validate_arguments
@@ -414,7 +419,9 @@ class ClarifyClient(JSONRPCClient):
 
         request_data = Request(method=ApiMethod.publish_signals, params=params)
 
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
         return self.make_requests(request_data.json())
 
     @validate_arguments
@@ -497,5 +504,7 @@ class ClarifyClient(JSONRPCClient):
 
         request_data = Request(method=ApiMethod.select_signals, params=params)
 
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
         return self.make_requests(request_data.json())
