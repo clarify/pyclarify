@@ -21,10 +21,10 @@ from unittest.mock import patch
 
 sys.path.insert(1, "src/")
 
-from pyclarify.jsonrpc.oauth2 import GetToken
+from pyclarify.jsonrpc.oauth2 import Authenticator
 
 
-class TestGetToken(unittest.TestCase):
+class TestAuthenticator(unittest.TestCase):
     def setUp(self):
         self.credentials_path = "./tests/data/mock-clarify-credentials.json"
 
@@ -39,14 +39,14 @@ class TestGetToken(unittest.TestCase):
         self.mock_token2["access_token"] = "<YOUR_ACCESS_TOKEN2>"
 
         self.oauth_request_body = self.mock_authentication["oauth_request_body"]
-        self.gettoken = GetToken(self.credentials_path)
+        self.gettoken = Authenticator(self.credentials_path)
 
     def test_read_credentials_path(self):
         """
         Test that it can read the credentials from folder path
         """
 
-        token_client = GetToken(self.credentials_path)
+        token_client = Authenticator(self.credentials_path)
         self.assertEqual(token_client.credentials, self.oauth_request_body)
 
     def test_read_credentials_string(self):
@@ -54,21 +54,21 @@ class TestGetToken(unittest.TestCase):
         Test that it can read the credentials from string
         """
         credentials_string = json.dumps(self.credentials_dict)
-        token_client = GetToken(credentials_string)
+        token_client = Authenticator(credentials_string)
         self.assertEqual(token_client.credentials, self.oauth_request_body)
 
     def test_read_credentials_dict(self):
         """
         Test that it can read the credentials from a dictionary
         """
-        token_client = GetToken(self.credentials_dict)
+        token_client = Authenticator(self.credentials_dict)
         self.assertEqual(token_client.credentials, self.oauth_request_body)
 
     def test_no_input(self):
         """
         Test that it gets a TypeError when not providing an input
         """
-        self.assertRaises(TypeError, GetToken)
+        self.assertRaises(TypeError, Authenticator)
 
     @patch("pyclarify.jsonrpc.oauth2.requests.post")
     def test_get_token(self, mock_request):

@@ -30,7 +30,7 @@ from pyclarify.fields.authentication import OAuthResponse, OAuthRequestBody
 from pyclarify.__utils__.exceptions import AuthError
 
 
-class GetToken:
+class Authenticator:
     def __init__(self, clarify_credentials):
         """
         Initialiser of auth class.
@@ -84,7 +84,7 @@ class GetToken:
         self.integration_id = clarify_credentials_object["integration"]
         return oauth_request_body
 
-    def get_new_token(self):
+    def refresh_token(self):
         """
         Get a new token using the users credentials.
 
@@ -119,6 +119,6 @@ class GetToken:
         if (self._expire_token is None) or (
             self._expire_token <= datetime.datetime.now()
         ):
-            return self.get_new_token()
+            return self.refresh_token()
         elif self._expire_token > datetime.datetime.now():
             return self.access_token
