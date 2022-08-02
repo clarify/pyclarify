@@ -171,9 +171,6 @@ Changes are grouped as follows
 
 - Moved `ResourceQuery` and `DataQuery` models to `pyclarify.query.query`
 - Moved `Comparison` and `Operators` to `pyclarify.fields.query`
-
-## Changed
-
 - Moved `DataFrame` and all sub methods to `pyclarify.views.dataframe`
 - `merge`, `to_pandas` and`from_pandas` methods are now class methods on the `pyclarify.views.DataFrame` Class.
   Usage:
@@ -192,12 +189,9 @@ Changes are grouped as follows
   merged = DataFrame.merge([df, new_df])
   ```
 
-## Changed
-
 - `pyclarify.client.ClarifyClient.select_items()` now responds with `JSON:API` format.
-
-## Changed
-
+- `pyclarify.client.ClarifyClient.select_signals()` now responds with `JSON:API` format.
+- `pyclarify.client.ClarifyClient.select_signals()` replaced `pyclarify.client.ClarifyClient.select_signals_filter()`.
 - `GetToken` method renamed to `Authenticator`.
 
 ## Removed
