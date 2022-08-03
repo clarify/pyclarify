@@ -16,10 +16,11 @@ limitations under the License.
 
 from datetime import datetime
 from pydantic import BaseModel, Extra, validator
-from typing import ForwardRef, List, Dict
+from pydantic.fields import Optional
+from typing import ForwardRef, List, Dict, Union
 from pyclarify.__utils__.auxiliary import local_import
-from pyclarify.fields.constraints import InputID, ResourceID, IntegrationID, NumericalValuesType
-
+from pyclarify.fields.constraints import InputID, ResourceID, IntegrationID, NumericalValuesType, ResourceMetadata
+from pyclarify.query.query import ResourceQuery, DataQuery
 
 DataFrame = ForwardRef("DataFrame")
 
@@ -135,3 +136,15 @@ class InsertSummary(BaseModel, extra=Extra.forbid):
 
 class InsertResponse(BaseModel, extra=Extra.forbid):
     signalsByInput: Dict[InputID, InsertSummary]
+
+
+class SelectDataFrameParams(BaseModel):
+    query: Optional[ResourceQuery] = {}
+    data: Optional[DataQuery] = {}
+    include: Optional[List[str]] = []
+    groupIncludedByType: Optional[bool] = False
+
+class SelectDataFrameResponse(BaseModel, extra=Extra.forbid):
+    meta: Dict = {}
+    data: DataFrame
+    included: Optional[Union[Dict, List]]
