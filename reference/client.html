@@ -346,6 +346,87 @@ that map to existing signals are silently ignored.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.ClarifyClient.select_dataframe">
+<span class="sig-name descname"><span class="pre">select_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Filter</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gte</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rollup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupIncludedByType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#pyclarify.client.ClarifyClient.select_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dataframe for items.</p>
+<p>Time selection:
+- Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
+- Maximum window size is 400 days (400 * 24 hours) whenrollup is greater than or equal to PT1M (1 minute).
+- No maximum window size if rollup is window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter</strong> (<em>Filter</em><em>, </em><em>optional</em>) – A Filter Model that describes a mongodb filter to be applied.</p></li>
+<li><p><strong>sort</strong> (<em>list of strings</em>) – List of strings describing the order in which to sort the items in the response.</p></li>
+<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>default 20</em>) – The maximum number of resources to select. Negative numbers means no limit, which may or may not be allowed.</p></li>
+<li><p><strong>skip</strong> (<em>int default: 0</em>) – Skip the first N matches. A negative skip is treated as 0.</p></li>
+<li><p><strong>total</strong> (<em>bool default: False</em>) – When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</p></li>
+<li><p><strong>gte</strong> (<em>string</em><em>(</em><em>RFC 3339 timestamp</em><em>) or </em><em>python datetime</em><em>, </em><em>optional</em><em>, </em><em>default &lt;now - 7 days&gt;</em>) – An RFC3339 time describing the inclusive start of the window.</p></li>
+<li><p><strong>lt</strong> (<em>string</em><em>(</em><em>RFC 3339 timestamp</em><em>) or </em><em>python datetime</em><em>, </em><em>optional</em><em>, </em><em>default &lt;now + 7 days&gt;</em>) – An RFC3339 time describing the exclusive end of the window.</p></li>
+<li><p><strong>rollup</strong> (<em>timedelta</em><em> or </em><em>string</em><em>(</em><em>RFC 3339 duration</em><em>) or </em><em>&quot;window&quot;</em><em>, </em><em>default None</em>) – If RFC 3339 duration is specified, roll-up the values into either the full time window
+(<cite>gte</cite> -&gt; <cite>lt</cite>) or evenly sized buckets.</p></li>
+<li><p><strong>include</strong> (<em>List of strings</em><em>, </em><em>optional</em>) – A list of strings specifying which relationships to be included in the response.</p></li>
+<li><p><strong>groupIncludedByType</strong> (<em>bool</em><em>, </em><em>optional</em><em>, </em><em>default False</em>) – Boolean indicating whether or not to include groupIncludedByType in the response.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_dataframe</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">filter</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Air Temperature&quot;</span><span class="p">)}),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">sort</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-id&quot;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">skip</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">total</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">gte</span><span class="o">=</span><span class="s2">&quot;2022-01-01T01:01:01Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">lt</span><span class="o">=</span><span class="s2">&quot;2022-01-09T01:01:01Z&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rollup</span><span class="o">=</span><span class="s2">&quot;PT24H&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">include</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;item],</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">groupIncludedByType</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SelectDataFrameResponse</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">meta</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s1">&#39;groupIncludedByType&#39;</span><span class="p">:</span> <span class="kc">False</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">data</span><span class="o">=</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span><span class="o">..</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="n">series</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="s1">&#39;c5ep6ojsbu8cohpih9bg&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.18616</span><span class="p">,</span> <span class="mf">0.18574000000000002</span><span class="p">,</span> <span class="o">...</span><span class="p">,],</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">included</span><span class="o">=</span><span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.ClarifyClient.select_items">
 <span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Filter</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupIncludedByType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#pyclarify.client.ClarifyClient.select_items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return item data from selected items.
@@ -596,7 +677,7 @@ For more information click <a class="reference external" href="https://docs.clar
     
     <br />
 
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
 
   </body>
