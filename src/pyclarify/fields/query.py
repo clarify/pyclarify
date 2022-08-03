@@ -127,6 +127,8 @@ class DateField(BaseModel):
 
     class Config:
         extra = Extra.forbid
+
+
 class ResourceQuery(BaseModel, extra=Extra.forbid):
     sort: List[str] = []
     filter: dict  # TODO: ResourceFilter (https://docs.clarify.io/v1.1/reference/filtering)

@@ -16,7 +16,7 @@
       "dummy-signals": {
         "signal1": {
           "name": "my test signal",
-          "type": "numeric",
+          "valueType": "numeric",
           "description": "A test Item for debugging.",
           "labels": {},
           "annotations": {},
@@ -28,7 +28,7 @@
         },
         "signal2": {
           "name": "my test signal 2",
-          "type": "numeric",
+          "valueType": "numeric",
           "description": "A test Item for debugging.",
           "labels": {},
           "annotations": {},

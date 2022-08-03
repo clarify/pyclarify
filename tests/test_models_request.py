@@ -228,9 +228,7 @@ class TestAdminNamespaceParams(unittest.TestCase):
         try:
             SelectSignalsParams(
                 integration="c618rbfqfsj7mjkj0ss1",
-                items={},
-                signals={},
-                createOnly=True,
+                query={"filter":{}},
             )
         except ValidationError:
             self.fail("SaveSignalsParams raised ValidationError unexpectedly!")
@@ -239,7 +237,7 @@ class TestAdminNamespaceParams(unittest.TestCase):
         with self.assertRaises(ValidationError):
             SelectSignalsParams(inputs="string")
         with self.assertRaises(ValidationError):
-            SelectSignalsParams(createOnly="string")
+            SelectSignalsParams(query={})
         with self.assertRaises(ValidationError):
             SelectSignalsParams(integration="string")
 
