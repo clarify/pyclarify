@@ -34,7 +34,7 @@ from typing_extensions import Literal
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
 from pyclarify.views.items import Item, ItemSaveView
-from pyclarify.views.signals import SignalInfo
+from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
 from pyclarify.__utils__.time import compute_iso_timewindow
@@ -253,7 +253,7 @@ class ClarifyClient(JSONRPCClient):
     def save_signals(
         self,
         input_ids: List[InputID],
-        signals: List[SignalInfo],
+        signals: List[Signal],
         create_only: bool = False,
         integration: str = None,
     ) -> Response:
@@ -431,10 +431,11 @@ class ClarifyClient(JSONRPCClient):
     def select_signals(
         self,
         filter: Optional[Filter] = None,
-        include_items: bool = False,
+        include: List = [],
         skip: int = 0,
         limit: int = 10,
         integration: str = None,
+        groupIncludedByType: bool = False
     ) -> Response:
         """
         Return signal metadata from selected signals and/or item.
@@ -492,13 +493,13 @@ class ClarifyClient(JSONRPCClient):
         """
         params = {
             "integration": integration,
-            "signals": {
-                "include": True,
+            "query": {
                 "filter": filter.to_query() if isinstance(filter, Filter) else {},
                 "limit": limit,
                 "skip": skip,
             },
-            "items": {"include": include_items},
+            "include": include,
+            "groupIncludedByType": groupIncludedByType
         }
 
         # assert integration parameter

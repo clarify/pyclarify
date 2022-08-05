@@ -36,172 +36,142 @@
     }
   },
   "select_items_response": {
-      "meta": { "total": -1, "groupIncludedByType": false },
-      "data": [
-        {
-          "type": "items",
-          "id": "c5ep6ojsbu8cohpih9dg",
-          "meta": {
-            "attributesHash": "2a72c40f64110ecb61f3c6dfea1356d8e3ac009b",
-            "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
-            "annotations": { "clarify/industry-type": "mysterybox" },
-            "createdAt": "2021-10-06T12:15:30.349Z",
-            "updatedAt": "2022-03-25T09:58:19.603Z"
-          },
-          "attributes": {
-            "name": "Airborne particulate matter (PM10)",
-            "description": "Used by Demo data timeline: Mystery box.",
-            "valueType": "numeric",
-            "sourceType": "measurement",
-            "engUnit": "µg/m³",
-            "sampleInterval": null,
-            "gapDetection": "PT6H",
-            "labels": {
-              "city": ["Trondheim"],
-              "country": ["NO"],
-              "data-source": ["Open AQ"],
-              "location": ["Trondheim"]
-            },
-            "enumValues": {},
-            "visible": true
-          },
-          "relationships": {}
+    "meta": { "total": -1, "groupIncludedByType": false },
+    "data": [
+      {
+        "type": "items",
+        "id": "c5ep6ojsbu8cohpih9dg",
+        "meta": {
+          "attributesHash": "2a72c40f64110ecb61f3c6dfea1356d8e3ac009b",
+          "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+          "annotations": { "clarify/industry-type": "mysterybox" },
+          "createdAt": "2021-10-06T12:15:30.349Z",
+          "updatedAt": "2022-03-25T09:58:19.603Z"
         },
-        {
-          "type": "items",
-          "id": "c5ep6ojsbu8cohpih9f0",
-          "meta": {
-            "attributesHash": "136ea320a5bfa8d7928a19562449d88fd1cbaf39",
-            "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
-            "annotations": { "clarify/industry-type": "mysterybox" },
-            "createdAt": "2021-10-06T12:15:30.351Z",
-            "updatedAt": "2022-03-25T09:58:19.607Z"
+        "attributes": {
+          "name": "Airborne particulate matter (PM10)",
+          "description": "Used by Demo data timeline: Mystery box.",
+          "valueType": "numeric",
+          "sourceType": "measurement",
+          "engUnit": "µg/m³",
+          "sampleInterval": null,
+          "gapDetection": "PT6H",
+          "labels": {
+            "city": ["Trondheim"],
+            "country": ["NO"],
+            "data-source": ["Open AQ"],
+            "location": ["Trondheim"]
           },
-          "attributes": {
-            "name": "Passing cars",
-            "description": "Used by Demo data timeline: Mystery box.",
-            "valueType": "numeric",
-            "sourceType": "measurement",
-            "engUnit": "nbr/h",
-            "sampleInterval": null,
-            "gapDetection": "PT2H",
-            "labels": {
-              "city": ["Trondheim"],
-              "country": ["Norway"],
-              "data-source": ["Traffic data"],
-              "location": ["Væretunnelen"]
-            },
-            "enumValues": {},
-            "visible": true
-          },
-          "relationships": {}
+          "enumValues": {},
+          "visible": true
         },
-        {
-          "type": "items",
-          "id": "c5ep6ojsbu8cohpih9g0",
-          "meta": {
-            "attributesHash": "e7949437562e4319d79c9878890ea34bf0829eec",
-            "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
-            "annotations": { "clarify/industry-type": "mysterybox" },
-            "createdAt": "2021-10-06T12:15:30.353Z",
-            "updatedAt": "2022-03-25T09:58:19.61Z"
+        "relationships": {}
+      },
+      {
+        "type": "items",
+        "id": "c5ep6ojsbu8cohpih9f0",
+        "meta": {
+          "attributesHash": "136ea320a5bfa8d7928a19562449d88fd1cbaf39",
+          "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+          "annotations": { "clarify/industry-type": "mysterybox" },
+          "createdAt": "2021-10-06T12:15:30.351Z",
+          "updatedAt": "2022-03-25T09:58:19.607Z"
+        },
+        "attributes": {
+          "name": "Passing cars",
+          "description": "Used by Demo data timeline: Mystery box.",
+          "valueType": "numeric",
+          "sourceType": "measurement",
+          "engUnit": "nbr/h",
+          "sampleInterval": null,
+          "gapDetection": "PT2H",
+          "labels": {
+            "city": ["Trondheim"],
+            "country": ["Norway"],
+            "data-source": ["Traffic data"],
+            "location": ["Væretunnelen"]
           },
-          "attributes": {
-            "name": "Average Wind Speed",
-            "description": "Used by Demo data timeline: Maritime & Mystery box.",
-            "valueType": "numeric",
-            "sourceType": "measurement",
-            "engUnit": "m/s",
-            "sampleInterval": null,
-            "gapDetection": "PT2H",
-            "labels": {
-              "data-source": ["Live Port Weather data provider"],
-              "location": ["Port B"]
-            },
-            "enumValues": {},
-            "visible": true
+          "enumValues": {},
+          "visible": true
+        },
+        "relationships": {}
+      },
+      {
+        "type": "items",
+        "id": "c5ep6ojsbu8cohpih9g0",
+        "meta": {
+          "attributesHash": "e7949437562e4319d79c9878890ea34bf0829eec",
+          "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+          "annotations": { "clarify/industry-type": "mysterybox" },
+          "createdAt": "2021-10-06T12:15:30.353Z",
+          "updatedAt": "2022-03-25T09:58:19.61Z"
+        },
+        "attributes": {
+          "name": "Average Wind Speed",
+          "description": "Used by Demo data timeline: Maritime & Mystery box.",
+          "valueType": "numeric",
+          "sourceType": "measurement",
+          "engUnit": "m/s",
+          "sampleInterval": null,
+          "gapDetection": "PT2H",
+          "labels": {
+            "data-source": ["Live Port Weather data provider"],
+            "location": ["Port B"]
           },
-          "relationships": {}
-        }
-      ]
+          "enumValues": {},
+          "visible": true
+        },
+        "relationships": {}
+      }
+    ]
   },
   "select_signals_response": {
-    "signals": {
-      "c5vv12btaf7d0qbk0l0g": {
+    "meta": { "total": -1, "groupIncludedByType": false },
+    "data": [
+      {
+        "type": "signals",
+        "id": "c6o8tffqfsj4ciro7u30",
         "meta": {
-          "contentHash": "5a5acb2ad168d6c298cd675b0190cc4f4691f501",
-          "createdAt": "2021-11-01T13:50:01.655Z",
-          "updatedAt": "2021-11-01T13:50:01.655Z"
+          "attributesHash": "8b4903200a920894e99c5bfe0a46f2b101948659",
+          "relationshipsHash": "a92a914fae197a9696a9891c2ca741d0ce8c8dd5",
+          "annotations": {},
+          "createdAt": "2021-12-08T10:53:49.599Z",
+          "updatedAt": "2021-12-08T12:50:46.811Z"
         },
-        "description": "",
-        "labels": {},
-        "annotations": {},
-        "name": "my test signal",
-        "type": "numeric",
-        "engUnit": "",
-        "sourceType": "measurement",
-        "sampleInterval": null,
-        "gapDetection": null,
-        "enumValues": {},
-        "inputId": "da1fc147-bbdf-4f33-ffe0-ca7a724276e9",
-        "item": null
-      },
-      "c5vvr3rtaf75rutsuukg": {
-        "meta": {
-          "contentHash": "564dd5cee0db077367afb6af7228c42b112396db",
-          "createdAt": "2021-11-01T14:45:35.949Z",
-          "updatedAt": "2021-11-01T14:45:35.949Z"
+        "attributes": {
+          "name": "Utfôret mengde Forecast",
+          "description": "",
+          "valueType": "numeric",
+          "sourceType": "measurement",
+          "engUnit": "kg",
+          "sampleInterval": null,
+          "gapDetection": null,
+          "labels": {
+            "clarify_location": ["Langøy"],
+            "data-source": ["Orchest"],
+            "data_type": ["int"],
+            "depth": [],
+            "forecast": ["True"],
+            "forecast_type": ["LOWER_LIMIT"],
+            "model": ["orbit.models.dlt.DLTMAP"],
+            "original_id": ["c64dt2nqfsj7mjkj0vt0"],
+            "seasonality": ["24"],
+            "site": ["Langøy"],
+            "unit_name": ["Anlegg"]
+          },
+          "enumValues": {},
+          "input": "c64dt2nqfsj7mjkj0vt0_upper_hour"
         },
-        "description": "",
-        "labels": {},
-        "annotations": {},
-        "name": "temperature_value",
-        "type": "numeric",
-        "engUnit": "",
-        "sourceType": "measurement",
-        "sampleInterval": null,
-        "gapDetection": null,
-        "enumValues": {},
-        "inputId": "temperature_value",
-        "item": null
-      },
-      "c5vvr3rtaf75rutsuul0": {
-        "meta": {
-          "contentHash": "64e0b86f86d0b42d2e658a9f1faf6bfb24d45b51",
-          "createdAt": "2021-11-01T14:45:35.95Z",
-          "updatedAt": "2021-11-02T08:20:18.243Z"
-        },
-        "description": "",
-        "labels": {},
-        "annotations": {},
-        "name": "weather_condition",
-        "type": "numeric",
-        "engUnit": "",
-        "sourceType": "measurement",
-        "sampleInterval": null,
-        "gapDetection": null,
-        "enumValues": {},
-        "inputId": "weather_condition",
-        "item": "f9g3qp3c60a4jtaf74cg"
+        "relationships": {
+          "integration": {
+            "data": { "type": "integrations", "id": "c6o8svfqfsjd20b6d9t0" }
+          },
+          "item": {
+            "data": { "type": "items", "id": "c6oa8m7qfsj4ciro7u50" }
+          }
+        }
       }
-    },
-    "items": {
-      "c60f9gjtaf73qa4cp43g": {
-        "description": "Here is the description of the item",
-        "labels": {
-          "data-source": [],
-          "location": []
-        },
-        "annotations": {},
-        "name": "Weather Condition Item",
-        "type": "numeric",
-        "engUnit": "",
-        "sourceType": "measurement",
-        "sampleInterval": null,
-        "gapDetection": "PT1M",
-        "enumValues": {}
-      }
-    }
+    ]
   },
   "generic_response": {
     "jsonrpc": "2.0",

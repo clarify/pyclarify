@@ -41,9 +41,16 @@
     "createOnly": true
   },
   "select_signals_params": {
-    "integration": "c618rbfqfsj7mjkj0ss1",
-    "signals": {},
-    "items": {}
+    "integration": "c6o8svfqfsjd20b6d9t0",
+    "query": {
+      "sort": [],
+      "filter": {},
+      "limit": 1,
+      "skip": 0,
+      "total": false
+    },
+    "include": [],
+    "groupIncludedByType": false
   },
   "select_items": {
     "jsonrpc": "2.0",
