@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 from pydantic import BaseModel, constr, conint
+from pydantic.fields import Optional
 from typing import List, Union, Dict
 from enum import Enum
 from datetime import datetime
@@ -32,7 +33,7 @@ SHA1Hash = constr(regex=r"^[a-f0-9]{5,40}$")
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
 LimitSelectItems = conint(ge=0)
 LimitSelectSignals = conint(ge=0, le=1000)
-
+Annotations =  Dict[AnnotationKey, str]
 
 class ApiMethod(str, Enum):
     insert = "integration.Insert"
@@ -55,7 +56,7 @@ class TypeSignal(str, Enum):
 
 
 class ResourceMetadata(BaseModel):
-    annotations: Dict[AnnotationKey, str]
+    annotations: Annotations
     attributesHash: str
     relationshipsHash: str
     updatedAt: datetime
@@ -70,3 +71,14 @@ class SignalResourceMetadata(BaseModel):
 class SelectionMeta(BaseModel):
     total: int
     groupIncludedByType: bool
+
+class RelationshipMetadata(BaseModel):
+    type: str
+    id: str
+
+class RelationshipData(BaseModel):
+    data: Optional[RelationshipMetadata]
+
+class RelationshipsDict(BaseModel):
+    integration: RelationshipData
+    item: RelationshipData

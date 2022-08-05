@@ -23,7 +23,8 @@ from unittest.mock import patch
 
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyClient, Signal, SignalInfo
+from pyclarify import ClarifyClient
+from pyclarify.views.signals import SignalSelectView
 from pyclarify.query import Filter
 
 
@@ -50,46 +51,43 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         response_data = self.client.select_signals(**test_case["args"])
 
         # Assert content of return
-        for key, signal in response_data.result.signals.items():
-            self.assertIsInstance(signal, Signal)
+        for signal in response_data.result.data:
+            self.assertIsInstance(signal, SignalSelectView)
 
-        for key, item in response_data.result.items.items():
-            self.assertIsInstance(item, SignalInfo)
 
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_filter(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[1]
         filter = Filter(**test_case["args"]["filter"])
-        include_items = test_case["args"]["include_items"]
+        include = test_case["args"]["include"]
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_signals(
-            filter=filter, include_items=include_items
+            filter=filter, include=include
         )
 
         # Assert content of return
-        for key, signal in response_data.result.signals.items():
-            self.assertIsInstance(signal, Signal)
+        for signal in response_data.result.data:
+            self.assertIsInstance(signal, SignalSelectView)
 
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
     def test_filter_returning_nothing(self, client_req_mock, get_token_mock):
         test_case = self.test_cases[2]
         filter = Filter(**test_case["args"]["filter"])
-        include_items = test_case["args"]["include_items"]
+        include = test_case["args"]["include"]
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_signals(
-            filter=filter, include_items=include_items
+            filter=filter, include=["item"]
         )
-        # Assert no Items or Signals
-        self.assertEqual(response_data.result.items, {})
-        self.assertEqual(response_data.result.signals, {})
+        # Assert no data
+        self.assertEqual(response_data.result.data, [])
 
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
@@ -97,7 +95,7 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
         test_case = self.test_cases[3]
         args = test_case["args"]
         filter = Filter(**args["filter"])
-        include_items = args["include_items"]
+        include = args["include"]
         skip = args["skip"]
         limit = args["limit"]
         integration = args["integration"]
@@ -107,14 +105,13 @@ class TestClarifyClientSelectSignals(unittest.TestCase):
 
         response_data = self.client.select_signals(
             filter=filter,
-            include_items=include_items,
+            include=include,
             skip=skip,
             limit=limit,
             integration=integration,
         )
-        # Assert no Items or Signals
-        self.assertEqual(response_data.result.items, {})
-        self.assertEqual(response_data.result.signals, {})
+        # Assert no data
+        self.assertEqual(response_data.result.data, [])
 
 
 if __name__ == "__main__":

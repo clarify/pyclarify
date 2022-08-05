@@ -15,7 +15,7 @@ limitations under the License.
 """
 
 from datetime import timedelta
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, Field, Extra
 from pydantic.fields import Optional
 from pydantic.json import timedelta_isoformat
 from typing import List, Dict, Union
@@ -24,55 +24,69 @@ from pyclarify.fields.constraints import (
     TypeSignal,
     SourceTypeSignal,
     LabelsKey,
-    AnnotationKey,
     InputID,
     ResourceID,
     IntegrationID,
+    RelationshipsDict,
+    ResourceMetadata,
+    Annotations,
+    SelectionMeta
 )
-from pyclarify.fields.query import SelectSignalsSignalsParams
+from pyclarify.fields.query import SelectSignalsSignalsParams, ResourceQuery
 
 
 class SignalInfo(BaseModel):
     name: str
-    type: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
-    annotations: Optional[Dict[AnnotationKey, str]] = {}
+    sourceType: SourceTypeSignal = SourceTypeSignal.measurement
+    valueType: TypeSignal = TypeSignal.numeric
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
-    sourceType: SourceTypeSignal = SourceTypeSignal.measurement
     sampleInterval: timedelta = None
     gapDetection: timedelta = None
 
+    
     class Config:
         json_encoders = {timedelta: timedelta_isoformat}
         extra = Extra.forbid
 
 
 class Signal(SignalInfo):
-    item: Union[ResourceID, None]
-    inputId: InputID
-    meta: SignalResourceMetadata
+    annotations: Optional[Annotations]
+    #inputId: InputID
+    #meta: SignalResourceMetadata
 
 
-class SelectSignalsItemsParams(BaseModel, extra=Extra.forbid):
-    include: Optional[bool] = False
+class PublishedSignal(SignalInfo):
+    input: str
+    integration: Optional[IntegrationID]
+    item: Optional[ResourceID]    
+
+class SignalSelectView(BaseModel):
+    id: str
+    type: str
+    meta: ResourceMetadata
+    attributes: PublishedSignal
+    relationships: RelationshipsDict
 
 
 class SelectSignalsParams(BaseModel):
     integration: IntegrationID
-    signals: SelectSignalsSignalsParams
-    items: SelectSignalsItemsParams
+    query: ResourceQuery
+    include: List[str] = []
+    groupIncludedByType: bool = False
 
 
 class SelectSignalsResponse(BaseModel, extra=Extra.forbid):
-    signals: Optional[Dict[ResourceID, Signal]]
-    items: Optional[Dict[ResourceID, SignalInfo]]
+    meta: SelectionMeta
+    data: List[SignalSelectView]
+    included: Optional[List[Union[Dict, str]]]
 
 
 class SaveSignalsParams(BaseModel, extra=Extra.forbid):
     integration: IntegrationID
-    inputs: Dict[InputID, SignalInfo]
+    inputs: Dict[InputID, Signal]
     createOnly: Optional[bool] = False
 
 
