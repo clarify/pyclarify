@@ -2,14 +2,14 @@ import unittest
 import sys
 
 sys.path.insert(1, "src/")
-from pyclarify.jsonrpc.pagination import TimeIterator, ItemIterator
+from pyclarify.jsonrpc.pagination import TimeIterator, SelectIterator
 import datetime
 
 
 class TestPagination(unittest.TestCase):
     def test_item_iterator(self):
 
-        items = ItemIterator(user_limit=123, limit_per_call=50, skip=45)
+        items = SelectIterator(user_limit=123, limit_per_call=50, skip=45)
         item_iter = iter(items)
 
         self.assertEqual(next(item_iter), (45, 50))
@@ -20,7 +20,7 @@ class TestPagination(unittest.TestCase):
 
     def test_in_for_loop(self):
         i = 0
-        for skip, limit in ItemIterator(user_limit=123, limit_per_call=50, skip=45):
+        for skip, limit in SelectIterator(user_limit=123, limit_per_call=50, skip=45):
             if i == 0:
                 self.assertEqual(skip, 45)
                 self.assertEqual(limit, 50)

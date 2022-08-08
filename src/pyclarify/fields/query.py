@@ -17,13 +17,13 @@ limitations under the License.
 
 from .constraints import LimitSelectItems, LimitSelectSignals
 from pyclarify.__utils__.exceptions import FilterError
+from pyclarify.__utils__.time import time_to_string
 from pydantic.fields import Optional
 from pydantic import BaseModel, Extra
 from enum import Enum
 from typing import Union, List, Dict
 from pydantic.class_validators import root_validator
-from typing_extensions import Literal
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class QueryParams(BaseModel):
@@ -135,8 +135,7 @@ class ResourceQuery(BaseModel):
     limit: int = 10
     skip: int = 0
     total: bool = False
+
     class Config:
-        extra=Extra.forbid
-        json_encoders = {
-            datetime: time_to_string
-        }
+        extra = Extra.forbid
+        json_encoders = {datetime: time_to_string}

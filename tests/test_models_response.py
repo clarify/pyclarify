@@ -6,14 +6,12 @@ from pydantic.error_wrappers import ValidationError
 
 sys.path.insert(1, "src/")
 from pyclarify.fields.error import Error, ErrorData
-from pyclarify.views.generics import Response
+from pyclarify.views.generics import Response, Selection
 from pyclarify.views.dataframe import InsertResponse
 from pyclarify.views.items import (
-    SelectItemsResponse,
     PublishSignalsResponse,
 )
 from pyclarify.views.signals import (
-    SelectSignalsResponse,
     SaveSignalsResponse,
 )
 
@@ -65,15 +63,15 @@ class TestMaps(unittest.TestCase):
 
     def test_select_items_map(self):
         try:
-            SelectItemsResponse(**self.select_items_response)
+            Selection(**self.select_items_response)
         except ValidationError:
-            self.fail("SelectItemsResponse raised ValidationError unexpectedly!")
+            self.fail("Selection raised ValidationError unexpectedly!")
 
     def test_select_signals_map(self):
         try:
-            SelectSignalsResponse(**self.select_signals_response)
+            Selection(**self.select_signals_response)
         except ValidationError:
-            self.fail("SelectSignalsResponse raised ValidationError unexpectedly!")
+            self.fail("Selection raised ValidationError unexpectedly!")
 
     def test_publish_signals_map(self):
         try:
@@ -135,7 +133,7 @@ class TestResponse(unittest.TestCase):
             self.fail("Response raised ValidationError unexpectedly!")
 
         # Assert correct response type
-        self.assertIsInstance(res.result, SelectItemsResponse)
+        self.assertIsInstance(res.result, Selection)
 
     def test_select_signals_response(self):
         response = self.generic_response
@@ -146,7 +144,7 @@ class TestResponse(unittest.TestCase):
             self.fail("Response raised ValidationError unexpectedly!")
 
         # Assert correct response type
-        self.assertIsInstance(res.result, SelectSignalsResponse)
+        self.assertIsInstance(res.result, Selection)
 
 
 if __name__ == "__main__":

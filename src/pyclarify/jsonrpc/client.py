@@ -21,21 +21,18 @@ The module provides a class for setting up a JSONRPCClient which will communicat
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework.
 """
-
-# TODO: Move authentication out of model. Just authenticate on requests.
-
 import requests
 import json
 import logging
 import functools
-
 from copy import deepcopy
-from pyclarify.__utils__.exceptions import AuthError
 
+from pyclarify.__utils__.exceptions import AuthError
 from pyclarify.fields.constraints import ApiMethod
 from pyclarify.fields.error import Error
 from pyclarify.views.generics import Response
 from pyclarify.__utils__.time import compute_iso_timewindow
+from pyclarify.__utils__.time import time_to_string
 
 from .oauth2 import Authenticator
 from .pagination import ItemIterator, TimeIterator
@@ -67,47 +64,42 @@ def increment_id(func):
 def iterator(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        LEGAL_ITERATOR_TYPES = [] # No methods use iterator as of now.
         payload_list = []
         payload = json.loads(args[1])
+        API_LIMIT = None
+        selecting_dataframe = False
+        if payload["method"] == ApiMethod.select_items:
+            API_LIMIT = 1000
 
-        if payload["method"] in LEGAL_ITERATOR_TYPES:
-            # Contraints from API (https://docs.clarify.io/api/next/general/limits-and-quotas#rpc-limits)
-            if payload["method"] == ApiMethod.select_items:
-                API_LIMIT = 50
-                selector = "items"
-                if not payload["params"]["data"]["include"]:
-                    API_LIMIT = 1000
+        if payload["method"] == ApiMethod.select_signals:
+            API_LIMIT = 1000
 
-                user_limit = payload["params"][selector]["limit"]
-                skip = payload["params"][selector]["skip"]
-                notBefore, before = compute_iso_timewindow(
-                    start_time=payload["params"]["data"]["notBefore"],
-                    end_time=payload["params"]["data"]["before"],
-                )
-                rollup = payload["params"]["data"]["rollup"]
+        if payload["method"] == ApiMethod.select_dataframe:
+            API_LIMIT = 50
+            selecting_dataframe = True
 
-                for skip, limit in ItemIterator(
-                    user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
-                ):
-                    current_payload = deepcopy(payload)
-                    current_payload["params"][selector]["limit"] = limit
-                    current_payload["params"][selector]["skip"] = skip
+        if API_LIMIT is not None:
+            user_limit = payload["params"]["query"]["limit"]
+            skip = payload["params"]["query"]["skip"]
 
-                    for current_notBefore, current_before in TimeIterator(
-                        start_time=notBefore, end_time=before, rollup=rollup
+            for skip, limit in SelectIterator(
+                user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
+            ):
+                current_payload = deepcopy(payload)
+                current_payload["params"]["query"]["limit"] = limit
+                current_payload["params"]["query"]["skip"] = skip
+                if selecting_dataframe:
+                    times = current_payload["params"]["data"]["filter"]["times"]
+                    user_gte = times.pop("$gte", None)
+                    user_lt = times.pop("$lt", None)
+                    for start_time, end_time in TimeIterator(
+                        user_gte, user_lt, current_payload["params"]["data"]["rollup"]
                     ):
-                        current_payload = deepcopy(current_payload)
-                        current_notBefore, current_before = compute_iso_timewindow(
-                            current_notBefore, current_before
-                        )
-                        current_payload["params"]["data"][
-                            "notBefore"
-                        ] = current_notBefore
-                        current_payload["params"]["data"]["before"] = current_before
+                        current_payload["params"]["data"]["filter"]["times"]["$gte"] = time_to_string(start_time)
+                        current_payload["params"]["data"]["filter"]["times"]["$lt"] = time_to_string(end_time)
                         payload_list += [current_payload]
-            else:
-                payload_list += [payload]
+                else:
+                    payload_list += [payload]
         else:
             payload_list = [payload]
 
@@ -120,8 +112,7 @@ def iterator(func):
 
 class JSONRPCClient:
     def __init__(
-        self,
-        base_url,
+        self, base_url,
     ):
         self.base_url = base_url
         self.headers = {"content-type": "application/json"}
@@ -167,7 +158,6 @@ class JSONRPCClient:
 
         """
         for payload in self.payload_list:
-            
             logging.debug(f"--> {self.base_url}, req: {payload}")
             res = requests.post(
                 self.base_url, data=json.dumps(payload), headers=self.headers
@@ -180,7 +170,6 @@ class JSONRPCClient:
                     "data": res.text,
                 }
                 res = Response(id=payload["id"], error=Error(**err))
-
             elif hasattr(res.json(), "error"):
                 res = Response(id=payload["id"], error=res.json()["error"])
             else:

@@ -168,7 +168,6 @@ Changes are grouped as follows
 - `pyclarify.query.filter.DataFilter`
 - `pyclarify.client.ClarifyClient.select_dataframe()` for selecting dataframes.
 
-
 ## Changed
 
 - Moved `ResourceQuery` and `DataQuery` models to `pyclarify.query.query`

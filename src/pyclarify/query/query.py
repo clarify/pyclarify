@@ -26,6 +26,7 @@ class DataQuery(BaseModel, extra=Extra.forbid):
     rollup: Union[timedelta, Literal["window"]] = None
 
 
+
 class ResourceQuery(BaseModel, extra=Extra.forbid):
     filter: Optional[Dict] = {}
     sort: Optional[List[str]]
