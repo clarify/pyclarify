@@ -129,9 +129,14 @@ class DateField(BaseModel):
         extra = Extra.forbid
 
 
-class ResourceQuery(BaseModel, extra=Extra.forbid):
+class ResourceQuery(BaseModel):
     sort: List[str] = []
     filter: dict  # TODO: ResourceFilter (https://docs.clarify.io/v1.1/reference/filtering)
     limit: int = 10
     skip: int = 0
     total: bool = False
+    class Config:
+        extra=Extra.forbid
+        json_encoders = {
+            datetime: time_to_string
+        }

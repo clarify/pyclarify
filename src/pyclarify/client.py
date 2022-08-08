@@ -494,6 +494,7 @@ class ClarifyClient(JSONRPCClient):
         params = {
             "integration": integration,
             "query": {
+                "include": True,
                 "filter": filter.to_query() if isinstance(filter, Filter) else {},
                 "limit": limit,
                 "skip": skip,
