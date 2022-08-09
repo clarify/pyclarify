@@ -626,5 +626,5 @@ class ClarifyClient(JSONRPCClient):
 
         request_data = Request(method=ApiMethod.select_dataframe, params=params)
 
-        self.update_headers({"Authorization": f"Bearer {self.get_token()}"})
+        self.update_headers({"Authorization": f"Bearer {self.authentication.get_token()}"})
         return self.make_requests(request_data.json())
