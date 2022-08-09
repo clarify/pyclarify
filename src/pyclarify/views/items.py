@@ -15,7 +15,6 @@ limitations under the License.
 """
 
 from datetime import timedelta, datetime
-from copy import deepcopy
 from pydantic import BaseModel, Extra
 from pydantic.json import timedelta_isoformat
 from pydantic.fields import Optional
@@ -26,14 +25,10 @@ from pyclarify.fields.constraints import (
     SourceTypeSignal,
     LabelsKey,
     AnnotationKey,
-    InputID,
     ResourceID,
     IntegrationID,
     ResourceMetadata,
-    SelectionMeta
 )
-from .dataframe import DataFrame
-from pyclarify.fields.query import ResourceQuery
 
 
 class ItemInfo(BaseModel):
@@ -66,7 +61,8 @@ class SelectItemsDataParams(BaseModel, extra=Extra.forbid):
 class SelectItemsParams(BaseModel, extra=Extra.forbid):
     query: Optional[ResourceQuery] = {}
     include: Optional[List[str]] = []
-    groupIncludedByType: Optional[bool] = False
+    groupIncludedByType: bool = True
+
 
 class ItemSelectView(BaseModel):
     type: str
@@ -75,39 +71,9 @@ class ItemSelectView(BaseModel):
     attributes: Item
     relationships: Dict = {}
 
+
 class ItemSaveView(Item):
     annotations: Optional[Dict[AnnotationKey, str]] = {}
-
-
-class SelectItemsResponse(BaseModel, extra=Extra.forbid):
-    meta: SelectionMeta
-    data: Optional[List[ItemSelectView]]
-    
-    # def __add__(self, other):
-    #     try:
-    #         if isinstance(other, SelectItemsResponse):
-    #             main_items = None
-    #             main_df = None
-    #             if self.items:
-    #                 source_items = self.items
-    #                 main_items = deepcopy(source_items)
-    #                 if other.items:
-    #                     for key, value in other.items.items():
-    #                         main_items[key] = value
-    #             if other.items and not self.items:
-    #                 main_items = deepcopy(other.items)
-    #             if other.data:
-    #                 other_data = other.data
-    #                 main_df = other_data
-    #                 if self.data:
-    #                     main_df = DataFrame.merge([self.data, other_data])
-    #             if self.data and not other.data:
-    #                 main_df = self.data
-
-    #         return SelectItemsResponse(items=main_items, data=main_df)
-
-    #     except TypeError as e:
-    #         raise TypeError(source=self, other=other) from e
 
 
 class PublishSignalsParams(BaseModel):
@@ -124,6 +90,3 @@ class SaveSummary(BaseModel, extra=Extra.forbid):
 
 class PublishSignalsResponse(BaseModel, extra=Extra.forbid):
     itemsBySignal: Dict[ResourceID, SaveSummary]
-
-
-

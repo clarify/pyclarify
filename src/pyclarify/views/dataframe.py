@@ -17,15 +17,16 @@ limitations under the License.
 from datetime import datetime
 from pydantic import BaseModel, Extra, validator
 from pydantic.fields import Optional
-from typing import ForwardRef, List, Dict, Union
+from typing import ForwardRef, List, Dict
 from pyclarify.__utils__.auxiliary import local_import
-from pyclarify.fields.constraints import InputID, ResourceID, IntegrationID, NumericalValuesType, ResourceMetadata
+from pyclarify.fields.constraints import InputID, ResourceID, IntegrationID, NumericalValuesType
 from pyclarify.query.query import ResourceQuery, DataQuery
+
 
 DataFrame = ForwardRef("DataFrame")
 
 
-class DataFrame(BaseModel):  # <- Views
+class DataFrame(BaseModel):
     times: List[datetime] = None
     series: Dict[InputID, NumericalValuesType] = None
 
@@ -35,10 +36,6 @@ class DataFrame(BaseModel):  # <- Views
             for key, value in v.items():
                 v[key] = [None if x != x else x for x in value]
         return v
-
-    # @validator("times", allow_reuse=True)
-    # def remove_timezone_information(cls, v):
-    #     return [time.replace(tzinfo=None) for time in v]
 
     def to_pandas(self):
         """Convert the instance into a pandas DataFrame.
@@ -120,6 +117,13 @@ class DataFrame(BaseModel):  # <- Views
 
         return cls(times=times, series=series)
 
+    def __add__(self, other):
+        try:
+            data = DataFrame.merge([self, other])
+            return data
+        except TypeError as e:
+            raise TypeError(source=self, other=other) from e
+
 
 DataFrame.update_forward_refs()
 
@@ -142,9 +146,4 @@ class SelectDataFrameParams(BaseModel):
     query: Optional[ResourceQuery] = {}
     data: Optional[DataQuery] = {}
     include: Optional[List[str]] = []
-    groupIncludedByType: Optional[bool] = False
-
-class SelectDataFrameResponse(BaseModel, extra=Extra.forbid):
-    meta: Dict = {}
-    data: DataFrame
-    included: Optional[Union[Dict, List]]
+    groupIncludedByType: bool = True
