@@ -15,29 +15,13 @@ limitations under the License.
 """
 
 
-from .constraints import LimitSelectItems, LimitSelectSignals
 from pyclarify.__utils__.exceptions import FilterError
-from pyclarify.__utils__.time import time_to_string
 from pydantic.fields import Optional
 from pydantic import BaseModel, Extra
 from enum import Enum
 from typing import Union, List, Dict
 from pydantic.class_validators import root_validator
 from datetime import datetime
-
-
-class QueryParams(BaseModel):
-    include: Optional[bool] = False
-    filter: Optional[dict] = {}
-    skip: Optional[int] = 0
-
-
-class SelectSignalsSignalsParams(QueryParams, extra=Extra.forbid):
-    limit: Optional[LimitSelectSignals] = 50
-
-
-class SelectItemsItemsParams(QueryParams, extra=Extra.forbid):
-    limit: Optional[LimitSelectItems] = 10
 
 
 class Operators(str, Enum):
@@ -127,15 +111,3 @@ class DateField(BaseModel):
 
     class Config:
         extra = Extra.forbid
-
-
-class ResourceQuery(BaseModel):
-    sort: List[str] = []
-    filter: dict  # TODO: ResourceFilter (https://docs.clarify.io/v1.1/reference/filtering)
-    limit: int = 10
-    skip: int = 0
-    total: bool = False
-
-    class Config:
-        extra = Extra.forbid
-        json_encoders = {datetime: time_to_string}

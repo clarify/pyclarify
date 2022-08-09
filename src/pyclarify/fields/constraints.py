@@ -14,11 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pydantic import BaseModel, constr, conint
-from pydantic.fields import Optional
+from pydantic import constr, conint
 from typing import List, Union, Dict
 from enum import Enum
-from datetime import datetime
 
 # TODO: Add enum values type
 EnumValuesType = conint(ge=0, lt=10000)
@@ -54,37 +52,3 @@ class SourceTypeSignal(str, Enum):
 class TypeSignal(str, Enum):
     numeric = "numeric"
     enum = "enum"
-
-
-class ResourceMetadata(BaseModel):
-    annotations: Annotations
-    attributesHash: str
-    relationshipsHash: str
-    updatedAt: datetime
-    createdAt: datetime
-
-
-# TODO: Will be removed when we have a proper select method
-class SignalResourceMetadata(BaseModel):
-    contentHash: str
-    updatedAt: datetime
-    createdAt: datetime
-
-
-class SelectionMeta(BaseModel):
-    total: int
-    groupIncludedByType: bool
-
-
-class RelationshipMetadata(BaseModel):
-    type: str
-    id: str
-
-
-class RelationshipData(BaseModel):
-    data: Optional[RelationshipMetadata]
-
-
-class RelationshipsDict(BaseModel):
-    integration: RelationshipData
-    item: RelationshipData

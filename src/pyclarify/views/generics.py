@@ -22,8 +22,9 @@ from pyclarify.__utils__.time import time_to_string
 from pyclarify.__utils__.exceptions import TypeError
 from pydantic.fields import Optional
 from typing import List, Dict, Union
-from pyclarify.fields.constraints import ApiMethod, IntegrationID, SelectionMeta
+from pyclarify.fields.constraints import ApiMethod, IntegrationID
 from pyclarify.fields.error import Error
+from pyclarify.fields.resource import SelectionMeta
 from .dataframe import InsertParams, InsertResponse, SelectDataFrameParams
 from .dataframe import DataFrame
 from .items import (
