@@ -29,6 +29,7 @@ from pyclarify.fields.constraints import (
     IntegrationID,
     ResourceMetadata,
 )
+from pyclarify.query.query import ResourceQuery
 
 
 class ItemInfo(BaseModel):
