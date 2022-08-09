@@ -27,8 +27,8 @@ from pyclarify.fields.constraints import (
     AnnotationKey,
     ResourceID,
     IntegrationID,
-    ResourceMetadata,
 )
+from pyclarify.fields.resource import BaseResource, RelationshipsDict
 from pyclarify.query.query import ResourceQuery
 
 
@@ -65,12 +65,8 @@ class SelectItemsParams(BaseModel, extra=Extra.forbid):
     groupIncludedByType: bool = True
 
 
-class ItemSelectView(BaseModel):
-    type: str
-    id: str
-    meta: ResourceMetadata
+class ItemSelectView(BaseResource):
     attributes: Item
-    relationships: Dict = {}
 
 
 class ItemSaveView(Item):

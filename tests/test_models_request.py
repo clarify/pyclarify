@@ -8,11 +8,6 @@ sys.path.insert(1, "src/")
 from pyclarify.fields.constraints import ApiMethod
 from pyclarify.views.generics import Request, JSONRPCRequest
 from pyclarify.views.dataframe import InsertParams
-from pyclarify.fields.query import (
-    QueryParams,
-    SelectSignalsSignalsParams,
-    SelectItemsItemsParams,
-)
 from pyclarify.views.items import (
     SelectItemsParams,
     PublishSignalsParams,
@@ -23,56 +18,6 @@ from pyclarify.views.signals import (
     SelectSignalsParams,
     SaveSignalsParams,
 )
-
-
-class TestQueryParams(unittest.TestCase):
-    def setUp(self):
-        with open("./tests/data/mock-models-request.json") as f:
-            self.mock_data = json.load(f)
-        self.generic_query_params = self.mock_data["generic_query_params"]
-
-    def test_generic_query_params_creation(self):
-        test_model = QueryParams()
-        test_model_default = QueryParams(**self.generic_query_params)
-
-        self.assertEqual(test_model, test_model_default)
-
-        # assert plain json
-        self.assertEqual(test_model.json(), json.dumps(self.generic_query_params))
-
-    def test_select_signals_signals_params(self):
-        # limit ge=0, le=1000, default=50
-        test_model_default = SelectSignalsSignalsParams()
-        json_model = self.generic_query_params
-        json_model["limit"] = 50
-
-        # assert plain json
-        self.assertEqual(test_model_default.json(), json.dumps(json_model))
-
-        # assert edge cases
-        with self.assertRaises(ValidationError):
-            SelectSignalsSignalsParams(limit=1001)
-
-        # assert edge cases
-        with self.assertRaises(ValidationError):
-            SelectSignalsSignalsParams(limit=-1)
-
-    def test_select_items_items_params(self):
-        # limit ge=0, le=50, default=10
-        test_model_default = SelectItemsItemsParams()
-        json_model = self.generic_query_params
-        json_model["limit"] = 10
-
-        # assert plain json
-        self.assertEqual(test_model_default.json(), json.dumps(json_model))
-
-        # assert edge cases
-        # with self.assertRaises(ValidationError):
-        #    SelectItemsItemsParams(limit=51)
-
-        # assert edge cases
-        with self.assertRaises(ValidationError):
-            SelectItemsItemsParams(limit=-1)
 
 
 class TestInclusionParams(unittest.TestCase):
@@ -95,28 +40,6 @@ class TestInclusionParams(unittest.TestCase):
     #     # assert plain json
     #     self.assertEqual(test_model.json(), json.dumps(self.generic_inclusion_params))
 
-    def test_select_items_data_params(self):
-        # notBefore, before, rollup [timedelta, Literal["window"]]
-
-        # assert creation
-        json_model = self.generic_inclusion_params
-        json_model["notBefore"] = self.notBefore
-        json_model["before"] = self.before
-        json_model["rollup"] = "window"
-        try:
-            SelectItemsDataParams(**json_model)
-        except ValidationError:
-            self.fail("SelectItemsDataParams raised ValidationError unexpectedly!")
-
-        # assert type validation
-        with self.assertRaises(ValidationError):
-            SelectSignalsSignalsParams(include="string")
-        with self.assertRaises(ValidationError):
-            SelectSignalsSignalsParams(notBefore="string")
-        with self.assertRaises(ValidationError):
-            SelectSignalsSignalsParams(before="string")
-        with self.assertRaises(ValidationError):
-            SelectSignalsSignalsParams(rollup="string")
 
     def test_select_signals_items_params(self):
         pass

@@ -162,6 +162,7 @@ class JSONRPCClient:
                 self.base_url, data=json.dumps(payload), headers=self.headers
             )
             logging.debug(f"<-- {self.base_url} ({res.status_code})")
+            logging.debug(f"Trace: #{res.headers['Traceparent']}")
             if not res.ok:
                 err = {
                     "code": res.status_code,
