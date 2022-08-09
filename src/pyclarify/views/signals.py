@@ -15,12 +15,11 @@ limitations under the License.
 """
 
 from datetime import timedelta
-from pydantic import BaseModel, Field, Extra
+from pydantic import BaseModel, Extra
 from pydantic.fields import Optional
 from pydantic.json import timedelta_isoformat
-from typing import List, Dict, Union
+from typing import List, Dict
 from pyclarify.fields.constraints import (
-    SignalResourceMetadata,
     TypeSignal,
     SourceTypeSignal,
     LabelsKey,
@@ -30,9 +29,8 @@ from pyclarify.fields.constraints import (
     RelationshipsDict,
     ResourceMetadata,
     Annotations,
-    SelectionMeta
 )
-from pyclarify.fields.query import SelectSignalsSignalsParams, ResourceQuery
+from pyclarify.fields.query import ResourceQuery
 
 
 class SignalInfo(BaseModel):
@@ -46,7 +44,6 @@ class SignalInfo(BaseModel):
     sampleInterval: timedelta = None
     gapDetection: timedelta = None
 
-    
     class Config:
         json_encoders = {timedelta: timedelta_isoformat}
         extra = Extra.forbid
@@ -54,14 +51,15 @@ class SignalInfo(BaseModel):
 
 class Signal(SignalInfo):
     annotations: Optional[Annotations]
-    #inputId: InputID
-    #meta: SignalResourceMetadata
+    # inputId: InputID
+    # meta: SignalResourceMetadata
 
 
 class PublishedSignal(SignalInfo):
     input: str
     integration: Optional[IntegrationID]
-    item: Optional[ResourceID]    
+    item: Optional[ResourceID]
+
 
 class SignalSelectView(BaseModel):
     id: str
@@ -75,13 +73,7 @@ class SelectSignalsParams(BaseModel):
     integration: IntegrationID
     query: ResourceQuery
     include: List[str] = []
-    groupIncludedByType: bool = False
-
-
-class SelectSignalsResponse(BaseModel, extra=Extra.forbid):
-    meta: SelectionMeta
-    data: List[SignalSelectView]
-    included: Optional[List[Union[Dict, str]]]
+    groupIncludedByType: bool = True
 
 
 class SaveSignalsParams(BaseModel, extra=Extra.forbid):

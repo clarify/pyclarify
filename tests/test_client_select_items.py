@@ -24,7 +24,7 @@ from unittest.mock import patch
 sys.path.insert(1, "src/")
 from pyclarify import ClarifyClient, DataFrame
 from pyclarify.views.items import ItemSelectView
-from pyclarify.views.generics import Response, SelectItemsResponse
+from pyclarify.views.generics import Response
 from pyclarify.query import Filter
 
 

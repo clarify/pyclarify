@@ -21,24 +21,18 @@ The module provides a class for setting up a JSONRPCClient which will communicat
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework.
 """
-
-
-
-
 import requests
 from datetime import timedelta, datetime
 from pydantic import validate_arguments
 from pydantic.fields import Optional
 from typing import List, Union
-from typing_extensions import Literal
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
-from pyclarify.views.items import Item, ItemSaveView
+from pyclarify.views.items import ItemSaveView
 from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
-from pyclarify.__utils__.time import compute_iso_timewindow
-from pyclarify.query import Filter
+from pyclarify.query import Filter, DataFilter
 
 
 class ClarifyClient(JSONRPCClient):
@@ -131,8 +125,7 @@ class ClarifyClient(JSONRPCClient):
         skip: int = 0,
         limit: int = 10,
         sort: List[str] = [],
-        total: Optional[bool] = False,
-        groupIncludedByType: Optional[bool] = False,
+        total: Optional[bool] = False
     ) -> Response:
         """
         Return item data from selected items.
@@ -155,8 +148,7 @@ class ClarifyClient(JSONRPCClient):
         sort: list of strings
             List of strings describing the order in which to sort the items in the response.
 
-        groupIncludedByType: bool, optional, default False
-            Boolean indicating whether or not to include groupIncludedByType in the response.
+
 
         Example
         -------
@@ -167,7 +159,6 @@ class ClarifyClient(JSONRPCClient):
             >>>     limit = 10,
             >>>     sort = ["-id", "name"],
             >>>     total=True,
-            >>>     groupIncludedByType=False
             >>> )
 
 
@@ -178,40 +169,40 @@ class ClarifyClient(JSONRPCClient):
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
-                >>> result = SelectItemsResponse(
+                >>> result = Selection(
                 >>>     meta={
-                >>>         'total': -1, 
+                >>>         'total': -1,
                 >>>         'groupIncludedByType': True
-                >>>     }, 
+                >>>     },
                 >>>     data=[
                 >>>         ItemSelectView(
-                >>>             type='items', 
-                >>>             id='cb8hjnrfgirpojeq0uv0', 
+                >>>             type='items',
+                >>>             id='cb8hjnrfgirpojeq0uv0',
                 >>>             meta=ResourceMetadata(
-                >>>                 annotations={}, 
-                >>>                 attributesHash='bd1554f5f6893165f086943adaad176590985b70', 
-                >>>                 relationshipsHash='5f36b2ea290645ee34d943220a14b54ee5ea5be5', 
-                >>>                 updatedAt=datetime.datetime(2022, 7, 15, 7, 40, 15, 899000, tzinfo=datetime.timezone.utc), 
+                >>>                 annotations={},
+                >>>                 attributesHash='bd1554f5f6893165f086943adaad176590985b70',
+                >>>                 relationshipsHash='5f36b2ea290645ee34d943220a14b54ee5ea5be5',
+                >>>                 updatedAt=datetime.datetime(2022, 7, 15, 7, 40, 15, 899000, tzinfo=datetime.timezone.utc),
                 >>>                 createdAt=datetime.datetime(2022, 7, 15, 7, 40, 15, 899000, tzinfo=datetime.timezone.utc)
-                >>>             ), 
+                >>>             ),
                 >>>             attributes=Item(
-                >>>                 name='test55', 
-                >>>                 valueType=<TypeSignal.numeric: 'numeric'>, 
-                >>>                 description='', 
-                >>>                 labels={'data-source': [], 'location': [], 'type': []}, 
-                >>>                 engUnit='', 
-                >>>                 enumValues={}, 
-                >>>                 sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
-                >>>                 sampleInterval=None, 
-                >>>                 gapDetection=None, 
+                >>>                 name='test55',
+                >>>                 valueType=<TypeSignal.numeric: 'numeric'>,
+                >>>                 description='',
+                >>>                 labels={'data-source': [], 'location': [], 'type': []},
+                >>>                 engUnit='',
+                >>>                 enumValues={},
+                >>>                 sourceType=<SourceTypeSignal.measurement: 'measurement'>,
+                >>>                 sampleInterval=None,
+                >>>                 gapDetection=None,
                 >>>                 visible=True
-                >>>             ), 
+                >>>             ),
                 >>>             relationships={}
-                >>>         ), 
+                >>>         ),
                 >>>         ItemSelectView(...),
                 >>>         ...
                 >>>     ]
-                >>> ), 
+                >>> ),
                 >>> error=None
 
 
@@ -237,8 +228,6 @@ class ClarifyClient(JSONRPCClient):
                 "total": total
             },
             "include": include,
-            "groupIncludedByType": groupIncludedByType
-
         }
 
         request_data = Request(
@@ -431,11 +420,12 @@ class ClarifyClient(JSONRPCClient):
     def select_signals(
         self,
         filter: Optional[Filter] = None,
-        include: List = [],
+        include:  Optional[List] = [],
         skip: int = 0,
-        limit: int = 10,
+        limit: int = 20,
+        sort: List[str] = [],
+        total: Optional[bool] = False,
         integration: str = None,
-        groupIncludedByType: bool = False
     ) -> Response:
         """
         Return signal metadata from selected signals and/or item.
@@ -497,9 +487,10 @@ class ClarifyClient(JSONRPCClient):
                 "filter": filter.to_query() if isinstance(filter, Filter) else {},
                 "limit": limit,
                 "skip": skip,
+                "sort": sort,
+                "total": total
             },
             "include": include,
-            "groupIncludedByType": groupIncludedByType
         }
 
         # assert integration parameter
@@ -517,15 +508,14 @@ class ClarifyClient(JSONRPCClient):
     def select_dataframe(
         self,
         filter: Optional[Filter] = None,
-        sort: List[str]= [],
+        sort: List[str] = [],
         limit: int = 20,
         skip: int = 0,
         total: bool = False,
-        gte: datetime = None,
-        lt: datetime = None,
-        rollup: timedelta = None,
+        gte: Union[datetime, str] = None,
+        lt: Union[datetime, str] = None,
+        rollup: Union[str, timedelta] = None,
         include: List[str] = [],
-        groupIncludedByType: bool = False,
     ) -> Response:
         """
         Return dataframe for items.
@@ -554,19 +544,16 @@ class ClarifyClient(JSONRPCClient):
 
         gte: string(RFC 3339 timestamp) or python datetime, optional, default <now - 7 days>
             An RFC3339 time describing the inclusive start of the window.
-        
+
         lt: string(RFC 3339 timestamp) or python datetime, optional, default <now + 7 days>
             An RFC3339 time describing the exclusive end of the window.
-        
+
         rollup: timedelta or string(RFC 3339 duration) or "window", default None
             If RFC 3339 duration is specified, roll-up the values into either the full time window
             (`gte` -> `lt`) or evenly sized buckets.
 
         include: List of strings, optional
             A list of strings specifying which relationships to be included in the response.
-
-        groupIncludedByType: bool, optional, default False
-            Boolean indicating whether or not to include groupIncludedByType in the response.
 
         Example
         -------
@@ -580,8 +567,7 @@ class ClarifyClient(JSONRPCClient):
             >>>     gte="2022-01-01T01:01:01Z",
             >>>     lt="2022-01-09T01:01:01Z",
             >>>     rollup="PT24H",
-            >>>     include = ["item],
-            >>>     groupIncludedByType = False,
+            >>>     include = ["item"],
             >>> )
 
         Returns
@@ -593,9 +579,9 @@ class ClarifyClient(JSONRPCClient):
                 >>> id = '1'
                 >>> result = SelectDataFrameResponse(
                 >>>    meta={
-                >>>        'total': -1, 
-                >>>        'groupIncludedByType': False
-                >>>    }, 
+                >>>        'total': -1,
+                >>>        'groupIncludedByType': True
+                >>>    },
                 >>>    data=DataFrame(
                 >>>        times=[datetime.datetime(2022, 7, 12, 12, 0, tzinfo=datetime.timezone.utc),..],
                 >>>        series={
@@ -635,8 +621,7 @@ class ClarifyClient(JSONRPCClient):
                 },
                 "rollup": rollup
             },
-        "include": include,
-        "groupIncludedByType": groupIncludedByType
+            "include": include,
         }
 
         request_data = Request(method=ApiMethod.select_dataframe, params=params)

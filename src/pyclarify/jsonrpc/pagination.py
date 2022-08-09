@@ -16,6 +16,53 @@ limitations under the License.
 
 from datetime import timedelta
 from pydantic.datetime_parse import parse_datetime, parse_duration
+from pyclarify.__utils__.time import compute_iso_timewindow
+
+
+class SelectIterator:
+    """
+    The iterator chucks resources into legal segments as constrained by the API. The iterator returns the next legal chunk
+    of resources and separates them into the starting point(skip) and how many resources to retrieve (limit).
+
+    Parameters
+    ----------
+    user_limit: int
+        The number describing how many resources the user wants to be returned.
+
+    limit_per_call: int
+        An int desribing the limit of how many resources can be returned by the API.
+
+    skip: int
+        How many resources to skip starting from the beginning of the returned list of resources.
+        Think of this as the starting point.
+
+    Returns
+    -------
+    skip
+        The starting point of where to retrieve resources
+    limit
+        The number of resources to retrieve
+    """
+
+    def __init__(self, user_limit, limit_per_call, skip):
+        self.remaining_resources = user_limit
+        self.LIMIT_PER_CALL = limit_per_call
+        self.skip = skip
+
+    def __iter__(self):
+        self.ending_condition = False
+        return self
+
+    def __next__(self):
+        if self.ending_condition:
+            raise StopIteration
+        if self.remaining_resources > self.LIMIT_PER_CALL:
+            self.remaining_resources -= self.LIMIT_PER_CALL
+            self.skip += self.LIMIT_PER_CALL
+            return self.skip - self.LIMIT_PER_CALL, self.LIMIT_PER_CALL
+        else:
+            self.ending_condition = True
+            return self.skip, self.remaining_resources
 
 
 class TimeIterator:
@@ -45,7 +92,8 @@ class TimeIterator:
         The before parameter to be used in an API call
     """
 
-    def __init__(self, start_time, end_time, rollup=None):
+    def __init__(self, start_time=None, end_time=None, rollup=None):
+        start_time, end_time = compute_iso_timewindow(start_time, end_time)
         self.current_start_time = parse_datetime(start_time).replace(tzinfo=None)
         self.GLOBAL_END_TIME = parse_datetime(end_time).replace(tzinfo=None)
 

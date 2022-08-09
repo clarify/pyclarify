@@ -33,13 +33,14 @@ SHA1Hash = constr(regex=r"^[a-f0-9]{5,40}$")
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
 LimitSelectItems = conint(ge=0)
 LimitSelectSignals = conint(ge=0, le=1000)
-Annotations =  Dict[AnnotationKey, str]
+Annotations = Dict[AnnotationKey, str]
+
 
 class ApiMethod(str, Enum):
     insert = "integration.Insert"
     save_signals = "integration.SaveSignals"
     select_items = "clarify.SelectItems"
-    select_dataframe ="clarify.dataFrame"
+    select_dataframe = "clarify.dataFrame"
     select_signals = "admin.SelectSignals"
     publish_signals = "admin.PublishSignals"
 
@@ -62,22 +63,27 @@ class ResourceMetadata(BaseModel):
     updatedAt: datetime
     createdAt: datetime
 
+
 # TODO: Will be removed when we have a proper select method
 class SignalResourceMetadata(BaseModel):
     contentHash: str
     updatedAt: datetime
     createdAt: datetime
 
+
 class SelectionMeta(BaseModel):
     total: int
     groupIncludedByType: bool
+
 
 class RelationshipMetadata(BaseModel):
     type: str
     id: str
 
+
 class RelationshipData(BaseModel):
     data: Optional[RelationshipMetadata]
+
 
 class RelationshipsDict(BaseModel):
     integration: RelationshipData

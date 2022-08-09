@@ -19,22 +19,24 @@ import pydantic
 from pydantic import BaseModel, validate_arguments, Extra
 from pydantic.json import timedelta_isoformat
 from pyclarify.__utils__.time import time_to_string
+from pyclarify.__utils__.exceptions import TypeError
 from pydantic.fields import Optional
 from typing import List, Dict, Union
-from pyclarify.fields.constraints import ApiMethod
+from pyclarify.fields.constraints import ApiMethod, IntegrationID, SelectionMeta
 from pyclarify.fields.error import Error
-from .dataframe import InsertParams, InsertResponse, SelectDataFrameParams, SelectDataFrameResponse
+from .dataframe import InsertParams, InsertResponse, SelectDataFrameParams
+from .dataframe import DataFrame
 from .items import (
     SelectItemsParams,
-    SelectItemsResponse,
     PublishSignalsParams,
     PublishSignalsResponse,
+    ItemSelectView,
 )
 from .signals import (
     SelectSignalsParams,
-    SelectSignalsResponse,
     SaveSignalsParams,
     SaveSignalsResponse,
+    SignalSelectView,
 )
 
 
@@ -45,10 +47,7 @@ class JSONRPCRequest(BaseModel):
     params: Dict = {}
 
     class Config:
-        json_encoders = {
-            timedelta: timedelta_isoformat,
-            datetime: time_to_string
-        }
+        json_encoders = {timedelta: timedelta_isoformat, datetime: time_to_string}
 
 
 @validate_arguments
@@ -118,14 +117,47 @@ class GenericResponse(BaseModel, extra=Extra.forbid):
             raise TypeError(source=self, other=other) from e
 
 
+class IncludedField(BaseModel, extra=Extra.ignore):
+    integration: Optional[IntegrationID]
+    items: Optional[List[ItemSelectView]]
+
+    def __add__(self, other):
+        data = {}
+        data["items"] = []
+        if self.integration is not None:
+            data["integration"] = self.integration
+        if self.items is not None:
+            data["items"] += self.items
+        if other.items is not None:
+            data["items"] += other.items
+        if self.items is None and other.items is None:
+            data.pop("items", None)
+        return IncludedField(**data)
+
+
+class Selection(BaseModel):
+    meta: SelectionMeta
+    data: Union[List[SignalSelectView], List[ItemSelectView], DataFrame]
+    included: Optional[IncludedField]
+
+    def __add__(self, other):
+        try:
+            data = {}
+            data["meta"] = self.meta
+            data["data"] = self.data + other.data
+            data["included"] = IncludedField()
+            if self.included is not None:
+                data["included"] += self.included
+            if other.included is not None:
+                data["included"] += other.included
+            if self.included is None and other.included is None:
+                data.pop("included", None)
+            return Selection(**data)
+        except TypeError as e:
+            raise TypeError(source=self, other=other) from e
+
+
 class Response(GenericResponse, extra=Extra.forbid):
     result: Optional[
-        Union[
-            InsertResponse,
-            SaveSignalsResponse,
-            SelectItemsResponse,
-            SelectDataFrameResponse,
-            SelectSignalsResponse,
-            PublishSignalsResponse,
-        ]
+        Union[InsertResponse, SaveSignalsResponse, Selection, PublishSignalsResponse]
     ]
