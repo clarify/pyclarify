@@ -31,11 +31,10 @@ from pyclarify.__utils__.exceptions import AuthError
 from pyclarify.fields.constraints import ApiMethod
 from pyclarify.fields.error import Error
 from pyclarify.views.generics import Response
-from pyclarify.__utils__.time import compute_iso_timewindow
 from pyclarify.__utils__.time import time_to_string
 
 from .oauth2 import Authenticator
-from .pagination import ItemIterator, TimeIterator
+from .pagination import SelectIterator, TimeIterator
 
 
 def increment_id(func):

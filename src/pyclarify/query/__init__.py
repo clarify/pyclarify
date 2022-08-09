@@ -27,4 +27,4 @@ from pyclarify.fields.query import (
     Comparison,
 )
 
-from .filter import Filter
+from .filter import Filter, DataFilter
