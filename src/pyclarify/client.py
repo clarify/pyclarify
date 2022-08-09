@@ -33,7 +33,7 @@ from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
-
+from pyclarify.query.query import ResourceQuery, DataQuery
 
 class ClarifyClient(JSONRPCClient):
     def __init__(self, clarify_credentials):
@@ -147,6 +147,9 @@ class ClarifyClient(JSONRPCClient):
 
         sort: list of strings
             List of strings describing the order in which to sort the items in the response.
+        
+        total: bool, deafult False
+            When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
 
 
 
@@ -218,16 +221,16 @@ class ClarifyClient(JSONRPCClient):
                 >>> )
 
         """
-
+        query = ResourceQuery(
+            filter=filter.to_query() if isinstance(filter, Filter) else {},
+            sort=sort,
+            limit=limit,
+            skip=skip,
+            total=total
+        )
         params = {
-            "query": {
-                "filter": filter.to_query() if isinstance(filter, Filter) else {},
-                "limit": limit,
-                "skip": skip,
-                "sort": sort,
-                "total": total
-            },
-            "include": include,
+            "query": query,
+            "include": include
         }
 
         request_data = Request(
@@ -430,19 +433,25 @@ class ClarifyClient(JSONRPCClient):
         """
         Return signal metadata from selected signals and/or item.
 
-        Parameters
+Parameters
         ----------
         filter: Filter, optional
             A Filter Model that describes a mongodb filter to be applied.
 
-        include_items: bool default: False
-            If set to true, include items metadata in the response.
+        include: List of strings, optional
+            A list of strings specifying which relationships to be included in the response.
 
-        skip: int default: 0
-            Skip first N signals.
+        skip: int, default 0
+            Integer describing how many of the first N items to exclude from response.
 
-        limit: int, default: 10
-            Number of signals to include in the match.
+        limit: int, default 10
+            Number of items to include in the match.
+
+        sort: list of strings
+            List of strings describing the order in which to sort the items in the response.
+        
+        total: bool, deafult False
+            When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
 
         integration: str Default None
             Integration ID in string format. None means using the integration in credential file.
@@ -481,16 +490,17 @@ class ClarifyClient(JSONRPCClient):
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
         """
+        query = ResourceQuery(
+            filter=filter.to_query() if isinstance(filter, Filter) else {},
+            sort=sort,
+            limit=limit,
+            skip=skip,
+            total=total
+        )
         params = {
             "integration": integration,
-            "query": {
-                "filter": filter.to_query() if isinstance(filter, Filter) else {},
-                "limit": limit,
-                "skip": skip,
-                "sort": sort,
-                "total": total
-            },
-            "include": include,
+            "query": query,
+            "include": include
         }
 
         # assert integration parameter
@@ -514,6 +524,7 @@ class ClarifyClient(JSONRPCClient):
         total: bool = False,
         gte: Union[datetime, str] = None,
         lt: Union[datetime, str] = None,
+        last: int = -1,
         rollup: Union[str, timedelta] = None,
         include: List[str] = [],
     ) -> Response:
@@ -547,6 +558,9 @@ class ClarifyClient(JSONRPCClient):
 
         lt: string(RFC 3339 timestamp) or python datetime, optional, default <now + 7 days>
             An RFC3339 time describing the exclusive end of the window.
+
+        last: int, default -1
+            If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
 
         rollup: timedelta or string(RFC 3339 duration) or "window", default None
             If RFC 3339 duration is specified, roll-up the values into either the full time window
@@ -604,24 +618,24 @@ class ClarifyClient(JSONRPCClient):
                 >>>         data = ErrorData(trace = <trace_id>, params = {})
                 >>> )
         """
+
+        query = ResourceQuery(
+            filter=filter.to_query() if isinstance(filter, Filter) else {},
+            sort=sort,
+            limit=limit,
+            skip=skip,
+            total=total
+        )
+        data_filter = DataFilter(gte=gte,lt=lt)
+        data_query = DataQuery(
+            filter=data_filter.to_query(),
+            last=last,
+            rollup=rollup
+        )
         params = {
-            "query": {
-                "filter": filter.to_query() if isinstance(filter, Filter) else {},
-                "sort": sort,
-                "limit": limit,
-                "skip": skip,
-                "total": total
-            },
-            "data": {
-                "filter":{
-                    "times": {
-                        "$gte": gte,
-                        "$lt": lt,
-                    }
-                },
-                "rollup": rollup
-            },
-            "include": include,
+            "query": query,
+            "data": data_query,
+            "include": include
         }
 
         request_data = Request(method=ApiMethod.select_dataframe, params=params)

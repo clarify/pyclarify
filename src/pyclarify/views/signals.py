@@ -26,11 +26,10 @@ from pyclarify.fields.constraints import (
     InputID,
     ResourceID,
     IntegrationID,
-    RelationshipsDict,
-    ResourceMetadata,
     Annotations,
 )
-from pyclarify.fields.query import ResourceQuery
+from pyclarify.fields.resource import BaseResource, RelationshipsDict
+from pyclarify.query.query import ResourceQuery
 
 
 class SignalInfo(BaseModel):
@@ -51,8 +50,6 @@ class SignalInfo(BaseModel):
 
 class Signal(SignalInfo):
     annotations: Optional[Annotations]
-    # inputId: InputID
-    # meta: SignalResourceMetadata
 
 
 class PublishedSignal(SignalInfo):
@@ -61,10 +58,7 @@ class PublishedSignal(SignalInfo):
     item: Optional[ResourceID]
 
 
-class SignalSelectView(BaseModel):
-    id: str
-    type: str
-    meta: ResourceMetadata
+class SignalSelectView(BaseResource):
     attributes: PublishedSignal
     relationships: RelationshipsDict
 
