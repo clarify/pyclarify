@@ -38,10 +38,8 @@ To install this package:
 
 # Interact with Clarify
 
-PyClarify provides a fast and easy way to interact with Clarify using the `APIClient` and `ClarifyClient` class.
-This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.
-
-The `APIClient` and `ClarifyClient` class can do the almost the same operations, but the `ClarifyClient` provides a more pythonic way.
+PyClarify provides a fast and easy way to interact with Clarify.
+The `ClarifyClient` class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.
 
 For information about the Clarify Developer documentation
 click [here](https://docs.clarify.io/developers/welcome).
@@ -54,110 +52,101 @@ Use colab to learn fast end easy how to interact with Clarify using Python. In t
 
 ## Quickstart
 
-**Save signals**
+### Access you data with the _ClarifyClient_
 
-**Example:**
+```python
+from pyclarify import ClarifyClient
 
-    from pyclarify import ClarifyClient, SignalInfo
+client = ClarifyClient("clarify-credentials.json")
+```
 
-    client = ClarifyClient("./clarify-credentials.json")
+### Create new Signals with meta data
 
-    signal = SignalInfo(
-       name = "Home temperature",
-       description = "Temperature in the bedroom",
-       labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
-    )
+```python
+from pyclarify import Signal
 
-    response = client.save_signals(input_ids=["<INPUT_ID>"], signals=[signal], create_only=False)
-    print(response.json())
+signal = Signal(
+    name = "Home temperature",
+    description = "Temperature in the bedroom",
+    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+)
 
-**Insert data into a signal**
+response = client.save_signals(
+    input_ids=["<INPUT_ID>"],
+    signals=[signal],
+    create_only=False
+)
+```
 
-**Example:**
+### Populate your signals with data
 
-    from pyclarify import DataFrame, ClarifyClient
+```python
+from pyclarify import DataFrame
 
-    client = APIClient("./clarify-credentials.json")
+data = DataFrame(
+    series={"<INPUT_ID_1>": [1, None], "<INPUT_ID_2>": [None, 5]},
+    times = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"],
+)
 
-    date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+response = client.insert(data)
+```
 
-    data = DataFrame(
-        series={"<INPUT_ID_1>": [1, None], "<INPUT_ID_2>": [None, 5]},
-        times = date,
-    )
+### Query your stored signals
 
-    response = client.insert(data)
-    print(response.json())
+```python
+response = client.select_signals(
+    skip=10,
+    limit=50,
+    sort=["-id"]
+)
+```
 
-**Get metadata from signals and/or items**
+### Publish them as items
 
-**Example:**
+```python
+from pyclarify import Item
 
-    from pyclarify import ClarifyClient
+client = ClarifyClient("./clarify-credentials.json")
 
-    client = ClarifyClient("./clarify-credentials.json")
+item = Item(
+    name = "Home temperature",
+    description = "Temperature in the bedroom",
+    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
+    visible=True
+)
+response = client.publish_signals(
+    signal_ids=['<SIGNAL_ID>'],
+    items=[item],
+    create_only=False
+)
+```
 
-    response = client.select_signals(
-                    ids = ['<SIGNAL_ID>'],
-                    name = "Electricity",
-                    labels = {"city": "Trondheim"},
-                    limit = 10,
-                    skip = 0,
-                    include_items = False
-    )
-    print(response.json())
+### Use filters to get a specific selection
 
-**Publish signals**
+```python
+from pyclarify.query import Filter, Regex
 
-**Example:**
+only_raspberries = Filter(
+    fields={
+        "labels.unit-type": Regex(value="Raspberry")
+    }
+)
 
-    from pyclarify import ClarifyClient, Item
+response = client.select_items(
+    filter=only_raspberries
+)
+```
 
-    client = ClarifyClient("./clarify-credentials.json")
+### Include relationships on queries
 
-    item = Item(
-       name = "Home temperature",
-       description = "Temperature in the bedroom",
-       labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
-       visible=True
-    )
-    response = client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
-    print(response.json())
+```python
 
-**Get Item data**
+response = client.dataframe(
+    filter=only_raspberries,
+    include=["item"]
+)
 
-**Example:**
-
-    from pyclarify import ClarifyClient
-
-    client = ClarifyClient("./clarify-credentials.json")
-
-    response = client.select_items_data(
-        ids = ['<ITEM_ID>'],
-        limit = 10,
-        skip = 0,
-        not_before = "2021-10-01T12:00:00Z",
-        before = "2021-11-10T12:00:00Z",
-        rollup = "P1DT"
-    )
-    print(response.json())
-
-**Get Item metadata**
-
-**Example:**
-
-    from pyclarify import ClarifyClient
-
-    client = ClarifyClient("./clarify-credentials.json")
-
-    response = client.select_items_metadata(
-        ids = ['<ITEM_ID>'],
-        name = "Electricity",
-        labels = {"city": "Trondheim"},
-        limit = 10,
-        skip = 0
-    )
-    print(response.json())
+```
 
 # Changelog
 

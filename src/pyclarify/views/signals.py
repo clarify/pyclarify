@@ -52,14 +52,14 @@ class Signal(SignalInfo):
     annotations: Optional[Annotations]
 
 
-class PublishedSignal(SignalInfo):
+class SavedSignal(SignalInfo):
     input: str
     integration: Optional[IntegrationID]
     item: Optional[ResourceID]
 
 
 class SignalSelectView(BaseResource):
-    attributes: PublishedSignal
+    attributes: SavedSignal
     relationships: RelationshipsDict
 
 

@@ -66,11 +66,11 @@ class ClarifyClient(JSONRPCClient):
             Example
             -------
                 >>> from pyclarify import DataFrame
-                >>> date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
                 >>> data = DataFrame(
-                >>>             series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
-                >>>             times=date
-                >>>          )
+                >>>     series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
+                >>>     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+                >>> )
+                >>> client.insert(data)
 
         Returns
         -------
@@ -79,10 +79,10 @@ class ClarifyClient(JSONRPCClient):
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
-                >>>             signalsByInput = {
-                >>>                      '<INPUT_ID_1>': InsertSummary(id = '<SIGNAL_ID_1>', created = True),
-                >>>                      '<INPUT_ID_2>': InsertSummary(id = '<SIGNAL_ID_2>', created = True)
-                >>>                       }
+                >>> signalsByInput = {
+                >>>     '<INPUT_ID_1>': InsertSummary(id = '<SIGNAL_ID_1>', created = True),
+                >>>     '<INPUT_ID_2>': InsertSummary(id = '<SIGNAL_ID_2>', created = True)
+                >>> }
                 >>> error = None
 
             Where:
@@ -128,7 +128,7 @@ class ClarifyClient(JSONRPCClient):
         total: Optional[bool] = False
     ) -> Response:
         """
-        Return item data from selected items.
+        Return item metadata from selected items.
         For more information click `here <https://docs.clarify.io/api/1.1beta2/methods/clarify/select-items>`_ .
 
         Parameters
@@ -150,7 +150,6 @@ class ClarifyClient(JSONRPCClient):
         
         total: bool, deafult False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
-
 
 
         Example
@@ -257,11 +256,11 @@ class ClarifyClient(JSONRPCClient):
         ----------
         input_ids: List['<INPUT_ID>']
             List of strings to be the input ID of the signal.
-            Click `here <https://docs.clarify.io/api/next/datatypes/input-id>`_ for more information.
+            Click `here <https://docs.clarify.io/api/1.1beta2/types/fields#input-key>`_ for more information.
 
-        signals: List[SignalInfo]
-            List of SignalInfo object that contains metadata for a signal.
-            Click `here <https://docs.clarify.io/api/next/datatypes/signal-info>`_ for more information.
+        signals: List[Signal]
+            List of Signal object that contains metadata for a signal.
+            Click `here <https://docs.clarify.io/api/1.1beta2/types/views#signal-save-integration-namespace>`_ for more information.
 
         create_only: bool, default False
             If set to true, skip update of information for existing signals. That is, all Input_ID's
@@ -274,8 +273,8 @@ class ClarifyClient(JSONRPCClient):
         Example
         -------
 
-            >>> from pyclarify import SignalInfo
-            >>> signal = SignalInfo(
+            >>> from pyclarify import Signal
+            >>> signal = Signal(
             >>>    name = "Home temperature",
             >>>    description = "Temperature in the bedroom",
             >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
@@ -474,7 +473,7 @@ Parameters
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> result = SelectSignalsResponse(
-                >>>             signals = {'<SIGNAL_ID>': SignalInfo},
+                >>>             signals = {'<SIGNAL_ID>': Signal},
                 >>>             items = None
                 >>>          )
                 >>> error = None
