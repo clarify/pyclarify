@@ -28,7 +28,7 @@ from pydantic.fields import Optional
 from typing import List, Union
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
-from pyclarify.views.items import ItemSaveView
+from pyclarify.views.items import Item
 from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
@@ -36,6 +36,19 @@ from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
 
 class ClarifyClient(JSONRPCClient):
+    """
+        The class containing all rpc methods for talking to Clarify. Uses credential file on initialization. 
+
+        Parameters
+        ----------
+        clarify_credentials: path to json file
+            Path to the Clarify credentials json file from the integrations page in clarify. See user guide for more information.
+
+        Example
+        -------
+            >>> client = ClarifyClient("./clarify-credentials.json")
+    """
+
     def __init__(self, clarify_credentials):
         super().__init__(None)
         self.update_headers({"X-API-Version": "1.1beta2"})
@@ -52,16 +65,7 @@ class ClarifyClient(JSONRPCClient):
         Parameters
         ----------
         data : DataFrame
-            Dataframe with the fields:
-
-            - series: Dict[InputID, List[Union[None, float, int]]]
-                Map of inputid to Array of data points to insert by Input ID.
-                The length of each array must match that of the times array.
-                To omit a value for a given timestamp in times, use the value null.
-
-            - times:  List of timestamps
-                Either as a python datetime or as
-                YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
+            Dataframe containing the values of a signal in a key-value pair, and seperate time axis. 
 
         Example
         -------
@@ -331,7 +335,7 @@ class ClarifyClient(JSONRPCClient):
     def publish_signals(
         self,
         signal_ids: List[ResourceID],
-        items: List[ItemSaveView],
+        items: List[Item],
         create_only: bool = False,
         integration: str = None,
     ) -> Response:
