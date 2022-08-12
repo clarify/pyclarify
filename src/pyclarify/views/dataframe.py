@@ -27,6 +27,28 @@ DataFrame = ForwardRef("DataFrame")
 
 
 class DataFrame(BaseModel):
+    """
+    DataFrame structure maps to data structure used in the API for saving time series. 
+    Supports merging with other Clarify DataFrame objects and can convert to and from Pandas.DataFrame.
+
+    Parameters
+    ----------
+        series: Dict[InputID, List[Union[None, float, int]]]
+            Map of inputid to Array of data points to insert by Input ID.
+            The length of each array must match that of the times array.
+            To omit a value for a given timestamp in times, use the value null.
+
+        times:  List of timestamps
+            Either as a python datetime or as YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.
+    Example
+    -------
+        >>> from pyclarify import DataFrame
+        >>> data = DataFrame(
+        >>>     series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
+        >>>     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+        >>> )
+
+    """
     times: List[datetime] = None
     series: Dict[InputID, NumericalValuesType] = None
 

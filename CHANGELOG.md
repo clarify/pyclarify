@@ -194,8 +194,13 @@ Changes are grouped as follows
 - `pyclarify.client.ClarifyClient.select_signals()` now responds with `JSON:API` format.
 - `pyclarify.client.ClarifyClient.select_signals()` replaced `pyclarify.client.ClarifyClient.select_signals_filter()`.
 - `GetToken` method renamed to `Authenticator`.
+- `pyclarify.jsonrpc.pagination.ItemIterator` renamed to `SelectIterator` and now paginates `select_signals`, `select_items` and `select_dataframe` methods.
 
 ## Removed
 
 - `pyclarify.client.APIClient`
 - `pyclarify.client.ClarifyClient.get_token()`
+- `pyclarify.client.ClarifyClient.select_items_metadata()`
+- `pyclarify.client.ClarifyClient.select_items_data()`
+- `pyclarify.client.APIClient`
+- `pyclarify.client.ClarifyClient.select_signals_filter()`

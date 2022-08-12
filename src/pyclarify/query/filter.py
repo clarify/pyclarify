@@ -26,6 +26,46 @@ Filter = ForwardRef("Filter")
 
 
 class Filter(BaseModel):
+    """
+    Pydantic model for handeling filtering. The filter supports pythons built in "&" and "|" operators for chaining filters.
+    The model has a to_query() method used internally to convert model to MongoDB format.
+    
+    Parameters
+    ----------
+    fields : dict
+        A dictionary of the key to be filtered on and a logical comparison.
+
+    Example
+    -------
+    >>> from pyclarify import query
+    >>> 
+    >>> f1 = query.Filter(fields={"name": query.NotEqual(value="Lufttemperatur")})
+    >>> f2 = query.Filter(fields={"labels.unit-type": query.NotIn(value=["Flåte", "Merde 5"])})
+    >>> 
+    >>> f1.to_query()
+    >>> {'name': {'$ne': 'Lufttemperatur'}}
+    >>> 
+    >>> f3 = f1 & f2
+    >>> f3.to_query()
+    >>> {
+    >>>     '$and': [
+    >>>         {'name': {'$ne': 'Lufttemperatur'}},
+    >>>         {'labels.unit-type': {'$nin': ['Flåte', 'Merde 5']}}
+    >>>     ]
+    >>> }
+
+    Complete list of operators:
+    --------------------------
+    - Equal
+    - NotEqual
+    - Regex
+    - In
+    - NotIn
+    - LessThan
+    - GreaterThan
+    - GreaterThanOrEqual
+    """
+
     and_list: Optional[List[Filter]]
     or_list: Optional[List[Filter]]
     fields: Optional[Dict[str, Comparison]]
@@ -89,6 +129,26 @@ Filter.update_forward_refs()
 
 
 class DataFilter(BaseModel):
+    """
+    Pydantic model for handeling filtering. The filter supports pythons built in "&" and "|" operators for chaining filters.
+    The model has a to_query() method used internally to convert model to MongoDB format.
+    
+    Parameters
+    ----------
+    gte: string(RFC 3339 timestamp) or python datetime, optional, default <now - 7 days>
+        An RFC3339 time describing the inclusive start of the window.
+
+    lt: string(RFC 3339 timestamp) or python datetime, optional, default <now + 7 days>
+        An RFC3339 time describing the exclusive end of the window.
+
+    Example
+    -------
+    >>> from pyclarify import query
+    >>> data_filter = query.DataFilter(gte='2022-08-01T16:00:20Z',lt='2022-08-02T16:00:20Z')
+    >>> data_filter.to_query()
+    >>> {'times': {'$gte': '2022-08-01T16:00:20Z', '$lt': '2022-08-02T16:00:20Z'}}
+
+    """
     gte: Optional[Union[str, datetime]] = None
     lt: Optional[Union[str, datetime]] = None
 
