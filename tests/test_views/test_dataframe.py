@@ -4,53 +4,12 @@ import json
 from pydantic.error_wrappers import ValidationError
 
 sys.path.insert(1, "src/")
-from pyclarify.views.dataframe import DataFrame
-from pyclarify.views.items import (
-    SaveSummary,
-)
+from pyclarify.views.dataframe import DataFrame, InsertParams, InsertResponse, CreateSummary
 from pyclarify.__utils__.auxiliary import local_import
-
-
-class TestSummary(unittest.TestCase):
-    def setUp(self):
-        with open("./tests/data/mock-models-data.json") as f:
-            self.mock_data = json.load(f)
-        self.generic_summary = self.mock_data["generic_summary"]
-
-    # def test_generic_summary(self):
-    #     try:
-    #         summary = GenericSummary(**self.generic_summary)
-    #     except ValidationError:
-    #         self.fail("GenericSummary raised ValidationError unexpectedly!")
-
-    #     self.assertEqual(summary.json(), json.dumps(self.generic_summary))
-
-    def test_insert_summary(self):
-        pass
-
-    def test_save_summary(self):
-        summary = self.generic_summary
-        summary["updated"] = True
-
-        try:
-            summary = SaveSummary(**summary)
-        except ValidationError:
-            self.fail("SaveSummary raised ValidationError unexpectedly!")
-
-        # assert type validation
-        with self.assertRaises(ValidationError):
-            SaveSummary(id="c618rbfqfsj7mjkj0ss1", created=True, updated="string")
-
-        with self.assertRaises(ValidationError):
-            SaveSummary(id="c618rbfqfsj7mjkj0ss1", created="string", updated=True)
-
-        with self.assertRaises(ValidationError):
-            SaveSummary(id=True, created=True, updated=True)
-
 
 class TestMerge(unittest.TestCase):
     def setUp(self):
-        with open("./tests/data/mock-models-data.json") as f:
+        with open("./tests/mock_data/dataframe.json") as f:
             self.mock_data = json.load(f)
         self.mock_data_1 = self.mock_data["mock_data_1"]
         self.mock_data_2 = self.mock_data["mock_data_2"]
@@ -106,7 +65,7 @@ class TestMerge(unittest.TestCase):
 
 class TestPandas(unittest.TestCase):
     def setUp(self):
-        with open("./tests/data/mock-models-data.json") as f:
+        with open("./tests/mock_data/dataframe.json") as f:
             self.mock_data = json.load(f)
 
         self.pd = local_import("pandas")
@@ -186,6 +145,64 @@ class TestPandas(unittest.TestCase):
         clarify_ts = [datetime.timestamp(x) for x in self.cdf3.times]
         self.assertEqual(clarify_ts, numpy_ts)
 
+
+class TestSummary(unittest.TestCase):
+    def setUp(self):
+        with open("./tests/mock_data/dataframe.json") as f:
+            self.mock_data = json.load(f)
+        self.generic_summary = self.mock_data["generic_summary"]
+
+
+    def test_insert_summary(self):
+        summary = self.generic_summary
+        try:
+            summary = CreateSummary(**summary)
+        except ValidationError:
+            self.fail("CreateSummary raised ValidationError unexpectedly!")
+
+        # assert type validation
+        with self.assertRaises(ValidationError):
+            CreateSummary(id="c618rbfqfsj7mjkj0ss1", created="string")
+
+        with self.assertRaises(ValidationError):
+            CreateSummary(id=True, created=True)
+
+
+class TestInsertResponse(unittest.TestCase):
+    def setUp(self):
+        with open("./tests/mock_data/response.json") as f:
+            self.mock_data = json.load(f)
+        self.insert_response = self.mock_data["insert_response"]
+
+    def test_insert_map(self):
+        try:
+            InsertResponse(**self.insert_response)
+        except ValidationError:
+            self.fail("InsertResponse raised ValidationError unexpectedly!")
+
+
+class TestInsertParams(unittest.TestCase):
+    def setUp(self):
+        with open("./tests/mock_data/request.json") as f:
+            self.mock_data = json.load(f)
+        self.insert_params = self.mock_data["insert_params"]
+
+    def test_insert_params(self):
+        try:
+            InsertParams(**self.insert_params)
+        except ValidationError:
+            self.fail("InsertParams raised ValidationError unexpectedly!")
+
+        try:
+            InsertParams(integration="c618rbfqfsj7mjkj0ss1", data={})
+        except ValidationError:
+            self.fail("InsertParams raised ValidationError unexpectedly!")
+
+        # assert type validation
+        with self.assertRaises(ValidationError):
+            InsertParams(integration="string")
+        with self.assertRaises(ValidationError):
+            InsertParams(data="string")
 
 if __name__ == "__main__":
     unittest.main()

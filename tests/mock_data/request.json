@@ -4,9 +4,6 @@
     "filter": {},
     "skip": 0
   },
-  "generic_inclusion_params": {
-    "include": false
-  },
   "select_items_params": {
     "query": {
       "filter": {}
@@ -24,14 +21,7 @@
       }
     }
   },
-  "save_signals_params": {
-    "integration": "c618rbfqfsj7mjkj0ss1",
-    "inputs": {
-      "signal1": { "name": "signal1" },
-      "signal2": { "name": "signal2" }
-    },
-    "createOnly": true
-  },
+
   "publish_signals_params": {
     "integration": "c618rbfqfsj7mjkj0ss1",
     "itemsBySignal": {
@@ -39,18 +29,6 @@
       "c618rbfqfsj7mjkj0ss2": { "name": "signal2" }
     },
     "createOnly": true
-  },
-  "select_signals_params": {
-    "integration": "c6o8svfqfsjd20b6d9t0",
-    "query": {
-      "sort": [],
-      "filter": {},
-      "limit": 1,
-      "skip": 0,
-      "total": false
-    },
-    "include": [],
-    "groupIncludedByType": false
   },
   "select_items": {
     "jsonrpc": "2.0",

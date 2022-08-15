@@ -27,14 +27,14 @@ from pyclarify import DataFrame
 
 class TestClarifyClient(unittest.TestCase):
     def setUp(self):
-        self.client = ClarifyClient("./tests/data/mock-clarify-credentials.json")
+        self.client = ClarifyClient("./tests/mock_data/mock-clarify-credentials.json")
 
-        with open("./tests/data/mock-client-common.json") as f:
+        with open("./tests/mock_data/mock-client-common.json") as f:
             self.mock_data = json.load(f)
 
         self.mock_access_token = self.mock_data["mock_access_token"]
 
-        with open("./tests/data/mock-insert.json") as f:
+        with open("./tests/mock_data/clarify-client-insert.json") as f:
             self.mock_data = json.load(f)
 
         self.times = [

@@ -8,7 +8,7 @@ from pyclarify.fields.authentication import OAuthRequestBody, ClarifyCredential
 
 class TestOauthModels(unittest.TestCase):
     def setUp(self):
-        with open("./tests/data/mock-clarify-credentials.json") as f:
+        with open("./tests/mock_data/mock-clarify-credentials.json") as f:
             self.credentials_dict = json.load(f)
 
     def test_populate_auth_objs(self):

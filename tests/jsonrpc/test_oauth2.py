@@ -26,12 +26,12 @@ from pyclarify.jsonrpc.oauth2 import Authenticator
 
 class TestAuthenticator(unittest.TestCase):
     def setUp(self):
-        self.credentials_path = "./tests/data/mock-clarify-credentials.json"
+        self.credentials_path = "./tests/mock_data/mock-clarify-credentials.json"
 
         with open(self.credentials_path) as f:
             self.credentials_dict = json.load(f)
 
-        with open("./tests/data/mock-authentication.json") as f:
+        with open("./tests/mock_data/authentication.json") as f:
             self.mock_authentication = json.load(f)
 
         self.mock_token = self.mock_authentication["mock_token"]

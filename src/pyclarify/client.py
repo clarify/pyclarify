@@ -84,16 +84,16 @@ class ClarifyClient(JSONRPCClient):
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> signalsByInput = {
-                >>>     '<INPUT_ID_1>': InsertSummary(id = '<SIGNAL_ID_1>', created = True),
-                >>>     '<INPUT_ID_2>': InsertSummary(id = '<SIGNAL_ID_2>', created = True)
+                >>>     '<INPUT_ID_1>': CreateSummary(id = '<SIGNAL_ID_1>', created = True),
+                >>>     '<INPUT_ID_2>': CreateSummary(id = '<SIGNAL_ID_2>', created = True)
                 >>> }
                 >>> error = None
 
             Where:
 
             - InsertResponse is a a pydantic model with field signalsByInput.
-            - signalsByInput is a Dict[InputID, InsertSummary].
-            - InsertSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).
+            - signalsByInput is a Dict[InputID, CreateSummary].
+            - CreateSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).
 
             In case of the error (for example not equal length) the method return a pydantic model with the following format:
 

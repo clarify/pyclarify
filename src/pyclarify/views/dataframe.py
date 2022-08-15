@@ -155,13 +155,13 @@ class InsertParams(BaseModel):
     data: DataFrame
 
 
-class InsertSummary(BaseModel, extra=Extra.forbid):
+class CreateSummary(BaseModel, extra=Extra.forbid):
     id: ResourceID
     created: bool
 
 
 class InsertResponse(BaseModel, extra=Extra.forbid):
-    signalsByInput: Dict[InputID, InsertSummary]
+    signalsByInput: Dict[InputID, CreateSummary]
 
 
 class SelectDataFrameParams(BaseModel):

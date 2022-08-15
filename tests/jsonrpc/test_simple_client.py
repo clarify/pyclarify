@@ -26,13 +26,13 @@ from pyclarify.views.generics import Response
 
 class TestJSONRPCClient(unittest.TestCase):
     def setUp(self):
-        with open("./tests/data/mock-simple-client.json") as f:
+        with open("./tests/mock_data/jsonrpc-client.json") as f:
             self.mock_data = json.load(f)
 
         self.client = JSONRPCClient(base_url=self.mock_data["mock_url"])
         self.content_type_headers = {"content-type": "application/json"}
 
-        with open("./tests/data/mock-client-common.json") as f:
+        with open("./tests/mock_data/mock-client-common.json") as f:
             self.mock_access_token = json.load(f)["mock_access_token"]
 
     def test_update_header(self):
@@ -152,7 +152,7 @@ class TestJSONRPCClient(unittest.TestCase):
         self.assertEqual(response.id, str(payload["id"]))
 
     def test_authentication(self):
-        read = self.client.authenticate("./tests/data/mock-clarify-credentials.json")
+        read = self.client.authenticate("./tests/mock_data/mock-clarify-credentials.json")
         self.assertTrue(read)
 
 
