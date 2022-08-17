@@ -29,7 +29,7 @@ from pyclarify.fields.constraints import (
     ResourceID,
     IntegrationID,
 )
-from pyclarify.fields.resource import BaseResource, RelationshipsDict
+from pyclarify.fields.resource import BaseResource
 from pyclarify.query.query import ResourceQuery
 
 
@@ -39,7 +39,7 @@ class ItemInfo(BaseModel):
 
     Parameters
     ----------
-    name: string(len:1-128)	
+    name: string(len:1-128)
         A human-readable name for the resource.
     description: string(len:0-1000)
         A free-form description of the resource.
@@ -49,15 +49,16 @@ class ItemInfo(BaseModel):
         Classification of the data source. The value must be "aggregate", "measurement" or "prediction".
     valueType: string(enum)
         How to interpret time-series data points. The value must be "enum" or "numeric".
-    engUnit: string	
+    engUnit: string
         Engineering unit for time-series data in numeric representations.
-    enumValues: map(string => string(len:1-128))	
+    enumValues: map(string => string(len:1-128))
         Map of numeric values to display text in enum representations. The key must represent an integer in range 0-9999.
     sampleInterval: Fixed Duration, null
         The expected distance between data points.
     gapDetection: Fixed Duration, null
         The maximum distance between two data-points before considering it to be a gap.
     """
+
     name: str
     valueType: TypeSignal = TypeSignal.numeric
     description: str = ""
@@ -81,10 +82,11 @@ class Item(ItemInfo):
     ----------
     visible: bool
         Whether the item should be visible for your entire organization within Clarify or not.
-    
+
     annotations: Annotations
         A key-value store where integrations can store programmatic meta-data about the resource instance. Filtering is done one member fields.
     """
+
     annotations: Optional[Annotations]
     visible: bool = False
 

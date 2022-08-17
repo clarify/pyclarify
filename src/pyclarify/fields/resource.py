@@ -20,6 +20,7 @@ from pydantic import BaseModel
 
 from pyclarify.fields.constraints import Annotations, SHA1Hash
 
+
 class ResourceMetadata(BaseModel):
     """
     Common meta data resources.
@@ -42,11 +43,13 @@ class ResourceMetadata(BaseModel):
     createdAt: Date/Time	
         A timestamp for when the resource was created.    
     """
+
     annotations: Annotations
     attributesHash: SHA1Hash
     relationshipsHash: SHA1Hash
     updatedAt: datetime
     createdAt: datetime
+
 
 class BaseResource(BaseModel):
     """
@@ -63,9 +66,11 @@ class BaseResource(BaseModel):
     meta: ResourceMeta
         An object containing common meta data. (See ResourceMeta for more information)
     """
+
     id: str
     type: str
     meta: ResourceMetadata
+
 
 class SelectionMeta(BaseModel):
     total: int

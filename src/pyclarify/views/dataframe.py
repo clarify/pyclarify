@@ -19,7 +19,12 @@ from pydantic import BaseModel, Extra, validator
 from pydantic.fields import Optional
 from typing import ForwardRef, List, Dict
 from pyclarify.__utils__.auxiliary import local_import
-from pyclarify.fields.constraints import InputID, ResourceID, IntegrationID, NumericalValuesType
+from pyclarify.fields.constraints import (
+    InputID,
+    ResourceID,
+    IntegrationID,
+    NumericalValuesType,
+)
 from pyclarify.query.query import ResourceQuery, DataQuery
 
 
@@ -28,7 +33,7 @@ DataFrame = ForwardRef("DataFrame")
 
 class DataFrame(BaseModel):
     """
-    DataFrame structure maps to data structure used in the API for saving time series. 
+    DataFrame structure maps to data structure used in the API for saving time series.
     Supports merging with other Clarify DataFrame objects and can convert to and from Pandas.DataFrame.
 
     Parameters
@@ -49,6 +54,7 @@ class DataFrame(BaseModel):
         >>> )
 
     """
+
     times: List[datetime] = None
     series: Dict[InputID, NumericalValuesType] = None
 
@@ -92,7 +98,7 @@ class DataFrame(BaseModel):
             raise ValueError("Did not recognise input as Pandas DataFrame")
 
     @classmethod
-    def merge(cls, dataframes) -> 'DataFrame':
+    def merge(cls, dataframes) -> "DataFrame":
         """
         Method for merging 2 or more Clarify Data Frames. Mapping overlapping
         signal names to single series. Concatenates timestamps of all data frames.
@@ -110,11 +116,15 @@ class DataFrame(BaseModel):
         """
 
         if not isinstance(dataframes, List):
-            raise ValueError("Input dataframes needs to be a list containing atleast one Clarify DataFrame")
+            raise ValueError(
+                "Input dataframes needs to be a list containing atleast one Clarify DataFrame"
+            )
 
         for df in dataframes:
             if not isinstance(df, cls):
-                raise ValueError(f"Expected Clarify DataFrames in list but got {df.__class__()}")
+                raise ValueError(
+                    f"Expected Clarify DataFrames in list but got {df.__class__()}"
+                )
         signals = [key for df in dataframes for key in df.series.keys()]
         signals = list(set(signals))
 
@@ -155,13 +165,13 @@ class InsertParams(BaseModel):
     data: DataFrame
 
 
-class InsertSummary(BaseModel, extra=Extra.forbid):
+class CreateSummary(BaseModel, extra=Extra.forbid):
     id: ResourceID
     created: bool
 
 
 class InsertResponse(BaseModel, extra=Extra.forbid):
-    signalsByInput: Dict[InputID, InsertSummary]
+    signalsByInput: Dict[InputID, CreateSummary]
 
 
 class SelectDataFrameParams(BaseModel):

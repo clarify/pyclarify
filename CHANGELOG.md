@@ -162,19 +162,18 @@ Changes are grouped as follows
 
 ## Added
 
-- `fields` folder containing all fields used internally
-- `views` folder containing all models for communicating with the API
-- `jsonrpc` folder containing all underlying functionality for the `ClarifyClient`
-- `pyclarify.query.filter.DataFilter`
-- `pyclarify.client.ClarifyClient.select_dataframe()` for selecting dataframes.
+- `fields` folder containing all fields used internally.
+- `views` folder containing all models for communicating with the API.
+- `jsonrpc` folder containing all network functionality for the `ClarifyClient`.
+- `pyclarify.query.filter.DataFilter` for filtering on DataFrames.
+- `pyclarify.client.ClarifyClient.select_dataframe()` for selecting DataFrames.
 
 ## Changed
 
-- Moved `ResourceQuery` and `DataQuery` models to `pyclarify.query.query`
-- Moved `Comparison` and `Operators` to `pyclarify.fields.query`
-- Moved `DataFrame` and all sub methods to `pyclarify.views.dataframe`
-- `merge`, `to_pandas` and`from_pandas` methods are now class methods on the `pyclarify.views.DataFrame` Class.
-  Usage:
+- Moved `ResourceQuery` and `DataQuery` models to `pyclarify.query.query`.
+- Moved `Comparison` and `Operators` to `pyclarify.fields.query`.
+- Moved `DataFrame` and all sub methods to `pyclarify.views.dataframe`.
+- `merge`, `to_pandas` and `from_pandas` methods are now class methods on the `pyclarify.views.DataFrame` class.
 
   ```python
   from pyclarify import DataFrame
@@ -190,9 +189,32 @@ Changes are grouped as follows
   merged = DataFrame.merge([df, new_df])
   ```
 
-- `pyclarify.client.ClarifyClient.select_items()` now responds with `JSON:API` format.
-- `pyclarify.client.ClarifyClient.select_signals()` now responds with `JSON:API` format.
+- `pyclarify.client.ClarifyClient.select_items()` now responds with `JSON:API` format, and does not retrieve data frames.
+
+  ```python
+  client.select_items(
+    filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
+    skip = 0,
+    limit = 10,
+    sort = ["-id", "name"],
+    total=True
+  )
+  ```
+
 - `pyclarify.client.ClarifyClient.select_signals()` replaced `pyclarify.client.ClarifyClient.select_signals_filter()`.
+- `pyclarify.client.ClarifyClient.select_signals()` now responds with `JSON:API` format.
+
+  ```python
+    client.select_signals(
+      filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
+      limit = 10,
+      skip = 0,
+      sort = ["-id"],
+      total= True,
+      include = ["item"]
+    )
+  ```
+
 - `GetToken` method renamed to `Authenticator`.
 - `pyclarify.jsonrpc.pagination.ItemIterator` renamed to `SelectIterator` and now paginates `select_signals`, `select_items` and `select_dataframe` methods.
 

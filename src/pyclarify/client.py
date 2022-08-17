@@ -35,18 +35,19 @@ from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
 
+
 class ClarifyClient(JSONRPCClient):
     """
-        The class containing all rpc methods for talking to Clarify. Uses credential file on initialization. 
+    The class containing all rpc methods for talking to Clarify. Uses credential file on initialization. 
 
-        Parameters
-        ----------
-        clarify_credentials: path to json file
-            Path to the Clarify credentials json file from the integrations page in clarify. See user guide for more information.
+    Parameters
+    ----------
+    clarify_credentials: path to json file
+        Path to the Clarify credentials json file from the integrations page in clarify. See user guide for more information.
 
-        Example
-        -------
-            >>> client = ClarifyClient("./clarify-credentials.json")
+    Example
+    -------
+        >>> client = ClarifyClient("./clarify-credentials.json")
     """
 
     def __init__(self, clarify_credentials):
@@ -84,16 +85,16 @@ class ClarifyClient(JSONRPCClient):
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
                 >>> signalsByInput = {
-                >>>     '<INPUT_ID_1>': InsertSummary(id = '<SIGNAL_ID_1>', created = True),
-                >>>     '<INPUT_ID_2>': InsertSummary(id = '<SIGNAL_ID_2>', created = True)
+                >>>     '<INPUT_ID_1>': CreateSummary(id = '<SIGNAL_ID_1>', created = True),
+                >>>     '<INPUT_ID_2>': CreateSummary(id = '<SIGNAL_ID_2>', created = True)
                 >>> }
                 >>> error = None
 
             Where:
 
             - InsertResponse is a a pydantic model with field signalsByInput.
-            - signalsByInput is a Dict[InputID, InsertSummary].
-            - InsertSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).
+            - signalsByInput is a Dict[InputID, CreateSummary].
+            - CreateSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).
 
             In case of the error (for example not equal length) the method return a pydantic model with the following format:
 
@@ -125,11 +126,11 @@ class ClarifyClient(JSONRPCClient):
     def select_items(
         self,
         filter: Optional[Filter] = None,
-        include:  Optional[List] = [],
+        include: Optional[List] = [],
         skip: int = 0,
         limit: int = 10,
         sort: List[str] = [],
-        total: Optional[bool] = False
+        total: Optional[bool] = False,
     ) -> Response:
         """
         Return item metadata from selected items.
@@ -160,7 +161,6 @@ class ClarifyClient(JSONRPCClient):
         -------
             >>> client.select_items(
             >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
-            >>>     include = ["signals"],
             >>>     skip = 0,
             >>>     limit = 10,
             >>>     sort = ["-id", "name"],
@@ -229,12 +229,9 @@ class ClarifyClient(JSONRPCClient):
             sort=sort,
             limit=limit,
             skip=skip,
-            total=total
+            total=total,
         )
-        params = {
-            "query": query,
-            "include": include
-        }
+        params = {"query": query, "include": include}
 
         request_data = Request(
             id=self.current_id, method=ApiMethod.select_items, params=params
@@ -313,8 +310,7 @@ class ClarifyClient(JSONRPCClient):
         """
 
         # create params dict
-        params = {"inputs": {}, "createOnly": create_only,
-                  "integration": integration}
+        params = {"inputs": {}, "createOnly": create_only, "integration": integration}
 
         # assert integration parameter
         if not params["integration"]:
@@ -579,13 +575,9 @@ class ClarifyClient(JSONRPCClient):
             sort=sort,
             limit=limit,
             skip=skip,
-            total=total
+            total=total,
         )
-        params = {
-            "integration": integration,
-            "query": query,
-            "include": include
-        }
+        params = {"integration": integration, "query": query, "include": include}
 
         # assert integration parameter
         if not params["integration"]:
@@ -743,21 +735,15 @@ class ClarifyClient(JSONRPCClient):
             sort=sort,
             limit=limit,
             skip=skip,
-            total=total
+            total=total,
         )
-        data_filter = DataFilter(gte=gte,lt=lt)
-        data_query = DataQuery(
-            filter=data_filter.to_query(),
-            last=last,
-            rollup=rollup
-        )
-        params = {
-            "query": query,
-            "data": data_query,
-            "include": include
-        }
+        data_filter = DataFilter(gte=gte, lt=lt)
+        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
+        params = {"query": query, "data": data_query, "include": include}
 
         request_data = Request(method=ApiMethod.select_dataframe, params=params)
 
-        self.update_headers({"Authorization": f"Bearer {self.authentication.get_token()}"})
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
         return self.make_requests(request_data.json())
