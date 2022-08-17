@@ -183,8 +183,8 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">signalsByInput</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;&lt;INPUT_ID_1&gt;&#39;</span><span class="p">:</span> <span class="n">InsertSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;SIGNAL_ID_1&gt;&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;&lt;INPUT_ID_2&gt;&#39;</span><span class="p">:</span> <span class="n">InsertSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;SIGNAL_ID_2&gt;&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;&lt;INPUT_ID_1&gt;&#39;</span><span class="p">:</span> <span class="n">CreateSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;SIGNAL_ID_1&gt;&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;&lt;INPUT_ID_2&gt;&#39;</span><span class="p">:</span> <span class="n">CreateSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;SIGNAL_ID_2&gt;&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
@@ -192,8 +192,8 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <p>Where:</p>
 <ul class="simple">
 <li><p>InsertResponse is a a pydantic model with field signalsByInput.</p></li>
-<li><p>signalsByInput is a Dict[InputID, InsertSummary].</p></li>
-<li><p>InsertSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).</p></li>
+<li><p>signalsByInput is a Dict[InputID, CreateSummary].</p></li>
+<li><p>CreateSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).</p></li>
 </ul>
 <p>In case of the error (for example not equal length) the method return a pydantic model with the following format:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
@@ -476,7 +476,6 @@ For more information click <a class="reference external" href="https://docs.clar
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_items</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="nb">filter</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Air Temperature&quot;</span><span class="p">)}),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">include</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;signals&quot;</span><span class="p">],</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">sort</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">],</span>
