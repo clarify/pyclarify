@@ -91,12 +91,19 @@ def iterator(func):
                     times = current_payload["params"]["data"]["filter"]["times"]
                     user_gte = times.pop("$gte", None)
                     user_lt = times.pop("$lt", None)
-                    for start_time, end_time in TimeIterator(
-                        user_gte, user_lt, current_payload["params"]["data"]["rollup"]
-                    ):
-                        current_payload["params"]["data"]["filter"]["times"]["$gte"] = time_to_string(start_time)
-                        current_payload["params"]["data"]["filter"]["times"]["$lt"] = time_to_string(end_time)
-                        payload_list += [current_payload]
+                    if user_gte is not None or user_lt is not None:
+                        for start_time, end_time in TimeIterator(
+                            user_gte, user_lt, current_payload["params"]["data"]["rollup"]
+                        ):
+                            current_payload["params"]["data"]["filter"]["times"][
+                                "$gte"
+                            ] = time_to_string(start_time)
+                            current_payload["params"]["data"]["filter"]["times"][
+                                "$lt"
+                            ] = time_to_string(end_time)
+                            payload_list += [current_payload]
+                    else:
+                        payload_list += [payload]
                 else:
                     payload_list += [payload]
         else:
@@ -162,7 +169,6 @@ class JSONRPCClient:
                 self.base_url, data=json.dumps(payload), headers=self.headers
             )
             logging.debug(f"<-- {self.base_url} ({res.status_code})")
-            logging.debug(f"Trace: #{res.headers['Traceparent']}")
             if not res.ok:
                 err = {
                     "code": res.status_code,

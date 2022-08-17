@@ -7,7 +7,6 @@ sys.path.insert(1, "src/")
 from pyclarify.views.items import (
     SelectItemsParams,
     PublishSignalsParams,
-    SelectItemsDataParams,
     SaveSummary,
     PublishSignalsResponse,
 )

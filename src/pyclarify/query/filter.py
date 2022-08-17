@@ -147,8 +147,8 @@ class DataFilter(BaseModel):
     >>> data_filter = query.DataFilter(gte='2022-08-01T16:00:20Z',lt='2022-08-02T16:00:20Z')
     >>> data_filter.to_query()
     >>> {'times': {'$gte': '2022-08-01T16:00:20Z', '$lt': '2022-08-02T16:00:20Z'}}
-
     """
+
     gte: Optional[Union[str, datetime]] = None
     lt: Optional[Union[str, datetime]] = None
 
