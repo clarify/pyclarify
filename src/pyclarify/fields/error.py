@@ -14,17 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pyclarify.fields.query import (
-    Equal,
-    NotEqual,
-    Regex,
-    In,
-    NotIn,
-    LessThan,
-    GreaterThan,
-    GreaterThanOrEqual,
-    Operators,
-    Comparison,
-)
+from pydantic.fields import Optional
+from pydantic import BaseModel
+from typing import List, Union, Dict
 
-from .filter import Filter, DataFilter
+
+class ErrorData(BaseModel):
+    trace: str
+    params: Optional[Dict[str, List[str]]]
+
+
+class Error(BaseModel):
+    code: str
+    message: str
+    data: Optional[Union[ErrorData, str]]

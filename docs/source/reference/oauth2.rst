@@ -1,7 +1,7 @@
 PyClarify Auth 
 ===============
 
-.. automodule:: pyclarify.oauth2
+.. automodule:: pyclarify.jsonrpc.oauth2
    :members:
    :undoc-members:
    :show-inheritance:
