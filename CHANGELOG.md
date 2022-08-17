@@ -160,6 +160,8 @@ Changes are grouped as follows
 
 # [0.4.0] - 2022-07-12
 
+Changing to JSON:API format!
+
 ## Added
 
 - `fields` folder containing all fields used internally.

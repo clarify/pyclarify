@@ -17,3 +17,5 @@ limitations under the License.
 from pyclarify.client import ClarifyClient
 from pyclarify.views import Signal, SignalInfo, Item, ItemInfo, DataFrame
 import pyclarify.query
+
+__version__ = "0.4.0"
