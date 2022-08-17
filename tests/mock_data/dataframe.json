@@ -30,6 +30,30 @@
     "values": [0.6, 1.0, 2.4],
     "signal": "signal_3"
   },
+  "insert": {
+    "args": {
+      "integration": "c618rbfqfsj7mjkj0ss1",
+      "data": {
+        "times": ["2021-10-10T21:00:00+00:00", "2021-10-10T22:00:00+00:00"],
+        "series": {
+          "signal1": [1.0, 2.0],
+          "signal2": [3.0, 4.0]
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "result": {
+        "signalsByInput": {
+          "c5vv12btaf7d0qbk0l0e": {
+            "id": "c5vv12btaf7d0qbk0l0e",
+            "created": true
+          }
+        }
+      }
+    }
+  },
   "select_dataframe": {
     "args": {
       "filter": {

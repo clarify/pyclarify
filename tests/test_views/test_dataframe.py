@@ -170,22 +170,22 @@ class TestSummary(unittest.TestCase):
 
 class TestInsertResponse(unittest.TestCase):
     def setUp(self):
-        with open("./tests/mock_data/response.json") as f:
+        with open("./tests/mock_data/dataframe.json") as f:
             self.mock_data = json.load(f)
-        self.insert_response = self.mock_data["insert_response"]
+        self.insert_response = self.mock_data["insert"]["response"]
 
     def test_insert_map(self):
         try:
-            InsertResponse(**self.insert_response)
+            InsertResponse(**self.insert_response["result"])
         except ValidationError:
             self.fail("InsertResponse raised ValidationError unexpectedly!")
 
 
 class TestInsertParams(unittest.TestCase):
     def setUp(self):
-        with open("./tests/mock_data/request.json") as f:
+        with open("./tests/mock_data/dataframe.json") as f:
             self.mock_data = json.load(f)
-        self.insert_params = self.mock_data["insert_params"]
+        self.insert_params = self.mock_data["insert"]["args"]
 
     def test_insert_params(self):
         try:

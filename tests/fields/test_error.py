@@ -8,7 +8,7 @@ from pyclarify.fields.error import Error, ErrorData
 
 class TestError(unittest.TestCase):
     def setUp(self):
-        with open("./tests/mock_data/response.json") as f:
+        with open("./tests/mock_data/generics.json") as f:
             self.mock_data = json.load(f)
         self.error_data = self.mock_data["error_data"]
         self.error = self.mock_data["error"]

@@ -24,6 +24,7 @@ from pyclarify.__utils__.time import time_to_string, compute_iso_timewindow
 
 class TestTime(unittest.TestCase):
     def setUp(self):
+        
         # consistent time
         self.string_start_time = "2022-01-01T01:01:01Z"
         self.string_end_time = "2022-10-01T01:01:01Z"

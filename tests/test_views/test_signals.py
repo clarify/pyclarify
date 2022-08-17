@@ -41,9 +41,9 @@ class TestSaveSignalsParams(unittest.TestCase):
 
 class TestMaps(unittest.TestCase):
     def setUp(self):
-        with open("./tests/mock_data/response.json") as f:
+        with open("./tests/mock_data/signals.json") as f:
             self.mock_data = json.load(f)
-        self.save_signal_response = self.mock_data["save_signal_response"]
+        self.save_signal_response = self.mock_data["save_signals"]["response"]
 
     def test_save_signals_map(self):
         try:

@@ -16,12 +16,12 @@ from pyclarify.views.items import (
 
 class TestSelectItems(unittest.TestCase):
     def setUp(self):
-        with open("./tests/mock_data/request.json") as f:
+        with open("./tests/mock_data/items.json") as f:
             self.mock_data = json.load(f)
-        self.select_items_params = self.mock_data["select_items_params"]
+        select_items_args = self.mock_data["select_items"]["args"]
+        self.select_items_params = {"query": select_items_args}
 
     def test_select_items_params(self):
-        # SelectItemsParams
         try:
             SelectItemsParams(**self.select_items_params)
         except ValidationError:
@@ -32,7 +32,6 @@ class TestSelectItems(unittest.TestCase):
         except ValidationError:
             self.fail("SelectItemsParams raised ValidationError unexpectedly!")
 
-        # assert type validation
         with self.assertRaises(ValidationError):
             SelectItemsParams(items="string")
         with self.assertRaises(ValidationError):
@@ -40,13 +39,13 @@ class TestSelectItems(unittest.TestCase):
 
 class TestPublishSignalsParams(unittest.TestCase):
     def setUp(self):
-        with open("./tests/mock_data/request.json") as f:
+        with open("./tests/mock_data/items.json") as f:
             self.mock_data = json.load(f)
-        self.publish_signals_params = self.mock_data["publish_signals_params"]
+        self.publish_signals_args = self.mock_data["publish_signals"]["args"]
 
     def test_publish_signals_params(self):
         try:
-            PublishSignalsParams(**self.publish_signals_params)
+            PublishSignalsParams(**self.publish_signals_args)
         except ValidationError:
             self.fail("InsertParams raised ValidationError unexpectedly!")
 
@@ -57,7 +56,6 @@ class TestPublishSignalsParams(unittest.TestCase):
         except ValidationError:
             self.fail("InsertParams raised ValidationError unexpectedly!")
 
-        # assert type validation
         with self.assertRaises(ValidationError):
             PublishSignalsParams(integration="string")
         with self.assertRaises(ValidationError):
@@ -66,9 +64,9 @@ class TestPublishSignalsParams(unittest.TestCase):
 
 class TestPublishSignalsResponse(unittest.TestCase):
     def setUp(self):
-        with open("./tests/mock_data/response.json") as f:
-            self.mock_data = json.load(f)
-        self.publish_signal_response = self.mock_data["publish_signal_response"]
+        with open("./tests/mock_data/items.json") as f:
+            mock_data = json.load(f)
+            self.publish_signal_response = mock_data["publish_signals"]["response"]
 
     def test_publish_signals_map(self):
         try:
@@ -80,8 +78,8 @@ class TestPublishSignalsResponse(unittest.TestCase):
 class TestSaveSummary(unittest.TestCase):
     def setUp(self):
         with open("./tests/mock_data/dataframe.json") as f:
-            self.mock_data = json.load(f)
-        self.generic_summary = self.mock_data["generic_summary"]
+            mock_data = json.load(f)
+            self.generic_summary = mock_data["generic_summary"]
 
     def test_save_summary(self):
         summary = self.generic_summary
@@ -92,7 +90,6 @@ class TestSaveSummary(unittest.TestCase):
         except ValidationError:
             self.fail("SaveSummary raised ValidationError unexpectedly!")
 
-        # assert type validation
         with self.assertRaises(ValidationError):
             SaveSummary(id="c618rbfqfsj7mjkj0ss1", created=True, updated="string")
 

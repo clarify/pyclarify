@@ -27,9 +27,9 @@ class TestClarifyClientPublishSignals(unittest.TestCase):
     def setUp(self):
         self.client = ClarifyClient("./tests/mock_data/mock-clarify-credentials.json")
 
-        with open("./tests/mock_data/clarify-client-publish-signals.json") as f:
-            self.mock_data = json.load(f)
-        self.test_cases = self.mock_data["test_cases"]
+        with open("./tests/mock_data/items.json") as f:
+            mock_data = json.load(f)
+            self.test_cases = mock_data["publish_signals"]["test_cases"]
         dummy_items = self.test_cases[1]["dummy-items"]
         self.signal_ids = list(dummy_items.keys())
         self.items = list(dummy_items.values())
