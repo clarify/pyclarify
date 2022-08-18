@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pyclarify.client import APIClient, ClarifyClient
-from pyclarify.models.data import Signal, SignalInfo, Item, DataFrame
+from pyclarify.client import ClarifyClient
+from pyclarify.views import Signal, SignalInfo, Item, ItemInfo, DataFrame
 import pyclarify.query
+
+__version__ = "0.4.0"

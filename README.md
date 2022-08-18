@@ -10,15 +10,19 @@
 [![License](https://img.shields.io/github/license/clarify/pyclarify)](https://github.com/clarify/pyclarify/blob/main/LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
+<hr/>
+
+PyClarify helps users of Clarify to easily read, write and manipulate data in Clarify.
+
+- Data scientists can easily filter data, convert it to pandas with our built in methods, and write results back.
+- System integrators can set up pipelines for automatic streaming of data, and update labels on the fly.
+
 # Useful tutorials and documentation
 
 - [PyClarify SDK](https://pypi.org/project/pyclarify/)
 - [PyClarify documentation](https://clarify.github.io/pyclarify/)
 - [Clarify Developer documentation](https://docs.clarify.io/developers/welcome)
 - [Basic tutorial on using Python with Clarify](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb)
-- [Clarify Forecast tutorial](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Forecasting.ipynb)
-- [Pattern Recognition tutorial](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Pattern%20Recognition.ipynb)
-- [Google Cloud Hosting tutorial](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Google%20Cloud%20Hosting.ipynb)
 
 # Prerequisites
 
@@ -28,136 +32,237 @@ In order to start using the Python SDK, you need
 - Python3 (>= 3.7) and pip.
 - Credentials from a Clarify integration. See the [introduction notebook](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb) for a complete introduction.
 
-# Install and import PyClarify
+## Where to get it
 
-To install this package:
+The source code is currently hosted on GitHub at: https://github.com/clarify/pyclarify
 
-> $ pip install pyclarify
->
-> import pyclarify
+Binary installers for the latest released version are available at the [Python
+Package Index (PyPI)](https://pypi.org/project/pyclarify).
+
+```sh
+# PyPI install
+pip install pandas
+```
+
+## Dependencies
+
+- [requests - The most used (and trusted) HTTP library.](https://requests.readthedocs.io/en/latest/)
+- [Pydantic - Allowing for strict typing and data validation.](https://pydantic-docs.helpmanual.io)
+- [Typing Extensions - Brings the typing use of new type system features on older Python versions, allowing us to support python 3.7+.](https://typing.readthedocs.io)
 
 # Interact with Clarify
 
-PyClarify provides a fast and easy way to interact with Clarify using the `APIClient` and `ClarifyClient` class.
-This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.
-
-The `APIClient` and `ClarifyClient` class can do the almost the same operations, but the `ClarifyClient` provides a more pythonic way.
+PyClarify provides a fast and easy way to interact with Clarify.
+The `ClarifyClient` class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.
 
 For information about the Clarify Developer documentation
 click [here](https://docs.clarify.io/developers/welcome).
 
-## **Using Python with Clarify**
+## Quickstart
+
+We recommend using Google Colab to quickly learn how to interact with Clarify using Python. We have created an interactive introduction tutorial where you will learn all the basics to get you started.
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb)
 
-Use colab to learn fast end easy how to interact with Clarify using Python. In this introduction tutorial you will learn all the basics to get you started.
+### Access you data with the _ClarifyClient_
 
-## Quickstart
+```python
+from pyclarify import ClarifyClient
 
-**Save signals**
+client = ClarifyClient("clarify-credentials.json")
+```
 
-**Example:**
+### Create new _Signals_
 
-    from pyclarify import ClarifyClient, SignalInfo
+```python
+from pyclarify import Signal
 
-    client = ClarifyClient("./clarify-credentials.json")
+signal = Signal(
+    name = "Home temperature",
+    description = "Temperature in the bedroom",
+    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+)
 
-    signal = SignalInfo(
-       name = "Home temperature",
-       description = "Temperature in the bedroom",
-       labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
-    )
+response = client.save_signals(
+    input_ids=["<INPUT_ID>"],
+    signals=[signal],
+    create_only=False
+)
+```
 
-    response = client.save_signals(input_ids=["<INPUT_ID>"], signals=[signal], create_only=False)
-    print(response.json())
+### Populate your signals using _DataFrames_
 
-**Insert data into a signal**
+```python
+from pyclarify import DataFrame
 
-**Example:**
+data = DataFrame(
+    series={"<INPUT_ID_1>": [1, None], "<INPUT_ID_2>": [None, 5]},
+    times = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"],
+)
 
-    from pyclarify import DataFrame, ClarifyClient
+response = client.insert(data)
+```
 
-    client = APIClient("./clarify-credentials.json")
+### Query your stored signals
 
-    date = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+```python
+response = client.select_signals(
+    skip=10,
+    limit=50,
+    sort=["-id"]
+)
+```
 
-    data = DataFrame(
-        series={"<INPUT_ID_1>": [1, None], "<INPUT_ID_2>": [None, 5]},
-        times = date,
-    )
+### Publish them as _Items_
 
-    response = client.insert(data)
-    print(response.json())
+```python
+from pyclarify import Item
 
-**Get metadata from signals and/or items**
+client = ClarifyClient("./clarify-credentials.json")
 
-**Example:**
+item = Item(
+    name = "Home temperature",
+    description = "Temperature in the bedroom",
+    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
+    visible=True
+)
+response = client.publish_signals(
+    signal_ids=['<SIGNAL_ID>'],
+    items=[item],
+    create_only=False
+)
+```
 
-    from pyclarify import ClarifyClient
+### Use filters to get a specific selection
 
-    client = ClarifyClient("./clarify-credentials.json")
+```python
+from pyclarify.query import Filter, Regex
 
-    response = client.select_signals(
-                    ids = ['<SIGNAL_ID>'],
-                    name = "Electricity",
-                    labels = {"city": "Trondheim"},
-                    limit = 10,
-                    skip = 0,
-                    include_items = False
-    )
-    print(response.json())
+only_raspberries = Filter(
+    fields={
+        "labels.unit-type": Regex(value="Raspberry")
+    }
+)
 
-**Publish signals**
+response = client.select_items(
+    filter=only_raspberries
+)
+```
 
-**Example:**
+### Get the data and include relationships
 
-    from pyclarify import ClarifyClient, Item
+```python
+response = client.select_dataframe(
+    filter=only_raspberries,
+    include=["item"]
+)
+```
 
-    client = ClarifyClient("./clarify-credentials.json")
+### Use help to get more insight
 
-    item = Item(
-       name = "Home temperature",
-       description = "Temperature in the bedroom",
-       labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
-       visible=True
-    )
-    response = client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
-    print(response.json())
+```python
+$ help(client.select_dataframe)
+>>> select_dataframe(
+        filter: Optional[pyclarify.query.filter.Filter] = None,
+        sort: List[str] = [],
+        limit: int = 20,
+        skip: int = 0,
+        total: bool = False,
+        gte: Union[datetime.datetime, str] = None,
+        lt: Union[datetime.datetime, str] = None,
+        last: int = -1,
+        rollup: Union[str, datetime.timedelta] = None,
+        include: List[str] = []
+    ) -> pyclarify.views.generics.Response method of pyclarify.client.ClarifyClient instance
 
-**Get Item data**
+    Return dataframe for items.
 
-**Example:**
+    Time selection:
+    - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
+    - Maximum window size is 400 days (400 * 24 hours) whenrollup is greater than or equal to PT1M (1 minute).
+    - No maximum window size if rollup is window.
 
-    from pyclarify import ClarifyClient
+    Parameters
+    ----------
+    filter: Filter, optional
+        A Filter Model that describes a mongodb filter to be applied.
 
-    client = ClarifyClient("./clarify-credentials.json")
+    sort: list of strings
+        List of strings describing the order in which to sort the items in the response.
 
-    response = client.select_items_data(
-        ids = ['<ITEM_ID>'],
-        limit = 10,
-        skip = 0,
-        not_before = "2021-10-01T12:00:00Z",
-        before = "2021-11-10T12:00:00Z",
-        rollup = "P1DT"
-    )
-    print(response.json())
+    limit: int, default 20
+        The maximum number of resources to select. Negative numbers means no limit, which may or may not be allowed.
 
-**Get Item metadata**
+    skip: int default: 0
+        Skip the first N matches. A negative skip is treated as 0.
 
-**Example:**
+    total: bool default: False
+        When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
 
-    from pyclarify import ClarifyClient
+    gte: string(RFC 3339 timestamp) or python datetime, optional, default <now - 7 days>
+        An RFC3339 time describing the inclusive start of the window.
 
-    client = ClarifyClient("./clarify-credentials.json")
+    lt: string(RFC 3339 timestamp) or python datetime, optional, default <now + 7 days>
+        An RFC3339 time describing the exclusive end of the window.
 
-    response = client.select_items_metadata(
-        ids = ['<ITEM_ID>'],
-        name = "Electricity",
-        labels = {"city": "Trondheim"},
-        limit = 10,
-        skip = 0
-    )
-    print(response.json())
+    last: int, default -1
+        If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
+
+    rollup: timedelta or string(RFC 3339 duration) or "window", default None
+        If RFC 3339 duration is specified, roll-up the values into either the full time window
+        (`gte` -> `lt`) or evenly sized buckets.
+
+    include: List of strings, optional
+        A list of strings specifying which relationships to be included in the response.
+
+    Example
+    -------
+
+        >>> client.select_dataframe(
+        >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
+        >>>     sort = ["-id"],
+        >>>     limit = 5,
+        >>>     skip = 3,
+        >>>     total = False,
+        >>>     gte="2022-01-01T01:01:01Z",
+        >>>     lt="2022-01-09T01:01:01Z",
+        >>>     rollup="PT24H",
+
+    Returns
+    -------
+    Response
+        In case of a valid return value, returns a pydantic model with the following format:
+
+            >>> jsonrpc = '2.0'
+            >>> id = '1'
+            >>> result = SelectDataFrameResponse(
+            >>>    meta={
+            >>>        'total': -1,
+            >>>        'groupIncludedByType': True
+            >>>    },
+            >>>    data=DataFrame(
+            >>>        times=[datetime.datetime(2022, 7, 12, 12, 0, tzinfo=datetime.timezone.utc),..],
+            >>>        series={
+            >>>            'c5ep6ojsbu8cohpih9bg': [0.18616, 0.18574000000000002, ...,],
+            >>>            ...
+            >>>        }
+            >>>     )
+            >>>     included=None
+            >>> ),
+            >>> error = None
+
+        In case of the error the method return a pydantic model with the following format:
+
+            >>> jsonrpc = '2.0'
+            >>> id = '1'
+            >>> result = None
+            >>> error = Error(
+            >>>         code = '-32602',
+            >>>         message = 'Invalid params',
+            >>>         data = ErrorData(trace = <trace_id>, params = {})
+            >>> )
+
+```
 
 # Changelog
 

@@ -17,118 +17,117 @@ limitations under the License.
 import sys
 import unittest
 import json
-from datetime import datetime, timedelta
 from unittest.mock import patch
 
-# Standard library imports...
-
-
 sys.path.insert(1, "src/")
-from pyclarify import APIClient, SignalInfo, DataFrame
-from pyclarify.models.auth import ClarifyCredential, OAuthRequestBody, OAuthResponse
-import pyclarify
+from pyclarify import ClarifyClient
 
 
-class TestClarifySaveClient(unittest.TestCase):
+class TestClarifyClientSaveSignals(unittest.TestCase):
     def setUp(self):
-        self.client = APIClient("./tests/data/mock-clarify-credentials.json")
+        self.client = ClarifyClient("./tests/mock_data/mock-clarify-credentials.json")
 
-        with open("./tests/data/mock-client-common.json") as f:
+        with open("./tests/mock_data/signals.json") as f:
             self.mock_data = json.load(f)
+        self.test_cases = self.mock_data["save_signals"]["test_cases"]
+        dummy_signals = self.test_cases[1]["dummy-signals"]
+        self.input_ids = list(dummy_signals.keys())
+        self.signals = list(dummy_signals.values())
 
+        with open("./tests/mock_data/mock-client-common.json") as f:
+            self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
 
-        with open("./tests/data/mock-save-signals.json") as f:
-            self.mock_data = json.load(f)
-
-        self.times = [
-            (datetime.now() - timedelta(seconds=10)).astimezone().isoformat(),
-            datetime.now().astimezone().isoformat(),
-        ]
-
-        self.values = [0.6, 1.0]
-
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_send_request_1(self, client_req_mock, get_token_mock):
+    def test_save_no_signal(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: self.mock_data["mock_response_1"]
+        client_req_mock.return_value.json = lambda: self.test_cases[0]["response"]
 
-        signal_id = "c5vv12btaf7d0qbk0l0g"
-        data = DataFrame(values={signal_id: self.values}, times=self.times)
-        result = self.client.insert(data)
+        response_data = self.client.save_signals(input_ids=[], signals=[])
+        for x in response_data.result.signalsByInput:
+            self.assertEqual(x, {})
 
-        signal_meta_data = SignalInfo(
-            name=signal_id,
-            description="test description",
-            labels={"test_label_py": ["completed mo"]},
-            gapDetection="PT5M",
-        )
-        result = self.client.save_signals(
-            params={"inputs": {signal_id: signal_meta_data}, "createOnly": True}
-        )
-        if result.error is not None:
-            self.assertIn(result.error.code, self.error_list)
-        else:
-            self.assertIn(signal_id, result.result.signalsByInput)
-
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_send_request_2(self, client_req_mock, get_token_mock):
+    def test_save_one_signal(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: self.mock_data["mock_response_2"]
+        client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
 
-        signal_id = "c5vv12btaf7d0qbk0l0e"
-        data = DataFrame(values={signal_id: self.values}, times=self.times)
-        result = self.client.insert(data)
-
-        signal_meta_data = SignalInfo(
-            name=signal_id,
-            description="test description",
-            labels={
-                "test_label_py": ["completed no", "and one more"],
-                "thisonetoo": ["house"],
-            },
-            gapDetection="PT3M",
+        response_data = self.client.save_signals(
+            input_ids=self.input_ids[:1], signals=self.signals[:1]
         )
-        result = self.client.save_signals(
-            params={"inputs": {signal_id: signal_meta_data}, "createOnly": True}
-        )
+        for x in response_data.result.signalsByInput:
+            self.assertEqual(x, self.input_ids[0])
+            break
 
-        if result.error is not None:
-            self.assertIn(result.error.code, self.error_list)
-        else:
-            self.assertIn(signal_id, result.result.signalsByInput)
-
-    @patch("pyclarify.client.RawClient.get_token")
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_send_request_3(self, client_req_mock, get_token_mock):
+    def test_save_multiple_signals(self, client_req_mock, get_token_mock):
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: self.mock_data["mock_response_3"]
+        client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
 
-        signal_id = "c5vv12btaf7d0qbk0l0g"
-        data = DataFrame(values={signal_id: self.values}, times=self.times)
-        result = self.client.insert(data)
-
-        signal_meta_data = SignalInfo(
-            name=signal_id,
-            description="test description",
-            labels={
-                "test_label_py": ["completed yes", "and now updated"],
-                "location": ["house"],
-            },
+        response_data = self.client.save_signals(
+            input_ids=self.input_ids, signals=self.signals
         )
-        result = self.client.save_signals(
-            params={"inputs": {signal_id: signal_meta_data}, "createOnly": True}
-        )
+        for i, x in enumerate(response_data.result.signalsByInput):
+            self.assertEqual(x, self.input_ids[i])
 
-        if result.error is not None:
-            self.assertIn(result.error.code, self.error_list)
-        else:
-            self.assertIn(signal_id, result.result.signalsByInput)
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_save_without_input_ids(self, client_req_mock, get_token_mock):
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: self.test_cases[0]["response"]
+
+        response_data = self.client.save_signals(input_ids=[], signals=self.signals)
+        for x in response_data.result.signalsByInput:
+            self.assertEqual(x, {})
+
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_save_without_signals(self, client_req_mock, get_token_mock):
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: self.test_cases[0]["response"]
+
+        response_data = self.client.save_signals(input_ids=self.input_ids, signals=[])
+        for x in response_data.result.signalsByInput:
+            self.assertEqual(x, {})
+
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_save_with_too_many_input_ids(self, client_req_mock, get_token_mock):
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: self.test_cases[1]["response"]
+
+        response_data = self.client.save_signals(
+            input_ids=self.input_ids * 2, signals=self.signals
+        )
+        for x in response_data.result.signalsByInput:
+            self.assertEqual(x, self.input_ids[0])
+            break
+
+    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
+    @patch("pyclarify.client.requests.post")
+    def test_save_with_too_many_signals(self, client_req_mock, get_token_mock):
+        get_token_mock.return_value = self.mock_access_token
+        client_req_mock.return_value.ok = True
+        client_req_mock.return_value.json = lambda: self.test_cases[2]["response"]
+
+        response_data = self.client.save_signals(
+            input_ids=self.input_ids, signals=self.signals * 2
+        )
+        for x in response_data.result.signalsByInput:
+            self.assertEqual(x, self.input_ids[0])
+            break
+
+        self.assertFalse(response_data.result.signalsByInput[x].created)
+        self.assertFalse(response_data.result.signalsByInput[x].updated)
 
 
 if __name__ == "__main__":

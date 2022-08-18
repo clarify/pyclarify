@@ -1,0 +1,186 @@
+{
+  "data_source": "https://dashplatform.readme.io/docs/reference-dapi-endpoints-json-rpc-endpoints",
+  "mock_url": "http://seed-1.testnet.networks.dash.org:3000/",
+  "mock_method": "getBlockHash",
+  "mock_params": {
+    "height": 1
+  },
+  "mock_RPC_payload": {
+    "jsonrpc": "2.0",
+    "method": "getBlockHash",
+    "id": 1,
+    "params": {
+      "height": 1
+    }
+  },
+  "no_iterations": {
+    "args": {
+      "items": {
+        "limit": 1,
+        "skip": 10
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "1",
+        "result": {
+          "meta": { "total": -1, "groupIncludedByType": false },
+          "data": [
+            {
+              "type": "items",
+              "id": "c5ep6ojsbu8cohpih9g0",
+              "meta": {
+                "attributesHash": "e7949437562e4319d79c9878890ea34bf0829eec",
+                "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+                "annotations": { "clarify/industry-type": "mysterybox" },
+                "createdAt": "2021-10-06T12:15:30.353Z",
+                "updatedAt": "2022-03-25T09:58:19.61Z"
+              },
+              "attributes": {
+                "name": "Average Wind Speed",
+                "description": "Used by Demo data timeline: Maritime & Mystery box.",
+                "valueType": "numeric",
+                "sourceType": "measurement",
+                "engUnit": "m/s",
+                "sampleInterval": null,
+                "gapDetection": "PT2H",
+                "labels": {
+                  "data-source": ["Live Port Weather data provider"],
+                  "location": ["Port B"]
+                },
+                "enumValues": {},
+                "visible": true
+              },
+              "relationships": {}
+            }
+          ]
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "result": {
+        "meta": { "total": -1, "groupIncludedByType": false },
+        "data": [
+          {
+            "type": "items",
+            "id": "c5ep6ojsbu8cohpih9g0",
+            "meta": {
+              "attributesHash": "e7949437562e4319d79c9878890ea34bf0829eec",
+              "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+              "annotations": { "clarify/industry-type": "mysterybox" },
+              "createdAt": "2021-10-06T12:15:30.353Z",
+              "updatedAt": "2022-03-25T09:58:19.61Z"
+            },
+            "attributes": {
+              "name": "Average Wind Speed",
+              "description": "Used by Demo data timeline: Maritime & Mystery box.",
+              "valueType": "numeric",
+              "sourceType": "measurement",
+              "engUnit": "m/s",
+              "sampleInterval": null,
+              "gapDetection": "PT2H",
+              "labels": {
+                "data-source": ["Live Port Weather data provider"],
+                "location": ["Port B"]
+              },
+              "enumValues": {},
+              "visible": true
+            },
+            "relationships": {}
+          }
+        ]
+      }
+    }
+  },
+  "one_iterations": {
+    "args": {
+      "items": {
+        "include": true,
+        "limit": 51,
+        "skip": 10
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "result": {
+        "meta": { "total": -1, "groupIncludedByType": false },
+        "data": [
+          {
+            "type": "items",
+            "id": "c5ep6ojsbu8cohpih9g0",
+            "meta": {
+              "attributesHash": "e7949437562e4319d79c9878890ea34bf0829eec",
+              "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+              "annotations": { "clarify/industry-type": "mysterybox" },
+              "createdAt": "2021-10-06T12:15:30.353Z",
+              "updatedAt": "2022-03-25T09:58:19.61Z"
+            },
+            "attributes": {
+              "name": "Average Wind Speed",
+              "description": "Used by Demo data timeline: Maritime & Mystery box.",
+              "valueType": "numeric",
+              "sourceType": "measurement",
+              "engUnit": "m/s",
+              "sampleInterval": null,
+              "gapDetection": "PT2H",
+              "labels": {
+                "data-source": ["Live Port Weather data provider"],
+                "location": ["Port B"]
+              },
+              "enumValues": {},
+              "visible": true
+            },
+            "relationships": {}
+          }
+        ]
+      }
+    }
+  },
+  "many_iterations": {
+    "args": {
+      "items": {
+        "include": true,
+        "limit": 1100,
+        "skip": 10
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "1",
+      "result": {
+        "meta": { "total": -1, "groupIncludedByType": false },
+        "data": [
+          {
+            "type": "items",
+            "id": "c5ep6ojsbu8cohpih9g0",
+            "meta": {
+              "attributesHash": "e7949437562e4319d79c9878890ea34bf0829eec",
+              "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+              "annotations": { "clarify/industry-type": "mysterybox" },
+              "createdAt": "2021-10-06T12:15:30.353Z",
+              "updatedAt": "2022-03-25T09:58:19.61Z"
+            },
+            "attributes": {
+              "name": "Average Wind Speed",
+              "description": "Used by Demo data timeline: Maritime & Mystery box.",
+              "valueType": "numeric",
+              "sourceType": "measurement",
+              "engUnit": "m/s",
+              "sampleInterval": null,
+              "gapDetection": "PT2H",
+              "labels": {
+                "data-source": ["Live Port Weather data provider"],
+                "location": ["Port B"]
+              },
+              "enumValues": {},
+              "visible": true
+            },
+            "relationships": {}
+          }
+        ]
+      }
+    }
+  }
+}
