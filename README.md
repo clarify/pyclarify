@@ -41,14 +41,14 @@ Package Index (PyPI)](https://pypi.org/project/pyclarify).
 
 ```sh
 # PyPI install
-pip install pandas
+pip install pyclarify
 ```
 
 ## Dependencies
 
-- [requests - The most used (and trusted) HTTP library.](https://requests.readthedocs.io/en/latest/)
-- [Pydantic - Allowing for strict typing and data validation.](https://pydantic-docs.helpmanual.io)
-- [Typing Extensions - Brings the typing use of new type system features on older Python versions, allowing us to support python 3.7+.](https://typing.readthedocs.io)
+- [requests](https://requests.readthedocs.io/en/latest/) - The most used (and trusted) HTTP library.
+- [Pydantic](https://pydantic-docs.helpmanual.io) - Allowing for strict typing and data validation.
+- [Typing Extensions](https://typing.readthedocs.io) - Brings the typing use of new type system features on older Python versions, allowing us to support python 3.7+.
 
 # Interact with Clarify
 
