@@ -20,7 +20,7 @@ You'll need your Clarify credentials. Click :ref:`here <getcredentials>` for how
 
 Interact with Clarify
 =====================
-PyClarify provides a fast and easy way to interact with Clarify using the :py:meth:`~pyclarify.client.APIClient` and :py:meth:`~pyclarify.client.ClarifyClient` class . 
+PyClarify provides a fast and easy way to interact with Clarify using the :py:meth:`~pyclarify.client.APIClient` and :py:meth:`~pyclarify.client.Client` class . 
 This class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify. 
 
 For information about the Clarify Developer documentation
@@ -202,7 +202,7 @@ Example: Get Item data and metadata
 
 
 *****************************
-Using the ClarifyClient class
+Using the Client class
 *****************************
 
 Save signals  
@@ -214,9 +214,9 @@ Example: Get Item metadata
 
 .. code-block:: python
 
-    >>> from pyclarify import ClarifyClient, SignalInfo
+    >>> from pyclarify import Client, SignalInfo
     >>>
-    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>> client = Client("./clarify-credentials.json")
     >>>
     >>> signal = SignalInfo(
     >>>    name = "Home temperature",
@@ -237,7 +237,7 @@ Example: Insert data into a signal
 
 .. code-block:: python
 
-    >>> from pyclarify import DataFrame, ClarifyClient
+    >>> from pyclarify import DataFrame, Client
     >>>
     >>> client = APIClient("./clarify-credentials.json")
     >>>
@@ -263,8 +263,8 @@ Example: Get metadata from signals and/or items
 
 .. code-block:: python
 
-    >>> from pyclarify import ClarifyClient
-    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>> from pyclarify import Client
+    >>> client = Client("./clarify-credentials.json")
     >>> response = client.select_signals(
     >>>                 ids = ['<SIGNAL_ID>'],
     >>>                 name = "Electricity",
@@ -286,9 +286,9 @@ Example: Publish signals
 
 .. code-block:: python
 
-    >>> from pyclarify import ClarifyClient, Item
+    >>> from pyclarify import Client, Item
     >>>
-    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>> client = Client("./clarify-credentials.json")
     >>>
     >>> item = Item(
     >>>    name = "Home temperature",
@@ -323,9 +323,9 @@ Example: Get Item data
 
 .. code-block:: python
 
-    >>> from pyclarify import ClarifyClient
+    >>> from pyclarify import Client
     >>>
-    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>> client = Client("./clarify-credentials.json")
     >>>
     >>> response = client.select_items_data(
     >>>     ids = ['<ITEM_ID>'],
@@ -347,9 +347,9 @@ Example: Get Item metadata
 
 .. code-block:: python
 
-    >>> from pyclarify import ClarifyClient
+    >>> from pyclarify import Client
     >>>
-    >>> client = ClarifyClient("./clarify-credentials.json")
+    >>> client = Client("./clarify-credentials.json")
     >>>
     >>> response = client.select_items_metadata(
     >>>     ids = ['<ITEM_ID>'],

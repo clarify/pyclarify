@@ -20,9 +20,9 @@ from pyclarify.fields.query import (
     Regex,
     In,
     NotIn,
-    LessThan,
-    GreaterThan,
-    GreaterThanOrEqual,
+    Less,
+    Greater,
+    GreaterOrEqual,
     Operators,
     Comparison,
 )

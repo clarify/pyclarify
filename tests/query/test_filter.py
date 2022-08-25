@@ -15,10 +15,10 @@ class TestFilter(unittest.TestCase):
         self.f3 = query.Filter(fields={"labels.unit_id": query.In(value=["1"])})
         self.f4 = query.Filter(fields={"labels.topic": query.Regex(value="efb")})
         self.f5 = query.Filter(fields={"name": query.Equal(value="Trondheim")})
-        self.f6 = query.Filter(fields={"depth": query.LessThan(value=5)})
-        self.f7 = query.Filter(fields={"labels.unit_id": query.GreaterThan(value=2)})
+        self.f6 = query.Filter(fields={"depth": query.Less(value=5)})
+        self.f7 = query.Filter(fields={"labels.unit_id": query.Greater(value=2)})
         self.f8 = query.Filter(
-            fields={"gapDetection": query.GreaterThanOrEqual(value="PT15M")}
+            fields={"gapDetection": query.GreaterOrEqual(value="PT15M")}
         )
 
     def testSingleFilters(self):
@@ -63,17 +63,17 @@ class TestFilter(unittest.TestCase):
         with self.assertRaises(FilterError):
             query.Equal(value=["list", "not", "valid"])
 
-        # Less Than
+        # Less
         with self.assertRaises(FilterError):
-            query.LessThan(value=["list", "not", "valid"])
+            query.Less(value=["list", "not", "valid"])
 
-        # GreaterThan
+        # Greater
         with self.assertRaises(FilterError):
-            query.GreaterThan(value=["list", "not", "valid"])
+            query.Greater(value=["list", "not", "valid"])
 
         # Greater Than or Equal
         with self.assertRaises(FilterError):
-            query.GreaterThanOrEqual(value=["list", "not", "valid"])
+            query.GreaterOrEqual(value=["list", "not", "valid"])
 
     def testCombinationFilters(self):
         self.assertEqual(self.f1.to_query(), {"name": {"$ne": "Lufttemperatur"}})

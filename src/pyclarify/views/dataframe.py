@@ -174,7 +174,7 @@ class InsertResponse(BaseModel, extra=Extra.forbid):
     signalsByInput: Dict[InputID, CreateSummary]
 
 
-class SelectDataFrameParams(BaseModel):
+class DataFrameParams(BaseModel):
     query: Optional[ResourceQuery] = {}
     data: Optional[DataQuery] = {}
     include: Optional[List[str]] = []

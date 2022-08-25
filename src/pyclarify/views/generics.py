@@ -25,7 +25,7 @@ from typing import List, Dict, Union
 from pyclarify.fields.constraints import ApiMethod, IntegrationID
 from pyclarify.fields.error import Error
 from pyclarify.fields.resource import SelectionMeta
-from .dataframe import InsertParams, InsertResponse, SelectDataFrameParams
+from .dataframe import InsertParams, InsertResponse, DataFrameParams
 from .dataframe import DataFrame
 from .items import (
     SelectItemsParams,
@@ -73,8 +73,8 @@ class Request(JSONRPCRequest):
         elif values["method"] == ApiMethod.publish_signals:
             values["params"] = PublishSignalsParams(**values["params"])
             return values
-        elif values["method"] == ApiMethod.select_dataframe:
-            values["params"] = SelectDataFrameParams(**values["params"])
+        elif values["method"] == ApiMethod.data_frame:
+            values["params"] = DataFrameParams(**values["params"])
             return values
         return values
 

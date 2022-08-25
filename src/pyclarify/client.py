@@ -25,7 +25,7 @@ import requests
 from datetime import timedelta, datetime
 from pydantic import validate_arguments
 from pydantic.fields import Optional
-from typing import List, Union
+from typing import Dict, List, Union
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
 from pyclarify.views.items import Item
@@ -36,7 +36,7 @@ from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
 
 
-class ClarifyClient(JSONRPCClient):
+class Client(JSONRPCClient):
     """
     The class containing all rpc methods for talking to Clarify. Uses credential file on initialization. 
 
@@ -47,7 +47,7 @@ class ClarifyClient(JSONRPCClient):
 
     Example
     -------
-        >>> client = ClarifyClient("./clarify-credentials.json")
+        >>> client = Client("./clarify-credentials.json")
     """
 
     def __init__(self, clarify_credentials):
@@ -244,8 +244,9 @@ class ClarifyClient(JSONRPCClient):
     @validate_arguments
     def save_signals(
         self,
-        input_ids: List[InputID],
-        signals: List[Signal],
+        input_ids: List[InputID] = [],
+        signals: List[Signal] = [],
+        signals_by_input: Dict[InputID, Signal] = {},
         create_only: bool = False,
         integration: str = None,
     ) -> Response:
@@ -310,15 +311,16 @@ class ClarifyClient(JSONRPCClient):
         """
 
         # create params dict
-        params = {"inputs": {}, "createOnly": create_only, "integration": integration}
+        params = {"inputs": signals_by_input, "createOnly": create_only, "integration": integration}
 
         # assert integration parameter
         if not params["integration"]:
             params["integration"] = self.authentication.integration_id
 
-        # populate inputs
-        for input_id, signal in zip(input_ids, signals):
-            params["inputs"][input_id] = signal
+        if input_ids != [] and signals != []:
+            # populate inputs
+            for input_id, signal in zip(input_ids, signals):
+                params["inputs"][input_id] = signal
 
         request_data = Request(method=ApiMethod.save_signals, params=params)
 
@@ -330,27 +332,31 @@ class ClarifyClient(JSONRPCClient):
     @validate_arguments
     def publish_signals(
         self,
-        signal_ids: List[ResourceID],
-        items: List[Item],
+        signal_ids: List[ResourceID] = [],
+        items: List[Item] = [],
+        items_by_signal: Dict[ResourceID, Item] = {},
         create_only: bool = False,
         integration: str = None,
     ) -> Response:
         """
         Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
-        Each signal is uniquely identified by its input ID in combination with the integration ID.
+        Each signal is uniquely identified by its signal ID in combination with the integration ID.
         Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/api/next/methods/admin/publish-signals>`_ .
 
         Parameters
         ----------
         signal_ids: List['<SIGNAL_ID>']
-            List of strings to be the input ID of the signal.
+            List of strings to be the signal ID of the signal.
 
         items: List[ Item ]
             List of Item object that contains metadata for a Item.
             Click `here <https://docs.clarify.io/api/next/datatypes/item>`_ for more information.
 
+        items_by_signal: Dict[ResourceID, Item]
+            Dictionary with IDs of signals mapped to Item metadata.
+
         create_only: bool, default False
-            If set to True, skip update of information for existing Items. That is, all Input_ID's
+            If set to True, skip update of information for existing Items. That is, all signal_ids
             that map to existing items are silently ignored.
 
         integration: str Default None
@@ -359,7 +365,7 @@ class ClarifyClient(JSONRPCClient):
 
         Example
         -------
-            >>> from pyclairfy import Item
+            >>> from pyclarify import Item
             >>>
             >>> item = Item(
             >>>    name = "Home temperature",
@@ -398,7 +404,7 @@ class ClarifyClient(JSONRPCClient):
 
         # create params dict
         params = {
-            "itemsBySignal": {},
+            "itemsBySignal": items_by_signal,
             "createOnly": create_only,
             "integration": integration,
         }
@@ -408,8 +414,9 @@ class ClarifyClient(JSONRPCClient):
             params["integration"] = self.authentication.integration_id
 
         # populate inputs
-        for signal_id, item in zip(signal_ids, items):
-            params["itemsBySignal"][signal_id] = item
+        if signal_ids != [] and items != []:
+            for signal_id, item in zip(signal_ids, items):
+                params["itemsBySignal"][signal_id] = item
 
         request_data = Request(method=ApiMethod.publish_signals, params=params)
 
@@ -446,7 +453,7 @@ class ClarifyClient(JSONRPCClient):
         sort: list of strings
             List of strings describing the order in which to sort the items in the response.
         
-        total: bool, deafult False
+        total: bool, default False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
         
         include: List of strings, optional
@@ -505,7 +512,7 @@ class ClarifyClient(JSONRPCClient):
                 >>>                 enumValues={}, 
                 >>>                 sampleInterval=None, 
                 >>>                 gapDetection=None, 
-                >>>                 input='inventory_recyled_bond', 
+                >>>                 input='inventory_recycled_bond', 
                 >>>                 integration=None, 
                 >>>                 item=None
                 >>>             ), 
@@ -591,7 +598,7 @@ class ClarifyClient(JSONRPCClient):
         return self.make_requests(request_data.json())
 
     @validate_arguments
-    def select_dataframe(
+    def data_frame(
         self,
         filter: Optional[Filter] = None,
         sort: List[str] = [],
@@ -609,7 +616,7 @@ class ClarifyClient(JSONRPCClient):
 
         Time selection:
         - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
-        - Maximum window size is 400 days (400 * 24 hours) whenrollup is greater than or equal to PT1M (1 minute).
+        - Maximum window size is 400 days (400 * 24 hours) when rollup is greater than or equal to PT1M (1 minute).
         - No maximum window size if rollup is window.
 
         Parameters
@@ -648,7 +655,7 @@ class ClarifyClient(JSONRPCClient):
         Example
         -------
 
-            >>> client.select_dataframe(
+            >>> client.data_frame(
             >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
             >>>     sort = ["-id"],
             >>>     limit = 5,
@@ -667,7 +674,7 @@ class ClarifyClient(JSONRPCClient):
 
                 >>> jsonrpc = '2.0'
                 >>> id = '1'
-                >>> result = SelectDataFrameResponse(
+                >>> result = Selection(
                 >>>     meta={
                 >>>         'total': -1,
                 >>>         'groupIncludedByType': True
@@ -741,7 +748,7 @@ class ClarifyClient(JSONRPCClient):
         data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
         params = {"query": query, "data": data_query, "include": include}
 
-        request_data = Request(method=ApiMethod.select_dataframe, params=params)
+        request_data = Request(method=ApiMethod.data_frame, params=params)
 
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
