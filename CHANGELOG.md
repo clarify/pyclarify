@@ -168,10 +168,11 @@ Changing to JSON:API format!
 - `views` folder containing all models for communicating with the API.
 - `jsonrpc` folder containing all network functionality for the `ClarifyClient`.
 - `pyclarify.query.filter.DataFilter` for filtering on DataFrames.
-- `pyclarify.client.ClarifyClient.select_dataframe()` for selecting DataFrames.
+- `pyclarify.client.Client.data_frame()` for selecting DataFrames.
 
 ## Changed
 
+- `pyclarify.client.ClarifyClient` renamed to `pyclarify.client.Client`
 - Moved `ResourceQuery` and `DataQuery` models to `pyclarify.query.query`.
 - Moved `Comparison` and `Operators` to `pyclarify.fields.query`.
 - Moved `DataFrame` and all sub methods to `pyclarify.views.dataframe`.
@@ -191,7 +192,7 @@ Changing to JSON:API format!
   merged = DataFrame.merge([df, new_df])
   ```
 
-- `pyclarify.client.ClarifyClient.select_items()` now responds with `JSON:API` format, and does not retrieve data frames.
+- `pyclarify.client.Client.select_items()` now responds with `JSON:API` format, and does not retrieve data frames.
 
   ```python
   client.select_items(
@@ -203,8 +204,8 @@ Changing to JSON:API format!
   )
   ```
 
-- `pyclarify.client.ClarifyClient.select_signals()` replaced `pyclarify.client.ClarifyClient.select_signals_filter()`.
-- `pyclarify.client.ClarifyClient.select_signals()` now responds with `JSON:API` format.
+- `pyclarify.client.Client.select_signals()` replaced `pyclarify.client.ClarifyClient.select_signals_filter()`.
+- `pyclarify.client.Client.select_signals()` now responds with `JSON:API` format.
 
   ```python
     client.select_signals(
@@ -218,13 +219,12 @@ Changing to JSON:API format!
   ```
 
 - `GetToken` method renamed to `Authenticator`.
-- `pyclarify.jsonrpc.pagination.ItemIterator` renamed to `SelectIterator` and now paginates `select_signals`, `select_items` and `select_dataframe` methods.
+- `pyclarify.jsonrpc.pagination.ItemIterator` renamed to `SelectIterator` and now paginates `select_signals`, `select_items` and `data_frame` methods.
 
 ## Removed
 
 - `pyclarify.client.APIClient`
-- `pyclarify.client.ClarifyClient.get_token()`
-- `pyclarify.client.ClarifyClient.select_items_metadata()`
-- `pyclarify.client.ClarifyClient.select_items_data()`
-- `pyclarify.client.APIClient`
-- `pyclarify.client.ClarifyClient.select_signals_filter()`
+- `pyclarify.client.Client.get_token()`
+- `pyclarify.client.Client.select_items_metadata()`
+- `pyclarify.client.Client.select_items_data()`
+- `pyclarify.client.Client.select_signals_filter()`

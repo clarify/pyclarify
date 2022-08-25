@@ -22,13 +22,13 @@ from unittest.mock import patch
 from pyclarify.views.items import ItemSelectView
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyClient
+from pyclarify import Client
 from pyclarify.views.signals import SignalSelectView
 
 
 class TestClarifyClientSelectSignals(unittest.TestCase):
     def setUp(self):
-        self.client = ClarifyClient("./tests/mock_data/mock-clarify-credentials.json")
+        self.client = Client("./tests/mock_data/mock-clarify-credentials.json")
 
         with open("./tests/mock_data/signals.json") as f:
             self.mock_data = json.load(f)

@@ -20,12 +20,12 @@ import json
 from unittest.mock import patch
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyClient
+from pyclarify import Client
 
 
 class TestClarifyClientSaveSignals(unittest.TestCase):
     def setUp(self):
-        self.client = ClarifyClient("./tests/mock_data/mock-clarify-credentials.json")
+        self.client = Client("./tests/mock_data/mock-clarify-credentials.json")
 
         with open("./tests/mock_data/signals.json") as f:
             self.mock_data = json.load(f)

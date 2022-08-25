@@ -108,7 +108,7 @@ class TestMaps(unittest.TestCase):
 
         with open("./tests/mock_data/dataframe.json") as f:
             mock_data = json.load(f)
-            self.select_dataframe_response = mock_data["select_dataframe"]["response"]["result"]
+            self.data_frame_response = mock_data["data_frame"]["response"]["result"]
 
     def test_select_items_map(self):
         try:
@@ -122,9 +122,9 @@ class TestMaps(unittest.TestCase):
         except ValidationError:
             self.fail("Selection raised ValidationError unexpectedly!")
 
-    def test_select_dataframe_map(self):
+    def test_data_frame_map(self):
         try:
-            Selection(**self.select_dataframe_response)
+            Selection(**self.data_frame_response)
         except ValidationError:
             self.fail("Selection raised ValidationError unexpectedly!")
 
@@ -146,7 +146,7 @@ class TestResponse(unittest.TestCase):
 
         with open("./tests/mock_data/dataframe.json") as f:
             mock_data = json.load(f)
-            self.select_dataframe_response = mock_data["select_dataframe"]["response"]["result"]
+            self.data_frame_response = mock_data["data_frame"]["response"]["result"]
             self.insert_response = mock_data["insert"]["response"]
 
         with open("./tests/mock_data/generics.json") as f:

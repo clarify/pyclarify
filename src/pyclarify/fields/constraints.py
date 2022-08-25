@@ -38,7 +38,7 @@ class ApiMethod(str, Enum):
     insert = "integration.Insert"
     save_signals = "integration.SaveSignals"
     select_items = "clarify.SelectItems"
-    select_dataframe = "clarify.dataFrame"
+    data_frame = "clarify.dataFrame"
     select_signals = "admin.SelectSignals"
     publish_signals = "admin.PublishSignals"
 

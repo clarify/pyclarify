@@ -21,13 +21,13 @@ from datetime import datetime, timedelta
 from unittest.mock import patch
 
 sys.path.insert(1, "src/")
-from pyclarify.client import ClarifyClient
+from pyclarify.client import Client
 from pyclarify import DataFrame
 
 
 class TestClarifyClientInsert(unittest.TestCase):
     def setUp(self):
-        self.client = ClarifyClient("./tests/mock_data/mock-clarify-credentials.json")
+        self.client = Client("./tests/mock_data/mock-clarify-credentials.json")
 
         with open("./tests/mock_data/mock-client-common.json") as f:
             self.mock_data = json.load(f)

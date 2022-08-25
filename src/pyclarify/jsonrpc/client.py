@@ -73,7 +73,7 @@ def iterator(func):
         if payload["method"] == ApiMethod.select_signals:
             API_LIMIT = 1000
 
-        if payload["method"] == ApiMethod.select_dataframe:
+        if payload["method"] == ApiMethod.data_frame:
             API_LIMIT = 50
             selecting_dataframe = True
 

@@ -20,18 +20,18 @@ import json
 from unittest.mock import patch
 
 sys.path.insert(1, "src/")
-from pyclarify import ClarifyClient, DataFrame
+from pyclarify import Client, DataFrame
 from pyclarify.views.items import ItemSelectView
 from pyclarify.query import Filter
 
 
 class TestClarifyClientSelectItems(unittest.TestCase):
     def setUp(self):
-        self.client = ClarifyClient("./tests/mock_data/mock-clarify-credentials.json")
+        self.client = Client("./tests/mock_data/mock-clarify-credentials.json")
 
         with open("./tests/mock_data/dataframe.json") as f:
             self.mock_data = json.load(f)
-        test_data = self.mock_data["select_dataframe"]
+        test_data = self.mock_data["data_frame"]
         self.args = test_data["args"]
         self.response = test_data["response"]
 
@@ -48,7 +48,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: return_value
 
-        response_data = self.client.select_dataframe()
+        response_data = self.client.data_frame()
 
         self.assertIsInstance(response_data.result.data, DataFrame)
 
@@ -61,7 +61,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: return_value
 
-        response_data = self.client.select_dataframe(
+        response_data = self.client.data_frame(
             filter=Filter(**self.args["filter"])
         )
         self.assertIsInstance(response_data.result.data, DataFrame)
@@ -75,7 +75,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: return_value
 
-        response_data = self.client.select_dataframe(**self.args)
+        response_data = self.client.data_frame(**self.args)
 
         self.assertIsInstance(response_data.result.data, DataFrame)
 
@@ -88,7 +88,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: return_value
 
-        response_data = self.client.select_dataframe(**self.args)
+        response_data = self.client.data_frame(**self.args)
 
         self.assertIsInstance(response_data.result.data, DataFrame)
 

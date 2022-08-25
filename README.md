@@ -53,7 +53,7 @@ pip install pyclarify
 # Interact with Clarify
 
 PyClarify provides a fast and easy way to interact with Clarify.
-The `ClarifyClient` class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.
+The `Client` class takes as an argument the path of your credentials in string format, which should always be the first step when starting to interact with PyClarify.
 
 For information about the Clarify Developer documentation
 click [here](https://docs.clarify.io/developers/welcome).
@@ -67,9 +67,9 @@ We recommend using Google Colab to quickly learn how to interact with Clarify us
 ### Access you data with the _ClarifyClient_
 
 ```python
-from pyclarify import ClarifyClient
+from pyclarify import Client
 
-client = ClarifyClient("clarify-credentials.json")
+client = Client("clarify-credentials.json")
 ```
 
 ### Create new _Signals_
@@ -118,7 +118,7 @@ response = client.select_signals(
 ```python
 from pyclarify import Item
 
-client = ClarifyClient("./clarify-credentials.json")
+client = Client("./clarify-credentials.json")
 
 item = Item(
     name = "Home temperature",
@@ -152,7 +152,7 @@ response = client.select_items(
 ### Get the data and include relationships
 
 ```python
-response = client.select_dataframe(
+response = client.data_frame(
     filter=only_raspberries,
     include=["item"]
 )
@@ -161,8 +161,8 @@ response = client.select_dataframe(
 ### Use help to get more insight
 
 ```python
-$ help(client.select_dataframe)
->>> select_dataframe(
+$ help(client.data_frame)
+>>> data_frame(
         filter: Optional[pyclarify.query.filter.Filter] = None,
         sort: List[str] = [],
         limit: int = 20,
@@ -173,7 +173,7 @@ $ help(client.select_dataframe)
         last: int = -1,
         rollup: Union[str, datetime.timedelta] = None,
         include: List[str] = []
-    ) -> pyclarify.views.generics.Response method of pyclarify.client.ClarifyClient instance
+    ) -> pyclarify.views.generics.Response method of pyclarify.client.Client instance
 
     Return dataframe for items.
 
@@ -218,7 +218,7 @@ $ help(client.select_dataframe)
     Example
     -------
 
-        >>> client.select_dataframe(
+        >>> client.data_frame(
         >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
         >>>     sort = ["-id"],
         >>>     limit = 5,
@@ -235,7 +235,7 @@ $ help(client.select_dataframe)
 
             >>> jsonrpc = '2.0'
             >>> id = '1'
-            >>> result = SelectDataFrameResponse(
+            >>> result = Selection(
             >>>    meta={
             >>>        'total': -1,
             >>>        'groupIncludedByType': True

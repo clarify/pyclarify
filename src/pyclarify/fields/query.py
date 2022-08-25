@@ -30,6 +30,7 @@ class Operators(str, Enum):
     IN = "$in"
     NIN = "$nin"
     LT = "$lt"
+    LTE = "$lte"
     GT = "$gt"
     GTE = "$gte"
 
@@ -65,34 +66,101 @@ class Comparison(BaseModel):
 
 
 class Equal(Comparison):
+    """
+    Matches using equality.
+
+    Example
+    -------
+    filter_value = Equal(value="foo")
+    """
     pass
 
 
 class NotEqual(Comparison):
+    """
+    Matches using negated equality.
+
+    Example
+    -------
+    filter_value = NotEqual(value="bar")
+    """
     operator = Operators.NE
 
 
 class Regex(Comparison):
+    """
+    Matches all resources where the field value is match the specified regex.
+
+    Example
+    -------
+    filter_value = Regex(value="fo[o]{1}")
+    """
     operator = Operators.REGEX
 
 
 class In(Comparison):
+    """
+    Matches all resources where the field value is present in the specified list.
+
+    Example
+    -------
+    filter_value = In(value=["foo", "bar"])
+    """
     operator = Operators.IN
 
 
 class NotIn(Comparison):
+    """
+    Matches all resources where the field value is not present in the specified list.
+
+    Example
+    -------
+    filter_value = NotIn(value=["baz", "qux"])
+    """
     operator = Operators.NIN
 
 
-class LessThan(Comparison):
+class Less(Comparison):
+    """
+    Matches all resources where the field value is less than the specified value.
+
+    Example
+    -------
+    filter_value = Less(value=10)
+    """
     operator = Operators.LT
 
 
-class GreaterThan(Comparison):
+class LessOrEqual(Comparison):
+    """
+    Matches all resources where the field value is less than or equal to the specified value.
+
+    Example
+    -------
+    filter_value = LessOrEqual(value=10)
+    """
+    operator = Operators.LTE
+
+
+class Greater(Comparison):
+    """
+    Matches all resources where the field value is greater than the specified value.
+
+    Example
+    -------
+    filter_value = Greater(value=10)
+    """
     operator = Operators.GT
 
 
-class GreaterThanOrEqual(Comparison):
+class GreaterOrEqual(Comparison):
+    """
+    Matches all resources where the field value is greater than or equal to the specified value.
+
+    Example
+    -------
+    filter_value = GreaterOrEqual(value=10)
+    """
     operator = Operators.GTE
 
 

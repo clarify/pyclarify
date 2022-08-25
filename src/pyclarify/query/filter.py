@@ -62,8 +62,8 @@ class Filter(BaseModel):
     - In
     - NotIn
     - LessThan
-    - GreaterThan
-    - GreaterThanOrEqual
+    - Greater
+    - GreaterOrEqual
     """
 
     and_list: Optional[List[Filter]]

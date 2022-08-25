@@ -1,29 +1,29 @@
 {
-    "generic_request":{
-        "jsonrpc": "2.0",
-        "method": "clarify.SelectItems",
-        "id": "1",
-        "params": {}
-    },
-    "generic_response": {
-        "jsonrpc": "2.0",
-        "id": "1"
-    },
-    "methods":{
-        "insert" : "integration.Insert",
-        "save_signals" : "integration.SaveSignals",
-        "select_items" : "clarify.SelectItems",
-        "select_dataframe" : "clarify.dataFrame",
-        "select_signals" : "admin.SelectSignals",
-        "publish_signals" : "admin.PublishSignals"
-    },
-    "error_data": {
-        "trace": "x2934jdklmkn4j32n4njnj",
-        "params": {}
-    },
-    "error": {
-        "code": "-30900",
-        "message": "An error message",
-        "data": "Here is a description of the error."
-    }
+  "generic_request": {
+    "jsonrpc": "2.0",
+    "method": "clarify.SelectItems",
+    "id": "1",
+    "params": {}
+  },
+  "generic_response": {
+    "jsonrpc": "2.0",
+    "id": "1"
+  },
+  "methods": {
+    "insert": "integration.Insert",
+    "save_signals": "integration.SaveSignals",
+    "select_items": "clarify.SelectItems",
+    "data_frame": "clarify.dataFrame",
+    "select_signals": "admin.SelectSignals",
+    "publish_signals": "admin.PublishSignals"
+  },
+  "error_data": {
+    "trace": "x2934jdklmkn4j32n4njnj",
+    "params": {}
+  },
+  "error": {
+    "code": "-30900",
+    "message": "An error message",
+    "data": "Here is a description of the error."
+  }
 }

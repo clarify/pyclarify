@@ -54,7 +54,7 @@
       }
     }
   },
-  "select_dataframe": {
+  "data_frame": {
     "args": {
       "filter": {
         "fields": { "name": { "value": ["Electricity"], "operator": "$in" } }
