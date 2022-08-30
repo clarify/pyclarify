@@ -30,7 +30,7 @@ class SelectIterator:
         The number describing how many resources the user wants to be returned.
 
     limit_per_call: int
-        An int desribing the limit of how many resources can be returned by the API.
+        An int describing the limit of how many resources can be returned by the API.
 
     skip: int
         How many resources to skip starting from the beginning of the returned list of resources.
@@ -94,8 +94,8 @@ class TimeIterator:
 
     def __init__(self, start_time=None, end_time=None, rollup=None):
         start_time, end_time = compute_iso_timewindow(start_time, end_time)
-        self.current_start_time = parse_datetime(start_time).replace(tzinfo=None)
-        self.GLOBAL_END_TIME = parse_datetime(end_time).replace(tzinfo=None)
+        self.current_start_time = parse_datetime(start_time)
+        self.GLOBAL_END_TIME = parse_datetime(end_time)
 
         # CONSTRAINT: Timewindow from an API call cannot be longer than 40 days if rollup is smaller than 1 minute
         self.API_LIMIT = timedelta(days=40)
@@ -136,47 +136,3 @@ class TimeIterator:
             return self.current_start_time, self.GLOBAL_END_TIME
 
 
-class ItemIterator:
-    """
-    The iterator chucks items into legal segments as constrained by the API. The iterator returns the next legal chunk
-    of items and separates them into the starting point(skip) and how many items to retrieve (limit).
-
-    Parameters
-    ----------
-    user_limit: int
-        The number describing how many items the user wants to be returned.
-
-    limit_per_call: int
-        An int desribing the limit of how many items can be returned by the API.
-
-    skip: int
-        How many items to skip starting from the beginning of the returned list of items.
-        Think of this as the starting point.
-
-    Returns
-    -------
-    skip
-        The starting point of where to retrieve items
-    limit
-        The number of items to retrieve
-    """
-
-    def __init__(self, user_limit, limit_per_call, skip):
-        self.remaining_items = user_limit
-        self.LIMIT_PER_CALL = limit_per_call
-        self.skip = skip
-
-    def __iter__(self):
-        self.ending_condition = False
-        return self
-
-    def __next__(self):
-        if self.ending_condition:
-            raise StopIteration
-        if self.remaining_items > self.LIMIT_PER_CALL:
-            self.remaining_items -= self.LIMIT_PER_CALL
-            self.skip += self.LIMIT_PER_CALL
-            return self.skip - self.LIMIT_PER_CALL, self.LIMIT_PER_CALL
-        else:
-            self.ending_condition = True
-            return self.skip, self.remaining_items
