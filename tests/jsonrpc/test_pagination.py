@@ -35,29 +35,28 @@ class TestPagination(unittest.TestCase):
     def test_time_iterator(self):
 
         dates = TimeIterator(
-            start_time="2020-10-06T17:48:04Z", end_time="2021-01-10T21:50:06Z"
+            start_time="2020-10-06T17:48:04+00:00", end_time="2021-01-10T21:50:06+00:00"
         )
         dates_iter = iter(dates)
-
         self.assertEqual(
             next(dates_iter),
             (
-                datetime.datetime(2020, 10, 6, 17, 48, 4),
-                datetime.datetime(2020, 11, 15, 17, 48, 4),
+                datetime.datetime(2020, 10, 6, 17, 48, 4,tzinfo=datetime.timezone.utc),
+                datetime.datetime(2020, 11, 15, 17, 48, 4, tzinfo=datetime.timezone.utc),
             ),
         )
         self.assertEqual(
             next(dates_iter),
             (
-                datetime.datetime(2020, 11, 15, 17, 48, 4),
-                datetime.datetime(2020, 12, 25, 17, 48, 4),
+                datetime.datetime(2020, 11, 15, 17, 48, 4,tzinfo=datetime.timezone.utc),
+                datetime.datetime(2020, 12, 25, 17, 48, 4,tzinfo=datetime.timezone.utc),
             ),
         )
         self.assertEqual(
             next(dates_iter),
             (
-                datetime.datetime(2020, 12, 25, 17, 48, 4),
-                datetime.datetime(2021, 1, 10, 21, 50, 6),
+                datetime.datetime(2020, 12, 25, 17, 48, 4,tzinfo=datetime.timezone.utc),
+                datetime.datetime(2021, 1, 10, 21, 50, 6,tzinfo=datetime.timezone.utc),
             ),
         )
         with self.assertRaises(StopIteration):
@@ -75,8 +74,8 @@ class TestPagination(unittest.TestCase):
         self.assertEqual(
             next(dates_iter),
             (
-                datetime.datetime(2020, 10, 6, 17, 48, 4),
-                datetime.datetime(2021, 1, 10, 21, 50, 6),
+                datetime.datetime(2020, 10, 6, 17, 48, 4,tzinfo=datetime.timezone.utc),
+                datetime.datetime(2021, 1, 10, 21, 50, 6,tzinfo=datetime.timezone.utc),
             ),
         )
 

@@ -18,8 +18,7 @@ from datetime import datetime, timedelta
 
 
 def time_to_string(time):
-    time_syntax = "%Y-%m-%dT%H:%M:%SZ"
-    return datetime.strftime(time, time_syntax)
+    return time.astimezone().isoformat()
 
 
 def compute_iso_timewindow(start_time, end_time):
@@ -35,4 +34,4 @@ def compute_iso_timewindow(start_time, end_time):
     else:
         end_time = parse_datetime(end_time)
         start_time = parse_datetime(start_time)
-    return time_to_string(start_time), time_to_string(end_time)
+    return start_time, end_time
