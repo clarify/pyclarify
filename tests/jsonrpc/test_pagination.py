@@ -35,7 +35,7 @@ class TestPagination(unittest.TestCase):
     def test_time_iterator(self):
 
         dates = TimeIterator(
-            start_time="2020-10-06T17:48:04Z", end_time="2021-01-10T21:50:06Z"
+            start_time="2020-10-06T17:48:04+02:00", end_time="2021-01-10T21:50:06+02:00"
         )
         dates_iter = iter(dates)
 
@@ -57,7 +57,7 @@ class TestPagination(unittest.TestCase):
             next(dates_iter),
             (
                 datetime.datetime(2020, 12, 25, 17, 48, 4),
-                datetime.datetime(2021, 1, 10, 21, 50, 6),
+                datetime.datetime(2021, 1, 10, 20, 50, 6),
             ),
         )
         with self.assertRaises(StopIteration):
@@ -66,8 +66,8 @@ class TestPagination(unittest.TestCase):
     def test_time_iterator_rollup(self):
 
         dates = TimeIterator(
-            start_time="2020-10-06T17:48:04Z",
-            end_time="2021-01-10T21:50:06Z",
+            start_time="2020-10-06T17:48:04+02:00",
+            end_time="2021-01-10T21:50:06+02:00",
             rollup="P1DT",
         )
         dates_iter = iter(dates)
@@ -76,7 +76,7 @@ class TestPagination(unittest.TestCase):
             next(dates_iter),
             (
                 datetime.datetime(2020, 10, 6, 17, 48, 4),
-                datetime.datetime(2021, 1, 10, 21, 50, 6),
+                datetime.datetime(2021, 1, 10, 20, 50, 6),
             ),
         )
 

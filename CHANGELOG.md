@@ -220,6 +220,7 @@ Changing to JSON:API format!
 
 - `GetToken` method renamed to `Authenticator`.
 - `pyclarify.jsonrpc.pagination.ItemIterator` renamed to `SelectIterator` and now paginates `select_signals`, `select_items` and `data_frame` methods.
+- Fix bug where timestamps was not timezone aware.
 
 ## Removed
 
