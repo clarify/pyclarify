@@ -32,6 +32,7 @@ from pyclarify.fields.constraints import ApiMethod
 from pyclarify.fields.error import Error
 from pyclarify.views.generics import Response
 from pyclarify.__utils__.time import time_to_string
+from pyclarify.__utils__.payload import unpack_params
 
 from .oauth2 import Authenticator
 from .pagination import SelectIterator, TimeIterator
@@ -65,47 +66,32 @@ def iterator(func):
     def wrapper(*args, **kwargs):
         payload_list = []
         payload = json.loads(args[1])
-        API_LIMIT = None
-        selecting_dataframe = False
-        if payload["method"] == ApiMethod.select_items:
-            API_LIMIT = 1000
+        SELECT_METHODS = [ApiMethod.select_items, ApiMethod.select_signals, ApiMethod.data_frame]
 
-        if payload["method"] == ApiMethod.select_signals:
-            API_LIMIT = 1000
-
-        if payload["method"] == ApiMethod.data_frame:
-            API_LIMIT = 50
-            selecting_dataframe = True
-
-        if API_LIMIT is not None:
-            user_limit = payload["params"]["query"]["limit"]
-            skip = payload["params"]["query"]["skip"]
+        if payload["method"] in SELECT_METHODS:
+            API_LIMIT, user_limit, skip, user_gte, user_lt, rollup = unpack_params(payload)
 
             for skip, limit in SelectIterator(
                 user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
             ):
-                current_payload = deepcopy(payload)
-                current_payload["params"]["query"]["limit"] = limit
-                current_payload["params"]["query"]["skip"] = skip
-                if selecting_dataframe:
-                    times = current_payload["params"]["data"]["filter"]["times"]
-                    user_gte = times.pop("$gte", None)
-                    user_lt = times.pop("$lt", None)
-                    if user_gte is not None or user_lt is not None:
-                        for start_time, end_time in TimeIterator(
-                            user_gte, user_lt, current_payload["params"]["data"]["rollup"]
-                        ):
-                            current_payload["params"]["data"]["filter"]["times"][
-                                "$gte"
-                            ] = time_to_string(start_time)
-                            current_payload["params"]["data"]["filter"]["times"][
-                                "$lt"
-                            ] = time_to_string(end_time)
-                            payload_list += [current_payload]
-                    else:
-                        payload_list += [payload]
+                current_items_payload = deepcopy(payload)
+                current_items_payload["params"]["query"]["limit"] = limit
+                current_items_payload["params"]["query"]["skip"] = skip
+
+                if user_gte or user_lt:
+                    for start_time, end_time in TimeIterator(
+                        start_time=user_gte, end_time=user_lt, rollup=rollup
+                    ):
+                        current_time_payload = deepcopy(current_items_payload)
+                        current_time_payload["params"]["data"]["filter"]["times"][
+                            "$gte"
+                        ] = time_to_string(start_time)
+                        current_time_payload["params"]["data"]["filter"]["times"][
+                            "$lt"
+                        ] = time_to_string(end_time)
+                        payload_list += [current_time_payload]
                 else:
-                    payload_list += [payload]
+                    payload_list += [current_items_payload]
         else:
             payload_list = [payload]
 
@@ -163,12 +149,12 @@ class JSONRPCClient:
             JSON dictionary response.
 
         """
-        for payload in self.payload_list:
-            logging.debug(f"--> {self.base_url}, req: {payload}")
+        for i, payload in enumerate(self.payload_list):
+            logging.debug(f"{i}--> {self.base_url}, req: {payload}")
             res = requests.post(
                 self.base_url, data=json.dumps(payload), headers=self.headers
             )
-            logging.debug(f"<-- {self.base_url} ({res.status_code})")
+            logging.debug(f"{i}<-- {self.base_url} ({res.status_code})")
             if not res.ok:
                 err = {
                     "code": res.status_code,
