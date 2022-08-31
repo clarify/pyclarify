@@ -62,6 +62,30 @@ class TestPagination(unittest.TestCase):
         with self.assertRaises(StopIteration):
             next(dates_iter)
 
+    def test_time_iterator(self):
+
+        dates = TimeIterator(
+            start_time="2022-07-10T00:00:00+00:00", end_time="2022-08-31T00:00:00+00:00"
+        )
+        dates_iter = iter(dates)
+        self.assertEqual(
+            next(dates_iter),
+            (
+                datetime.datetime(2022, 7, 10,tzinfo=datetime.timezone.utc),
+                datetime.datetime(2022, 8, 19, tzinfo=datetime.timezone.utc),
+            ),
+        )
+        self.assertEqual(
+            next(dates_iter),
+            (
+                datetime.datetime(2022, 8, 19, tzinfo=datetime.timezone.utc),
+                datetime.datetime(2022, 8, 31, tzinfo=datetime.timezone.utc),
+            ),
+        )
+        with self.assertRaises(StopIteration):
+            next(dates_iter)
+
+
     def test_time_iterator_rollup(self):
 
         dates = TimeIterator(
