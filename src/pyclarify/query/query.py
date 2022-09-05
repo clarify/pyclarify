@@ -24,6 +24,8 @@ class DataQuery(BaseModel, extra=Extra.forbid):
     filter: Optional[Dict] = {}
     last: Optional[int] = -1
     rollup: Union[timedelta, Literal["window"]] = None
+    window_size: timedelta = None
+
 
 
 class ResourceQuery(BaseModel, extra=Extra.forbid):

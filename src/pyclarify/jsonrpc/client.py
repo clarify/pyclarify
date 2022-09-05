@@ -55,7 +55,7 @@ def increment_id(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        args[0].current_id += 1  # args[0] = self
+        args[0].current_id += 1
         return func(*args, **kwargs)
 
     return wrapper
@@ -69,7 +69,7 @@ def iterator(func):
         SELECT_METHODS = [ApiMethod.select_items, ApiMethod.select_signals, ApiMethod.data_frame]
 
         if payload["method"] in SELECT_METHODS:
-            API_LIMIT, user_limit, skip, user_gte, user_lt, rollup = unpack_params(payload)
+            API_LIMIT, user_limit, skip, user_gte, user_lt, rollup, window_size = unpack_params(payload)
 
             for skip, limit in SelectIterator(
                 user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
@@ -80,7 +80,7 @@ def iterator(func):
 
                 if user_gte or user_lt:
                     for start_time, end_time in TimeIterator(
-                        start_time=user_gte, end_time=user_lt, rollup=rollup
+                        start_time=user_gte, end_time=user_lt, rollup=rollup, window_size=window_size
                     ):
                         current_time_payload = deepcopy(current_items_payload)
                         current_time_payload["params"]["data"]["filter"]["times"][

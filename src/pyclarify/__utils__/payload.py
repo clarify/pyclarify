@@ -16,7 +16,7 @@ limitations under the License.
 from pyclarify.fields.constraints import ApiMethod
 
 def unpack_params(payload):
-  API_LIMIT = user_limit = skip = user_gte = user_lt = rollup = None
+  API_LIMIT = user_limit = skip = user_gte = user_lt = rollup = window_size = None
   query = payload["params"]["query"]
   user_limit = query["limit"]
   skip = query["skip"]
@@ -33,6 +33,7 @@ def unpack_params(payload):
     times = data["filter"]["times"]
     user_gte = times.pop("$gte", None)
     user_lt = times.pop("$lt", None)
+    window_size = data.pop("window_size", None)
     rollup = data["rollup"]
   
-  return API_LIMIT, user_limit, skip, user_gte, user_lt, rollup
+  return API_LIMIT, user_limit, skip, user_gte, user_lt, rollup, window_size
