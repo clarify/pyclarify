@@ -22,10 +22,12 @@ the Clarify API. Methods for reading and writing to the API is implemented with 
 help of jsonrpcclient framework.
 """
 import requests
+import logging
 from datetime import timedelta, datetime
 from pydantic import validate_arguments
 from pydantic.fields import Optional
 from typing import Dict, List, Union
+import pyclarify
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
 from pyclarify.views.items import Item
@@ -52,9 +54,14 @@ class Client(JSONRPCClient):
 
     def __init__(self, clarify_credentials):
         super().__init__(None)
-        self.update_headers({"X-API-Version": "1.1beta2"})
-        self.authenticate(clarify_credentials)
-        self.base_url = f"{self.authentication.api_url}rpc"
+        self.update_headers({"X-API-Version": pyclarify.__API_version__})
+        auth_success = self.authenticate(clarify_credentials)
+        if auth_success:
+            self.base_url = f"{self.authentication.api_url}rpc"
+            logging.debug("Successfully connected to Clarify!")
+            logging.debug(f"SDK version: {pyclarify.__version__}")
+            logging.debug(f"API version: {pyclarify.__API_version__}")
+            
 
     @validate_arguments
     def insert(self, data: DataFrame) -> Response:
@@ -66,7 +73,7 @@ class Client(JSONRPCClient):
         Parameters
         ----------
         data : DataFrame
-            Dataframe containing the values of a signal in a key-value pair, and seperate time axis. 
+            Dataframe containing the values of a signal in a key-value pair, and separate time axis. 
 
         Example
         -------
@@ -153,7 +160,7 @@ class Client(JSONRPCClient):
         sort: list of strings
             List of strings describing the order in which to sort the items in the response.
         
-        total: bool, deafult False
+        total: bool, default False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
 
 
@@ -610,6 +617,7 @@ class Client(JSONRPCClient):
         last: int = -1,
         rollup: Union[str, timedelta] = None,
         include: List[str] = [],
+        window_size: Union[str, timedelta] = None
     ) -> Response:
         """
         Return dataframe for items.
@@ -745,7 +753,7 @@ class Client(JSONRPCClient):
             total=total,
         )
         data_filter = DataFilter(gte=gte, lt=lt)
-        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
+        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup, window_size=window_size)
         params = {"query": query, "data": data_query, "include": include}
 
         request_data = Request(method=ApiMethod.data_frame, params=params)

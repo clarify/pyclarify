@@ -84,6 +84,11 @@ class TimeIterator:
                     If RFC 3339 duration is specified, roll-up the values into either the full time window
                     (`notBefore` -> `before`) or evenly sized buckets.
 
+    window_size: RFC 3339 duration, default None
+                If RFC 3339 duration is specified, the iterator will use the specified window as a paging size instead
+                of default API limits. This is commonly used when resolution of data is too high to be packaged with default
+                values.
+
     Returns
     -------
     current_start_time
@@ -92,23 +97,26 @@ class TimeIterator:
         The before parameter to be used in an API call
     """
 
-    def __init__(self, start_time=None, end_time=None, rollup=None):
+    def __init__(self, start_time=None, end_time=None, rollup=None, window_size=None):
         start_time, end_time = compute_iso_timewindow(start_time, end_time)
         self.current_start_time = parse_datetime(start_time)
         self.GLOBAL_END_TIME = parse_datetime(end_time)
 
-        # CONSTRAINT: Timewindow from an API call cannot be longer than 40 days if rollup is smaller than 1 minute
+        # CONSTRAINT: Time window from an API call cannot be longer than 40 days if rollup is smaller than 1 minute
         self.API_LIMIT = timedelta(days=40)
         if rollup:
             if rollup == "window":
                 self.rollup = rollup
             else:
                 self.rollup = parse_duration(rollup)
-                # CONSTRAINT: 400 days contraint if rollup is larger than 1 minute
+                # CONSTRAINT: 400 days constraint if rollup is larger than 1 minute
                 if self.rollup > timedelta(minutes=1):
                     self.API_LIMIT = timedelta(days=400)
         else:
             self.rollup = rollup
+        if window_size:
+            self.API_LIMIT = parse_duration(window_size)
+
 
     def __iter__(self):
         self.ending_condition = False
@@ -131,7 +139,7 @@ class TimeIterator:
 
             return self.current_start_time - self.API_LIMIT, self.current_start_time
         else:
-            # If timewindow is smaller than API limit we end iterator
+            # If time window is smaller than API limit we end iterator
             self.ending_condition = True
             return self.current_start_time, self.GLOBAL_END_TIME
 

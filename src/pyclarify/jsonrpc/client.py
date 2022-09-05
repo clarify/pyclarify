@@ -21,6 +21,8 @@ The module provides a class for setting up a JSONRPCClient which will communicat
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework.
 """
+from curses import window
+from locale import windows_locale
 import requests
 import json
 import logging
@@ -69,7 +71,7 @@ def iterator(func):
         SELECT_METHODS = [ApiMethod.select_items, ApiMethod.select_signals, ApiMethod.data_frame]
 
         if payload["method"] in SELECT_METHODS:
-            API_LIMIT, user_limit, skip, user_gte, user_lt, rollup = unpack_params(payload)
+            API_LIMIT, user_limit, skip, user_gte, user_lt, rollup, window_size = unpack_params(payload)
 
             for skip, limit in SelectIterator(
                 user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
@@ -79,8 +81,9 @@ def iterator(func):
                 current_items_payload["params"]["query"]["skip"] = skip
 
                 if user_gte or user_lt:
+                    logging.debug(f"WINDOW SIZE: {window_size}")
                     for start_time, end_time in TimeIterator(
-                        start_time=user_gte, end_time=user_lt, rollup=rollup
+                        start_time=user_gte, end_time=user_lt, rollup=rollup, window_size=window_size
                     ):
                         current_time_payload = deepcopy(current_items_payload)
                         current_time_payload["params"]["data"]["filter"]["times"][
