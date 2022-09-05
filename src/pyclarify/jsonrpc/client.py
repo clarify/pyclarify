@@ -21,8 +21,6 @@ The module provides a class for setting up a JSONRPCClient which will communicat
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework.
 """
-from curses import window
-from locale import windows_locale
 import requests
 import json
 import logging
@@ -57,7 +55,7 @@ def increment_id(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        args[0].current_id += 1  # args[0] = self
+        args[0].current_id += 1
         return func(*args, **kwargs)
 
     return wrapper
