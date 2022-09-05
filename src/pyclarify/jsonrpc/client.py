@@ -79,7 +79,6 @@ def iterator(func):
                 current_items_payload["params"]["query"]["skip"] = skip
 
                 if user_gte or user_lt:
-                    logging.debug(f"WINDOW SIZE: {window_size}")
                     for start_time, end_time in TimeIterator(
                         start_time=user_gte, end_time=user_lt, rollup=rollup, window_size=window_size
                     ):
