@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select Signals &mdash; PyClarify 0.4.0b4 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Save Signals" href="save_signals.html" />
+    <link rel="prev" title="Select Items" href="select_items.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> PyClarify
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyClarify Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Client</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dataframe.html">DataFrame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="select_items.html">Select Items</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Select Signals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="save_signals.html">Save Signals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="publish_signals.html">Publish Signals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="insert.html">Insert</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../views.html">Views</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyClarify</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Reference</a> &raquo;</li>
+          <li><a href="index.html">Client</a> &raquo;</li>
+      <li>Select Signals</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/reference/client/select_signals.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="select-signals">
+<h1>Select Signals<a class="headerlink" href="#select-signals" title="Permalink to this headline"></a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.Client.select_signals">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.Client.</span></span><span class="sig-name descname"><span class="pre">select_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../views.html#pyclarify.query.filter.Filter" title="pyclarify.query.filter.Filter"><span class="pre">pyclarify.query.filter.Filter</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.views.generics.Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.select_signals" title="Permalink to this definition"></a></dt>
+<dd><p>Return signal metadata from selected signals and/or item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter</strong> (<a class="reference internal" href="../views.html#pyclarify.query.filter.Filter" title="pyclarify.query.filter.Filter"><em>Filter</em></a><em>, </em><em>optional</em>) – A Filter Model that describes a mongodb filter to be applied.</p></li>
+<li><p><strong>skip</strong> (<em>int</em><em>, </em><em>default 0</em>) – Integer describing how many of the first N items to exclude from response.</p></li>
+<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>default 10</em>) – Number of items to include in the match.</p></li>
+<li><p><strong>sort</strong> (<em>list of strings</em>) – List of strings describing the order in which to sort the items in the response.</p></li>
+<li><p><strong>total</strong> (<em>bool</em><em>, </em><em>default False</em>) – When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</p></li>
+<li><p><strong>include</strong> (<em>List of strings</em><em>, </em><em>optional</em>) – A list of strings specifying which relationships to be included in the response.</p></li>
+<li><p><strong>integration</strong> (<em>str Default None</em>) – Integration ID in string format. None means using the integration in credential file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Response.result.data</span></code> is an array of SignalSelectView</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Response</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Querying signals based on a filter.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_signals</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="nb">filter</span> <span class="o">=</span> <span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">filter</span><span class="o">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Air Temperature&quot;</span><span class="p">)}),</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Getting 1000 signals.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_signals</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Getting 100 signals and sorting by name.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_signals</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">sort</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Getting total number of signals (as meta data) and including the exposed items.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_signals</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">total</span><span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">include</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<dl>
+<dt>Response</dt><dd><p>In case of a valid return value, returns a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span><span class="o">=</span><span class="s1">&#39;2.0&#39;</span>
+<span class="gp">... </span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
+<span class="gp">... </span><span class="n">result</span><span class="o">=</span><span class="n">Selection</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">meta</span><span class="o">=</span><span class="n">SelectionMeta</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">total</span><span class="o">=</span><span class="mi">725</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">groupIncludedByType</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span>    <span class="p">),</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+<span class="gp">... </span>        <span class="n">SignalSelectView</span><span class="p">(</span>
+<span class="gp">... </span>            <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;c5fg083sab1b6pm3u290&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;signals&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="n">meta</span><span class="o">=</span><span class="n">ResourceMetadata</span><span class="p">(</span>
+<span class="gp">... </span>                <span class="n">annotations</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>                    <span class="s2">&quot;docs-clarify-io/example/environment&quot;</span><span class="p">:</span> <span class="s2">&quot;office&quot;</span>
+<span class="gp">... </span>                <span class="p">},</span>
+<span class="gp">... </span>                <span class="n">attributesHash</span><span class="o">=</span><span class="s1">&#39;9ae4eb17c8b3b9f24cea06f09a1a4cab34569077&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">relationshipsHash</span><span class="o">=</span><span class="s1">&#39;02852897e7fe1e7896360b3c3914c5207d2af6fa&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">updatedAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">199000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+<span class="gp">... </span>                <span class="n">createdAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">897000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+<span class="gp">... </span>            <span class="p">),</span>
+<span class="gp">... </span>            <span class="n">attributes</span><span class="o">=</span><span class="n">SavedSignal</span><span class="p">(</span>
+<span class="gp">... </span>                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Total reams of paper&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total count of reams of paper in inventory&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>                    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Recycled&#39;</span><span class="p">,</span> <span class="s1">&#39;Bond&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                    <span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Scranton&#39;</span><span class="p">]</span>
+<span class="gp">... </span>                <span class="p">},</span>
+<span class="gp">... </span>                <span class="n">sourceType</span><span class="o">=&lt;</span><span class="n">SourceTypeSignal</span><span class="o">.</span><span class="n">measurement</span><span class="p">:</span> <span class="s1">&#39;measurement&#39;</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">valueType</span><span class="o">=&lt;</span><span class="n">TypeSignal</span><span class="o">.</span><span class="n">numeric</span><span class="p">:</span> <span class="s1">&#39;numeric&#39;</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">engUnit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">enumValues</span><span class="o">=</span><span class="p">{},</span>
+<span class="gp">... </span>                <span class="n">sampleInterval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">gapDetection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="nb">input</span><span class="o">=</span><span class="s1">&#39;inventory_recycled_bond&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">integration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">item</span><span class="o">=</span><span class="kc">None</span>
+<span class="gp">... </span>            <span class="p">),</span>
+<span class="gp">... </span>            <span class="n">relationships</span><span class="o">=</span><span class="n">RelationshipsDict</span><span class="p">(</span>
+<span class="gp">... </span>                <span class="n">integration</span><span class="o">=</span><span class="n">RelationshipData</span><span class="p">(</span>
+<span class="gp">... </span>                    <span class="n">data</span><span class="o">=</span><span class="n">RelationshipMetadata</span><span class="p">(</span>
+<span class="gp">... </span>                        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;integrations&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;c5e3u8coh8drsbpi4cvg&#39;</span>
+<span class="gp">... </span>                    <span class="p">)</span>
+<span class="gp">... </span>                <span class="p">),</span>
+<span class="gp">... </span>                <span class="n">item</span><span class="o">=</span><span class="n">RelationshipData</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">... </span>            <span class="p">)</span>
+<span class="gp">... </span>        <span class="p">),</span>
+<span class="gp">... </span>        <span class="o">...</span>
+<span class="gp">... </span>    <span class="p">],</span>
+<span class="gp">... </span>    <span class="n">included</span><span class="o">=</span><span class="n">IncludedField</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">integration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">items</span><span class="o">=</span><span class="p">[</span>
+<span class="gp">... </span>            <span class="n">ItemSelectView</span><span class="p">(</span>
+<span class="gp">... </span>                <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;c5i41fjsbu8cohpkcpvg&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;items&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">meta</span><span class="o">=</span><span class="n">ResourceMetadata</span><span class="p">(</span>
+<span class="gp">... </span>                    <span class="n">annotations</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>                        <span class="s2">&quot;docs-clarify-io/example/environment&quot;</span><span class="p">:</span> <span class="s2">&quot;office&quot;</span>
+<span class="gp">... </span>                    <span class="p">},</span>
+<span class="gp">... </span>                    <span class="n">attributesHash</span><span class="o">=</span><span class="s1">&#39;7602afa2fe611e0c8eff17f7936e108ee29e6817&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">relationshipsHash</span><span class="o">=</span><span class="s1">&#39;5f36b2220a14b54ee5ea290645ee34d943ea5be5&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">updatedAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">264000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+<span class="gp">... </span>                    <span class="n">createdAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">958000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+<span class="gp">... </span>                <span class="p">),</span>
+<span class="gp">... </span>                <span class="n">attributes</span><span class="o">=</span><span class="n">Item</span><span class="p">(</span>
+<span class="gp">... </span>                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dunder ReBond Inventory Level&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">valueType</span><span class="o">=&lt;</span><span class="n">TypeSignal</span><span class="o">.</span><span class="n">numeric</span><span class="p">:</span> <span class="s1">&#39;numeric&#39;</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;How many reams of the Dunder ReBond we have in the warehouse.&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>                        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Recycled&#39;</span><span class="p">,</span> <span class="s1">&#39;Bond&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                        <span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Scranton&#39;</span><span class="p">],</span>
+<span class="gp">... </span>                        <span class="s1">&#39;threat-level&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Midnight&#39;</span><span class="p">]</span>
+<span class="gp">... </span>                    <span class="p">},</span>
+<span class="gp">... </span>                    <span class="n">engUnit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">enumValues</span><span class="o">=</span><span class="p">{},</span>
+<span class="gp">... </span>                    <span class="n">sourceType</span><span class="o">=&lt;</span><span class="n">SourceTypeSignal</span><span class="o">.</span><span class="n">measurement</span><span class="p">:</span> <span class="s1">&#39;measurement&#39;</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">sampleInterval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">gapDetection</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">7200</span><span class="p">),</span>
+<span class="gp">... </span>                    <span class="n">visible</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span>                <span class="p">)</span>
+<span class="gp">... </span>            <span class="p">)</span>
+<span class="gp">... </span>            <span class="o">...</span>
+<span class="gp">... </span>        <span class="p">]</span>
+<span class="gp">... </span>    <span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">... </span><span class="n">error</span><span class="o">=</span><span class="kc">None</span>
+</pre></div>
+</div>
+<p>In case of the error the method return a pydantic model with the following format:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
+<span class="gp">... </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+<span class="gp">... </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">... </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="select_items.html" class="btn btn-neutral float-left" title="Select Items" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="save_signals.html" class="btn btn-neutral float-right" title="Save Signals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Clarify.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

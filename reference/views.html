@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Views &mdash; PyClarify 0.4.0b4 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changelog" href="../changelog.html" />
+    <link rel="prev" title="Insert" href="client/insert.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PyClarify
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">PyClarify Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="client/index.html">Client</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.views.signals">Signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.views.items">Items module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.views.dataframe">DataFrame module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.query.filter">Filter module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyClarify</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Reference</a> &raquo;</li>
+      <li>Views</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/views.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="views">
+<h1>Views<a class="headerlink" href="#views" title="Permalink to this headline"></a></h1>
+<p>Data validation is done by the auth, data and requests modules.</p>
+<section id="module-pyclarify.views.signals">
+<span id="signals-module"></span><h2>Signals module<a class="headerlink" href="#module-pyclarify.views.signals" title="Permalink to this headline"></a></h2>
+<p>Copyright 2022 Searis AS</p>
+<p>Licensed under the Apache License, Version 2.0 (the “License”);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.views.signals.Signal">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.views.signals.</span></span><span class="sig-name descname"><span class="pre">Signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourceType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.fields.constraints.SourceTypeSignal</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">SourceTypeSignal.measurement</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.fields.constraints.TypeSignal</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">TypeSignal.numeric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engUnit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enumValues</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampleInterval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.timedelta</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gapDetection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.timedelta</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.signals.Signal" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.views.signals.SignalInfo</span></code></p>
+<p>Model for sending Signal metadata to Clarify.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em><em>(</em><em>len:1-128</em><em>)</em>) – A human-readable name for the resource.</p></li>
+<li><p><strong>description</strong> (<em>string</em><em>(</em><em>len:0-1000</em><em>)</em>) – A free-form description of the resource.</p></li>
+<li><p><strong>labels</strong> (<em>Labels</em>) – A map of custom classification attributes. Filtering is done on label keys (labels.&lt;key&gt;).</p></li>
+<li><p><strong>sourceType</strong> (<em>string</em><em>(</em><em>enum</em><em>)</em>) – Classification of the data source. The value must be “aggregate”, “measurement” or “prediction”.</p></li>
+<li><p><strong>valueType</strong> (<em>string</em><em>(</em><em>enum</em><em>)</em>) – How to interpret time-series data points. The value must be “enum” or “numeric”.</p></li>
+<li><p><strong>engUnit</strong> (<em>string</em>) – Engineering unit for time-series data in numeric representations.</p></li>
+<li><p><strong>enumValues</strong> (<em>map</em><em>(</em><em>string =&gt; string</em><em>(</em><em>len:1-128</em><em>)</em><em>)</em>) – Map of numeric values to display text in enum representations. The key must represent an integer in range 0-9999.</p></li>
+<li><p><strong>sampleInterval</strong> (<em>Fixed Duration</em><em>, </em><em>null</em>) – The expected distance between data points.</p></li>
+<li><p><strong>gapDetection</strong> (<em>Fixed Duration</em><em>, </em><em>null</em>) – The maximum distance between two data-points before considering it to be a gap.</p></li>
+<li><p><strong>annotations</strong> (<em>Annotations</em>) – A key-value store where integrations can store programmatic meta-data about the resource instance.
+Filtering is done on member fields.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">Signal</span>
+</pre></div>
+</div>
+<p>Creating a signal a minimal signal.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new signal&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Creating a signal with all attributes set.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new signal&quot;</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;This signal is an example.&quot;</span>
+<span class="gp">... </span>    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;environment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;mocking&quot;</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="s2">&quot;unit&quot;</span><span class="p">:[</span><span class="s2">&quot;cloud&quot;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span>    <span class="n">engUnit</span><span class="o">=</span><span class="s2">&quot;℃&quot;</span>
+<span class="gp">... </span>    <span class="n">sampleInterval</span><span class="o">=</span><span class="s2">&quot;PT30S&quot;</span>
+<span class="gp">... </span>    <span class="n">gapDetection</span><span class="o">=</span><span class="s2">&quot;PT5M&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Creating an enum signal.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new enum signal&quot;</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;This enum signal is an example.&quot;</span>
+<span class="gp">... </span>    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;environment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;mocking&quot;</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="s2">&quot;unit&quot;</span><span class="p">:[</span><span class="s2">&quot;cloud&quot;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span>    <span class="n">valueType</span><span class="o">=</span><span class="s2">&quot;enum&quot;</span>
+<span class="gp">... </span>    <span class="n">enumValues</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;0&quot;</span> <span class="p">:</span> <span class="s2">&quot;Wind&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;1&quot;</span> <span class="p">:</span> <span class="s2">&quot;Rain&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;2&quot;</span> <span class="p">:</span> <span class="s2">&quot;Cloudy&quot;</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span>    <span class="n">sampleInterval</span><span class="o">=</span><span class="s2">&quot;PT30S&quot;</span>
+<span class="gp">... </span>    <span class="n">gapDetection</span><span class="o">=</span><span class="s2">&quot;PT5M&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.signals.Signal.annotations">
+<span class="sig-name descname"><span class="pre">annotations</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.views.signals.Signal.annotations" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyclarify.views.items">
+<span id="items-module"></span><h2>Items module<a class="headerlink" href="#module-pyclarify.views.items" title="Permalink to this headline"></a></h2>
+<p>Copyright 2022 Searis AS</p>
+<p>Licensed under the Apache License, Version 2.0 (the “License”);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.views.items.Item">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.views.items.</span></span><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.fields.constraints.TypeSignal</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">TypeSignal.numeric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engUnit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enumValues</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourceType</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.fields.constraints.SourceTypeSignal</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">SourceTypeSignal.measurement</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampleInterval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.timedelta</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gapDetection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">datetime.timedelta</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visible</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.items.Item" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pyclarify.views.items.ItemInfo</span></code></p>
+<p>Item model for sending Item meta data to Clarify.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em><em>(</em><em>len:1-128</em><em>)</em>) – A human-readable name for the resource.</p></li>
+<li><p><strong>description</strong> (<em>string</em><em>(</em><em>len:0-1000</em><em>)</em>) – A free-form description of the resource.</p></li>
+<li><p><strong>labels</strong> (<em>Labels</em>) – A map of custom classification attributes. Filtering is done on label keys (labels.&lt;key&gt;).</p></li>
+<li><p><strong>sourceType</strong> (<em>string</em><em>(</em><em>enum</em><em>)</em>) – Classification of the data source. The value must be “aggregate”, “measurement” or “prediction”.</p></li>
+<li><p><strong>valueType</strong> (<em>string</em><em>(</em><em>enum</em><em>)</em>) – How to interpret time-series data points. The value must be “enum” or “numeric”.</p></li>
+<li><p><strong>engUnit</strong> (<em>string</em>) – Engineering unit for time-series data in numeric representations.</p></li>
+<li><p><strong>enumValues</strong> (<em>map</em><em>(</em><em>string =&gt; string</em><em>(</em><em>len:1-128</em><em>)</em><em>)</em>) – Map of numeric values to display text in enum representations. The key must represent an integer in range 0-9999.</p></li>
+<li><p><strong>sampleInterval</strong> (<em>Fixed Duration</em><em>, </em><em>null</em>) – The expected distance between data points.</p></li>
+<li><p><strong>gapDetection</strong> (<em>Fixed Duration</em><em>, </em><em>null</em>) – The maximum distance between two data-points before considering it to be a gap.</p></li>
+<li><p><strong>visible</strong> (<em>bool</em>) – Whether the item should be visible for your entire organization within Clarify or not.</p></li>
+<li><p><strong>annotations</strong> (<em>Annotations</em>) – A key-value store where integrations can store programmatic meta-data about the resource instance. Filtering is done one member fields.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">Item</span>
+</pre></div>
+</div>
+<p>Creating a minimal item.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new item&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Creating a item with all attributes set.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new item&quot;</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;This item is an example.&quot;</span>
+<span class="gp">... </span>    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;environment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;mocking&quot;</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="s2">&quot;unit&quot;</span><span class="p">:[</span><span class="s2">&quot;cloud&quot;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span>    <span class="n">engUnit</span><span class="o">=</span><span class="s2">&quot;℃&quot;</span>
+<span class="gp">... </span>    <span class="n">sampleInterval</span><span class="o">=</span><span class="s2">&quot;PT30S&quot;</span>
+<span class="gp">... </span>    <span class="n">gapDetection</span><span class="o">=</span><span class="s2">&quot;PT5M&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Creating an enum item.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new enum item&quot;</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;This enum item is an example.&quot;</span>
+<span class="gp">... </span>    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;environment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;mocking&quot;</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="s2">&quot;unit&quot;</span><span class="p">:[</span><span class="s2">&quot;cloud&quot;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span>    <span class="n">valueType</span><span class="o">=</span><span class="s2">&quot;enum&quot;</span>
+<span class="gp">... </span>    <span class="n">enumValues</span><span class="o">=</span><span class="p">{</span>
+<span class="gp">... </span>        <span class="s2">&quot;0&quot;</span> <span class="p">:</span> <span class="s2">&quot;Wind&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;1&quot;</span> <span class="p">:</span> <span class="s2">&quot;Rain&quot;</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="s2">&quot;2&quot;</span> <span class="p">:</span> <span class="s2">&quot;Cloudy&quot;</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span>    <span class="n">sampleInterval</span><span class="o">=</span><span class="s2">&quot;PT30S&quot;</span>
+<span class="gp">... </span>    <span class="n">gapDetection</span><span class="o">=</span><span class="s2">&quot;PT5M&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Items are hidden by default. If you want them to be visible you can add the attribute <code class="docutils literal notranslate"><span class="pre">visible</span></code> and set it to <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new item&quot;</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.items.Item.annotations">
+<span class="sig-name descname"><span class="pre">annotations</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.views.items.Item.annotations" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.items.Item.visible">
+<span class="sig-name descname"><span class="pre">visible</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#pyclarify.views.items.Item.visible" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyclarify.views.dataframe">
+<span id="dataframe-module"></span><h2>DataFrame module<a class="headerlink" href="#module-pyclarify.views.dataframe" title="Permalink to this headline"></a></h2>
+<p>Copyright 2022 Searis AS</p>
+<p>Licensed under the Apache License, Version 2.0 (the “License”);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.views.dataframe.</span></span><span class="sig-name descname"><span class="pre">DataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>DataFrame structure maps to data structure used in the API for saving time series.
+Supports merging with other Clarify DataFrame objects and can convert to and from Pandas.DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>series</strong> (<em>Dict</em><em>[</em><em>InputID</em><em>, </em><em>List</em><em>[</em><em>Union</em><em>[</em><em>None</em><em>, </em><em>float</em><em>, </em><em>int</em><em>]</em><em>]</em><em>]</em>) – Map of inputid to Array of data points to insert by Input ID.
+The length of each array must match that of the times array.
+To omit a value for a given timestamp in times, use the value null.</p></li>
+<li><p><strong>times</strong> (<em>List of timestamps</em>) – Either as a python datetime or as YYYY-MM-DD[T]HH:MM[:SS[.ffffff]][Z or [±]HH[:]MM]]] to insert.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">DataFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">series</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;&lt;INPUT_ID_1&gt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;&lt;INPUT_ID_2&gt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]},</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2021-11-01T21:50:06Z&quot;</span><span class="p">,</span>  <span class="s2">&quot;2021-11-02T21:50:06Z&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.convert_numpy_to_native">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">convert_numpy_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.convert_numpy_to_native" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.from_pandas">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.from_pandas" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a pandas DataFrame into a Clarify DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Clarify DataFrame representing this instance.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pyclarify.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.merge">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><span class="pre">pyclarify.views.dataframe.DataFrame</span></a></span></span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.merge" title="Permalink to this definition"></a></dt>
+<dd><p>Method for merging 2 or more Clarify Data Frames. Mapping overlapping
+signal names to single series. Concatenates timestamps of all data frames.
+Inserts none value to series not containing entry at a given timestamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dataframes</strong> (<em>List</em><em>[</em><a class="reference internal" href="#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><em>DataFrame</em></a><em>]</em>) – A Clarify DataFrame or a list of Clarify DataFrames</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>DataFrame</strong> – Merged data frame of all input data frames and self</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame">DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.series">
+<span class="sig-name descname"><span class="pre">series</span></span><em class="property"><span class="pre">:</span> <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.series" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.times">
+<span class="sig-name descname"><span class="pre">times</span></span><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.times" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.to_pandas">
+<span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.to_pandas" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the instance into a pandas DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The pandas DataFrame representing this instance.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyclarify.query.filter">
+<span id="filter-module"></span><h2>Filter module<a class="headerlink" href="#module-pyclarify.query.filter" title="Permalink to this headline"></a></h2>
+<p>Copyright 2022 Searis AS</p>
+<p>Licensed under the Apache License, Version 2.0 (the “License”);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.query.filter.DataFilter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.query.filter.</span></span><span class="sig-name descname"><span class="pre">DataFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gte</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.query.filter.DataFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Pydantic model for handeling filtering. The model has a to_query() method used internally to convert model to MongoDB format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gte</strong> (<em>string</em><em>(</em><em>RFC 3339 timestamp</em><em>) or </em><em>python datetime</em><em>, </em><em>optional</em><em>, </em><em>default &lt;now - 7 days&gt;</em>) – An RFC3339 time describing the inclusive start of the window.</p></li>
+<li><p><strong>lt</strong> (<em>string</em><em>(</em><em>RFC 3339 timestamp</em><em>) or </em><em>python datetime</em><em>, </em><em>optional</em><em>, </em><em>default &lt;now + 7 days&gt;</em>) – An RFC3339 time describing the exclusive end of the window.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">query</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_filter</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">DataFilter</span><span class="p">(</span><span class="n">gte</span><span class="o">=</span><span class="s1">&#39;2022-08-01T16:00:20Z&#39;</span><span class="p">,</span><span class="n">lt</span><span class="o">=</span><span class="s1">&#39;2022-08-02T16:00:20Z&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data_filter</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;times&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$gte&#39;</span><span class="p">:</span> <span class="s1">&#39;2022-08-01T16:00:20Z&#39;</span><span class="p">,</span> <span class="s1">&#39;$lt&#39;</span><span class="p">:</span> <span class="s1">&#39;2022-08-02T16:00:20Z&#39;</span><span class="p">}}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.query.filter.DataFilter.field_must_reflect_operator">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">field_must_reflect_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.query.filter.DataFilter.field_must_reflect_operator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.query.filter.DataFilter.gte">
+<span class="sig-name descname"><span class="pre">gte</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.query.filter.DataFilter.gte" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.query.filter.DataFilter.lt">
+<span class="sig-name descname"><span class="pre">lt</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.query.filter.DataFilter.lt" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.query.filter.DataFilter.to_query">
+<span class="sig-name descname"><span class="pre">to_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.query.filter.DataFilter.to_query" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.query.filter.Filter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.query.filter.</span></span><span class="sig-name descname"><span class="pre">Filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">and_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.query.filter.Filter" title="pyclarify.query.filter.Filter"><span class="pre">Filter</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">or_list</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.query.filter.Filter" title="pyclarify.query.filter.Filter"><span class="pre">Filter</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pyclarify.fields.query.Comparison</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.query.filter.Filter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Pydantic model for handeling filtering. The filter supports pythons built in “&amp;” and “|” operators for chaining filters.
+The model has a to_query() method used internally to convert model to MongoDB format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fields</strong> (<em>dict</em>) – A dictionary of the key to be filtered on and a logical comparison.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">query</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Lufttemperatur&quot;</span><span class="p">)})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;labels.unit-type&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">NotIn</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Flåte&quot;</span><span class="p">,</span> <span class="s2">&quot;Merde 5&quot;</span><span class="p">])})</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$ne&#39;</span><span class="p">:</span> <span class="s1">&#39;Lufttemperatur&#39;</span><span class="p">}}</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f3</span> <span class="o">=</span> <span class="n">f1</span> <span class="o">&amp;</span> <span class="n">f2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f3</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;$and&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$ne&#39;</span><span class="p">:</span> <span class="s1">&#39;Lufttemperatur&#39;</span><span class="p">}},</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">{</span><span class="s1">&#39;labels.unit-type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$nin&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Flåte&#39;</span><span class="p">,</span> <span class="s1">&#39;Merde 5&#39;</span><span class="p">]}}</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Equal</p></li>
+<li><p>NotEqual</p></li>
+<li><p>Regex</p></li>
+<li><p>In</p></li>
+<li><p>NotIn</p></li>
+<li><p>LessThan</p></li>
+<li><p>Greater</p></li>
+<li><p>GreaterOrEqual</p></li>
+</ul>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.query.filter.Filter.and_list">
+<span class="sig-name descname"><span class="pre">and_list</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.query.filter.Filter" title="pyclarify.query.filter.Filter"><span class="pre">pyclarify.query.filter.Filter</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.query.filter.Filter.and_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.query.filter.Filter.field_to_query">
+<span class="sig-name descname"><span class="pre">field_to_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.query.filter.Filter.field_to_query" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.query.filter.Filter.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">pyclarify.fields.query.Comparison</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.query.filter.Filter.fields" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.query.filter.Filter.or_list">
+<span class="sig-name descname"><span class="pre">or_list</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyclarify.query.filter.Filter" title="pyclarify.query.filter.Filter"><span class="pre">pyclarify.query.filter.Filter</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.query.filter.Filter.or_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.query.filter.Filter.to_query">
+<span class="sig-name descname"><span class="pre">to_query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.query.filter.Filter.to_query" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="client/insert.html" class="btn btn-neutral float-left" title="Insert" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Clarify.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
