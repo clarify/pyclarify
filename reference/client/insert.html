@@ -96,7 +96,7 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="../views.html#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><em>DataFrame</em></a>) – Dataframe containing the values of a signal in a key-value pair, and separate time axis.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><cite>Response.result.data</cite> is a dictionary mapping &lt;INPUT_ID&gt; to &lt;SIGNAL_ID&gt;.</p>
+<dd class="field-even"><p><cite>Response.result.data</cite> is a dictionary mapping INPUT_ID to SIGNAL_ID.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Response</p>
@@ -113,14 +113,14 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 </dd>
 </dl>
 </div>
-<p class="rubric">Example</p>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">DataFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Inserting some dummy data.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">series</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;&lt;INPUT_ID_1&gt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;&lt;INPUT_ID_2&gt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]},</span>
+<span class="gp">... </span>    <span class="n">series</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;INPUT_ID_1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;INPUT_ID_2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]},</span>
 <span class="gp">... </span>    <span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2021-11-01T21:50:06Z&quot;</span><span class="p">,</span>  <span class="s2">&quot;2021-11-02T21:50:06Z&quot;</span><span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -128,7 +128,7 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 </div>
 <p>Inserting pandas.DataFrame.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;&lt;INPUT_ID_1&gt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;&lt;INPUT_ID_2&gt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;INPUT_ID_1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;INPUT_ID_2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2021-11-01T21:50:06Z&quot;</span><span class="p">,</span>  <span class="s2">&quot;2021-11-02T21:50:06Z&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
 </pre></div>
@@ -138,8 +138,8 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">... </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">... </span><span class="n">signalsByInput</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s1">&#39;&lt;INPUT_ID_1&gt;&#39;</span><span class="p">:</span> <span class="n">CreateSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;SIGNAL_ID_1&gt;&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="s1">&#39;&lt;INPUT_ID_2&gt;&#39;</span><span class="p">:</span> <span class="n">CreateSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;SIGNAL_ID_2&gt;&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="s1">&#39;INPUT_ID_1&#39;</span><span class="p">:</span> <span class="n">CreateSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;SIGNAL_ID_1&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="s1">&#39;INPUT_ID_2&#39;</span><span class="p">:</span> <span class="n">CreateSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;SIGNAL_ID_2&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">}</span>
 <span class="gp">... </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>

@@ -88,12 +88,12 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.Client.save_signals">
 <span class="sig-prename descclassname"><span class="pre">pyclarify.client.Client.</span></span><span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_ids</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../views.html#pyclarify.views.signals.Signal" title="pyclarify.views.signals.Signal"><span class="pre">pyclarify.views.signals.Signal</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals_by_input</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">pyclarify.fields.constraints.ConstrainedStrValue</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="../views.html#pyclarify.views.signals.Signal" title="pyclarify.views.signals.Signal"><span class="pre">pyclarify.views.signals.Signal</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_only</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.views.generics.Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.save_signals" title="Permalink to this definition"></a></dt>
-<dd><p>This call inserts metadata to one or multiple signals. The signals are uniquely identified by its &lt;INPUT_ID&gt;.
+<dd><p>This call inserts metadata to one or multiple signals. The signals are uniquely identified by its INPUT_ID.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/api/next/methods/integration/save-signals">integration.saveSignals</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_ids</strong> (<em>List</em><em>[</em><em>'&lt;INPUT_ID&gt;'</em><em>]</em>) – List of strings to be the input ID of the signal.
+<li><p><strong>input_ids</strong> (<em>List</em><em>[</em><em>'INPUT_ID'</em><em>]</em>) – List of strings to be the input ID of the signal.
 Click <a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#input-key">here</a> for more information.</p></li>
 <li><p><strong>signals</strong> (<em>List</em><em>[</em><a class="reference internal" href="../views.html#pyclarify.views.signals.Signal" title="pyclarify.views.signals.Signal"><em>Signal</em></a><em>]</em>) – <p>List of Signal object that contains metadata for a signal.
 Click <a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/views#signal-save-integration-namespace">here</a> for more information.</p>
@@ -104,13 +104,13 @@ that map to existing signals are silently ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><cite>Response.result.data</cite> is a dictionary mapping &lt;INPUT_ID&gt; to &lt;SIGNAL_ID&gt;.</p>
+<dd class="field-even"><p><cite>Response.result.data</cite> is a dictionary mapping INPUT_ID to SIGNAL_ID.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -139,7 +139,7 @@ that map to existing signals are silently ignored.</p></li>
 <span class="gp">... </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
 <span class="gp">... </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]}</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">save_signals</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;INPUT_ID&gt;&#39;</span><span class="p">],</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">save_signals</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;INPUT_ID&#39;</span><span class="p">],</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl>
@@ -148,7 +148,7 @@ that map to existing signals are silently ignored.</p></li>
 <span class="gp">... </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">... </span><span class="n">result</span> <span class="o">=</span> <span class="n">SaveSignalsResponse</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">signalsByInput</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">... </span>                <span class="s1">&#39;&lt;INPUT_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">... </span>                <span class="s1">&#39;INPUT_ID&#39;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;SIGNAL_ID&#39;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">... </span>             <span class="p">}</span>
 <span class="gp">... </span>         <span class="p">)</span>
 <span class="gp">... </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>

@@ -110,7 +110,7 @@ that map to existing items are silently ignored.</p></li>
 <dd class="field-odd"><p>Response</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -143,7 +143,7 @@ that map to existing items are silently ignored.</p></li>
 <span class="gp">... </span>        <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]},</span>
 <span class="gp">... </span>    <span class="n">visible</span><span class="o">=</span><span class="kc">True</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">publish_signals</span><span class="p">(</span><span class="n">signal_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">],</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">publish_signals</span><span class="p">(</span><span class="n">signal_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SIGNAL_ID&#39;</span><span class="p">],</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl>
@@ -151,8 +151,8 @@ that map to existing items are silently ignored.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
 <span class="gp">... </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
 <span class="gp">... </span><span class="n">result</span> <span class="o">=</span> <span class="n">PublishSignalsResponse</span><span class="p">(</span>
-<span class="gp">... </span>                   <span class="n">itemsBySignal</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span>
-<span class="gp">... </span>                          <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                   <span class="n">itemsBySignal</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;SIGNAL_ID&#39;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span>
+<span class="gp">... </span>                          <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;ITEM_ID&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="gp">... </span>                          <span class="n">updated</span><span class="o">=</span><span class="kc">False</span> <span class="p">)})</span>
 <span class="gp">... </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
