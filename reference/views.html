@@ -343,7 +343,7 @@ To omit a value for a given timestamp in times, use the value null.</p></li>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
-<p>With specific time columns.</p>
+<p>With specific time column.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">DataFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span>
@@ -488,7 +488,7 @@ limitations under the License.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gte</strong> (string(<a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#datetime">ISO 8601 timestamp</a>) or python datetime, optional, default &lt;now - 7 days&gt;) – An RFC3339 time describing the inclusive start of the window.</p></li>
-<li><p><strong>lt</strong> – An RFC3339 time describing the exclusive end of the window.</p></li>
+<li><p><strong>lt</strong> (string(<a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#datetime">ISO 8601 timestamp</a>) or python datetime, optional, default &lt;now + 7 days&gt;) – An RFC3339 time describing the exclusive end of the window.</p></li>
 </ul>
 </dd>
 </dl>
@@ -496,7 +496,7 @@ limitations under the License.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">query</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data_filter</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">DataFilter</span><span class="p">(</span><span class="n">gte</span><span class="o">=</span><span class="s1">&#39;2022-08-01T16:00:20Z&#39;</span><span class="p">,</span><span class="n">lt</span><span class="o">=</span><span class="s1">&#39;2022-08-02T16:00:20Z&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data_filter</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;times&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$gte&#39;</span><span class="p">:</span> <span class="s1">&#39;2022-08-01T16:00:20Z&#39;</span><span class="p">,</span> <span class="s1">&#39;$lt&#39;</span><span class="p">:</span> <span class="s1">&#39;2022-08-02T16:00:20Z&#39;</span><span class="p">}}</span>
+<span class="gp">... </span><span class="p">{</span><span class="s1">&#39;times&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$gte&#39;</span><span class="p">:</span> <span class="s1">&#39;2022-08-01T16:00:20Z&#39;</span><span class="p">,</span> <span class="s1">&#39;$lt&#39;</span><span class="p">:</span> <span class="s1">&#39;2022-08-02T16:00:20Z&#39;</span><span class="p">}}</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -529,26 +529,23 @@ limitations under the License.</p>
 The model has a to_query() method used internally to convert model to MongoDB format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>fields</strong> (<em>dict</em>) – A dictionary of the key to be filtered on and a logical comparison.</p>
+<dd class="field-odd"><p><strong>fields</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Comparison</em><em>]</em>) – A dictionary of the key to be filtered on and a logical comparison.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">query</span>
-<span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Lufttemperatur&quot;</span><span class="p">)})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f2</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;labels.unit-type&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">NotIn</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Flåte&quot;</span><span class="p">,</span> <span class="s2">&quot;Merde 5&quot;</span><span class="p">])})</span>
-<span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f1</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$ne&#39;</span><span class="p">:</span> <span class="s1">&#39;Lufttemperatur&#39;</span><span class="p">}}</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">... </span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$ne&#39;</span><span class="p">:</span> <span class="s1">&#39;Lufttemperatur&#39;</span><span class="p">}}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f3</span> <span class="o">=</span> <span class="n">f1</span> <span class="o">&amp;</span> <span class="n">f2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f3</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;$and&#39;</span><span class="p">:</span> <span class="p">[</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$ne&#39;</span><span class="p">:</span> <span class="s1">&#39;Lufttemperatur&#39;</span><span class="p">}},</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="p">{</span><span class="s1">&#39;labels.unit-type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$nin&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Flåte&#39;</span><span class="p">,</span> <span class="s1">&#39;Merde 5&#39;</span><span class="p">]}}</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
+<span class="gp">... </span><span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;$and&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$ne&#39;</span><span class="p">:</span> <span class="s1">&#39;Lufttemperatur&#39;</span><span class="p">}},</span>
+<span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;labels.unit-type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$nin&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Flåte&#39;</span><span class="p">,</span> <span class="s1">&#39;Merde 5&#39;</span><span class="p">]}}</span>
+<span class="gp">... </span>    <span class="p">]</span>
+<span class="gp">... </span><span class="p">}</span>
 </pre></div>
 </div>
 <ul class="simple">

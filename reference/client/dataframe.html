@@ -95,15 +95,15 @@
 <li><p><strong>filter</strong> (<a class="reference internal" href="../views.html#pyclarify.query.filter.Filter" title="pyclarify.query.filter.Filter"><em>Filter</em></a><em>, </em><em>optional</em>) – A Filter Model that describes a mongodb filter to be applied.</p></li>
 <li><p><strong>sort</strong> (<em>list of strings</em>) – List of strings describing the order in which to sort the items in the response.</p></li>
 <li><p><strong>limit</strong> (<em>int</em><em>, </em><em>default 20</em>) – The maximum number of resources to select. Negative numbers means no limit, which may or may not be allowed.</p></li>
-<li><p><strong>skip</strong> (<em>int default: 0</em>) – Skip the first N matches. A negative skip is treated as 0.</p></li>
-<li><p><strong>total</strong> (<em>bool default: False</em>) – When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</p></li>
-<li><p><strong>gte</strong> (string in <a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#datetime">ISO 8601 timestamp</a> or python datetime, optional, default &lt;now - 7 days&gt;) – An RFC3339 time describing the inclusive start of the window.</p></li>
-<li><p><strong>lt</strong> – An RFC3339 time describing the exclusive end of the window.</p></li>
-<li><p><strong>last</strong> (<em>int</em><em>, </em><em>default -1</em>) – If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.</p></li>
-<li><p><strong>rollup</strong> (timedelta or string(<a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration">RFC3339 duration</a>) or “window”, default None) – If duration is specified, roll-up the values into either the full time window
+<li><p><strong>skip</strong> (<em>int</em><em>, </em><em>default: 0</em>) – Skip the first N matches. A negative skip is treated as 0.</p></li>
+<li><p><strong>total</strong> (<em>bool</em><em>, </em><em>default: False</em>) – When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</p></li>
+<li><p><strong>gte</strong> (<a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#datetime">ISO 8601 timestamp</a> , default: &lt;now - 7 days&gt;) – An RFC3339 time describing the inclusive start of the window.</p></li>
+<li><p><strong>lt</strong> (<a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#datetime">ISO 8601 timestamp</a> , default: &lt;now + 7 days&gt;) – An RFC3339 time describing the exclusive end of the window.</p></li>
+<li><p><strong>last</strong> (<em>int</em><em>, </em><em>default: -1</em>) – If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.</p></li>
+<li><p><strong>rollup</strong> (<a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration">RFC3339 duration</a> or “window”, default: None) – If duration is specified, roll-up the values into either the full time window
 (<cite>gte</cite> -&gt; <cite>lt</cite>) or evenly sized buckets.</p></li>
-<li><p><strong>include</strong> (<em>List of strings</em><em>, </em><em>optional</em>) – A list of strings specifying which relationships to be included in the response.</p></li>
-<li><p><strong>window_size</strong> – If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
+<li><p><strong>include</strong> (<em>List of strings</em><em>, </em><em>default:</em><em> [</em><em>]</em>) – A list of strings specifying which relationships to be included in the response.</p></li>
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration">RFC3339 duration</a>, default None) – If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
 values.</p></li>
 </ul>
 </dd>

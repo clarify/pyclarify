@@ -12,6 +12,6 @@ PyClarify helps users of Clarify to easily read, write and manipulate data in Cl
 
 <hr/>
 
-Our developer guide has been migrated to [docs.clarify.io](https://docs.clarify.io/developers/tools/python).
+Our developer guide has been migrated to <a href="https://docs.clarify.io/developers/tools/python" target="_blank">docs.clarify.io</a>.
 
-Our concepts page has been migrated to [docs.clarify.io](https://docs.clarify.io/developers/quickstart/concepts).
+Our concepts page has been migrated to <a href="https://docs.clarify.io/developers/quickstart/concepts" target="_blank">docs.clarify.io</a>.
