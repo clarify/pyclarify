@@ -84,7 +84,7 @@ signal = Signal(
 )
 
 response = client.save_signals(
-    input_ids=["<INPUT_ID>"],
+    input_ids=["INPUT_ID"],
     signals=[signal],
     create_only=False
 )
@@ -96,7 +96,7 @@ response = client.save_signals(
 from pyclarify import DataFrame
 
 data = DataFrame(
-    series={"<INPUT_ID_1>": [1, None], "<INPUT_ID_2>": [None, 5]},
+    series={"INPUT_ID_1": [1, None], "INPUT_ID_2": [None, 5]},
     times = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"],
 )
 
@@ -158,111 +158,9 @@ response = client.data_frame(
 )
 ```
 
-### Use help to get more insight
+### Look at our reference!
 
-```python
-$ help(client.data_frame)
->>> data_frame(
-        filter: Optional[pyclarify.query.filter.Filter] = None,
-        sort: List[str] = [],
-        limit: int = 20,
-        skip: int = 0,
-        total: bool = False,
-        gte: Union[datetime.datetime, str] = None,
-        lt: Union[datetime.datetime, str] = None,
-        last: int = -1,
-        rollup: Union[str, datetime.timedelta] = None,
-        include: List[str] = []
-    ) -> pyclarify.views.generics.Response method of pyclarify.client.Client instance
-
-    Return dataframe for items.
-
-    Time selection:
-    - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
-    - Maximum window size is 400 days (400 * 24 hours) whenrollup is greater than or equal to PT1M (1 minute).
-    - No maximum window size if rollup is window.
-
-    Parameters
-    ----------
-    filter: Filter, optional
-        A Filter Model that describes a mongodb filter to be applied.
-
-    sort: list of strings
-        List of strings describing the order in which to sort the items in the response.
-
-    limit: int, default 20
-        The maximum number of resources to select. Negative numbers means no limit, which may or may not be allowed.
-
-    skip: int default: 0
-        Skip the first N matches. A negative skip is treated as 0.
-
-    total: bool default: False
-        When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
-
-    gte: string(RFC 3339 timestamp) or python datetime, optional, default <now - 7 days>
-        An RFC3339 time describing the inclusive start of the window.
-
-    lt: string(RFC 3339 timestamp) or python datetime, optional, default <now + 7 days>
-        An RFC3339 time describing the exclusive end of the window.
-
-    last: int, default -1
-        If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
-
-    rollup: timedelta or string(RFC 3339 duration) or "window", default None
-        If RFC 3339 duration is specified, roll-up the values into either the full time window
-        (`gte` -> `lt`) or evenly sized buckets.
-
-    include: List of strings, optional
-        A list of strings specifying which relationships to be included in the response.
-
-    Example
-    -------
-
-        >>> client.data_frame(
-        >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
-        >>>     sort = ["-id"],
-        >>>     limit = 5,
-        >>>     skip = 3,
-        >>>     total = False,
-        >>>     gte="2022-01-01T01:01:01Z",
-        >>>     lt="2022-01-09T01:01:01Z",
-        >>>     rollup="PT24H",
-
-    Returns
-    -------
-    Response
-        In case of a valid return value, returns a pydantic model with the following format:
-
-            >>> jsonrpc = '2.0'
-            >>> id = '1'
-            >>> result = Selection(
-            >>>    meta={
-            >>>        'total': -1,
-            >>>        'groupIncludedByType': True
-            >>>    },
-            >>>    data=DataFrame(
-            >>>        times=[datetime.datetime(2022, 7, 12, 12, 0, tzinfo=datetime.timezone.utc),..],
-            >>>        series={
-            >>>            'c5ep6ojsbu8cohpih9bg': [0.18616, 0.18574000000000002, ...,],
-            >>>            ...
-            >>>        }
-            >>>     )
-            >>>     included=None
-            >>> ),
-            >>> error = None
-
-        In case of the error the method return a pydantic model with the following format:
-
-            >>> jsonrpc = '2.0'
-            >>> id = '1'
-            >>> result = None
-            >>> error = Error(
-            >>>         code = '-32602',
-            >>>         message = 'Invalid params',
-            >>>         data = ErrorData(trace = <trace_id>, params = {})
-            >>> )
-
-```
+[<img src="./docs/source/reference.png" width="150" />](https://github.com/user/repository/subscription)
 
 # Changelog
 
@@ -271,3 +169,9 @@ Wondering about upcoming or previous changes to the SDK? Take a look at the [CHA
 # Contributing
 
 Want to contribute? Check out [CONTRIBUTING](https://github.com/clarify/pyclarify/blob/main/CONTRIBUTING.md).
+
+<style>
+    img {
+        border-radius: 10%;
+    }
+</style>

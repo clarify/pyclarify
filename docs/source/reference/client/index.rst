@@ -1,6 +1,6 @@
-==========
+======
 Client
-==========
+======
 
 .. autoclass:: pyclarify.client::Client
 

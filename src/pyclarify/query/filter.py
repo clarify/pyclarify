@@ -134,10 +134,10 @@ class DataFilter(BaseModel):
     
     Parameters
     ----------
-    gte: string(RFC 3339 timestamp) or python datetime, optional, default <now - 7 days>
+    gte: string(`ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`_) or python datetime, optional, default <now - 7 days>
         An RFC3339 time describing the inclusive start of the window.
 
-    lt: string(RFC 3339 timestamp) or python datetime, optional, default <now + 7 days>
+    lt: string(`ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`_) or python datetime, optional, default <now + 7 days>
         An RFC3339 time describing the exclusive end of the window.
 
     Example

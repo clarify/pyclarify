@@ -79,7 +79,7 @@ class Client(JSONRPCClient):
         Returns
         -------
         Response
-            `Response.result.data` is a dictionary mapping <INPUT_ID> to <SIGNAL_ID>.
+            `Response.result.data` is a dictionary mapping INPUT_ID to SIGNAL_ID.
 
         See Also
         --------
@@ -87,15 +87,15 @@ class Client(JSONRPCClient):
         Client.save_signals : Save meta data for signals.
         DataFrame : Model used for transporting data to and from Clarify.
 
-        Example
-        -------
+        Examples
+        --------
             >>> from pyclarify import Client, DataFrame
             >>> client = Client("./clarify-credentials.json")
 
             Inserting some dummy data.
 
             >>> data = DataFrame(
-            ...     series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
+            ...     series={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]},
             ...     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
             ... )
             >>> client.insert(data)
@@ -103,7 +103,7 @@ class Client(JSONRPCClient):
             Inserting pandas.DataFrame.
             
             >>> import pandas as pd
-            >>> df = pd.DataFrame(data={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]})
+            >>> df = pd.DataFrame(data={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]})
             >>> df.index = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
             >>> client.insert(DataFrame.from_pandas(df))
 
@@ -114,8 +114,8 @@ class Client(JSONRPCClient):
                 >>> jsonrpc = '2.0'
                 ... id = '1'
                 ... signalsByInput = {
-                ...     '<INPUT_ID_1>': CreateSummary(id = '<SIGNAL_ID_1>', created = True),
-                ...     '<INPUT_ID_2>': CreateSummary(id = '<SIGNAL_ID_2>', created = True)
+                ...     'INPUT_ID_1': CreateSummary(id = 'SIGNAL_ID_1', created = True),
+                ...     'INPUT_ID_2': CreateSummary(id = 'SIGNAL_ID_2', created = True)
                 ... }
                 ... error = None
 
@@ -193,8 +193,8 @@ class Client(JSONRPCClient):
             ``Response.result.data`` is an array of ItemSelectView            
 
 
-        Example
-        -------
+        Examples
+        --------
             >>> client = Client("./clarify-credentials.json")
 
             Querying items based on a filter.
@@ -319,12 +319,12 @@ class Client(JSONRPCClient):
         integration: str = None,
     ) -> Response:
         """
-        This call inserts metadata to one or multiple signals. The signals are uniquely identified by its <INPUT_ID>.
+        This call inserts metadata to one or multiple signals. The signals are uniquely identified by its INPUT_ID.
         Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/api/next/methods/integration/save-signals>`_ .
 
         Parameters
         ----------
-        input_ids: List['<INPUT_ID>']
+        input_ids: List['INPUT_ID']
             List of strings to be the input ID of the signal.
             Click `here <https://docs.clarify.io/api/1.1beta2/types/fields#input-key>`_ for more information.
 
@@ -345,10 +345,10 @@ class Client(JSONRPCClient):
         Returns
         -------
         Response
-            `Response.result.data` is a dictionary mapping <INPUT_ID> to <SIGNAL_ID>.
+            `Response.result.data` is a dictionary mapping INPUT_ID to SIGNAL_ID.
 
-        Example
-        -------
+        Examples
+        --------
             >>> client = Client("./clarify-credentials.json")
 
             Saving by using a dictionary.
@@ -378,7 +378,7 @@ class Client(JSONRPCClient):
             ...    description = "Temperature in the bedroom",
             ...    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
             ... )
-            >>> client.save_signals(input_ids=['<INPUT_ID>'], signals=[signal], create_only=False)
+            >>> client.save_signals(input_ids=['INPUT_ID'], signals=[signal], create_only=False)
 
         Response
             In case of a valid return value, returns a pydantic model with the following format:
@@ -387,7 +387,7 @@ class Client(JSONRPCClient):
                 ... id = '1'
                 ... result = SaveSignalsResponse(
                 ...             signalsByInput={
-                ...                 '<INPUT_ID>': SaveSummary(id='<SIGNAL_ID>', created=True, updated=False)
+                ...                 'INPUT_ID': SaveSummary(id='SIGNAL_ID', created=True, updated=False)
                 ...              }
                 ...          )
                 ... error = None
@@ -463,8 +463,8 @@ class Client(JSONRPCClient):
             `Response.result.data` is a dictionary mapping <SIGNAL_ID> to <ITEM_ID>.
 
     
-        Example
-        -------
+        Examples
+        --------
             >>> client = Client("./clarify-credentials.json")
 
             Publishing by using a dictionary.
@@ -497,7 +497,7 @@ class Client(JSONRPCClient):
             ...         "location": ["Home"]},
             ...     visible=True
             ... )
-            >>> client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
+            >>> client.publish_signals(signal_ids=['SIGNAL_ID'], items=[item], create_only=False)
             
 
         Response
@@ -506,8 +506,8 @@ class Client(JSONRPCClient):
                 >>> jsonrpc = '2.0'
                 ... id = '1'
                 ... result = PublishSignalsResponse(
-                ...                    itemsBySignal = {'<SIGNAL_ID>': SaveSummary(
-                ...                           id='<ITEM_ID>',
+                ...                    itemsBySignal = {'SIGNAL_ID': SaveSummary(
+                ...                           id='ITEM_ID',
                 ...                           created=True,
                 ...                           updated=False )})
                 ... error = None
@@ -587,8 +587,8 @@ class Client(JSONRPCClient):
         Response
             ``Response.result.data`` is an array of SignalSelectView
                     
-        Example
-        -------
+        Examples
+        --------
             >>> client = Client("./clarify-credentials.json")
 
             Querying signals based on a filter.
@@ -776,24 +776,24 @@ class Client(JSONRPCClient):
         total: bool default: False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
 
-        gte: string(RFC 3339 timestamp) or python datetime, optional, default <now - 7 days>
+        gte: string in `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`_ or python datetime, optional, default <now - 7 days>
             An RFC3339 time describing the inclusive start of the window.
 
-        lt: string(RFC 3339 timestamp) or python datetime, optional, default <now + 7 days>
+        lt: string in `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`_ or python datetime, optional, default <now + 7 days>
             An RFC3339 time describing the exclusive end of the window.
 
         last: int, default -1
             If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
 
-        rollup: timedelta or string(RFC 3339 duration) or "window", default None
-            If RFC 3339 duration is specified, roll-up the values into either the full time window
+        rollup: timedelta or string(`RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`_) or "window", default None
+            If duration is specified, roll-up the values into either the full time window
             (`gte` -> `lt`) or evenly sized buckets.
 
         include: List of strings, optional
             A list of strings specifying which relationships to be included in the response.
 
-        window_size: RFC 3339 duration, default None
-            If RFC 3339 duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
+        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`_, default None
+            If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
             values.
         
         Returns
@@ -816,8 +816,8 @@ class Client(JSONRPCClient):
         The limits are used internally by the Clarify API. Should you have very high resolution data (>=1hz), you can use ``time_window`` argument to **reduce** the window, resulting in more requests.
 
 
-        Example
-        -------
+        Examples
+        --------
             >>> client = Client("./clarify-credentials.json")
 
             Getting data frame with a filter.
@@ -844,7 +844,7 @@ class Client(JSONRPCClient):
             Setting a lower window size due to json decoding errors.
 
             >>> client.data_frame(
-            ...     window_size = "P20DT,
+            ...     window_size = "P20DT",
             ...     limit = 5,
             ...     skip = 3,
             ... )
@@ -854,11 +854,42 @@ class Client(JSONRPCClient):
 
             Using rollup to get sampled data.
 
-            >>> client.data_frame(
-            ...     rollup = "PT5M,
+            >>> r = client.data_frame(
+            ...     rollup = "PT5M",
             ...     limit = 5,
             ...     skip = 3,
             ... )
+            >>> r.result.data
+            ... DataFrame(
+            ...     times=[datetime.datetime(2022, 9, 5, 11, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 10, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 15, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 30, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 35, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 40, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 45, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 50, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 0, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 10, tzinfo=datetime.timezone.utc)], 
+            ...     series={
+            ...         'cbpmaq6rpn52969vfl1g_avg': [1.0, 5.0, 5.875, 6.8, 4.2, 7.0, 3.6, 5.0, 2.0, 2.2, 4.25], 
+            ...         'cbpmaq6rpn52969vfl1g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
+            ...         'cbpmaq6rpn52969vfl1g_max': [1.0, 9.0, 9.0, 9.0, 8.0, 9.0, 6.0, 6.0, 2.0, 6.0, 8.0], 
+            ...         'cbpmaq6rpn52969vfl1g_min': [1.0, 0.0, 0.0, 5.0, 1.0, 6.0, 0.0, 4.0, 2.0, 0.0, 0.0], 
+            ...         'cbpmaq6rpn52969vfl1g_sum': [2.0, 50.0, 47.0, 34.0, 21.0, 21.0, 18.0, 10.0, 2.0, 11.0, 17.0], 
+            ...         'cbpmaq6rpn52969vfl20_avg': [5.0, 4.7, 3.75, 3.6, 5.2, 7.333333333333333, 3.6, 7.0, 9.0, 3.6, 6.75], 
+            ...         'cbpmaq6rpn52969vfl20_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
+            ...         'cbpmaq6rpn52969vfl20_max': [8.0, 9.0, 8.0, 7.0, 9.0, 9.0, 8.0, 9.0, 9.0, 8.0, 9.0], 
+            ...         'cbpmaq6rpn52969vfl20_min': [2.0, 1.0, 0.0, 1.0, 2.0, 4.0, 0.0, 5.0, 9.0, 0.0, 1.0], 
+            ...         'cbpmaq6rpn52969vfl20_sum': [10.0, 47.0, 30.0, 18.0, 26.0, 22.0, 18.0, 14.0, 9.0, 18.0, 27.0], 
+            ...         'cbpmaq6rpn52969vfl2g_avg': [8.0, 3.7, 4.75, 1.6, 3.6, 2.0, 5.6, 8.5, 4.0, 3.8, 5.0], 
+            ...         'cbpmaq6rpn52969vfl2g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
+            ...         'cbpmaq6rpn52969vfl2g_max': [8.0, 9.0, 9.0, 5.0, 8.0, 5.0, 9.0, 9.0, 4.0, 8.0, 7.0], 
+            ...         'cbpmaq6rpn52969vfl2g_min': [8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 8.0, 4.0, 0.0, 1.0], 
+            ...         'cbpmaq6rpn52969vfl2g_sum': [16.0, 37.0, 38.0, 8.0, 18.0, 6.0, 28.0, 17.0, 4.0, 19.0, 20.0], 
+            ...         'cbpmaq6rpn52969vfl30_avg': [2.0, 5.6, 3.875, 3.2, 5.2, 4.666666666666667, 5.0, 4.5, 7.0, 5.8, 8.0], 
+            ...         'cbpmaq6rpn52969vfl30_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
+            ...         'cbpmaq6rpn52969vfl30_max': [3.0, 9.0, 7.0, 9.0, 9.0, 8.0, 7.0, 8.0, 7.0, 9.0, 9.0], 
+            ...         'cbpmaq6rpn52969vfl30_min': [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 2.0, 1.0, 7.0, 1.0, 6.0], 
+            ...         'cbpmaq6rpn52969vfl30_sum': [4.0, 56.0, 31.0, 16.0, 26.0, 14.0, 25.0, 9.0, 7.0, 29.0, 32.0], 
+            ...         'cbpmaq6rpn52969vfl3g_avg': [1.5, 3.3, 6.75, 5.8, 4.8, 5.666666666666667, 3.8, 6.5, 5.0, 3.0, 3.25], 
+            ...         'cbpmaq6rpn52969vfl3g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
+            ...         'cbpmaq6rpn52969vfl3g_max': [2.0, 9.0, 9.0, 9.0, 9.0, 7.0, 8.0, 8.0, 5.0, 7.0, 5.0], 
+            ...         'cbpmaq6rpn52969vfl3g_min': [1.0, 1.0, 4.0, 1.0, 1.0, 3.0, 0.0, 5.0, 5.0, 0.0, 0.0], 
+            ...         'cbpmaq6rpn52969vfl3g_sum': [3.0, 33.0, 54.0, 29.0, 24.0, 17.0, 19.0, 13.0, 5.0, 15.0, 13.0]
+            ... })
+
 
 
         Response
