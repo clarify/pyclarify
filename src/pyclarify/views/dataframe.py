@@ -127,7 +127,7 @@ class DataFrame(BaseModel):
             ...     }
             ... )
 
-            With specific time columns.
+            With specific time column.
             
             >>> from pyclarify import DataFrame
             >>> import pandas as pd

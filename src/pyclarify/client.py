@@ -69,7 +69,7 @@ class Client(JSONRPCClient):
         """
         This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.
-        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/api/methods/integration/insert>`_ .
+        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/api/methods/integration/insert>`__ .
 
         Parameters
         ----------
@@ -163,7 +163,7 @@ class Client(JSONRPCClient):
     ) -> Response:
         """
         Return item metadata from selected items.
-        For more information click `here <https://docs.clarify.io/api/1.1beta2/methods/clarify/select-items>`_ .
+        For more information click `here <https://docs.clarify.io/api/1.1beta2/methods/clarify/select-items>`__ .
 
         Parameters
         ----------
@@ -320,17 +320,17 @@ class Client(JSONRPCClient):
     ) -> Response:
         """
         This call inserts metadata to one or multiple signals. The signals are uniquely identified by its INPUT_ID.
-        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/api/next/methods/integration/save-signals>`_ .
+        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/api/next/methods/integration/save-signals>`__ .
 
         Parameters
         ----------
         input_ids: List['INPUT_ID']
             List of strings to be the input ID of the signal.
-            Click `here <https://docs.clarify.io/api/1.1beta2/types/fields#input-key>`_ for more information.
+            Click `here <https://docs.clarify.io/api/1.1beta2/types/fields#input-key>`__ for more information.
 
         signals: List[Signal]
             List of Signal object that contains metadata for a signal.
-            Click `here <https://docs.clarify.io/api/1.1beta2/types/views#signal-save-integration-namespace>`_ for more information.
+            Click `here <https://docs.clarify.io/api/1.1beta2/types/views#signal-save-integration-namespace>`__ for more information.
 
         create_only: bool, default False
             If set to true, skip update of information for existing signals. That is, all Input_ID's
@@ -436,7 +436,7 @@ class Client(JSONRPCClient):
         """
         Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
         Each signal is uniquely identified by its signal ID in combination with the integration ID.
-        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/api/next/methods/admin/publish-signals>`_ .
+        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/api/next/methods/admin/publish-signals>`__ .
 
         Parameters
         ----------
@@ -445,7 +445,7 @@ class Client(JSONRPCClient):
 
         items: List[ Item ]
             List of Item object that contains metadata for a Item.
-            Click `here <https://docs.clarify.io/api/next/datatypes/item>`_ for more information.
+            Click `here <https://docs.clarify.io/api/next/datatypes/item>`__ for more information.
 
         items_by_signal: Dict[ResourceID, Item]
             Dictionary with IDs of signals mapped to Item metadata.
@@ -763,36 +763,26 @@ class Client(JSONRPCClient):
         ----------
         filter: Filter, optional
             A Filter Model that describes a mongodb filter to be applied.
-
         sort: list of strings
             List of strings describing the order in which to sort the items in the response.
-
         limit: int, default 20
             The maximum number of resources to select. Negative numbers means no limit, which may or may not be allowed.
-
-        skip: int default: 0
+        skip: int, default: 0
             Skip the first N matches. A negative skip is treated as 0.
-
-        total: bool default: False
+        total: bool, default: False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
-
-        gte: string in `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`_ or python datetime, optional, default <now - 7 days>
+        gte: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__ , default: <now - 7 days>
             An RFC3339 time describing the inclusive start of the window.
-
-        lt: string in `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`_ or python datetime, optional, default <now + 7 days>
+        lt: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__ , default: <now + 7 days>
             An RFC3339 time describing the exclusive end of the window.
-
-        last: int, default -1
+        last: int, default: -1
             If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
-
-        rollup: timedelta or string(`RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`_) or "window", default None
+        rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ or "window", default: None
             If duration is specified, roll-up the values into either the full time window
             (`gte` -> `lt`) or evenly sized buckets.
-
-        include: List of strings, optional
+        include: List of strings, default: []
             A list of strings specifying which relationships to be included in the response.
-
-        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`_, default None
+        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__, default None
             If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
             values.
         

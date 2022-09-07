@@ -32,29 +32,26 @@ class Filter(BaseModel):
     
     Parameters
     ----------
-    fields : dict
+    fields : dict[str, Comparison]
         A dictionary of the key to be filtered on and a logical comparison.
 
     Example
     -------
     >>> from pyclarify import query
-    >>> 
     >>> f1 = query.Filter(fields={"name": query.NotEqual(value="Lufttemperatur")})
     >>> f2 = query.Filter(fields={"labels.unit-type": query.NotIn(value=["Flåte", "Merde 5"])})
-    >>> 
     >>> f1.to_query()
-    >>> {'name': {'$ne': 'Lufttemperatur'}}
-    >>> 
+    ... {'name': {'$ne': 'Lufttemperatur'}}
     >>> f3 = f1 & f2
     >>> f3.to_query()
-    >>> {
-    >>>     '$and': [
-    >>>         {'name': {'$ne': 'Lufttemperatur'}},
-    >>>         {'labels.unit-type': {'$nin': ['Flåte', 'Merde 5']}}
-    >>>     ]
-    >>> }
+    ... {
+    ...     '$and': [
+    ...         {'name': {'$ne': 'Lufttemperatur'}},
+    ...         {'labels.unit-type': {'$nin': ['Flåte', 'Merde 5']}}
+    ...     ]
+    ... }
 
-    Complete list of operators:
+    Complete list of operators
     --------------------------
     - Equal
     - NotEqual
@@ -134,10 +131,10 @@ class DataFilter(BaseModel):
     
     Parameters
     ----------
-    gte: string(`ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`_) or python datetime, optional, default <now - 7 days>
+    gte: string(`ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__) or python datetime, optional, default <now - 7 days>
         An RFC3339 time describing the inclusive start of the window.
 
-    lt: string(`ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`_) or python datetime, optional, default <now + 7 days>
+    lt: string(`ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__) or python datetime, optional, default <now + 7 days>
         An RFC3339 time describing the exclusive end of the window.
 
     Example
@@ -145,7 +142,7 @@ class DataFilter(BaseModel):
     >>> from pyclarify import query
     >>> data_filter = query.DataFilter(gte='2022-08-01T16:00:20Z',lt='2022-08-02T16:00:20Z')
     >>> data_filter.to_query()
-    >>> {'times': {'$gte': '2022-08-01T16:00:20Z', '$lt': '2022-08-02T16:00:20Z'}}
+    ... {'times': {'$gte': '2022-08-01T16:00:20Z', '$lt': '2022-08-02T16:00:20Z'}}
     """
 
     gte: Optional[Union[str, datetime]] = None

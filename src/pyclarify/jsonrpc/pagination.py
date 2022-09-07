@@ -80,12 +80,12 @@ class TimeIterator:
         The global end time of the API call. This is the time that the user put in the before parameter.
         It is the final date to be returned from the API.
 
-    rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`_ or "window", default None
-                    If `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`_ is specified, roll-up the values into either the full time window
+    rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ or "window", default None
+                    If `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ is specified, roll-up the values into either the full time window
                     (`notBefore` -> `before`) or evenly sized buckets.
 
-    window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`_, default None
-                If `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`_ is specified, the iterator will use the specified window as a paging size instead
+    window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__, default None
+                If `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ is specified, the iterator will use the specified window as a paging size instead
                 of default API limits. This is commonly used when resolution of data is too high to be packaged with default
                 values.
 
