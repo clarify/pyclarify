@@ -18,26 +18,27 @@ needs_sphinx = "4.1.2"
 
 
 sys.path.insert(0, os.path.abspath("../../src/"))
+import pyclarify
+from datetime import datetime 
 
 
 # -- Project information -----------------------------------------------------
 
 project = "PyClarify"
-copyright = "2021, Clarify"
+copyright = f"{datetime.now().year}, Clarify"
 author = "Alexia Artemis Baikas, Eliezer de Souza da Silva, Odd Gunnar Aspaas"
 
 # The full version, including alpha/beta/rc tags
-release = "0.3.0"
-
+release = pyclarify.__version__
 
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.napoleon"]
+extensions = ["sphinx.ext.napoleon", 'myst_parser']
 
-napoleon_google_docstring = False
+napoleon_google_docstring = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -53,9 +54,9 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "python_docs_theme"
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
+# html_static_path = ["_static"]

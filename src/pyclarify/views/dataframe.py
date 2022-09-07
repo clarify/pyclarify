@@ -161,20 +161,32 @@ DataFrame.update_forward_refs()
 
 
 class InsertParams(BaseModel):
+    """
+    :meta private:
+    """
     integration: IntegrationID
     data: DataFrame
 
 
 class CreateSummary(BaseModel, extra=Extra.forbid):
+    """
+    :meta private:
+    """
     id: ResourceID
     created: bool
 
 
 class InsertResponse(BaseModel, extra=Extra.forbid):
+    """
+    :meta private:
+    """
     signalsByInput: Dict[InputID, CreateSummary]
 
 
 class DataFrameParams(BaseModel):
+    """
+    :meta private:
+    """
     query: Optional[ResourceQuery] = {}
     data: Optional[DataQuery] = {}
     include: Optional[List[str]] = []

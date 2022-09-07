@@ -55,6 +55,7 @@ class Client(JSONRPCClient):
     def __init__(self, clarify_credentials):
         super().__init__(None)
         self.update_headers({"X-API-Version": pyclarify.__API_version__})
+        self.update_headers({"User-Agent": f"PyClarify/{pyclarify.__version__}"})
         auth_success = self.authenticate(clarify_credentials)
         if auth_success:
             self.base_url = f"{self.authentication.api_url}rpc"
@@ -75,27 +76,48 @@ class Client(JSONRPCClient):
         data : DataFrame
             Dataframe containing the values of a signal in a key-value pair, and separate time axis. 
 
-        Example
-        -------
-            >>> from pyclarify import DataFrame
-            >>> data = DataFrame(
-            >>>     series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
-            >>>     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
-            >>> )
-            >>> client.insert(data)
-
         Returns
         -------
+        Response
+            `Response.result.data` is a dictionary mapping <INPUT_ID> to <SIGNAL_ID>.
+
+        See Also
+        --------
+        Client.data_frame : Retrieve data from selected items.
+        Client.save_signals : Save meta data for signals.
+        DataFrame : Model used for transporting data to and from Clarify.
+
+        Example
+        -------
+            >>> from pyclarify import Client, DataFrame
+            >>> client = Client("./clarify-credentials.json")
+
+            Inserting some dummy data.
+
+            >>> data = DataFrame(
+            ...     series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
+            ...     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+            ... )
+            >>> client.insert(data)
+
+            Inserting pandas.DataFrame.
+            
+            >>> import pandas as pd
+            >>> df = pd.DataFrame(data={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]})
+            >>> df.index = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+            >>> client.insert(DataFrame.from_pandas(df))
+
+
         Response
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> signalsByInput = {
-                >>>     '<INPUT_ID_1>': CreateSummary(id = '<SIGNAL_ID_1>', created = True),
-                >>>     '<INPUT_ID_2>': CreateSummary(id = '<SIGNAL_ID_2>', created = True)
-                >>> }
-                >>> error = None
+                ... id = '1'
+                ... signalsByInput = {
+                ...     '<INPUT_ID_1>': CreateSummary(id = '<SIGNAL_ID_1>', created = True),
+                ...     '<INPUT_ID_2>': CreateSummary(id = '<SIGNAL_ID_2>', created = True)
+                ... }
+                ... error = None
 
             Where:
 
@@ -106,16 +128,16 @@ class Client(JSONRPCClient):
             In case of the error (for example not equal length) the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params',
-                >>>         data = ErrorData(
-                >>>                     trace = <trace_id>,
-                >>>                     params = {'data.series.id': ['not same length as times']}
-                >>>         )
-                >>> )
+                ... id = '1'
+                ... result = None
+                ... error = Error(
+                ...         code = '-32602',
+                ...         message = 'Invalid params',
+                ...         data = ErrorData(
+                ...                     trace = <trace_id>,
+                ...                     params = {'data.series.id': ['not same length as times']}
+                ...         )
+                ... )
 
         """
         request_data = Request(
@@ -164,71 +186,110 @@ class Client(JSONRPCClient):
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
 
 
-        Example
-        -------
-            >>> client.select_items(
-            >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
-            >>>     skip = 0,
-            >>>     limit = 10,
-            >>>     sort = ["-id", "name"],
-            >>>     total=True,
-            >>> )
-
 
         Returns
         -------
         Response
+            ``Response.result.data`` is an array of ItemSelectView            
+
+
+        Example
+        -------
+            >>> client = Client("./clarify-credentials.json")
+
+            Querying items based on a filter.
+
+            >>> client.select_items(
+            ...     filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
+            ... )
+
+            Getting 1000 items. 
+
+            >>> client.select_items(
+            ...     limit = 1000,
+            ... )
+
+            Getting 100 items and sorting by name.
+
+            >>> client.select_signals(
+            ...     limit = 100,
+            ...     sort = ["name"],
+            ... )
+
+            Getting total number of signals (as meta data).
+            
+            >>> client.select_signals(
+            ...     total= True,
+            ... )
+
+            Using multiple query parameters.
+
+            >>> client.select_items(
+            ...     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
+            ...     skip = 3,
+            ...     limit = 10,
+            ...     sort = ["-id", "name"],
+            ...     total=True,
+            ... )
+        
+        Response
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = Selection(
-                >>>     meta={
-                >>>         'total': -1,
-                >>>         'groupIncludedByType': True
-                >>>     },
-                >>>     data=[
-                >>>         ItemSelectView(
-                >>>             type='items',
-                >>>             id='cb8hjnrfgirpojeq0uv0',
-                >>>             meta=ResourceMetadata(
-                >>>                 annotations={},
-                >>>                 attributesHash='bd1554f5f6893165f086943adaad176590985b70',
-                >>>                 relationshipsHash='5f36b2ea290645ee34d943220a14b54ee5ea5be5',
-                >>>                 updatedAt=datetime.datetime(2022, 7, 15, 7, 40, 15, 899000, tzinfo=datetime.timezone.utc),
-                >>>                 createdAt=datetime.datetime(2022, 7, 15, 7, 40, 15, 899000, tzinfo=datetime.timezone.utc)
-                >>>             ),
-                >>>             attributes=Item(
-                >>>                 name='test55',
-                >>>                 valueType=<TypeSignal.numeric: 'numeric'>,
-                >>>                 description='',
-                >>>                 labels={'data-source': [], 'location': [], 'type': []},
-                >>>                 engUnit='',
-                >>>                 enumValues={},
-                >>>                 sourceType=<SourceTypeSignal.measurement: 'measurement'>,
-                >>>                 sampleInterval=None,
-                >>>                 gapDetection=None,
-                >>>                 visible=True
-                >>>             ),
-                >>>             relationships={}
-                >>>         ),
-                >>>         ItemSelectView(...),
-                >>>         ...
-                >>>     ]
-                >>> ),
-                >>> error=None
+                ... id = '1'
+                ... result = Selection(
+                ...     meta={
+                ...         'total': -1,
+                ...         'groupIncludedByType': True
+                ...     },
+                ...     data=[
+                ...         ItemSelectView(
+                ...             id='c5i41fjsbu8cohpkcpvg', 
+                ...             type='items', 
+                ...             meta=ResourceMetadata(
+                ...                 annotations={
+                ...                     "docs-clarify-io/example/environment": "office"
+                ...                  }, 
+                ...                 attributesHash='7602afa2fe611e0c8eff17f7936e108ee29e6817', 
+                ...                 relationshipsHash='5f36b2220a14b54ee5ea290645ee34d943ea5be5', 
+                ...                 updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc), 
+                ...                 createdAt=datetime.datetime(2021, 10, 11, 13, 48, 46, 958000, tzinfo=datetime.timezone.utc)
+                ...             ), 
+                ...             attributes=Item(
+                ...                 name='Dunder ReBond Inventory Level', 
+                ...                 valueType=<TypeSignal.numeric: 'numeric'>, 
+                ...                 description='How many reams of the Dunder ReBond we have in the warehouse.', 
+                ...                 labels={
+                ...                     'type': ['Recycled', 'Bond'], 
+                ...                     'location': ['Scranton'],
+                ...                     'threat-level': ['Midnight'] 
+                ...                 }, 
+                ...                 engUnit='', 
+                ...                 enumValues={}, 
+                ...                 sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
+                ...                 sampleInterval=None, 
+                ...                 gapDetection=datetime.timedelta(seconds=7200), 
+                ...                 visible=True
+                ...             ),
+                ...             relationships={}
+                ...         ),
+                ...         ItemSelectView(...),
+                ...         ...
+                ...     ]
+                ... ),
+                ... error=None
 
 
             In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params',
-                >>>         data = ErrorData(trace = <trace_id>, params = {})
-                >>> )
+                ... id = '1'
+                ... result = None
+                ... error = Error(
+                ...         code = '-32602',
+                ...         message = 'Invalid params',
+                ...         data = ErrorData(trace = <trace_id>, params = {})
+                ... )
 
         """
         query = ResourceQuery(
@@ -279,41 +340,68 @@ class Client(JSONRPCClient):
             Integration ID in string format. None means using the integration in credential file.
 
 
-        Example
-        -------
 
-            >>> from pyclarify import Signal
-            >>> signal = Signal(
-            >>>    name = "Home temperature",
-            >>>    description = "Temperature in the bedroom",
-            >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
-            >>> )
-            >>> save_signals(input_ids=['<INPUT_ID>'], signals=[signal], create_only=False)
 
         Returns
         -------
         Response
+            `Response.result.data` is a dictionary mapping <INPUT_ID> to <SIGNAL_ID>.
+
+        Example
+        -------
+            >>> client = Client("./clarify-credentials.json")
+
+            Saving by using a dictionary.
+
+            >>> from pyclarify import Signal
+            >>> signal = Signal(
+            ...     name = "Home temperature",
+            ...     description = "Temperature in the bedroom",
+            ...     labels = {
+            ...         "data-source": ["Raspberry Pi"],
+            ...         "location": ["Home"]
+            ...     }
+            ... )
+            >>> input_dict = {
+            ...     "<INPUT_ID>" : signal
+            ... }
+            >>> response = client.save_signals(
+            ...     signals_by_input=input_dict
+            ... )
+
+            Saving using arrays.
+
+
+            >>> from pyclarify import Signal
+            >>> signal = Signal(
+            ...    name = "Home temperature",
+            ...    description = "Temperature in the bedroom",
+            ...    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]}
+            ... )
+            >>> client.save_signals(input_ids=['<INPUT_ID>'], signals=[signal], create_only=False)
+
+        Response
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = SaveSignalsResponse(
-                >>>             signalsByInput={
-                >>>                 '<INPUT_ID>': SaveSummary(id='<SIGNAL_ID>', created=True, updated=False)
-                >>>              }
-                >>>          )
-                >>> error = None
+                ... id = '1'
+                ... result = SaveSignalsResponse(
+                ...             signalsByInput={
+                ...                 '<INPUT_ID>': SaveSummary(id='<SIGNAL_ID>', created=True, updated=False)
+                ...              }
+                ...          )
+                ... error = None
 
             In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params',
-                >>>         data = ErrorData(trace = <trace_id>, params = {})
-                >>> )
+                ... id = '1'
+                ... result = None
+                ... error = Error(
+                ...         code = '-32602',
+                ...         message = 'Invalid params',
+                ...         data = ErrorData(trace = <trace_id>, params = {})
+                ... )
 
         """
 
@@ -369,58 +457,83 @@ class Client(JSONRPCClient):
         integration: str Default None
           Integration ID in string format. None means using the integration in credential file.
 
-
-        Example
-        -------
-            >>> from pyclarify import Item
-            >>>
-            >>> item = Item(
-            >>>    name = "Home temperature",
-            >>>    description = "Temperature in the bedroom",
-            >>>    labels = {"data-source": ["Raspberry Pi"], "location": ["Home"]},
-            >>>    visible=True
-            >>> )
-            >>> client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
-
         Returns
         -------
+        Response
+            `Response.result.data` is a dictionary mapping <SIGNAL_ID> to <ITEM_ID>.
+
+    
+        Example
+        -------
+            >>> client = Client("./clarify-credentials.json")
+
+            Publishing by using a dictionary.
+
+            >>> from pyclarify import Item
+            >>> item = Item(
+            ...     name = "Home temperature",
+            ...     description = "Temperature in the bedroom",
+            ...     labels = {
+            ...         "data-source": ["Raspberry Pi"],
+            ...         "location": ["Home"]
+            ...     },
+            ...     visible=True
+            ... )
+            >>> items_dict = {
+            ...     "<SIGNAL_ID>": item
+            ... }
+            >>> response = client.publish_signals(
+            ...     items_by_signal=item_dict
+            ... )
+
+            Publishing using arrays.
+
+            >>> from pyclarify import Item
+            >>> item = Item(
+            ...     name = "Home temperature",
+            ...     description = "Temperature in the bedroom",
+            ...     labels = {
+            ...         "data-source": ["Raspberry Pi"], 
+            ...         "location": ["Home"]},
+            ...     visible=True
+            ... )
+            >>> client.publish_signals(signal_ids=['<SIGNAL_ID>'], items=[item], create_only=False)
+            
+
         Response
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = PublishSignalsResponse(
-                >>>                    itemsBySignal = {'<SIGNAL_ID>': SaveSummary(
-                >>>                           id='<ITEM_ID>',
-                >>>                           created=True,
-                >>>                           updated=False )})
-                >>> error = None
+                ... id = '1'
+                ... result = PublishSignalsResponse(
+                ...                    itemsBySignal = {'<SIGNAL_ID>': SaveSummary(
+                ...                           id='<ITEM_ID>',
+                ...                           created=True,
+                ...                           updated=False )})
+                ... error = None
 
             In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params',
-                >>>         data = ErrorData(trace = <trace_id>, params = {})
-                >>> )
+                ... id = '1'
+                ... result = None
+                ... error = Error(
+                ...         code = '-32602',
+                ...         message = 'Invalid params',
+                ...         data = ErrorData(trace = <trace_id>, params = {})
+                ... )
 
         """
 
-        # create params dict
         params = {
             "itemsBySignal": items_by_signal,
             "createOnly": create_only,
             "integration": integration,
         }
 
-        # assert integration parameter
         if not params["integration"]:
             params["integration"] = self.authentication.integration_id
 
-        # populate inputs
         if signal_ids != [] and items != []:
             for signal_id, item in zip(signal_ids, items):
                 params["itemsBySignal"][signal_id] = item
@@ -469,120 +582,143 @@ class Client(JSONRPCClient):
         integration: str Default None
             Integration ID in string format. None means using the integration in credential file.
 
-        Example
-        -------
-
-            >>> client.select_signals(
-            >>>     filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
-            >>>     limit = 10,
-            >>>     skip = 0,
-            >>>     sort = ["-id"],
-            >>>     total= True,
-            >>>     include = ["item"]
-            >>> )
-
         Returns
         -------
+        Response
+            ``Response.result.data`` is an array of SignalSelectView
+                    
+        Example
+        -------
+            >>> client = Client("./clarify-credentials.json")
+
+            Querying signals based on a filter.
+
+            >>> client.select_signals(
+            ...     filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
+            ... )
+
+            Getting 1000 signals. 
+
+            >>> client.select_signals(
+            ...     limit = 1000,
+            ... )
+
+            Getting 100 signals and sorting by name.
+
+            >>> client.select_signals(
+            ...     limit = 100,
+            ...     sort = ["name"],
+            ... )
+
+            Getting total number of signals (as meta data) and including the exposed items.
+
+            >>> client.select_signals(
+            ...     total= True,
+            ...     include = ["item"]
+            ... )
+
+
         Response
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc='2.0' 
-                >>> id='1' 
-                >>> result=Selection(
-                >>>     meta=SelectionMeta(
-                >>>     total=725, 
-                >>>     groupIncludedByType=True
-                >>>     ), 
-                >>>     data=[
-                >>>         SignalSelectView(
-                >>>             id='c5fg083sab1b6pm3u290', 
-                >>>             type='signals', 
-                >>>             meta=ResourceMetadata(
-                >>>                 annotations={
-                >>>                     "docs-clarify-io/example/environment": "office"
-                >>>                 }, 
-                >>>                 attributesHash='9ae4eb17c8b3b9f24cea06f09a1a4cab34569077', 
-                >>>                 relationshipsHash='02852897e7fe1e7896360b3c3914c5207d2af6fa', 
-                >>>                 updatedAt=datetime.datetime(2022, 3, 17, 12, 17, 10, 199000, tzinfo=datetime.timezone.utc), 
-                >>>                 createdAt=datetime.datetime(2021, 10, 7, 14, 11, 44, 897000, tzinfo=datetime.timezone.utc)
-                >>>             ), 
-                >>>             attributes=SavedSignal(
-                >>>                 name='Total reams of paper', 
-                >>>                 description='Total count of reams of paper in inventory', 
-                >>>                 labels={
-                >>>                     'type': ['Recycled', 'Bond'], 
-                >>>                     'location': ['Scranton']
-                >>>                 }, 
-                >>>                 sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
-                >>>                 valueType=<TypeSignal.numeric: 'numeric'>, 
-                >>>                 engUnit='', 
-                >>>                 enumValues={}, 
-                >>>                 sampleInterval=None, 
-                >>>                 gapDetection=None, 
-                >>>                 input='inventory_recycled_bond', 
-                >>>                 integration=None, 
-                >>>                 item=None
-                >>>             ), 
-                >>>             relationships=RelationshipsDict(
-                >>>                 integration=RelationshipData(
-                >>>                     data=RelationshipMetadata(
-                >>>                         type='integrations', 
-                >>>                         id='c5e3u8coh8drsbpi4cvg'
-                >>>                     )
-                >>>                 ), 
-                >>>                 item=RelationshipData(data=None)
-                >>>             )
-                >>>         ), 
-                >>>         ...
-                >>>     ], 
-                >>>     included=IncludedField(
-                >>>         integration=None, 
-                >>>         items=[
-                >>>             ItemSelectView(
-                >>>                 id='c5i41fjsbu8cohpkcpvg', 
-                >>>                 type='items', 
-                >>>                 meta=ResourceMetadata(
-                >>>                     annotations={
-                >>>                         "docs-clarify-io/example/environment": "office"
-                >>>                     }, 
-                >>>                     attributesHash='7602afa2fe611e0c8eff17f7936e108ee29e6817', 
-                >>>                     relationshipsHash='5f36b2220a14b54ee5ea290645ee34d943ea5be5', 
-                >>>                     updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc), 
-                >>>                     createdAt=datetime.datetime(2021, 10, 11, 13, 48, 46, 958000, tzinfo=datetime.timezone.utc)
-                >>>                 ), 
-                >>>                 attributes=Item(
-                >>>                     name='Dunder ReBond Inventory Level', 
-                >>>                     valueType=<TypeSignal.numeric: 'numeric'>, 
-                >>>                     description='How many reams of the Dunder ReBond we have in the warehouse.', 
-                >>>                     labels={
-                >>>                         'type': ['Recycled', 'Bond'], 
-                >>>                         'location': ['Scranton'],
-                >>>                         'threat-level': ['Midnight'] 
-                >>>                     }, 
-                >>>                     engUnit='', 
-                >>>                     enumValues={}, 
-                >>>                     sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
-                >>>                     sampleInterval=None, 
-                >>>                     gapDetection=datetime.timedelta(seconds=7200), 
-                >>>                     visible=True
-                >>>                 )
-                >>>             )
-                >>>             ...
-                >>>         ]
-                >>>     )
-                >>> ) 
-                >>> error=None
+                ... id='1' 
+                ... result=Selection(
+                ...     meta=SelectionMeta(
+                ...     total=725, 
+                ...     groupIncludedByType=True
+                ...     ), 
+                ...     data=[
+                ...         SignalSelectView(
+                ...             id='c5fg083sab1b6pm3u290', 
+                ...             type='signals', 
+                ...             meta=ResourceMetadata(
+                ...                 annotations={
+                ...                     "docs-clarify-io/example/environment": "office"
+                ...                 }, 
+                ...                 attributesHash='9ae4eb17c8b3b9f24cea06f09a1a4cab34569077', 
+                ...                 relationshipsHash='02852897e7fe1e7896360b3c3914c5207d2af6fa', 
+                ...                 updatedAt=datetime.datetime(2022, 3, 17, 12, 17, 10, 199000, tzinfo=datetime.timezone.utc), 
+                ...                 createdAt=datetime.datetime(2021, 10, 7, 14, 11, 44, 897000, tzinfo=datetime.timezone.utc)
+                ...             ), 
+                ...             attributes=SavedSignal(
+                ...                 name='Total reams of paper', 
+                ...                 description='Total count of reams of paper in inventory', 
+                ...                 labels={
+                ...                     'type': ['Recycled', 'Bond'], 
+                ...                     'location': ['Scranton']
+                ...                 }, 
+                ...                 sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
+                ...                 valueType=<TypeSignal.numeric: 'numeric'>, 
+                ...                 engUnit='', 
+                ...                 enumValues={}, 
+                ...                 sampleInterval=None, 
+                ...                 gapDetection=None, 
+                ...                 input='inventory_recycled_bond', 
+                ...                 integration=None, 
+                ...                 item=None
+                ...             ), 
+                ...             relationships=RelationshipsDict(
+                ...                 integration=RelationshipData(
+                ...                     data=RelationshipMetadata(
+                ...                         type='integrations', 
+                ...                         id='c5e3u8coh8drsbpi4cvg'
+                ...                     )
+                ...                 ), 
+                ...                 item=RelationshipData(data=None)
+                ...             )
+                ...         ), 
+                ...         ...
+                ...     ], 
+                ...     included=IncludedField(
+                ...         integration=None, 
+                ...         items=[
+                ...             ItemSelectView(
+                ...                 id='c5i41fjsbu8cohpkcpvg', 
+                ...                 type='items', 
+                ...                 meta=ResourceMetadata(
+                ...                     annotations={
+                ...                         "docs-clarify-io/example/environment": "office"
+                ...                     }, 
+                ...                     attributesHash='7602afa2fe611e0c8eff17f7936e108ee29e6817', 
+                ...                     relationshipsHash='5f36b2220a14b54ee5ea290645ee34d943ea5be5', 
+                ...                     updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc), 
+                ...                     createdAt=datetime.datetime(2021, 10, 11, 13, 48, 46, 958000, tzinfo=datetime.timezone.utc)
+                ...                 ), 
+                ...                 attributes=Item(
+                ...                     name='Dunder ReBond Inventory Level', 
+                ...                     valueType=<TypeSignal.numeric: 'numeric'>, 
+                ...                     description='How many reams of the Dunder ReBond we have in the warehouse.', 
+                ...                     labels={
+                ...                         'type': ['Recycled', 'Bond'], 
+                ...                         'location': ['Scranton'],
+                ...                         'threat-level': ['Midnight'] 
+                ...                     }, 
+                ...                     engUnit='', 
+                ...                     enumValues={}, 
+                ...                     sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
+                ...                     sampleInterval=None, 
+                ...                     gapDetection=datetime.timedelta(seconds=7200), 
+                ...                     visible=True
+                ...                 )
+                ...             )
+                ...             ...
+                ...         ]
+                ...     )
+                ... ) 
+                ... error=None
 
             In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params',
-                >>>         data = ErrorData(trace = <trace_id>, params = {})
-                >>> )
+                ... id = '1'
+                ... result = None
+                ... error = Error(
+                ...         code = '-32602',
+                ...         message = 'Invalid params',
+                ...         data = ErrorData(trace = <trace_id>, params = {})
+                ... )
+
         """
         query = ResourceQuery(
             filter=filter.to_query() if isinstance(filter, Filter) else {},
@@ -620,12 +756,8 @@ class Client(JSONRPCClient):
         window_size: Union[str, timedelta] = None
     ) -> Response:
         """
-        Return dataframe for items.
+        Retrieve DataFrame for items stored in Clarify.
 
-        Time selection:
-        - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
-        - Maximum window size is 400 days (400 * 24 hours) when rollup is greater than or equal to PT1M (1 minute).
-        - No maximum window size if rollup is window.
 
         Parameters
         ----------
@@ -660,89 +792,125 @@ class Client(JSONRPCClient):
         include: List of strings, optional
             A list of strings specifying which relationships to be included in the response.
 
-        Example
-        -------
-
-            >>> client.data_frame(
-            >>>     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
-            >>>     sort = ["-id"],
-            >>>     limit = 5,
-            >>>     skip = 3,
-            >>>     total = False,
-            >>>     gte="2022-01-01T01:01:01Z",
-            >>>     lt="2022-01-09T01:01:01Z",
-            >>>     rollup="PT24H",
-            >>>     include = ["item"],
-            >>> )
-
+        window_size: RFC 3339 duration, default None
+            If RFC 3339 duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
+            values.
+        
         Returns
         -------
+        Response
+            ``Response.result.data`` is a DataFrame
+
+        See Also
+        --------
+        Client.select_items : Retrieve item metadata from selected items.
+
+        Notes
+        -----
+        Time selection:
+
+        - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
+        - Maximum window size is 400 days (400 * 24 hours) when rollup is greater than or equal to PT1M (1 minute).
+        - No maximum window size if rollup is window.
+
+        The limits are used internally by the Clarify API. Should you have very high resolution data (>=1hz), you can use ``time_window`` argument to **reduce** the window, resulting in more requests.
+
+
+        Example
+        -------
+            >>> client = Client("./clarify-credentials.json")
+
+            Getting data frame with a filter.
+
+            >>> client.data_frame(
+            ...     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
+            ... )
+
+            Getting data with a time range.
+
+            >>> client.data_frame(
+            ...     gte="2022-01-01T01:01:01Z",
+            ...     lt="2022-01-09T01:01:01Z",
+            ... )
+
+            Skipping first 3 items and only retrieving 5 items, sorted with descending id.
+
+            >>> client.data_frame(
+            ...     sort = ["-id"],
+            ...     limit = 5,
+            ...     skip = 3,
+            ... )
+
+            Setting a lower window size due to json decoding errors.
+
+            >>> client.data_frame(
+            ...     window_size = "P20DT,
+            ...     limit = 5,
+            ...     skip = 3,
+            ... )
+
+            .. warning::
+                We recommend using ``rollup`` instead of ``window_size`` due to execution time being much faster.
+
+            Using rollup to get sampled data.
+
+            >>> client.data_frame(
+            ...     rollup = "PT5M,
+            ...     limit = 5,
+            ...     skip = 3,
+            ... )
+
+
         Response
             In case of a valid return value, returns a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = Selection(
-                >>>     meta={
-                >>>         'total': -1,
-                >>>         'groupIncludedByType': True
-                >>>     },
-                >>>     data=DataFrame(
-                >>>         times=[datetime.datetime(2022, 1, 1, 12, 0, tzinfo=datetime.timezone.utc),..],
-                >>>         series={
-                >>>             'c5i41fjsbu8cohpkcpvg': [0.18616, 0.18574000000000002, ...,],
-                >>>             ...
-                >>>         }
-                >>>     )
-                >>>     included=IncludedField(
-                >>>         integration=None, 
-                >>>         items=[
-                >>>             ItemSelectView(
-                >>>                 id='c5i41fjsbu8cohpkcpvg', 
-                >>>                 type='items', 
-                >>>                 meta=ResourceMetadata(
-                >>>                     annotations={
-                >>>                         "docs-clarify-io/example/environment": "office"
-                >>>                     }, 
-                >>>                     attributesHash='7602afa2fe611e0c8eff17f7936e108ee29e6817', 
-                >>>                     relationshipsHash='5f36b2220a14b54ee5ea290645ee34d943ea5be5', 
-                >>>                     updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc), 
-                >>>                     createdAt=datetime.datetime(2021, 10, 11, 13, 48, 46, 958000, tzinfo=datetime.timezone.utc)
-                >>>                 ), 
-                >>>                 attributes=Item(
-                >>>                     name='Dunder ReBond Inventory Level', 
-                >>>                     valueType=<TypeSignal.numeric: 'numeric'>, 
-                >>>                     description='How many reams of the Dunder ReBond we have in the warehouse.', 
-                >>>                     labels={
-                >>>                         'type': ['Recycled', 'Bond'], 
-                >>>                         'location': ['Scranton'],
-                >>>                         'threat-level': ['Midnight'] 
-                >>>                     }, 
-                >>>                     engUnit='', 
-                >>>                     enumValues={}, 
-                >>>                     sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
-                >>>                     sampleInterval=None, 
-                >>>                     gapDetection=datetime.timedelta(seconds=7200), 
-                >>>                     visible=True
-                >>>                 )
-                >>>             )
-                >>>             ...
-                >>>         ]
-                >>>     )
-                >>> )
-                >>> ),
-                >>> error = None
+                ... id = '1'
+                ... result = Selection(
+                ...     meta={
+                ...         'total': -1,
+                ...         'groupIncludedByType': True
+                ...     },
+                ...     data=DataFrame(
+                ...         times=[
+                ...             datetime.datetime(2022, 1, 1, 12, 0, tzinfo=datetime.timezone.utc),
+                ...             datetime.datetime(2022, 1, 1, 13, 0, tzinfo=datetime.timezone.utc),
+                ...             ...],
+                ...         series={
+                ...             'c5i41fjsbu8cohpkcpvg': [0.18616, 0.18574000000000002, ...],
+                ...             'c5i41fjsbu8cohfdepvg': [450.876543125, 450.176543554, ...],
+                ...             ...
+                ...         }
+                ...     )
+                ...     
+                ... error = None
 
             In case of the error the method return a pydantic model with the following format:
 
                 >>> jsonrpc = '2.0'
-                >>> id = '1'
-                >>> result = None
-                >>> error = Error(
-                >>>         code = '-32602',
-                >>>         message = 'Invalid params',
-                >>>         data = ErrorData(trace = <trace_id>, params = {})
-                >>> )
+                ... id = '1'
+                ... result = None
+                ... error = Error(
+                ...         code = '-32602',
+                ...         message = 'Invalid params',
+                ...         data = ErrorData(trace = <trace_id>, params = {})
+                ... )
+
+        Tip
+        ----
+        You can change the `type` of DataFrame from pyclarify to pandas using the `to_pandas()` method.
+
+            >>> r = client.data_frame()
+            >>> c_df = r.result.data
+            >>> p_df = c_df.to_pandas()
+            >>> p_df.head()
+            ...                                   cbpmaq6rpn52969vfl00  cbpmaq6rpn52969vfl0g  ...  cbpmaq6rpn52969vfl90  cbpmaq6rpn52969vfl9g
+            ... 2022-09-05 11:30:11.432725+00:00                   2.0                   8.0  ...                   0.0                   4.0
+            ... 2022-09-05 11:31:11.432723+00:00                   9.0                   2.0  ...                   8.0                   8.0
+            ... 2022-09-05 11:32:11.432722+00:00                   6.0                   4.0  ...                   8.0                   9.0
+            ... 2022-09-05 11:33:11.432720+00:00                   0.0                   7.0  ...                   9.0                   4.0
+            ... 2022-09-05 11:34:11.432719+00:00                   8.0                   6.0  ...                   8.0                   5.0
+
         """
 
         query = ResourceQuery(

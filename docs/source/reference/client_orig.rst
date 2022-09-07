@@ -2,7 +2,7 @@
 
 
 ****************
-PyClarify Client
+Client
 ****************
 
 .. currentmodule:: pyclarify

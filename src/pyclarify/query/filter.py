@@ -130,8 +130,7 @@ Filter.update_forward_refs()
 
 class DataFilter(BaseModel):
     """
-    Pydantic model for handeling filtering. The filter supports pythons built in "&" and "|" operators for chaining filters.
-    The model has a to_query() method used internally to convert model to MongoDB format.
+    Pydantic model for handeling filtering. The model has a to_query() method used internally to convert model to MongoDB format.
     
     Parameters
     ----------
