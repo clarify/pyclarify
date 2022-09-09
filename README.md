@@ -160,7 +160,7 @@ response = client.data_frame(
 
 ### Look at our reference!
 
-[<img src="./docs/source/reference.png" width="150" />](https://github.com/user/repository/subscription)
+[<img src="./docs/source/reference.png" width="150" />](https://clarify.github.io/pyclarify/)
 
 # Changelog
 
