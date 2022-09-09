@@ -49,9 +49,9 @@ class DataFrame(BaseModel):
     -------
         >>> from pyclarify import DataFrame
         >>> data = DataFrame(
-        >>>     series={"<INPUT_ID_1>": [1, 2], "<INPUT_ID_2>": [3, 4]},
-        >>>     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
-        >>> )
+        ...     series={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]},
+        ...     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+        ... )
 
     """
 
@@ -68,8 +68,24 @@ class DataFrame(BaseModel):
     def to_pandas(self):
         """Convert the instance into a pandas DataFrame.
 
-        Returns:
+        Returns
+        -------
             pandas.DataFrame: The pandas DataFrame representing this instance.
+
+        Example
+        -------
+
+            >>> from pyclarify import DataFrame
+            >>> data = DataFrame(
+            ...     series={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]},
+            ...     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+            ... )
+            >>> data.to_pandas()
+            ...                            INPUT_ID_1  INPUT_ID_2
+            ... 2021-11-01 21:50:06+00:00         1.0         3.0
+            ... 2021-11-02 21:50:06+00:00         2.0         4.0
+
+
         """
         pd = local_import("pandas")
 
@@ -80,9 +96,57 @@ class DataFrame(BaseModel):
     @classmethod
     def from_pandas(cls, df, time_col=None):
         """Convert a pandas DataFrame into a Clarify DataFrame.
+        
+        Parameters
+        ----------
+        df: pandas.DataFrame
+            The pandas.DataFrame object to cast to pyclarify.DataFrame.
 
-        Returns:
+        time_col: str, default None
+            A string denoting the column containing the time axis. If no string is given it is assumed to be the index of the DataFrame.
+
+        Returns
+        -------
             pyclarify.DataFrame: The Clarify DataFrame representing this instance.
+
+        Example
+        -------
+                
+            >>> from pyclarify import DataFrame
+            >>> import pandas as pd
+            >>> df = pd.DataFrame(data={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]})
+            >>> df.index = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+            >>> DataFrame.from_pandas(df)
+            ... DataFrame(
+            ...     times=[
+            ...         datetime.datetime(2021, 11, 1, 21, 50, 6, tzinfo=datetime.timezone.utc), 
+            ...         datetime.datetime(2021, 11, 2, 21, 50, 6, tzinfo=datetime.timezone.utc)], 
+            ...     series={
+            ...         'INPUT_ID_1': [1.0, 2.0], 
+            ...         'INPUT_ID_2': [3.0, 4.0]
+            ...     }
+            ... )
+
+            With specific time column.
+            
+            >>> from pyclarify import DataFrame
+            >>> import pandas as pd
+            >>> df = pd.DataFrame(data={
+            ...     "INPUT_ID_1": [1, 2], 
+            ...     "INPUT_ID_2": [3, 4],
+            ...     "timestamps": ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+            ...})
+            >>> DataFrame.from_pandas(df, time_col="timestamps")
+            ... DataFrame(
+            ...     times=[
+            ...         datetime.datetime(2021, 11, 1, 21, 50, 6, tzinfo=datetime.timezone.utc), 
+            ...         datetime.datetime(2021, 11, 2, 21, 50, 6, tzinfo=datetime.timezone.utc)], 
+            ...     series={
+            ...         'INPUT_ID_1': [1.0, 2.0], 
+            ...         'INPUT_ID_2': [3.0, 4.0]
+            ...     }
+            ... )
+
         """
 
         pd = local_import("pandas")
@@ -113,6 +177,50 @@ class DataFrame(BaseModel):
         -------
         DataFrame : DataFrame
             Merged data frame of all input data frames and self
+
+        Example
+        -------
+
+            Merging two data frames.
+
+            >>> df1 = DataFrame(
+            ...     series={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]},
+            ...     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+            ... )
+            >>> df2 = DataFrame(
+            ...     series={"INPUT_ID_1": [5, 6], "INPUT_ID_3": [7, 8]},
+            ...     times=["2021-11-01T21:50:06Z",  "2021-11-03T21:50:06Z"]
+            ... )
+            >>> merged_df = DataFrame.merge([df1, df2])
+            >>> merged_df.to_pandas()
+            ...                            INPUT_ID_2  INPUT_ID_1  INPUT_ID_3
+            ... 2021-11-01 21:50:06+00:00         3.0         5.0         7.0
+            ... 2021-11-02 21:50:06+00:00         4.0         2.0         NaN
+            ... 2021-11-03 21:50:06+00:00         NaN         6.0         8.0
+
+        Warning
+        -----
+
+            Notice from the example above that when time series have overlapping timestamps the last data frame overwrites the first. 
+
+            >>> df1 = DataFrame(
+            ...     series={"INPUT_ID_1": [1, 2]},
+            ...     times=["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
+            ... )
+            >>> df2 = DataFrame(
+            ...     series={"INPUT_ID_1": [5, 6]},
+            ...     times=["2021-11-01T21:50:06Z",  "2021-11-03T21:50:06Z"]
+            ... )
+            >>> DataFrame.merge([df1, df2])
+            ...                             INPUT_ID_1
+            ... 2021-11-01 21:50:06+00:00         5.0   <--
+            ... 2021-11-02 21:50:06+00:00         2.0
+            ... 2021-11-03 21:50:06+00:00         6.0
+            >>> DataFrame.merge([df2, df1])
+            ...                             INPUT_ID_1
+            ... 2021-11-01 21:50:06+00:00         1.0   <--
+            ... 2021-11-02 21:50:06+00:00         2.0
+            ... 2021-11-03 21:50:06+00:00         6.0
         """
 
         if not isinstance(dataframes, List):
@@ -136,7 +244,7 @@ class DataFrame(BaseModel):
 
         times = sorted(list(cdf_dict.keys()))
 
-        # make sure not to refrence pointers
+        # make sure not to reference pointers
         signal_values = [[None] * len(times) for i in range(len(signals))]
 
         for i, time in enumerate(times):
@@ -161,20 +269,32 @@ DataFrame.update_forward_refs()
 
 
 class InsertParams(BaseModel):
+    """
+    :meta private:
+    """
     integration: IntegrationID
     data: DataFrame
 
 
 class CreateSummary(BaseModel, extra=Extra.forbid):
+    """
+    :meta private:
+    """
     id: ResourceID
     created: bool
 
 
 class InsertResponse(BaseModel, extra=Extra.forbid):
+    """
+    :meta private:
+    """
     signalsByInput: Dict[InputID, CreateSummary]
 
 
 class DataFrameParams(BaseModel):
+    """
+    :meta private:
+    """
     query: Optional[ResourceQuery] = {}
     data: Optional[DataQuery] = {}
     include: Optional[List[str]] = []
