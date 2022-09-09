@@ -70,12 +70,12 @@ class ItemInfo(BaseModel):
     """
 
     name: str
-    valueType: TypeSignal = TypeSignal.numeric
     description: str = ""
     labels: Dict[LabelsKey, List[str]] = {}
+    sourceType: SourceTypeSignal = SourceTypeSignal.measurement
+    valueType: TypeSignal = TypeSignal.numeric
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
-    sourceType: SourceTypeSignal = SourceTypeSignal.measurement
     sampleInterval: timedelta = None
     gapDetection: timedelta = None
 
@@ -96,8 +96,9 @@ class Item(ItemInfo):
     description: string(len:0-1000)
         A free-form description of the resource.
 
-    labels: Labels
+    labels: Dict[LabelsKey, List[str]]
         A map of custom classification attributes. Filtering is done on label keys (labels.<key>).
+        LabelsKey is alphanumeric string up to 128 chars. 
 
     sourceType: string(enum)
         Classification of the data source. The value must be "aggregate", "measurement" or "prediction".
@@ -120,8 +121,9 @@ class Item(ItemInfo):
     visible: bool
         Whether the item should be visible for your entire organization within Clarify or not.
 
-    annotations: Annotations
+    annotations: Dict[AnnotationKey, str]
         A key-value store where integrations can store programmatic meta-data about the resource instance. Filtering is done one member fields.
+        AnnotationKey is alphanumeric string up to 128 chars.
 
     Example
     -------

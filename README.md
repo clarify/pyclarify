@@ -169,9 +169,3 @@ Wondering about upcoming or previous changes to the SDK? Take a look at the [CHA
 # Contributing
 
 Want to contribute? Check out [CONTRIBUTING](https://github.com/clarify/pyclarify/blob/main/CONTRIBUTING.md).
-
-<style>
-    img {
-        border-radius: 10%;
-    }
-</style>
