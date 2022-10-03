@@ -13,13 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
+import json
 from datetime import timedelta
 from pydantic.datetime_parse import parse_datetime, parse_duration
-from pyclarify.__utils__.time import compute_iso_timewindow
+from .time import compute_iso_timewindow, time_to_string
+from .payload import unpack_params
 
 
-class SelectIterator:
+class SegmentIterator:
     """
     The iterator chucks resources into legal segments as constrained by the API. The iterator returns the next legal chunk
     of resources and separates them into the starting point(skip) and how many resources to retrieve (limit).
@@ -144,3 +145,93 @@ class TimeIterator:
             return self.current_start_time, self.GLOBAL_END_TIME
 
 
+
+class SelectIterator:
+    """
+    Computes the next payload for select queries. 
+
+    Parameters
+    ----------
+    payload: dict/Request
+
+    Returns
+    -------
+    payload: dict/Request
+    """
+
+    def __init__(self, payload):
+        self.payload = json.loads(payload)
+        (
+            self.API_LIMIT, 
+            self.user_limit, 
+            self.skip, 
+            self.user_gte, 
+            self.user_lt, 
+            self.rollup, 
+            self.window_size
+        ) = unpack_params(self.payload)
+
+        # support None inputs
+        if self.user_limit == None:
+            self.user_limit = 9999999
+        self.segment_iterator = iter(SegmentIterator(
+                user_limit=self.user_limit, 
+                limit_per_call=self.API_LIMIT, 
+                skip=self.skip
+        ))
+
+        self.next_segment = True
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.next_segment:
+            self.skip, self.limit = next(self.segment_iterator)
+            self.payload["params"]["query"]["skip"] = self.skip
+            self.payload["params"]["query"]["limit"] = self.limit
+            
+            self.current_time_iterator = iter(TimeIterator(
+                start_time=self.user_gte, 
+                end_time=self.user_lt, 
+                rollup=self.rollup, 
+                window_size=self.window_size
+            ))
+            self.next_segment = False
+
+        
+        try:
+            start_time, end_time = next(self.current_time_iterator)
+            self.payload["params"]["data"]["filter"]["times"]["$gte"] = time_to_string(start_time)
+            self.payload["params"]["data"]["filter"]["times"]["$lt"] = time_to_string(end_time)
+        except:
+            self.next_segment = True
+
+
+        return json.dumps(self.payload)
+
+class MetaIterator:
+    """
+    Computes the next payload for other queries than select queries. 
+
+    Parameters
+    ----------
+    payload: dict/Request
+
+    Returns
+    -------
+    payload: dict/Request
+    """
+
+    def __init__(self, payload):
+        self.payload = payload
+
+    def __iter__(self):
+        self.ending_condition = False
+        return self
+
+    def __next__(self):
+        if self.ending_condition:
+            raise StopIteration
+        self.ending_condition = True
+        return self.payload 

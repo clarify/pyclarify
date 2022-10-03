@@ -15,11 +15,11 @@ limitations under the License.
 """
 
 """
-Client module is the main module of PyClarify.
+self module is the main module of PyClarify.
 
-The module provides a class for setting up a JSONRPCClient which will communicate with
+The module provides a class for setting up a JSONRPCself which will communicate with
 the Clarify API. Methods for reading and writing to the API is implemented with the
-help of jsonrpcclient framework.
+help of jsonrpcself framework.
 """
 import requests
 import json
@@ -35,7 +35,7 @@ from pyclarify.__utils__.time import time_to_string
 from pyclarify.__utils__.payload import unpack_params
 
 from .oauth2 import Authenticator
-from .pagination import SelectIterator, TimeIterator
+from pyclarify.__utils__.pagination import SelectIterator, TimeIterator
 
 
 def increment_id(func):
@@ -61,47 +61,6 @@ def increment_id(func):
     return wrapper
 
 
-def iterator(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        payload_list = []
-        payload = json.loads(args[1])
-        SELECT_METHODS = [ApiMethod.select_items, ApiMethod.select_signals, ApiMethod.data_frame]
-
-        if payload["method"] in SELECT_METHODS:
-            API_LIMIT, user_limit, skip, user_gte, user_lt, rollup, window_size = unpack_params(payload)
-
-            for skip, limit in SelectIterator(
-                user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
-            ):
-                current_items_payload = deepcopy(payload)
-                current_items_payload["params"]["query"]["limit"] = limit
-                current_items_payload["params"]["query"]["skip"] = skip
-
-                if user_gte or user_lt:
-                    for start_time, end_time in TimeIterator(
-                        start_time=user_gte, end_time=user_lt, rollup=rollup, window_size=window_size
-                    ):
-                        current_time_payload = deepcopy(current_items_payload)
-                        current_time_payload["params"]["data"]["filter"]["times"][
-                            "$gte"
-                        ] = time_to_string(start_time)
-                        current_time_payload["params"]["data"]["filter"]["times"][
-                            "$lt"
-                        ] = time_to_string(end_time)
-                        payload_list += [current_time_payload]
-                else:
-                    payload_list += [current_items_payload]
-        else:
-            payload_list = [payload]
-
-        args[0].payload_list = payload_list
-
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
 class JSONRPCClient:
     def __init__(
         self, base_url,
@@ -114,7 +73,7 @@ class JSONRPCClient:
 
     def authenticate(self, clarify_credentials):
         """
-        Authenticates the client by using the Authenticator class (see oauth2.py).
+        Authenticates the self by using the Authenticator class (see oauth2.py).
 
         Parameters
         ----------
@@ -133,8 +92,7 @@ class JSONRPCClient:
         except AuthError:
             return False
 
-    @iterator
-    def make_requests(self, payload) -> Response:
+    def make_requests(self, iterator) -> Response:
         """
         Uses post request to send JSON RPC payload.
 
@@ -149,10 +107,11 @@ class JSONRPCClient:
             JSON dictionary response.
 
         """
-        for i, payload in enumerate(self.payload_list):
+        for i, payload in enumerate(iterator):
+
             logging.debug(f"{i}--> {self.base_url}, req: {payload}")
             res = requests.post(
-                self.base_url, data=json.dumps(payload), headers=self.headers
+                self.base_url, data=payload, headers=self.headers
             )
             logging.debug(f"{i}<-- {self.base_url} ({res.status_code})")
             if not res.ok:
@@ -162,14 +121,20 @@ class JSONRPCClient:
                     "data": res.text,
                 }
                 res = Response(id=payload["id"], error=Error(**err))
-            elif hasattr(res.json(), "error"):
+                return res
+            elif "error" in res.json():
                 res = Response(id=payload["id"], error=res.json()["error"])
+                return res
             else:
                 res = Response(**res.json())
             if "responses" not in locals():
                 responses = res
             else:
                 responses += res
+            if hasattr(res.result, "data"):
+                data = res.result.data
+                if data == None or data == [] or data == {}:
+                    return responses
         return responses
 
     @increment_id
@@ -197,7 +162,7 @@ class JSONRPCClient:
 
     def update_headers(self, headers):
         """
-        Updates headers of client.
+        Updates headers of self.
 
         Parameters
         ----------

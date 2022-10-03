@@ -36,7 +36,7 @@ from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
-
+from pyclarify.__utils__.pagination import MetaIterator, SelectIterator
 
 class Client(JSONRPCClient):
     """
@@ -62,7 +62,7 @@ class Client(JSONRPCClient):
             logging.debug("Successfully connected to Clarify!")
             logging.debug(f"SDK version: {pyclarify.__version__}")
             logging.debug(f"API version: {pyclarify.__API_version__}")
-            
+                   
 
     @validate_arguments
     def insert(self, data: DataFrame) -> Response:
@@ -148,8 +148,8 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-
-        return self.make_requests(request_data.json())
+        iterator = MetaIterator(request_data.json())
+        return self.make_requests(iterator)
 
     @validate_arguments
     def select_items(
@@ -157,7 +157,7 @@ class Client(JSONRPCClient):
         filter: Optional[Filter] = None,
         include: Optional[List] = [],
         skip: int = 0,
-        limit: int = 10,
+        limit: Optional[int] = 10,
         sort: List[str] = [],
         total: Optional[bool] = False,
     ) -> Response:
@@ -307,7 +307,8 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        iterator = SelectIterator(request_data.json())
+        return self.make_requests(iterator)
 
     @validate_arguments
     def save_signals(
@@ -422,7 +423,8 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        iterator = MetaIterator(request_data.json())
+        return self.make_requests(iterator)
 
     @validate_arguments
     def publish_signals(
@@ -543,14 +545,15 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        iterator = MetaIterator(request_data.json())
+        return self.make_requests(iterator)
 
     @validate_arguments
     def select_signals(
         self,
         filter: Optional[Filter] = None,
         skip: int = 0,
-        limit: int = 20,
+        limit: Optional[int] = 20,
         sort: List[str] = [],
         total: Optional[bool] = False,
         include: Optional[List] = [],
@@ -738,7 +741,8 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        iterator = SelectIterator(request_data.json())
+        return self.make_requests(iterator)
 
     @validate_arguments
     def data_frame(
@@ -950,4 +954,5 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        iterator = SelectIterator(request_data.json())
+        return self.make_requests(iterator)
