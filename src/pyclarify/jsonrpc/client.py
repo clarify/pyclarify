@@ -87,7 +87,7 @@ class JSONRPCClient:
         except AuthError:
             return False
 
-    def make_requests(self, iterator) -> Response:
+    def make_request(self, payload) -> Response:
         """
         Uses post request to send JSON RPC payload.
 
@@ -102,37 +102,22 @@ class JSONRPCClient:
             JSON dictionary response.
 
         """
-        for i, payload in enumerate(iterator):
-
-            logging.debug(f"{i}--> {self.base_url}, req: {payload}")
-            res = requests.post(
-                self.base_url, data=payload, headers=self.headers
-            )
-            logging.debug(f"{i}<-- {self.base_url} ({res.status_code})")
-            if not res.ok:
-                err = {
-                    "code": res.status_code,
-                    "message": f"HTTP Response Error {res.reason}",
-                    "data": res.text,
-                }
-                res = Response(id=payload["id"], error=Error(**err))
-                return res
-            elif res.json()["error"]:
-                res = Response(id=payload["id"], error=res.json()["error"])
-                return res
-            else:
-                res = Response(**res.json())
-
-            if "responses" not in locals():
-                responses = res
-            else:
-                responses += res
-            
-            if hasattr(res.result, "data"):
-                data = res.result.data
-                if data == None or data == [] or data == {}:
-                    return responses
-        return responses
+        logging.debug(f"{self.current_id}--> {self.base_url}, req: {payload}")
+        res = requests.post(
+            self.base_url, data=payload, headers=self.headers
+        )
+        logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code})")
+        if not res.ok:
+            err = {
+                "code": res.status_code,
+                "message": f"HTTP Response Error {res.reason}",
+                "data": res.text,
+            }
+            return Response(id=payload["id"], error=Error(**err))
+        elif res.json()["error"]:
+            return Response(id=payload["id"], error=res.json()["error"])
+        
+        return Response(**res.json())
 
     @increment_id
     def create_payload(self, method, params):

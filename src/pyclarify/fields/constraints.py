@@ -29,7 +29,7 @@ AnnotationKey = constr(regex=r"^[A-Za-z0-9-_/]{1,128}$")
 NumericalValuesType = List[Union[float, int, None]]
 SHA1Hash = constr(regex=r"^[a-f0-9]{5,40}$")
 IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
-LimitSelectItems = conint(ge=0)
+LimitSelectItems = conint(ge=0, le=1000)
 LimitSelectSignals = conint(ge=0, le=1000)
 Annotations = Dict[AnnotationKey, str]
 
