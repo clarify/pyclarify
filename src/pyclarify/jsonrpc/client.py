@@ -117,15 +117,17 @@ class JSONRPCClient:
                 }
                 res = Response(id=payload["id"], error=Error(**err))
                 return res
-            if res.json()["error"]:
+            elif res.json()["error"]:
                 res = Response(id=payload["id"], error=res.json()["error"])
                 return res
             else:
                 res = Response(**res.json())
+
             if "responses" not in locals():
                 responses = res
             else:
                 responses += res
+            
             if hasattr(res.result, "data"):
                 data = res.result.data
                 if data == None or data == [] or data == {}:
