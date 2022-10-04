@@ -25,17 +25,12 @@ import requests
 import json
 import logging
 import functools
-from copy import deepcopy
 
 from pyclarify.__utils__.exceptions import AuthError
-from pyclarify.fields.constraints import ApiMethod
 from pyclarify.fields.error import Error
 from pyclarify.views.generics import Response
-from pyclarify.__utils__.time import time_to_string
-from pyclarify.__utils__.payload import unpack_params
 
 from .oauth2 import Authenticator
-from pyclarify.__utils__.pagination import SelectIterator, TimeIterator
 
 
 def increment_id(func):
@@ -122,7 +117,7 @@ class JSONRPCClient:
                 }
                 res = Response(id=payload["id"], error=Error(**err))
                 return res
-            elif "error" in res.json():
+            if res.json()["error"]:
                 res = Response(id=payload["id"], error=res.json()["error"])
                 return res
             else:
