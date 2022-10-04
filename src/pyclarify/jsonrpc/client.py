@@ -15,11 +15,11 @@ limitations under the License.
 """
 
 """
-self module is the main module of PyClarify.
+Client module is the main module of PyClarify.
 
-The module provides a class for setting up a JSONRPCself which will communicate with
+The module provides a class for setting up a JSONRPCClient which will communicate with
 the Clarify API. Methods for reading and writing to the API is implemented with the
-help of jsonrpcself framework.
+help of jsonrpcclient framework.
 """
 import requests
 import json
@@ -68,7 +68,7 @@ class JSONRPCClient:
 
     def authenticate(self, clarify_credentials):
         """
-        Authenticates the self by using the Authenticator class (see oauth2.py).
+        Authenticates the client by using the Authenticator class (see oauth2.py).
 
         Parameters
         ----------
@@ -157,7 +157,7 @@ class JSONRPCClient:
 
     def update_headers(self, headers):
         """
-        Updates headers of self.
+        Updates headers of client.
 
         Parameters
         ----------
