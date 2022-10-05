@@ -105,7 +105,7 @@ class Filter(BaseModel):
         comparison = comparison.dict()
         if comparison["operator"]:
             return {field: {comparison["operator"]: comparison["value"]}}
-        return {field: {comparison["value"]}}
+        return {field: comparison["value"]}
 
     def to_query(self):
         q = {}

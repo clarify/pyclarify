@@ -75,7 +75,6 @@ class Equal(Comparison):
     """
     pass
 
-
 class NotEqual(Comparison):
     """
     Matches using negated equality.
