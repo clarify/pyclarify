@@ -28,7 +28,7 @@ class TestFilter(unittest.TestCase):
         )
         self.assertEqual(self.f3.to_query(), {"labels.unit_id": {"$in": ["1"]}})
         self.assertEqual(self.f4.to_query(), {"labels.topic": {"$regex": "efb"}})
-        self.assertEqual(self.f5.to_query(), {"name": {"Trondheim"}})
+        self.assertEqual(self.f5.to_query(), {"name": "Trondheim"})
 
     def testIllegalComparions(self):
         # Not Equal
