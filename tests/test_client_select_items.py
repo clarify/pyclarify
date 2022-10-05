@@ -46,7 +46,6 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.json = lambda: test_case["response"]
 
         response_data = self.client.select_items()
-
         for x in response_data.result.data:
             self.assertIsInstance(x, ItemSelectView)
 

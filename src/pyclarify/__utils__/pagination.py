@@ -13,12 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import json
 from datetime import timedelta
 from pydantic.datetime_parse import parse_datetime, parse_duration
+from pyclarify.query.filter import DataFilter
 
 from pyclarify.views.generics import Request
-from .time import compute_iso_timewindow, time_to_string
+from .time import compute_iso_timewindow
 from .payload import unpack_params
 
 
@@ -161,79 +161,61 @@ class SelectIterator:
     request: dict/Request
     """
 
-    def __init__(self, request: Request):
+    def __init__(self, request: Request, window_size=None):
         self.request = request
+        self.window_size = window_size
         (
             self.API_LIMIT, 
             self.user_limit, 
             self.skip, 
             self.user_gte, 
             self.user_lt, 
-            self.rollup, 
-            self.window_size
+            self.rollup
         ) = unpack_params(self.request)
 
         # support None inputs
         if self.user_limit == None:
             self.user_limit = float("inf")
+
         self.segment_iterator = iter(SegmentIterator(
                 user_limit=self.user_limit, 
                 limit_per_call=self.API_LIMIT, 
                 skip=self.skip
         ))
+        self.current_time_iterator = iter(TimeIterator(
+            start_time=self.user_gte, 
+            end_time=self.user_lt, 
+            rollup=self.rollup, 
+            window_size=self.window_size
+        ))
 
-        self.next_segment = True
 
     def __iter__(self):
+        self.stopping_condition = False
+        self.first_iteration = True
+        self.skip, self.limit = next(self.segment_iterator)
         return self
 
     def __next__(self):
-        if self.next_segment:
-            self.skip, self.limit = next(self.segment_iterator)
-            self.request.params.query.skip = self.skip
-            self.request.params.query.limit = self.limit
-            
-            self.current_time_iterator = iter(TimeIterator(
-                start_time=self.user_gte, 
-                end_time=self.user_lt, 
-                rollup=self.rollup, 
-                window_size=self.window_size
-            ))
-            self.next_segment = False
-
-        
+        self.request.params.query.skip = self.skip
+        self.request.params.query.limit = self.limit
         try:
             start_time, end_time = next(self.current_time_iterator)
-            self.request.params.data.filter.times.gte = time_to_string(start_time)
-            self.request.params.data.filter.times.lt = time_to_string(end_time)
-        except:
-            self.next_segment = True
-
-
-        return self.request
-
-class MetaIterator:
-    """
-    Computes the next request for other queries than select queries. 
-
-    Parameters
-    ----------
-    request: dict/Request
-
-    Returns
-    -------
-    request: dict/Request
-    """
-
-    def __init__(self, request):
-        self.request = request
-
-    def __iter__(self):
-        self.ending_condition = False
-        return self
-
-    def __next__(self):
-        if self.ending_condition:
+            dq = DataFilter(gte=start_time, lt=end_time)
+            self.request.params.data.filter = dq.to_query()
+        except:            
+            try:
+                self.skip, self.limit = next(self.segment_iterator)
+                self.current_time_iterator = iter(TimeIterator(
+                    start_time=self.user_gte, 
+                    end_time=self.user_lt, 
+                    rollup=self.rollup, 
+                    window_size=self.window_size
+                ))
+            except:
+                self.stopping_condition = True
+        if self.stopping_condition and not self.first_iteration:
             raise StopIteration
-        self.ending_condition = True
-        return self.request 
+        else:
+            self.first_iteration = False
+            return self.request

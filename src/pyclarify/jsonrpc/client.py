@@ -114,8 +114,10 @@ class JSONRPCClient:
                 "data": res.text,
             }
             return Response(id=payload["id"], error=Error(**err))
-        elif res.json()["error"]:
-            return Response(id=payload["id"], error=res.json()["error"])
+        
+        if hasattr(res.json(), "error"):
+            if res.json()["error"]:
+                return Response(id=payload["id"], error=res.json()["error"])
         
         return Response(**res.json())
 

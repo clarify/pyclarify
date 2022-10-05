@@ -17,7 +17,7 @@ from pyclarify.fields.constraints import ApiMethod
 from pyclarify.views.generics import Request
 
 def unpack_params(request: Request):
-  API_LIMIT = user_limit = skip = user_gte = user_lt = rollup = window_size = None
+  API_LIMIT = user_limit = skip = user_gte = user_lt = rollup = None
   query = request.params.query
   user_limit = query.limit
   skip = query.skip
@@ -34,7 +34,6 @@ def unpack_params(request: Request):
     times = data.filter["times"]
     user_gte = times.pop("$gte", None)
     user_lt = times.pop("$lt", None)
-    window_size = data.window_size
     rollup = data.rollup
   
-  return API_LIMIT, user_limit, skip, user_gte, user_lt, rollup, window_size
+  return API_LIMIT, user_limit, skip, user_gte, user_lt, rollup

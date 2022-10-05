@@ -37,7 +37,7 @@ from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
-from pyclarify.__utils__.pagination import MetaIterator, SelectIterator
+from pyclarify.__utils__.pagination import SelectIterator
 
 class Client(JSONRPCClient):
     """
@@ -64,14 +64,13 @@ class Client(JSONRPCClient):
             logging.debug(f"SDK version: {pyclarify.__version__}")
             logging.debug(f"API version: {pyclarify.__API_version__}")
     
-    def iterate_requests(self, request: Request, stopping_condition: Callable):
-        iterator = SelectIterator(request)
-
+    def iterate_requests(self, request: Request, stopping_condition: Callable, window_size: timedelta = None):
+        iterator = SelectIterator(request, window_size)
+        responses = None
         for request in iterator:
             response = self.make_request(request.json())
-
-            if "responses" not in locals():
-                    responses = response
+            if responses is None:
+                responses = response
             else:
                 responses += response
             
@@ -438,8 +437,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        iterator = MetaIterator(request_data.json())
-        return self.make_request(iterator)
+        return self.make_request(request_data.json())
 
     @validate_arguments
     def publish_signals(
@@ -560,8 +558,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        iterator = MetaIterator(request_data.json())
-        return self.make_request(iterator)
+        return self.make_request(request_data.json())
 
     @validate_arguments
     def select_signals(
@@ -960,7 +957,7 @@ class Client(JSONRPCClient):
             total=total,
         )
         data_filter = DataFilter(gte=gte, lt=lt)
-        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup, window_size=window_size)
+        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
         params = {"query": query, "data": data_query, "include": include}
 
         request_data = Request(method=ApiMethod.data_frame, params=params)
@@ -969,4 +966,4 @@ class Client(JSONRPCClient):
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
         
-        return self.iterate_requests(request_data, lambda x: False)
+        return self.iterate_requests(request_data, lambda x: False, window_size)
