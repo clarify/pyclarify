@@ -14,26 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from pyclarify.fields.constraints import ApiMethod
+from pyclarify.views.generics import Request
 
-def unpack_params(payload):
-  API_LIMIT = user_limit = skip = user_gte = user_lt = rollup = window_size = None
-  query = payload["params"]["query"]
-  user_limit = query["limit"]
-  skip = query["skip"]
+def unpack_params(request: Request):
+  API_LIMIT = user_limit = skip = user_gte = user_lt = rollup = None
+  query = request.params.query
+  user_limit = query.limit
+  skip = query.skip
 
-  if payload["method"] == ApiMethod.select_items:
+  if request.method == ApiMethod.select_items:
     API_LIMIT = 1000
 
-  if payload["method"] == ApiMethod.select_signals:
+  if request.method == ApiMethod.select_signals:
     API_LIMIT = 1000
 
-  if payload["method"] == ApiMethod.data_frame:
+  if request.method == ApiMethod.data_frame:
     API_LIMIT = 50
-    data = payload["params"]["data"]
-    times = data["filter"]["times"]
+    data = request.params.data
+    times = data.filter["times"]
     user_gte = times.pop("$gte", None)
     user_lt = times.pop("$lt", None)
-    window_size = data.pop("window_size", None)
-    rollup = data["rollup"]
+    rollup = data.rollup
   
-  return API_LIMIT, user_limit, skip, user_gte, user_lt, rollup, window_size
+  return API_LIMIT, user_limit, skip, user_gte, user_lt, rollup

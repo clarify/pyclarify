@@ -92,7 +92,7 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_requests(payload)
+        response = self.client.make_request(payload)
         payload = json.loads(payload)
         # assert valid response type
         self.assertIsInstance(response, Response)
@@ -116,7 +116,7 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_requests(payload)
+        response = self.client.make_request(payload)
         payload = json.loads(payload)
         # assert valid response type
         self.assertIsInstance(response, Response)
@@ -140,7 +140,7 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_requests(payload)
+        response = self.client.make_request(payload)
         payload = json.loads(payload)
         # assert valid response type
         self.assertIsInstance(response, Response)

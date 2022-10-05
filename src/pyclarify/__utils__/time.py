@@ -29,8 +29,8 @@ def compute_iso_timewindow(start_time, end_time):
         start_time = parse_datetime(start_time)
         end_time = start_time + timedelta(days=40)
     elif not start_time and not end_time:
-        end_time = datetime.now()
-        start_time = end_time - timedelta(days=40)
+        end_time = datetime.now() + timedelta(days=7)
+        start_time = end_time - timedelta(days=14)
     else:
         end_time = parse_datetime(end_time)
         start_time = parse_datetime(start_time)

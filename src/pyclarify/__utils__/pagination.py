@@ -13,13 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
 from datetime import timedelta
 from pydantic.datetime_parse import parse_datetime, parse_duration
-from pyclarify.__utils__.time import compute_iso_timewindow
+from pyclarify.query.filter import DataFilter
+
+from pyclarify.views.generics import Request
+from .time import compute_iso_timewindow
+from .payload import unpack_params
 
 
-class SelectIterator:
+class SegmentIterator:
     """
     The iterator chucks resources into legal segments as constrained by the API. The iterator returns the next legal chunk
     of resources and separates them into the starting point(skip) and how many resources to retrieve (limit).
@@ -144,3 +147,75 @@ class TimeIterator:
             return self.current_start_time, self.GLOBAL_END_TIME
 
 
+
+class SelectIterator:
+    """
+    Computes the next request for select queries. 
+
+    Parameters
+    ----------
+    request: dict/Request
+
+    Returns
+    -------
+    request: dict/Request
+    """
+
+    def __init__(self, request: Request, window_size=None):
+        self.request = request
+        self.window_size = window_size
+        (
+            self.API_LIMIT, 
+            self.user_limit, 
+            self.skip, 
+            self.user_gte, 
+            self.user_lt, 
+            self.rollup
+        ) = unpack_params(self.request)
+
+        # support None inputs
+        if self.user_limit == None:
+            self.user_limit = float("inf")
+
+        self.segment_iterator = iter(SegmentIterator(
+                user_limit=self.user_limit, 
+                limit_per_call=self.API_LIMIT, 
+                skip=self.skip
+        ))
+        self.current_time_iterator = iter(TimeIterator(
+            start_time=self.user_gte, 
+            end_time=self.user_lt, 
+            rollup=self.rollup, 
+            window_size=self.window_size
+        ))
+
+
+    def __iter__(self):
+        self.stopping_condition = False
+        self.first_iteration = True
+        self.skip, self.limit = next(self.segment_iterator)
+        return self
+
+    def __next__(self):
+        self.request.params.query.skip = self.skip
+        self.request.params.query.limit = self.limit
+        try:
+            start_time, end_time = next(self.current_time_iterator)
+            dq = DataFilter(gte=start_time, lt=end_time)
+            self.request.params.data.filter = dq.to_query()
+        except:            
+            try:
+                self.skip, self.limit = next(self.segment_iterator)
+                self.current_time_iterator = iter(TimeIterator(
+                    start_time=self.user_gte, 
+                    end_time=self.user_lt, 
+                    rollup=self.rollup, 
+                    window_size=self.window_size
+                ))
+            except:
+                self.stopping_condition = True
+        if self.stopping_condition and not self.first_iteration:
+            raise StopIteration
+        else:
+            self.first_iteration = False
+            return self.request

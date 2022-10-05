@@ -26,8 +26,9 @@ import logging
 from datetime import timedelta, datetime
 from pydantic import validate_arguments
 from pydantic.fields import Optional
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Callable
 import pyclarify
+from pyclarify.__utils__.stopping_conditions import select_stopping_condition
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
 from pyclarify.views.items import Item
@@ -36,7 +37,7 @@ from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
-
+from pyclarify.__utils__.pagination import SelectIterator
 
 class Client(JSONRPCClient):
     """
@@ -62,7 +63,22 @@ class Client(JSONRPCClient):
             logging.debug("Successfully connected to Clarify!")
             logging.debug(f"SDK version: {pyclarify.__version__}")
             logging.debug(f"API version: {pyclarify.__API_version__}")
+    
+    def iterate_requests(self, request: Request, stopping_condition: Callable, window_size: timedelta = None):
+        iterator = SelectIterator(request, window_size)
+        responses = None
+        for request in iterator:
+            response = self.make_request(request.json())
+            if responses is None:
+                responses = response
+            else:
+                responses += response
             
+            if stopping_condition(response):
+                return responses
+
+        return responses  
+
 
     @validate_arguments
     def insert(self, data: DataFrame) -> Response:
@@ -148,8 +164,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-
-        return self.make_requests(request_data.json())
+        return self.make_request(request_data.json())
 
     @validate_arguments
     def select_items(
@@ -157,7 +172,7 @@ class Client(JSONRPCClient):
         filter: Optional[Filter] = None,
         include: Optional[List] = [],
         skip: int = 0,
-        limit: int = 10,
+        limit: Optional[int] = 10,
         sort: List[str] = [],
         total: Optional[bool] = False,
     ) -> Response:
@@ -307,7 +322,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        return self.iterate_requests(request_data, select_stopping_condition)
 
     @validate_arguments
     def save_signals(
@@ -422,7 +437,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        return self.make_request(request_data.json())
 
     @validate_arguments
     def publish_signals(
@@ -543,14 +558,14 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        return self.make_request(request_data.json())
 
     @validate_arguments
     def select_signals(
         self,
         filter: Optional[Filter] = None,
         skip: int = 0,
-        limit: int = 20,
+        limit: Optional[int] = 20,
         sort: List[str] = [],
         total: Optional[bool] = False,
         include: Optional[List] = [],
@@ -738,7 +753,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        return self.iterate_requests(request_data, select_stopping_condition)
 
     @validate_arguments
     def data_frame(
@@ -942,7 +957,7 @@ class Client(JSONRPCClient):
             total=total,
         )
         data_filter = DataFilter(gte=gte, lt=lt)
-        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup, window_size=window_size)
+        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
         params = {"query": query, "data": data_query, "include": include}
 
         request_data = Request(method=ApiMethod.data_frame, params=params)
@@ -950,4 +965,5 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_requests(request_data.json())
+        
+        return self.iterate_requests(request_data, lambda x: False, window_size)

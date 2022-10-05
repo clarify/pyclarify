@@ -51,7 +51,8 @@
             "created": true
           }
         }
-      }
+      },
+      "error": null
     }
   },
   "data_frame": {

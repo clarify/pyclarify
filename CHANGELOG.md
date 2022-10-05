@@ -15,6 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.4.1] - 2022-09-03
+
+### Added
+
+- All select queries (`client.select_items`, `client.select_signals`) now supports a `None` limit to do an exhaustive query for all resources.
+
 ## [0.4.0] - 2022-07-12
 
 Changing to JSON:API format!

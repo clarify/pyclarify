@@ -25,17 +25,12 @@ import requests
 import json
 import logging
 import functools
-from copy import deepcopy
 
 from pyclarify.__utils__.exceptions import AuthError
-from pyclarify.fields.constraints import ApiMethod
 from pyclarify.fields.error import Error
 from pyclarify.views.generics import Response
-from pyclarify.__utils__.time import time_to_string
-from pyclarify.__utils__.payload import unpack_params
 
 from .oauth2 import Authenticator
-from .pagination import SelectIterator, TimeIterator
 
 
 def increment_id(func):
@@ -56,47 +51,6 @@ def increment_id(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         args[0].current_id += 1
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-def iterator(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        payload_list = []
-        payload = json.loads(args[1])
-        SELECT_METHODS = [ApiMethod.select_items, ApiMethod.select_signals, ApiMethod.data_frame]
-
-        if payload["method"] in SELECT_METHODS:
-            API_LIMIT, user_limit, skip, user_gte, user_lt, rollup, window_size = unpack_params(payload)
-
-            for skip, limit in SelectIterator(
-                user_limit=user_limit, limit_per_call=API_LIMIT, skip=skip
-            ):
-                current_items_payload = deepcopy(payload)
-                current_items_payload["params"]["query"]["limit"] = limit
-                current_items_payload["params"]["query"]["skip"] = skip
-
-                if user_gte or user_lt:
-                    for start_time, end_time in TimeIterator(
-                        start_time=user_gte, end_time=user_lt, rollup=rollup, window_size=window_size
-                    ):
-                        current_time_payload = deepcopy(current_items_payload)
-                        current_time_payload["params"]["data"]["filter"]["times"][
-                            "$gte"
-                        ] = time_to_string(start_time)
-                        current_time_payload["params"]["data"]["filter"]["times"][
-                            "$lt"
-                        ] = time_to_string(end_time)
-                        payload_list += [current_time_payload]
-                else:
-                    payload_list += [current_items_payload]
-        else:
-            payload_list = [payload]
-
-        args[0].payload_list = payload_list
-
         return func(*args, **kwargs)
 
     return wrapper
@@ -133,8 +87,7 @@ class JSONRPCClient:
         except AuthError:
             return False
 
-    @iterator
-    def make_requests(self, payload) -> Response:
+    def make_request(self, payload) -> Response:
         """
         Uses post request to send JSON RPC payload.
 
@@ -149,28 +102,24 @@ class JSONRPCClient:
             JSON dictionary response.
 
         """
-        for i, payload in enumerate(self.payload_list):
-            logging.debug(f"{i}--> {self.base_url}, req: {payload}")
-            res = requests.post(
-                self.base_url, data=json.dumps(payload), headers=self.headers
-            )
-            logging.debug(f"{i}<-- {self.base_url} ({res.status_code})")
-            if not res.ok:
-                err = {
-                    "code": res.status_code,
-                    "message": f"HTTP Response Error {res.reason}",
-                    "data": res.text,
-                }
-                res = Response(id=payload["id"], error=Error(**err))
-            elif hasattr(res.json(), "error"):
-                res = Response(id=payload["id"], error=res.json()["error"])
-            else:
-                res = Response(**res.json())
-            if "responses" not in locals():
-                responses = res
-            else:
-                responses += res
-        return responses
+        logging.debug(f"{self.current_id}--> {self.base_url}, req: {payload}")
+        res = requests.post(
+            self.base_url, data=payload, headers=self.headers
+        )
+        logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code})")
+        if not res.ok:
+            err = {
+                "code": res.status_code,
+                "message": f"HTTP Response Error {res.reason}",
+                "data": res.text,
+            }
+            return Response(id=payload["id"], error=Error(**err))
+        
+        if hasattr(res.json(), "error"):
+            if res.json()["error"]:
+                return Response(id=payload["id"], error=res.json()["error"])
+        
+        return Response(**res.json())
 
     @increment_id
     def create_payload(self, method, params):
