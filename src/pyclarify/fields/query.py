@@ -25,6 +25,7 @@ from datetime import datetime
 
 
 class Operators(str, Enum):
+    EQ = "$eq"
     NE = "$ne"
     REGEX = "$regex"
     IN = "$in"
@@ -73,7 +74,7 @@ class Equal(Comparison):
     -------
     filter_value = Equal(value="foo")
     """
-    pass
+    operator = Operators.EQ
 
 
 class NotEqual(Comparison):
