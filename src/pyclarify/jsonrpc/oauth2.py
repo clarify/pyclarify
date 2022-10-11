@@ -27,7 +27,7 @@ import json
 from os import path
 
 from pyclarify.fields.authentication import OAuthResponse, OAuthRequestBody
-from pyclarify.__utils__.exceptions import AuthError
+from pyclarify.__utils__.exceptions import AuthError, CredentialError
 
 
 class Authenticator:
@@ -71,17 +71,27 @@ class Authenticator:
                 with open(clarify_credentials) as f:
                     clarify_credentials = json.load(f)
             else:
-                clarify_credentials = json.loads(clarify_credentials)
-
+                try:
+                    clarify_credentials = json.loads(clarify_credentials)
+                except:
+                    raise CredentialError("String not valid", 
+                    f"Could not read credentials from: {clarify_credentials}. Make sure the path exists"
+                    " or that the string is in valid json format."
+                    )
         if isinstance(clarify_credentials, dict):
             clarify_credentials_object = clarify_credentials
-
-        oauth_request_body = OAuthRequestBody(
-            client_id=clarify_credentials_object["credentials"]["clientId"],
-            client_secret=clarify_credentials_object["credentials"]["clientSecret"],
-            audience=clarify_credentials_object["apiUrl"],
-        )
-        self.integration_id = clarify_credentials_object["integration"]
+        try:
+            oauth_request_body = OAuthRequestBody(
+                client_id=clarify_credentials_object["credentials"]["clientId"],
+                client_secret=clarify_credentials_object["credentials"]["clientSecret"],
+                audience=clarify_credentials_object["apiUrl"],
+            )
+            self.integration_id = clarify_credentials_object["integration"]
+        except:
+            raise CredentialError("Content not found", 
+                    f"Could not read credentials from: {clarify_credentials}. Make sure the object is a"
+                    " valid Clarify Credentials file."
+                    )
         return oauth_request_body
 
     def refresh_token(self):

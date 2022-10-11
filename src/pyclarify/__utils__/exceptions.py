@@ -102,3 +102,17 @@ class AuthError(PyClarifyException):
         return (
             f"Authentication error: {self.error}. Description: {self.error_description}"
         )
+
+class CredentialError(PyClarifyException):
+    """
+    Error class that is generated when Client could not read Credentials correctly
+    """
+
+    def __init__(self, error, error_description):
+        self.error = error
+        self.error_description = error_description
+
+    def __str__(self):
+        return (
+            f"Credentials error: {self.error}. Description: {self.error_description}"
+        )
