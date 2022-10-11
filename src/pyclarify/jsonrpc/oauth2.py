@@ -21,7 +21,6 @@ The module provides a class for setting reading clarify credentials used to auth
 the API client. This module also handles getting access tokens with expiry date.
 """
 
-from tkinter import E
 import requests
 import datetime
 import json
