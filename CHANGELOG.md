@@ -20,6 +20,7 @@ Changes are grouped as follows
 ### Added
 
 - All select queries (`client.select_items`, `client.select_signals`) now supports a `None` limit to do an exhaustive query for all resources.
+- Sanity checks for initializing `pyclarify.Client` with more descriptive errors.
 
 ## [0.4.0] - 2022-07-12
 
