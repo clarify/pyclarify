@@ -15,6 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.4.2] - 2022-10-11
+
+### Added
+
+- More descriptive errors on `pyclarify.fields.query.Comparison`.
+
 ## [0.4.1] - 2022-10-11
 
 ### Added
