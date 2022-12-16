@@ -235,3 +235,6 @@ class PublishSignalsResponse(BaseModel, extra=Extra.forbid):
     :meta private:
     """
     itemsBySignal: Dict[ResourceID, SaveSummary]
+
+
+{'jsonrpc': '2.0', 'id': '1', 'result': {'meta': {'total': -1, 'groupIncludedByType': True}, 'data': [{'type': 'signals', 'id': 'cbpmaq6rpn52969vfk70', 'meta': {'attributesHash': '7db601f42a56ae88ef93328038578c0119611b9b', 'relationshipsHash': 'ac55c70f73c20e38394fb64d7b7fb2e848ae568b', 'annotations': {}, 'createdAt': '2022-08-10T07:59:36.018Z', 'updatedAt': '2022-10-03T13:43:23.452Z'}, 'attributes': {'name': 'Signal 39', 'description': '', 'valueType': 'numeric', 'sourceType': 'measurement', 'engUnit': '', 'sampleInterval': None, 'gapDetection': None, 'labels': {}, 'enumValues': {}, 'input': 'test_signal_39'}, 'relationships': {'item': {'data': {'type': 'items', 'id': 'cbpmaq6rpn52969vfl00'}}}}]}}

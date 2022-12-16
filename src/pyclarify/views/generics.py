@@ -138,7 +138,7 @@ class IncludedField(BaseModel, extra=Extra.ignore):
 
 class Selection(BaseModel):
     meta: SelectionMeta
-    data: Union[List[SignalSelectView], List[ItemSelectView], DataFrame]
+    data: Union[List[ItemSelectView], List[SignalSelectView], DataFrame]
     included: Optional[IncludedField]
 
     def __add__(self, other):

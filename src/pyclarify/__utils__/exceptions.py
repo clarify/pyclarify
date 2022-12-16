@@ -44,7 +44,7 @@ class ImportError(PyClarifyException):
 class FilterError(PyClarifyException):
     """PyClarify Filter Error
 
-    Raised if the user attempts to create Filter with operator that does not refelct the values.
+    Raised if the user attempts to create Filter with operator that does not reflect the values.
     Args:
         field (str): Name of the field which produced the error
         values :

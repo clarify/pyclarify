@@ -87,5 +87,5 @@ class RelationshipData(BaseModel):
 
 
 class RelationshipsDict(BaseModel):
-    integration: RelationshipData
+    integration: Optional[RelationshipData]
     item: RelationshipData
