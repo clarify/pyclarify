@@ -226,14 +226,14 @@ class Client(JSONRPCClient):
 
             Getting 100 items and sorting by name.
 
-            >>> client.select_signals(
+            >>> client.select_items(
             ...     limit = 100,
             ...     sort = ["name"],
             ... )
 
             Getting total number of signals (as meta data).
             
-            >>> client.select_signals(
+            >>> client.select_items(
             ...     total= True,
             ... )
 

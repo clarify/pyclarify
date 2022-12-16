@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 
+import warnings
 from pyclarify.__utils__.exceptions import FilterError
 from pydantic.fields import Optional
 from pydantic import BaseModel, Extra
@@ -43,26 +44,25 @@ class Comparison(BaseModel):
     def field_must_reflect_operator(cls, values):
         value = values["value"] if "value" in values.keys() else None
         operator = values["operator"] if "operator" in values.keys() else None
-
         if operator:
             # Field value should be list
             if operator in [Operators.IN, Operators.NIN]:
                 if not isinstance(value, list):
                     raise FilterError(operator, list, value)
-                if None in value:
-                    raise ValueError("None values not supported for filters")
+                elif None in value:
+                    warnings.warn("You are using a null value as a filter. This will result in no results.", UserWarning)
+        
             # Field value should not be list
             if operator not in [Operators.IN, Operators.NIN]:
                 if isinstance(value, list):
                     raise FilterError(operator, list, value)
-                if not value:
-                    raise ValueError("None values not supported for filters")
+                elif not value:
+                    warnings.warn("You are using a null value as a filter. This will result in no results.", UserWarning)
         # No operator means Equals
         else:
             if isinstance(value, list):
                 raise FilterError("Equals (None)", list, value)
-            if not value:
-                raise ValueError("None values not supported for filters")
+
         return values
 
     class Config:

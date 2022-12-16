@@ -15,11 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## [0.4.2] - 2022-10-11
+## [0.4.2] - 2022-12-16
 
-### Added
+### Fixed
 
-- More descriptive errors on `pyclarify.fields.query.Comparison`.
+- Integration parameter in `SignalSelectView` is now optional, as it would break on some occations.
+- More descriptive warning message when using `None` or `[None]` in `query.Filters`.
 
 ## [0.4.1] - 2022-10-11
 
