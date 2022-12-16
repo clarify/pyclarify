@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; PyClarify 0.4.2a documentation</title>
+  <title>Changelog &mdash; PyClarify 0.4.2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -42,22 +42,22 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">[0.4.2] - 2022-10-11</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">[0.4.2] - 2022-12-16</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">[0.4.1] - 2022-10-11</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">[0.4.0] - 2022-07-12</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id5">Added</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">[0.4.0] - 2022-07-12</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#removed">Removed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">[0.3.5] - 2022-05-13</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">[0.3.5] - 2022-05-13</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Fixed</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#id7">[0.3.4] - 2022-04-27</a><ul>
@@ -143,29 +143,30 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">Security</span></code> in case of vulnerabilities.</p></li>
 </ul>
 <section id="id1">
-<h2>[0.4.2] - 2022-10-11<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
-<section id="added">
-<h3>Added<a class="headerlink" href="#added" title="Permalink to this headline"></a></h3>
+<h2>[0.4.2] - 2022-12-16<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline"></a></h3>
 <ul class="simple">
-<li><p>More descriptive errors on <code class="docutils literal notranslate"><span class="pre">pyclarify.fields.query.Comparison</span></code>.</p></li>
+<li><p>Integration parameter in <code class="docutils literal notranslate"><span class="pre">SignalSelectView</span></code> is now optional, as it would break on some occations.</p></li>
+<li><p>More descriptive warning message when using <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">[None]</span></code> in <code class="docutils literal notranslate"><span class="pre">query.Filters</span></code>.</p></li>
 </ul>
 </section>
 </section>
 <section id="id2">
 <h2>[0.4.1] - 2022-10-11<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
-<section id="id3">
-<h3>Added<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<section id="added">
+<h3>Added<a class="headerlink" href="#added" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>All select queries (<code class="docutils literal notranslate"><span class="pre">client.select_items</span></code>, <code class="docutils literal notranslate"><span class="pre">client.select_signals</span></code>) now supports a <code class="docutils literal notranslate"><span class="pre">None</span></code> limit to do an exhaustive query for all resources.</p></li>
 <li><p>Sanity checks for initializing <code class="docutils literal notranslate"><span class="pre">pyclarify.Client</span></code> with more descriptive errors.</p></li>
 </ul>
 </section>
 </section>
-<section id="id4">
-<h2>[0.4.0] - 2022-07-12<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h2>
+<section id="id3">
+<h2>[0.4.0] - 2022-07-12<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h2>
 <p>Changing to JSON:API format!</p>
-<section id="id5">
-<h3>Added<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h3>
+<section id="id4">
+<h3>Added<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">fields</span></code> folder containing all fields used internally.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">views</span></code> folder containing all models for communicating with the API.</p></li>
@@ -202,7 +203,7 @@
   <span class="n">skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
   <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
   <span class="n">sort</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">],</span>
-  <span class="n">total</span><span class="o">=</span><span class="bp">True</span>
+  <span class="n">total</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -214,7 +215,7 @@
     <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">sort</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-id&quot;</span><span class="p">],</span>
-    <span class="n">total</span><span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="n">total</span><span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">include</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span>
   <span class="p">)</span>
 </pre></div>
@@ -237,10 +238,10 @@
 </ul>
 </section>
 </section>
+<section id="id5">
+<h2>[0.3.5] - 2022-05-13<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h2>
 <section id="id6">
-<h2>[0.3.5] - 2022-05-13<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h2>
-<section id="fixed">
-<h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Adding <code class="docutils literal notranslate"><span class="pre">insert</span></code> method to <code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient</span></code></p></li>
 </ul>
