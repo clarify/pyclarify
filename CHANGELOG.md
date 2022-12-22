@@ -15,6 +15,13 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.4.3] - 2022-12-22
+
+### Fixed
+
+- Fixed bug where the response was not JSON encoded causing error initialization to fail. Added more tests to check for such issues.
+- Fixed bug where Filter did not allow dictionary without comparison as an input argument for the filter.
+
 ## [0.4.2] - 2022-12-16
 
 ### Fixed

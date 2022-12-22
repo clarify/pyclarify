@@ -18,5 +18,5 @@ from pyclarify.client import Client
 from pyclarify.views import Signal, SignalInfo, Item, ItemInfo, DataFrame
 import pyclarify.query
 
-__version__ = "0.4.2"
+__version__ = "0.4.3a0"
 __API_version__ = "1.1beta2"

@@ -110,10 +110,10 @@ class JSONRPCClient:
         if not res.ok:
             err = {
                 "code": res.status_code,
-                "message": f"HTTP Response Error {res.reason}",
+                "message": f"HTTP Response Error: {res.reason}",
                 "data": res.text,
             }
-            return Response(id=payload["id"], error=Error(**err))
+            return Response(id=json.loads(payload)["id"], error=Error(**err))
         
         if hasattr(res.json(), "error"):
             if res.json()["error"]:
