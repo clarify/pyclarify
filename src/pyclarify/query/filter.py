@@ -65,7 +65,8 @@ class Filter(BaseModel):
 
     and_list: Optional[List[Filter]]
     or_list: Optional[List[Filter]]
-    fields: Optional[Dict[str, Comparison]]
+    fields: Optional[Dict[str, Union[str, Comparison]]]
+
 
     def __and__(self, other):
         _tmp = []
@@ -102,7 +103,10 @@ class Filter(BaseModel):
 
     def field_to_query(self, field):
         field, comparison = list(field.items())[0]
-        comparison = comparison.dict()
+        if isinstance(comparison, Comparison):
+            comparison = comparison.dict()
+        else:
+            comparison = {"operator": None, "value": comparison}
         if comparison["operator"]:
             return {field: {comparison["operator"]: comparison["value"]}}
         return {field: comparison["value"]}
