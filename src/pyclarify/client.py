@@ -81,7 +81,7 @@ class Client(JSONRPCClient):
 
 
     @validate_arguments
-    def insert(self, data: DataFrame) -> Response:
+    def insert(self, data) -> Response:
         """
         This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.
@@ -89,8 +89,8 @@ class Client(JSONRPCClient):
 
         Parameters
         ----------
-        data : DataFrame
-            Dataframe containing the values of a signal in a key-value pair, and separate time axis. 
+        data : DataFrame, pd.DataFrame, dict
+            The data containing the values of a signal in a key-value pair, and separate time axis. 
 
         Returns
         -------
@@ -121,7 +121,7 @@ class Client(JSONRPCClient):
             >>> import pandas as pd
             >>> df = pd.DataFrame(data={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]})
             >>> df.index = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
-            >>> client.insert(DataFrame.from_pandas(df))
+            >>> client.insert(df)
 
 
         Response
@@ -156,6 +156,14 @@ class Client(JSONRPCClient):
                 ... )
 
         """
+        if not isinstance(data, DataFrame):
+            if hasattr(data, "__module__"):
+                if "pandas" in data.__module__:
+                    data = DataFrame.from_pandas(data)
+            if isinstance(data, dict):
+                data = DataFrame.from_dict(data)
+
+
         request_data = Request(
             method=ApiMethod.insert,
             params={"integration": self.authentication.integration_id, "data": data},

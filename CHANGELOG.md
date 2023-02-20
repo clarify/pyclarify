@@ -15,12 +15,17 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## [0.4.3] - 2022-12-22
+## [0.4.3] - 2023-02-20
+
+### Added
+
+- Added possibility to directly insert pd.DataFrame, pd.Series and dictionaries into Clarify. NB! Infers timestamp column and only supports when there only exists one timestamp column.
 
 ### Fixed
 
 - Fixed bug where the response was not JSON encoded causing error initialization to fail. Added more tests to check for such issues.
 - Fixed bug where Filter did not allow dictionary without comparison as an input argument for the filter.
+- Fixed included list containing multiple instances of same object.
 
 ## [0.4.2] - 2022-12-16
 

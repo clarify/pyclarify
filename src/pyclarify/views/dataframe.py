@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from itertools import compress
 from datetime import datetime
 from pydantic import BaseModel, Extra, validator
 from pydantic.fields import Optional
 from typing import ForwardRef, List, Dict
 from pyclarify.__utils__.auxiliary import local_import
+from pyclarify.__utils__.time import is_datetime
 from pyclarify.fields.constraints import (
     InputID,
     ResourceID,
@@ -94,6 +96,28 @@ class DataFrame(BaseModel):
         return df
 
     @classmethod
+    def from_dict(cls, data, time_col=None):
+        keys = list(data.keys())
+        if time_col:
+            times = data[time_col]
+            time_keys = [time_col]
+        else:
+            import warnings
+            warnings.warn("No obvious time index! Attempting to select based on data.", stacklevel=2)
+            possible_indexes = [is_datetime(data[k][0]) for k in keys]
+            if sum(possible_indexes) == 0:
+                raise ValueError("No time variable in the data. Can not convert.")
+            time_keys = list(compress(keys, possible_indexes))
+            if sum(possible_indexes) > 1:
+                raise ValueError(f"Unambiguous time index! {time_keys} could be index. Use `time_col` variable or set time to index.")
+            times=data[time_keys[0]]
+            warnings.warn(f'Choosing "{time_keys[0]}" as time axis.', stacklevel=2)
+        try:
+            return DataFrame(times=times, series={key: data[key] for key in keys if key not in time_keys})
+        except:
+            raise ValueError("Could not parse dictionary")
+
+    @classmethod
     def from_pandas(cls, df, time_col=None):
         """Convert a pandas DataFrame into a Clarify DataFrame.
         
@@ -150,19 +174,36 @@ class DataFrame(BaseModel):
         """
 
         pd = local_import("pandas")
-
         if isinstance(df, pd.DataFrame):
             series = df.to_dict(orient="list")
-            if time_col:
-                times = df[time_col].values
+        if isinstance(df, pd.Series):
+            if df.name is not None:
+                series =  {df.name : list(df.values)}
             else:
-                times = df.index.values
-            return cls(times=list(times), series=series)
+                raise ValueError("The series you are converting does not have a name.")
+
+        if time_col:
+            times = df[time_col].values
         else:
-            raise ValueError("Did not recognise input as Pandas DataFrame")
+            if is_datetime(df.index.values[0]):
+                times = df.index.values
+            else:
+                import warnings
+                warnings.warn("No obvious time index! Attempting to select based on data.", stacklevel=2)
+                possible_indexes = [is_datetime(c) for c in df.values[0]]
+                if sum(possible_indexes) == 0:
+                    raise ValueError("No time variable in the data. Can not convert.")
+                col = df.columns[possible_indexes]
+                if sum(possible_indexes) > 1:
+                    raise ValueError(f"Unambiguous time index! {list(df.columns[possible_indexes])} could be index. Use `time_col` variable or set time to index.")
+                else:
+                    times = df[col[0]].values
+                    series.pop(col[0])
+                warnings.warn(f'Choosing "{col[0]}" as time axis.', stacklevel=2)
+        return cls(times=list(times), series=series)
 
     @classmethod
-    def merge(cls, dataframes) -> "DataFrame":
+    def merge(cls, data_frames) -> "DataFrame":
         """
         Method for merging 2 or more Clarify Data Frames. Mapping overlapping
         signal names to single series. Concatenates timestamps of all data frames.
@@ -170,8 +211,8 @@ class DataFrame(BaseModel):
 
         Parameters
         ----------
-        dataframes : List[DataFrame]
-            A Clarify DataFrame or a list of Clarify DataFrames
+        data_frames : List[DataFrame]
+            A Clarify DataFrame or a list of Clarify Data_Frames
 
         Returns
         -------
@@ -223,21 +264,21 @@ class DataFrame(BaseModel):
             ... 2021-11-03 21:50:06+00:00         6.0
         """
 
-        if not isinstance(dataframes, List):
+        if not isinstance(data_frames, List):
             raise ValueError(
-                "Input dataframes needs to be a list containing atleast one Clarify DataFrame"
+                "The input data frames needs to be a list containing at least one Clarify DataFrame"
             )
 
-        for df in dataframes:
+        for df in data_frames:
             if not isinstance(df, cls):
                 raise ValueError(
-                    f"Expected Clarify DataFrames in list but got {df.__class__()}"
+                    f"Expected Clarify Data_Frames in list but got {df.__class__()}"
                 )
-        signals = [key for df in dataframes for key in df.series.keys()]
+        signals = [key for df in data_frames for key in df.series.keys()]
         signals = list(set(signals))
 
         cdf_dict = {}
-        for cdf in dataframes:
+        for cdf in data_frames:
             for signal, values in list(cdf.series.items()):
                 for value, time in zip(values, cdf.times):
                     cdf_dict.setdefault(time, []).append((signal, value))

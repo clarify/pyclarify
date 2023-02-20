@@ -23,7 +23,7 @@ string_types = (type(b""), type(""))
 
 def deprecated(reason):
     """
-    Decorator which throws deprication warning.
+    Decorator which throws deprecation warning.
 
     Parameters
     ----------
@@ -84,3 +84,4 @@ def deprecated(reason):
 
     else:
         raise TypeError(repr(type(reason)))
+
