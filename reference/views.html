@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Views &mdash; PyClarify 0.4.3a0 documentation</title>
+  <title>Views &mdash; PyClarify 0.4.3b0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -311,6 +311,11 @@ To omit a value for a given timestamp in times, use the value null.</p></li>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.from_dict">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.from_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.from_pandas">
 <em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.from_pandas" title="Permalink to this definition"></a></dt>
 <dd><p>Convert a pandas DataFrame into a Clarify DataFrame.</p>
@@ -369,13 +374,13 @@ To omit a value for a given timestamp in times, use the value null.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.merge">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><span class="pre">pyclarify.views.dataframe.DataFrame</span></a></span></span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.merge" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_frames</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><span class="pre">pyclarify.views.dataframe.DataFrame</span></a></span></span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.merge" title="Permalink to this definition"></a></dt>
 <dd><p>Method for merging 2 or more Clarify Data Frames. Mapping overlapping
 signal names to single series. Concatenates timestamps of all data frames.
 Inserts none value to series not containing entry at a given timestamp.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dataframes</strong> (<em>List</em><em>[</em><a class="reference internal" href="#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><em>DataFrame</em></a><em>]</em>) – A Clarify DataFrame or a list of Clarify DataFrames</p>
+<dd class="field-odd"><p><strong>data_frames</strong> (<em>List</em><em>[</em><a class="reference internal" href="#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><em>DataFrame</em></a><em>]</em>) – A Clarify DataFrame or a list of Clarify Data_Frames</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>DataFrame</strong> – Merged data frame of all input data frames and self</p>
@@ -601,7 +606,7 @@ The model has a to_query() method used internally to convert model to MongoDB fo
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Clarify.</p>
+    <p>&#169; Copyright 2023, Clarify.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

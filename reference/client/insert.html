@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Insert &mdash; PyClarify 0.4.3a0 documentation</title>
+  <title>Insert &mdash; PyClarify 0.4.3b0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -87,13 +87,13 @@
 <h1>Insert<a class="headerlink" href="#insert" title="Permalink to this headline"></a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.client.Client.insert">
-<span class="sig-prename descclassname"><span class="pre">pyclarify.client.Client.</span></span><span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="../views.html#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><span class="pre">pyclarify.views.dataframe.DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.views.generics.Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.insert" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.Client.</span></span><span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.views.generics.Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.insert" title="Permalink to this definition"></a></dt>
 <dd><p>This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with
 the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.
 Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/api/methods/integration/insert">integration.insert</a> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="../views.html#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><em>DataFrame</em></a>) – Dataframe containing the values of a signal in a key-value pair, and separate time axis.</p>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="../views.html#pyclarify.views.dataframe.DataFrame" title="pyclarify.views.dataframe.DataFrame"><em>DataFrame</em></a><em>, </em><em>pd.DataFrame</em><em>, </em><em>dict</em>) – The data containing the values of a signal in a key-value pair, and separate time axis.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><cite>Response.result.data</cite> is a dictionary mapping INPUT_ID to SIGNAL_ID.</p>
@@ -130,7 +130,7 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;INPUT_ID_1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;INPUT_ID_2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2021-11-01T21:50:06Z&quot;</span><span class="p">,</span>  <span class="s2">&quot;2021-11-02T21:50:06Z&quot;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl>
@@ -181,7 +181,7 @@ Mirroring the Clarify API call <a class="reference external" href="https://docs.
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Clarify.</p>
+    <p>&#169; Copyright 2023, Clarify.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
