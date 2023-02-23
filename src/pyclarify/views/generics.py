@@ -133,6 +133,9 @@ class IncludedField(BaseModel, extra=Extra.ignore):
             data["items"] += other.items
         if self.items is None and other.items is None:
             data.pop("items", None)
+        else:
+            if len(data["items"]) > 1:
+                data["items"] = list(set(data["items"]))
         return IncludedField(**data)
 
 
@@ -153,6 +156,7 @@ class Selection(BaseModel):
                 data["included"] += other.included
             if self.included is None and other.included is None:
                 data.pop("included", None)
+
             return Selection(**data)
         except TypeError as e:
             raise TypeError(source=self, other=other) from e

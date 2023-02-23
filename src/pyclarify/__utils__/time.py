@@ -35,3 +35,7 @@ def compute_iso_timewindow(start_time, end_time):
         end_time = parse_datetime(end_time)
         start_time = parse_datetime(start_time)
     return start_time, end_time
+
+def is_datetime(value):
+    # if value is bigger than 1973
+    return parse_datetime(value) > parse_datetime(100000000)
