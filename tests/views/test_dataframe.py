@@ -2,6 +2,7 @@ import unittest
 import sys
 import json
 from pydantic.error_wrappers import ValidationError
+from pydantic.datetime_parse import parse_datetime
 
 sys.path.insert(1, "src/")
 from pyclarify.views.dataframe import DataFrame, InsertParams, InsertResponse, CreateSummary
@@ -144,6 +145,207 @@ class TestPandas(unittest.TestCase):
         numpy_ts = [int(x / 1e9) for x in df.index.values.tolist()]
         clarify_ts = [datetime.timestamp(x) for x in self.cdf3.times]
         self.assertEqual(clarify_ts, numpy_ts)
+
+
+class TestGenericInput(unittest.TestCase):
+    def setUp(self):
+        times = ["2023-01-01T00:00:00Z", "2023-01-02T00:00:00Z", "2023-01-03T00:00:00Z"]
+        data = [ 1, 2, 3]
+
+        # Clarify df
+        self.base = DataFrame(times=times, series={"input_id": data})
+
+        # Pandas dfs
+        self.pandas = self.base.to_pandas()
+
+        # Dictionary
+        self.dictionary = {"timestamps": times, "input_id":data}
+
+        # Pandas series
+        self.series = self.pandas["input_id"]
+
+    def test_convert_from_data_frame(self):
+        df = DataFrame.from_pandas(self.pandas)
+
+        # Is of type pandas.DataFrame
+        self.assertIsInstance(df, DataFrame)
+
+        # Assert that values are correctly transferred
+        signal = list(df.series.keys())[0]
+
+        # Signal name
+        self.assertEqual(signal, self.pandas.columns[0])
+
+        # Values
+        # NB: Change numpy float to native float
+        values = [x.item() for x in self.pandas[signal].values]
+
+        self.assertEqual(df.series[signal], values)
+
+        # Times
+        # NB: Change both values to timestamp
+        from datetime import datetime
+
+        # Divide by 10^9 because of microseconds
+        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        clarify_ts = [datetime.timestamp(x) for x in df.times]
+        self.assertEqual(clarify_ts, numpy_ts)
+
+    def test_convert_from_data_frame_with_input(self):
+        df = self.pandas.reset_index()
+
+        df = DataFrame.from_pandas(df, time_col="index")
+
+        # Is of type pandas.DataFrame
+        self.assertIsInstance(df, DataFrame)
+
+        # Assert that values are correctly transferred
+        signal = list(df.series.keys())[0]
+
+        # Signal name
+        self.assertEqual(signal, self.pandas.columns[0])
+
+        # Values
+        # NB: Change numpy float to native float
+        values = [x.item() for x in self.pandas[signal].values]
+
+        self.assertEqual(df.series[signal], values)
+
+        # Times
+        # NB: Change both values to timestamp
+        from datetime import datetime
+
+        # Divide by 10^9 because of microseconds
+        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        clarify_ts = [datetime.timestamp(x) for x in df.times]
+        self.assertEqual(clarify_ts, numpy_ts)
+
+    def test_convert_from_data_frame_with_no_input(self):
+        df = self.pandas.reset_index()
+
+        df = DataFrame.from_pandas(df)
+
+        # Is of type pandas.DataFrame
+        self.assertIsInstance(df, DataFrame)
+
+        # Assert that values are correctly transferred
+        signal = list(df.series.keys())[0]
+
+        # Signal name
+        self.assertEqual(signal, self.pandas.columns[0])
+
+        # Values
+        # NB: Change numpy float to native float
+        values = [x.item() for x in self.pandas[signal].values]
+
+        self.assertEqual(df.series[signal], values)
+
+        # Times
+        # NB: Change both values to timestamp
+        from datetime import datetime
+
+        # Divide by 10^9 because of microseconds
+        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        clarify_ts = [datetime.timestamp(x) for x in df.times]
+        self.assertEqual(clarify_ts, numpy_ts)
+
+    def test_convert_from_data_frame_with_no_input_shuffled(self):
+        _df = self.pandas.reset_index().reset_index()
+
+        df = DataFrame.from_pandas(_df)
+
+        # Is of type pandas.DataFrame
+        self.assertIsInstance(df, DataFrame)
+
+        # Assert that values are correctly transferred
+        signal = list(df.series.keys())[0]
+
+        # Signal name
+        self.assertEqual(signal, _df.columns[0])
+
+        # Values
+        # NB: Change numpy float to native float
+        values = [x.item() for x in _df[signal].values]
+
+        self.assertEqual(df.series[signal], values)
+
+        # Times
+        # NB: Change both values to timestamp
+        from datetime import datetime
+
+        # Divide by 10^9 because of microseconds
+        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        clarify_ts = [datetime.timestamp(x) for x in df.times]
+        self.assertEqual(clarify_ts, numpy_ts)
+
+    def test_convert_from_series(self):
+        df = DataFrame.from_pandas(self.series)
+
+        # Is of type pandas.DataFrame
+        self.assertIsInstance(df, DataFrame)
+
+        # Assert that values are correctly transferred
+        signal = list(df.series.keys())[0]
+
+        # Signal name
+        self.assertEqual(signal, self.pandas.columns[0])
+
+        # Values
+        # NB: Change numpy float to native float
+        values = [x.item() for x in self.pandas[signal].values]
+
+        self.assertEqual(df.series[signal], values)
+
+        # Times
+        # NB: Change both values to timestamp
+        from datetime import datetime
+
+        # Divide by 10^9 because of microseconds
+        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        clarify_ts = [datetime.timestamp(x) for x in df.times]
+        self.assertEqual(clarify_ts, numpy_ts)
+
+    def test_convert_from_dictionary(self):
+        df = DataFrame.from_dict(self.dictionary)
+
+        # Is of type pyclarify.DataFrame
+        self.assertIsInstance(df, DataFrame)
+
+        # Assert that values are correctly transferred
+
+        # Signal name
+        self.assertEqual("input_id", list(df.series.keys())[0])
+
+        # Values
+        # NB: Change numpy float to native float
+        values = self.dictionary["input_id"]
+
+        self.assertEqual(df.series["input_id"], values)
+
+        # Times
+        clarify_ts = [parse_datetime(x) for x in self.dictionary["timestamps"]]
+        self.assertEqual(df.times, clarify_ts)
+
+    def test_convert_from_dictionary_with_input(self):
+        df = DataFrame.from_dict(self.dictionary, time_col="timestamps")
+
+        # Is of type pyclarify.DataFrame
+        self.assertIsInstance(df, DataFrame)
+
+        # Assert that values are correctly transferred
+
+        # Signal name
+        self.assertEqual("input_id", list(df.series.keys())[0])
+
+        # Values
+        # NB: Change numpy float to native float
+        values = self.dictionary["input_id"]
+
+        self.assertEqual(df.series["input_id"], values)
+
+        # Times
+        clarify_ts = [parse_datetime(x) for x in self.dictionary["timestamps"]]
+        self.assertEqual(df.times, clarify_ts)
 
 
 class TestSummary(unittest.TestCase):

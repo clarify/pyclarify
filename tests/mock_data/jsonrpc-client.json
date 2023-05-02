@@ -149,5 +149,28 @@
       },
       "error": null
     }
+  },
+  "error": {
+    "args": {
+      "items": {
+        "include": false,
+        "limit": 1,
+        "skip": 0
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "error": {
+        "code": -32602,
+        "message": "Invalid params",
+        "data": {
+          "trace": "00000000000000000000",
+          "params": {
+            "integration": ["required"]
+          }
+        }
+      }
+    }
   }
 }

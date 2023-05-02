@@ -1,5 +1,5 @@
 """
-Copyright 2022 Searis AS
+Copyright 2023 Searis AS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -78,14 +78,10 @@ class JSONRPCClient:
 
         Returns
         -------
-        bool
-            True if valid credentials is passed otherwise False.
+        None
         """
-        try:
-            self.authentication = Authenticator(clarify_credentials)
-            return True
-        except AuthError:
-            return False
+        self.authentication = Authenticator(clarify_credentials)
+        
 
     def make_request(self, payload) -> Response:
         """

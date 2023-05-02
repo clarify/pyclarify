@@ -1,5 +1,5 @@
 """
-Copyright 2022 Searis AS
+Copyright 2023 Searis AS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,4 +22,4 @@ def local_import(module: str):
     try:
         return importlib.import_module(module)
     except ImportError as e:
-        raise ImportError(module.split(".")[0]) from e
+        raise ImportError(modulue=module.split(".")[0]) from e

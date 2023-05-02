@@ -1,5 +1,5 @@
 """
-Copyright 2022 Searis AS
+Copyright 2023 Searis AS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -57,12 +57,11 @@ class Client(JSONRPCClient):
         super().__init__(None)
         self.update_headers({"X-API-Version": pyclarify.__API_version__})
         self.update_headers({"User-Agent": f"PyClarify/{pyclarify.__version__}"})
-        auth_success = self.authenticate(clarify_credentials)
-        if auth_success:
-            self.base_url = f"{self.authentication.api_url}rpc"
-            logging.debug("Successfully connected to Clarify!")
-            logging.debug(f"SDK version: {pyclarify.__version__}")
-            logging.debug(f"API version: {pyclarify.__API_version__}")
+        self.authenticate(clarify_credentials)
+        self.base_url = f"{self.authentication.api_url}rpc"
+        logging.debug("Successfully connected to Clarify!")
+        logging.debug(f"SDK version: {pyclarify.__version__}")
+        logging.debug(f"API version: {pyclarify.__API_version__}")
     
     def iterate_requests(self, request: Request, stopping_condition: Callable, window_size: timedelta = None):
         iterator = SelectIterator(request, window_size)
@@ -177,7 +176,7 @@ class Client(JSONRPCClient):
     @validate_arguments
     def select_items(
         self,
-        filter: Optional[Filter] = None,
+        filter = {},
         include: Optional[List] = [],
         skip: int = 0,
         limit: Optional[int] = 10,
@@ -316,7 +315,7 @@ class Client(JSONRPCClient):
 
         """
         query = ResourceQuery(
-            filter=filter.to_query() if isinstance(filter, Filter) else {},
+            filter=filter.to_query() if isinstance(filter, Filter) else filter,
             sort=sort,
             limit=limit,
             skip=skip,
@@ -571,7 +570,7 @@ class Client(JSONRPCClient):
     @validate_arguments
     def select_signals(
         self,
-        filter: Optional[Filter] = None,
+        filter = {},
         skip: int = 0,
         limit: Optional[int] = 20,
         sort: List[str] = [],
@@ -744,7 +743,7 @@ class Client(JSONRPCClient):
 
         """
         query = ResourceQuery(
-            filter=filter.to_query() if isinstance(filter, Filter) else {},
+            filter=filter.to_query() if isinstance(filter, Filter) else filter,
             sort=sort,
             limit=limit,
             skip=skip,
@@ -766,7 +765,7 @@ class Client(JSONRPCClient):
     @validate_arguments
     def data_frame(
         self,
-        filter: Optional[Filter] = None,
+        filter = {},
         sort: List[str] = [],
         limit: int = 20,
         skip: int = 0,
@@ -958,7 +957,7 @@ class Client(JSONRPCClient):
         """
 
         query = ResourceQuery(
-            filter=filter.to_query() if isinstance(filter, Filter) else {},
+            filter=filter.to_query() if isinstance(filter, Filter) else filter,
             sort=sort,
             limit=limit,
             skip=skip,

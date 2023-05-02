@@ -62,7 +62,7 @@ class TestPagination(unittest.TestCase):
         with self.assertRaises(StopIteration):
             next(dates_iter)
 
-    def test_time_iterator(self):
+    def test_time_iterator_short_cutoff(self):
 
         dates = TimeIterator(
             start_time="2022-07-10T00:00:00+00:00", end_time="2022-08-31T00:00:00+00:00"
