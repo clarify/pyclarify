@@ -1,5 +1,5 @@
 """
-Copyright 2022 Searis AS
+Copyright 2023 Searis AS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -184,6 +184,7 @@ class DataFrame(BaseModel):
 
         if time_col:
             times = df[time_col].values
+            series.pop(time_col)
         else:
             if is_datetime(df.index.values[0]):
                 times = df.index.values
