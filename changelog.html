@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; PyClarify 0.4.3b1 documentation</title>
+  <title>Changelog &mdash; PyClarify 0.4.3b2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -154,6 +154,7 @@
 <ul class="simple">
 <li><p>Added possibility to directly insert pd.DataFrame, pd.Series and dictionaries into Clarify. NB! Infers timestamp column and only supports when there only exists one timestamp column.</p></li>
 <li><p>Added possibility to directly insert dictionaries to <code class="docutils literal notranslate"><span class="pre">pyclarify.client.data_frame</span></code>, <code class="docutils literal notranslate"><span class="pre">pyclarify.client.select_signals</span></code>, and <code class="docutils literal notranslate"><span class="pre">pyclarify.client.select_items</span></code>.</p></li>
+<li><p>Added default timezone for general timestamp such as <code class="docutils literal notranslate"><span class="pre">datetime.today()</span></code>. This also applies to timestamps without explicit timezone.</p></li>
 </ul>
 </section>
 <section id="fixed">
