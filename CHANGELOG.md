@@ -21,6 +21,7 @@ Changes are grouped as follows
 
 - Added possibility to directly insert pd.DataFrame, pd.Series and dictionaries into Clarify. NB! Infers timestamp column and only supports when there only exists one timestamp column.
 - Added possibility to directly insert dictionaries to `pyclarify.client.data_frame`, `pyclarify.client.select_signals`, and `pyclarify.client.select_items`.
+- Added default timezone for general timestamp such as `datetime.today()`. This also applies to timestamps without explicit timezone.
 
 ### Fixed
 

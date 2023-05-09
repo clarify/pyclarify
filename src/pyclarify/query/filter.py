@@ -18,6 +18,7 @@ from pyclarify.fields.query import Comparison, DateField, Operators
 from pydantic.class_validators import root_validator
 from pydantic import BaseModel
 from pydantic.fields import Optional
+from pydantic.datetime_parse import parse_datetime
 from typing import ForwardRef, Union, List, Dict
 from datetime import datetime
 
@@ -158,9 +159,9 @@ class DataFilter(BaseModel):
         lt = values["lt"] if "lt" in values.keys() else None
 
         if gte:
-            values["gte"] = DateField(operator=Operators.GTE, time=gte)
+            values["gte"] = DateField(operator=Operators.GTE, time=parse_datetime(gte).astimezone().isoformat())
         if lt:
-            values["lt"] = DateField(operator=Operators.LT, time=lt)
+            values["lt"] = DateField(operator=Operators.LT, time=parse_datetime(lt).astimezone().isoformat())
 
         return values
 
