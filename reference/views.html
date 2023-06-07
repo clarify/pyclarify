@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Views &mdash; PyClarify 0.4.3b2 documentation</title>
+  <title>Views &mdash; PyClarify 0.4.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -312,8 +312,10 @@ To omit a value for a given timestamp in times, use the value null.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.from_dict">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.from_dict" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.dataframe.DataFrame.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Converts dictionary to pyclarify.DataFrame. Handles series and flat dictionaries.
+No need to define time column as only one time column is accepted.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyclarify.views.dataframe.DataFrame.from_pandas">
