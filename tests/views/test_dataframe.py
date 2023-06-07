@@ -159,10 +159,30 @@ class TestGenericInput(unittest.TestCase):
         self.pandas = self.base.to_pandas()
 
         # Dictionary
-        self.dictionary = {"timestamps": times, "input_id":data}
+        self.dictionary = {
+            "timestamps": times, 
+            "series": {
+                "input_id": data
+            }
+        }
+
+        # Flat Dictionary
+        self.flat_dictionary = {
+            "timestamps": times, 
+            "input_id":data
+        }
 
         # Pandas series
         self.series = self.pandas["input_id"]
+
+        # Dict with two time inputs
+        self.invalid = {
+            "timestamps": times,
+            "series": {
+                "input_id1": times, 
+                "input_id2": data
+            }
+        }
 
     def test_convert_from_data_frame(self):
         df = DataFrame.from_pandas(self.pandas)
@@ -318,7 +338,7 @@ class TestGenericInput(unittest.TestCase):
 
         # Values
         # NB: Change numpy float to native float
-        values = self.dictionary["input_id"]
+        values = self.dictionary["series"]["input_id"]
 
         self.assertEqual(df.series["input_id"], values)
 
@@ -326,8 +346,8 @@ class TestGenericInput(unittest.TestCase):
         clarify_ts = [parse_datetime(x) for x in self.dictionary["timestamps"]]
         self.assertEqual(df.times, clarify_ts)
 
-    def test_convert_from_dictionary_with_input(self):
-        df = DataFrame.from_dict(self.dictionary, time_col="timestamps")
+    def test_convert_from_flat_dictionary(self):
+        df = DataFrame.from_dict(self.flat_dictionary)
 
         # Is of type pyclarify.DataFrame
         self.assertIsInstance(df, DataFrame)
@@ -339,13 +359,19 @@ class TestGenericInput(unittest.TestCase):
 
         # Values
         # NB: Change numpy float to native float
-        values = self.dictionary["input_id"]
+        values = self.flat_dictionary["input_id"]
 
         self.assertEqual(df.series["input_id"], values)
 
         # Times
-        clarify_ts = [parse_datetime(x) for x in self.dictionary["timestamps"]]
+        clarify_ts = [parse_datetime(x) for x in self.flat_dictionary["timestamps"]]
         self.assertEqual(df.times, clarify_ts)
+
+    
+    def test_convert_from_invalid_dictionary(self):
+        # Cannot impute time column when two is present
+        with self.assertRaises(ValueError):
+            df = DataFrame.from_dict(self.invalid)
 
 
 class TestSummary(unittest.TestCase):

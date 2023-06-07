@@ -19,7 +19,10 @@ from pyclarify import Client
 
 data = {
   "times": ["2022-10-10T00:00:00"],
-  "temperature": [19]
+  "series":
+    "temperature": [19],
+    "pressure": [1025]
+
 }
 
 client = Client("credentials.json")
