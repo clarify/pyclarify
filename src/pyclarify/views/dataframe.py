@@ -96,27 +96,46 @@ class DataFrame(BaseModel):
         return df
 
     @classmethod
-    def from_dict(cls, data, time_col=None):
-        keys = list(data.keys())
-        if time_col:
-            times = data[time_col]
-            time_keys = [time_col]
-        else:
-            import warnings
-            warnings.warn("No obvious time index! Attempting to select based on data.", stacklevel=2)
-            possible_indexes = [is_datetime(data[k][0]) for k in keys]
-            if sum(possible_indexes) == 0:
-                raise ValueError("No time variable in the data. Can not convert.")
-            time_keys = list(compress(keys, possible_indexes))
-            if sum(possible_indexes) > 1:
-                raise ValueError(f"Unambiguous time index! {time_keys} could be index. Use `time_col` variable or set time to index.")
-            times=data[time_keys[0]]
-            warnings.warn(f'Choosing "{time_keys[0]}" as time axis.', stacklevel=2)
-        try:
-            return DataFrame(times=times, series={key: data[key] for key in keys if key not in time_keys})
-        except:
-            raise ValueError("Could not parse dictionary")
+    def from_dict(cls, data):
+        """
+        Converts dictionary to pyclarify.DataFrame. Handles series and flat dictionaries.
+        No need to define time column as only one time column is accepted.
+        """
 
+        from copy import deepcopy
+        _data = deepcopy(data)
+        keys = list(_data.keys())
+
+        # flatten dict
+        if "series" in keys:
+            series = _data.pop("series").items()
+            _data.update(series)
+            keys = list(_data.keys())
+
+        # Check for duplicate axis
+        # find non nan values
+        val_arr = [-1] * len(keys)
+        for i, v in enumerate(_data.values()):
+            for _v in v:
+                if _v == _v:
+                    val_arr[i] = _v
+
+        possible_indexes = [is_datetime(v) for v in val_arr]
+        time_keys = list(compress(keys, possible_indexes))
+        if sum(possible_indexes) > 1:
+            raise ValueError(f"Unambiguous time index! {time_keys} could be index. Use `time_col` variable or set time to index.")
+
+
+        if sum(possible_indexes) == 0:
+            raise ValueError("No time variable in the data. Can not convert.")
+                
+        times=data[time_keys[0]]
+
+        try:        
+            return DataFrame(times=times, series={key: _data[key] for key in keys if key not in time_keys})
+        except:
+            raise ValueError(f'Could not parse dictionary. "{time_keys[0]}" was used as time axis.')
+    
     @classmethod
     def from_pandas(cls, df, time_col=None):
         """Convert a pandas DataFrame into a Clarify DataFrame.

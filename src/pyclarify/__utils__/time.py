@@ -15,6 +15,7 @@ limitations under the License.
 """
 from pydantic.datetime_parse import parse_datetime
 from datetime import datetime, timedelta
+import re
 
 
 def time_to_string(time):
@@ -37,5 +38,28 @@ def compute_iso_timewindow(start_time, end_time):
     return start_time, end_time
 
 def is_datetime(value):
-    # if value is bigger than 1973
-    return parse_datetime(value) > parse_datetime(100000000)
+    if isinstance(value, str):
+        parts = re.findall(r'\d+', value)
+        if len(parts) == 3:
+            parts = [int(p) for p in parts]
+
+            # Assuming middle value is month
+            month = parts[1]
+
+            # Assuming the biggest number is the year
+            if parts[0] > parts[-1]:
+                year = parts[0]
+                day = parts[-1]
+            else:
+                year = parts[-1]
+                day = parts[0]
+            value = datetime(year=year, month=month, day=day)
+    try:
+        # if value is bigger than 1973 and less than 2122 (should be good for 99% of use cases)
+        lower_threshold = parse_datetime(100000000).timestamp()
+        upper_threshold = parse_datetime(4800000000).timestamp()
+        v = parse_datetime(value).timestamp()
+
+        return  (v > lower_threshold) and (v < upper_threshold)
+    except:
+        return False
