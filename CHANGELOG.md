@@ -15,7 +15,13 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## [0.4.3] - 2023-02-20
+## [0.4.5] - 2023-08-09
+
+### Fixed
+
+- Still experienced issues. Forced SDK to use pydantic.V1.
+
+## [0.4.4] - 2023-08-09
 
 ### Fixed
 
