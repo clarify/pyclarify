@@ -23,12 +23,11 @@ help of jsonrpcclient framework.
 """
 import requests
 import logging
-from datetime import timedelta, datetime
-from pydantic import validate_arguments
-from pydantic.fields import Optional
-from typing import Dict, List, Union, Callable
 import pyclarify
 from pyclarify.__utils__.stopping_conditions import select_stopping_condition
+from datetime import timedelta, datetime
+from pydantic import validate_arguments
+from typing import Dict, List, Union, Callable, Optional
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
 from pyclarify.views.items import Item

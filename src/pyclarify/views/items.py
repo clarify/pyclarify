@@ -17,8 +17,7 @@ limitations under the License.
 from datetime import timedelta, datetime
 from pydantic import BaseModel, Extra
 from pydantic.json import timedelta_isoformat
-from pydantic.fields import Optional
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 from typing_extensions import Literal
 from pyclarify.fields.constraints import (
     Annotations,

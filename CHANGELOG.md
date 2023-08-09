@@ -17,6 +17,12 @@ Changes are grouped as follows
 
 ## [0.4.3] - 2023-02-20
 
+### Fixed
+
+- Fixed deprecated `Pydantic` dependency to the `pydantic.fields.Optional` resource. Changed all occurances to `typing.Optional`.
+
+## [0.4.3] - 2023-02-20
+
 ### Added
 
 - Added possibility to directly insert pd.DataFrame, pd.Series and dictionaries into Clarify. NB! Infers timestamp column and only supports when there only exists one timestamp column.

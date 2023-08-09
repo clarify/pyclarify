@@ -20,8 +20,7 @@ from pydantic import BaseModel, validate_arguments, Extra
 from pydantic.json import timedelta_isoformat
 from pyclarify.__utils__.time import time_to_string
 from pyclarify.__utils__.exceptions import TypeError
-from pydantic.fields import Optional
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional
 from pyclarify.fields.constraints import ApiMethod, IntegrationID
 from pyclarify.fields.error import Error
 from pyclarify.fields.resource import SelectionMeta
