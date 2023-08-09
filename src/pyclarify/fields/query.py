@@ -17,10 +17,9 @@ limitations under the License.
 
 import warnings
 from pyclarify.__utils__.exceptions import FilterError
-from pydantic.fields import Optional
 from pydantic import BaseModel, Extra
 from enum import Enum
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Optional
 from pydantic.class_validators import root_validator
 from datetime import datetime
 

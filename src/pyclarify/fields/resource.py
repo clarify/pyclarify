@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from datetime import datetime
-from pydantic.fields import Optional
-
+from typing import Optional
 from pydantic import BaseModel
-
 from pyclarify.fields.constraints import Annotations, SHA1Hash
 
 

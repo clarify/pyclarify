@@ -16,9 +16,8 @@ limitations under the License.
 
 from datetime import timedelta
 from pydantic import BaseModel, Extra
-from pydantic.fields import Optional
 from pydantic.json import timedelta_isoformat
-from typing import List, Dict
+from typing import List, Dict, Optional
 from pyclarify.fields.constraints import (
     TypeSignal,
     SourceTypeSignal,

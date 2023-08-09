@@ -17,8 +17,7 @@ limitations under the License.
 from itertools import compress
 from datetime import datetime
 from pydantic import BaseModel, Extra, validator
-from pydantic.fields import Optional
-from typing import ForwardRef, List, Dict
+from typing import ForwardRef, List, Dict, Optional
 from pyclarify.__utils__.auxiliary import local_import
 from pyclarify.__utils__.time import is_datetime
 from pyclarify.fields.constraints import (

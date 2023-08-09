@@ -15,7 +15,7 @@ limitations under the License.
 """
 
 from pydantic import BaseModel
-from pydantic.fields import Optional
+from typing import Optional
 from datetime import timedelta
 
 

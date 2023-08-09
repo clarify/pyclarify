@@ -25,7 +25,7 @@ import requests
 import json
 import logging
 import functools
-
+from copy import deepcopy
 from pyclarify.__utils__.exceptions import AuthError
 from pyclarify.fields.error import Error
 from pyclarify.views.generics import Response

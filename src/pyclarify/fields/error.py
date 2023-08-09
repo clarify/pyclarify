@@ -14,9 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pydantic.fields import Optional
 from pydantic import BaseModel
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Optional
 
 
 class ErrorData(BaseModel):
