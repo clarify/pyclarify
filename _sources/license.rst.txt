@@ -1,5 +1,5 @@
 *****************
-License
+PyClarify license
 *****************
 
 .. include:: ../../LICENSE.txt

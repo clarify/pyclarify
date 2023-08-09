@@ -1,84 +1,28 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>PyClarify Client &#8212; PyClarify 0.3.0 documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyClarify Client &#8212; PyClarify 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=aa5eeaf2" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
     
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?2022.1" />
-    
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c02300dd"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="PyClarify Auth" href="oauth2.html" />
-    <link rel="prev" title="PyClarify Reference" href="index.html" /><link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+    <link rel="prev" title="PyClarify Reference" href="index.html" /><link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
             <script type="text/javascript" src="../_static/copybutton.js"></script>
-            <script type="text/javascript" src="../_static/menu.js"></script> 
-  </head>
-<body>
-<div class="mobile-nav">
-    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
-           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
-    <label for="menuToggler" class="toggler__label">
-        <span></span>
-    </label>
-    <nav class="nav-content" role="navigation">
-         <a href="https://www.python.org/" class="nav-logo">
-             <img src="../_static/py.svg" alt="Logo"/>
-         </a>
-        <div class="version_switcher_placeholder"></div>
-        <form role="search" class="search" action="../search.html" method="get">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
-                <path fill-rule="nonzero"
-                        d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#444"></path>
-            </svg>
-            <input type="text" name="q" aria-label="Quick search"/>
-            <input type="submit" value="Go"/>
-        </form>
-    </nav>
-    <div class="menu-wrapper">
-        <nav class="menu" role="navigation" aria-label="main navigation">
-            <div class="language_switcher_placeholder"></div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="index.html"
-                          title="previous chapter">PyClarify Reference</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="oauth2.html"
-                          title="next chapter">PyClarify Auth</a></p>
-  </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/reference/client.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-        </nav>
-    </div>
-</div>
-  
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+  </head><body>  
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -112,580 +56,33 @@
 
     <div class="inline-search" role="search">
         <form class="inline-search" action="../search.html" method="get">
-          <input placeholder="Quick search" aria-label="Quick search" type="text" name="q" />
+          <input placeholder="Quick search" aria-label="Quick search" type="search" name="q" />
           <input type="submit" value="Go" />
-          <input type="hidden" name="check_keywords" value="yes" />
-          <input type="hidden" name="area" value="default" />
         </form>
     </div>
                      |
                 </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
             
       </ul>
     </div>    
 
     <div class="document">
+
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="module-pyclarify.client">
-<span id="pyclarify-client"></span><span id="client"></span><h1>PyClarify Client<a class="headerlink" href="#module-pyclarify.client" title="Permalink to this heading">¶</a></h1>
-<p>Copyright 2022 Searis AS</p>
-<p>Licensed under the Apache License, Version 2.0 (the “License”);
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at</p>
-<blockquote>
-<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
-</div></blockquote>
-<p>Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an “AS IS” BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyclarify.client.Client">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyclarify.client.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clarify_credentials</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.client.Client" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JSONRPCClient</span></code></p>
-<p>The class containing all rpc methods for talking to Clarify. Uses credential file on initialization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>clarify_credentials</strong> (<em>path to json file</em>) – Path to the Clarify credentials json file from the integrations page in clarify. See user guide for more information.</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.Client.data_frame">
-<span class="sig-name descname"><span class="pre">data_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Filter</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gte</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rollup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">timedelta</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.data_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return dataframe for items.</p>
-<p>Time selection:
-- Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
-- Maximum window size is 400 days (400 * 24 hours) when rollup is greater than or equal to PT1M (1 minute).
-- No maximum window size if rollup is window.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filter</strong> (<em>Filter</em><em>, </em><em>optional</em>) – A Filter Model that describes a mongodb filter to be applied.</p></li>
-<li><p><strong>sort</strong> (<em>list of strings</em>) – List of strings describing the order in which to sort the items in the response.</p></li>
-<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>default 20</em>) – The maximum number of resources to select. Negative numbers means no limit, which may or may not be allowed.</p></li>
-<li><p><strong>skip</strong> (<em>int default: 0</em>) – Skip the first N matches. A negative skip is treated as 0.</p></li>
-<li><p><strong>total</strong> (<em>bool default: False</em>) – When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</p></li>
-<li><p><strong>gte</strong> (<em>string</em><em>(</em><em>RFC 3339 timestamp</em><em>) or </em><em>python datetime</em><em>, </em><em>optional</em><em>, </em><em>default &lt;now - 7 days&gt;</em>) – An RFC3339 time describing the inclusive start of the window.</p></li>
-<li><p><strong>lt</strong> (<em>string</em><em>(</em><em>RFC 3339 timestamp</em><em>) or </em><em>python datetime</em><em>, </em><em>optional</em><em>, </em><em>default &lt;now + 7 days&gt;</em>) – An RFC3339 time describing the exclusive end of the window.</p></li>
-<li><p><strong>last</strong> (<em>int</em><em>, </em><em>default -1</em>) – If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.</p></li>
-<li><p><strong>rollup</strong> (<em>timedelta</em><em> or </em><em>string</em><em>(</em><em>RFC 3339 duration</em><em>) or </em><em>&quot;window&quot;</em><em>, </em><em>default None</em>) – If RFC 3339 duration is specified, roll-up the values into either the full time window
-(<cite>gte</cite> -&gt; <cite>lt</cite>) or evenly sized buckets.</p></li>
-<li><p><strong>include</strong> (<em>List of strings</em><em>, </em><em>optional</em>) – A list of strings specifying which relationships to be included in the response.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">data_frame</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">filter</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Air Temperature&quot;</span><span class="p">)}),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">sort</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-id&quot;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">skip</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">total</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">gte</span><span class="o">=</span><span class="s2">&quot;2022-01-01T01:01:01Z&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">lt</span><span class="o">=</span><span class="s2">&quot;2022-01-09T01:01:01Z&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">rollup</span><span class="o">=</span><span class="s2">&quot;PT24H&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">include</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">Selection</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">meta</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="s1">&#39;groupIncludedByType&#39;</span><span class="p">:</span> <span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">data</span><span class="o">=</span><span class="n">DataFrame</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span><span class="o">..</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">series</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="s1">&#39;c5i41fjsbu8cohpkcpvg&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.18616</span><span class="p">,</span> <span class="mf">0.18574000000000002</span><span class="p">,</span> <span class="o">...</span><span class="p">,],</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="o">...</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">included</span><span class="o">=</span><span class="n">IncludedField</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">integration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">items</span><span class="o">=</span><span class="p">[</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">ItemSelectView</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;c5i41fjsbu8cohpkcpvg&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;items&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">meta</span><span class="o">=</span><span class="n">ResourceMetadata</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">annotations</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="s2">&quot;docs-clarify-io/example/environment&quot;</span><span class="p">:</span> <span class="s2">&quot;office&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">attributesHash</span><span class="o">=</span><span class="s1">&#39;7602afa2fe611e0c8eff17f7936e108ee29e6817&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">relationshipsHash</span><span class="o">=</span><span class="s1">&#39;5f36b2220a14b54ee5ea290645ee34d943ea5be5&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">updatedAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">264000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">createdAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">958000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">attributes</span><span class="o">=</span><span class="n">Item</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dunder ReBond Inventory Level&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">valueType</span><span class="o">=&lt;</span><span class="n">TypeSignal</span><span class="o">.</span><span class="n">numeric</span><span class="p">:</span> <span class="s1">&#39;numeric&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;How many reams of the Dunder ReBond we have in the warehouse.&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Recycled&#39;</span><span class="p">,</span> <span class="s1">&#39;Bond&#39;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Scranton&#39;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="s1">&#39;threat-level&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Midnight&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">engUnit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">enumValues</span><span class="o">=</span><span class="p">{},</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">sourceType</span><span class="o">=&lt;</span><span class="n">SourceTypeSignal</span><span class="o">.</span><span class="n">measurement</span><span class="p">:</span> <span class="s1">&#39;measurement&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">sampleInterval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">gapDetection</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">7200</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">visible</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="o">...</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
-<p>In case of the error the method return a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.Client.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.insert" title="Permalink to this definition">¶</a></dt>
-<dd><p>This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with
-the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.
-Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/api/methods/integration/insert">integration.insert</a> .</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>DataFrame</em>) – Dataframe containing the values of a signal in a key-value pair, and seperate time axis.</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">DataFrame</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">series</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;&lt;INPUT_ID_1&gt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;&lt;INPUT_ID_2&gt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]},</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">times</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2021-11-01T21:50:06Z&quot;</span><span class="p">,</span>  <span class="s2">&quot;2021-11-02T21:50:06Z&quot;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">signalsByInput</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;&lt;INPUT_ID_1&gt;&#39;</span><span class="p">:</span> <span class="n">CreateSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;SIGNAL_ID_1&gt;&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="s1">&#39;&lt;INPUT_ID_2&gt;&#39;</span><span class="p">:</span> <span class="n">CreateSummary</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;&lt;SIGNAL_ID_2&gt;&#39;</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
-<p>Where:</p>
-<ul class="simple">
-<li><p>InsertResponse is a a pydantic model with field signalsByInput.</p></li>
-<li><p>signalsByInput is a Dict[InputID, CreateSummary].</p></li>
-<li><p>CreateSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).</p></li>
-</ul>
-<p>In case of the error (for example not equal length) the method return a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data.series.id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;not same length as times&#39;</span><span class="p">]}</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.Client.publish_signals">
-<span class="sig-name descname"><span class="pre">publish_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ConstrainedStrValue</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Item</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items_by_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">ConstrainedStrValue</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Item</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.publish_signals" title="Permalink to this definition">¶</a></dt>
-<dd><p>Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
-Each signal is uniquely identified by its signal ID in combination with the integration ID.
-Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/api/next/methods/admin/publish-signals">admin.publishSignals</a> .</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>signal_ids</strong> (<em>List</em><em>[</em><em>'&lt;SIGNAL_ID&gt;'</em><em>]</em>) – List of strings to be the signal ID of the signal.</p></li>
-<li><p><strong>items</strong> (<em>List</em><em>[ </em><em>Item</em><em> ]</em>) – List of Item object that contains metadata for a Item.
-Click <a class="reference external" href="https://docs.clarify.io/api/next/datatypes/item">here</a> for more information.</p></li>
-<li><p><strong>items_by_signal</strong> (<em>Dict</em><em>[</em><em>ResourceID</em><em>, </em><em>Item</em><em>]</em>) – Dictionary with IDs of signals mapped to Item metadata.</p></li>
-<li><p><strong>create_only</strong> (<em>bool</em><em>, </em><em>default False</em>) – If set to True, skip update of information for existing Items. That is, all signal_ids
-that map to existing items are silently ignored.</p></li>
-<li><p><strong>integration</strong> (<em>str Default None</em>) – Integration ID in string format. None means using the integration in credential file.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">Item</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]},</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">visible</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">publish_signals</span><span class="p">(</span><span class="n">signal_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">],</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">PublishSignalsResponse</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                   <span class="n">itemsBySignal</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                          <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&lt;ITEM_ID&gt;&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                          <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                          <span class="n">updated</span><span class="o">=</span><span class="kc">False</span> <span class="p">)})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
-<p>In case of the error the method return a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.Client.save_signals">
-<span class="sig-name descname"><span class="pre">save_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ConstrainedStrValue</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Signal</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signals_by_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">ConstrainedStrValue</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Signal</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.save_signals" title="Permalink to this definition">¶</a></dt>
-<dd><p>This call inserts metadata to one or multiple signals. The signals are uniquely identified by its &lt;INPUT_ID&gt;.
-Mirroring the Clarify API call <a class="reference external" href="https://docs.clarify.io/api/next/methods/integration/save-signals">integration.saveSignals</a> .</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_ids</strong> (<em>List</em><em>[</em><em>'&lt;INPUT_ID&gt;'</em><em>]</em>) – <p>List of strings to be the input ID of the signal.
-Click <a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/fields#input-key">here</a> for more information.</p>
-</p></li>
-<li><p><strong>signals</strong> (<em>List</em><em>[</em><em>Signal</em><em>]</em>) – <p>List of Signal object that contains metadata for a signal.
-Click <a class="reference external" href="https://docs.clarify.io/api/1.1beta2/types/views#signal-save-integration-namespace">here</a> for more information.</p>
-</p></li>
-<li><p><strong>create_only</strong> (<em>bool</em><em>, </em><em>default False</em>) – If set to true, skip update of information for existing signals. That is, all Input_ID’s
-that map to existing signals are silently ignored.</p></li>
-<li><p><strong>integration</strong> (<em>str</em><em>, </em><em>default None</em>) – Integration ID in string format. None means using the integration in credential file.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="k">import</span> <span class="n">Signal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">signal</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Home temperature&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Temperature in the bedroom&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data-source&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Raspberry Pi&quot;</span><span class="p">],</span> <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Home&quot;</span><span class="p">]}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">save_signals</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&lt;INPUT_ID&gt;&#39;</span><span class="p">],</span> <span class="n">signals</span><span class="o">=</span><span class="p">[</span><span class="n">signal</span><span class="p">],</span> <span class="n">create_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">SaveSignalsResponse</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">signalsByInput</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="s1">&#39;&lt;INPUT_ID&gt;&#39;</span><span class="p">:</span> <span class="n">SaveSummary</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;&lt;SIGNAL_ID&gt;&#39;</span><span class="p">,</span> <span class="n">created</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>             <span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
-<p>In case of the error the method return a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.Client.select_items">
-<span class="sig-name descname"><span class="pre">select_items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Filter</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.select_items" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return item metadata from selected items.
-For more information click <a class="reference external" href="https://docs.clarify.io/api/1.1beta2/methods/clarify/select-items">here</a> .</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filter</strong> (<em>Filter</em><em>, </em><em>optional</em>) – A Filter Model that describes a mongodb filter to be applied.</p></li>
-<li><p><strong>include</strong> (<em>List of strings</em><em>, </em><em>optional</em>) – A list of strings specifying which relationships to be included in the response.</p></li>
-<li><p><strong>skip</strong> (<em>int</em><em>, </em><em>default 0</em>) – Integer describing how many of the first N items to exclude from response.</p></li>
-<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>default 10</em>) – Number of items to include in the match.</p></li>
-<li><p><strong>sort</strong> (<em>list of strings</em>) – List of strings describing the order in which to sort the items in the response.</p></li>
-<li><p><strong>total</strong> (<em>bool</em><em>, </em><em>deafult False</em>) – When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_items</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">filter</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Air Temperature&quot;</span><span class="p">)}),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">sort</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">total</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">Selection</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">meta</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="s1">&#39;total&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="s1">&#39;groupIncludedByType&#39;</span><span class="p">:</span> <span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">ItemSelectView</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;items&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;cb8hjnrfgirpojeq0uv0&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">meta</span><span class="o">=</span><span class="n">ResourceMetadata</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">annotations</span><span class="o">=</span><span class="p">{},</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">attributesHash</span><span class="o">=</span><span class="s1">&#39;bd1554f5f6893165f086943adaad176590985b70&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">relationshipsHash</span><span class="o">=</span><span class="s1">&#39;5f36b2ea290645ee34d943220a14b54ee5ea5be5&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">updatedAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">899000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">createdAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">899000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">attributes</span><span class="o">=</span><span class="n">Item</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;test55&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">valueType</span><span class="o">=&lt;</span><span class="n">TypeSignal</span><span class="o">.</span><span class="n">numeric</span><span class="p">:</span> <span class="s1">&#39;numeric&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;data-source&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">[]},</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">engUnit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">enumValues</span><span class="o">=</span><span class="p">{},</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">sourceType</span><span class="o">=&lt;</span><span class="n">SourceTypeSignal</span><span class="o">.</span><span class="n">measurement</span><span class="p">:</span> <span class="s1">&#39;measurement&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">sampleInterval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">gapDetection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">visible</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">relationships</span><span class="o">=</span><span class="p">{}</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">ItemSelectView</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="o">...</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span><span class="o">=</span><span class="kc">None</span>
-</pre></div>
-</div>
-</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>Response</p>
-<p>In case of the error the method return a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyclarify.client.Client.select_signals">
-<span class="sig-name descname"><span class="pre">select_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Filter</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.select_signals" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return signal metadata from selected signals and/or item.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filter</strong> (<em>Filter</em><em>, </em><em>optional</em>) – A Filter Model that describes a mongodb filter to be applied.</p></li>
-<li><p><strong>skip</strong> (<em>int</em><em>, </em><em>default 0</em>) – Integer describing how many of the first N items to exclude from response.</p></li>
-<li><p><strong>limit</strong> (<em>int</em><em>, </em><em>default 10</em>) – Number of items to include in the match.</p></li>
-<li><p><strong>sort</strong> (<em>list of strings</em>) – List of strings describing the order in which to sort the items in the response.</p></li>
-<li><p><strong>total</strong> (<em>bool</em><em>, </em><em>default False</em>) – When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</p></li>
-<li><p><strong>include</strong> (<em>List of strings</em><em>, </em><em>optional</em>) – A list of strings specifying which relationships to be included in the response.</p></li>
-<li><p><strong>integration</strong> (<em>str Default None</em>) – Integration ID in string format. None means using the integration in credential file.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">select_signals</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="nb">filter</span> <span class="o">=</span> <span class="n">Filter</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">filter</span><span class="o">.</span><span class="n">NotEqual</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Air Temperature&quot;</span><span class="p">)}),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">skip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">sort</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;-id&quot;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">total</span><span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">include</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;item&quot;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><p>In case of a valid return value, returns a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span><span class="o">=</span><span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="o">=</span><span class="n">Selection</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">meta</span><span class="o">=</span><span class="n">SelectionMeta</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">total</span><span class="o">=</span><span class="mi">725</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">groupIncludedByType</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">SignalSelectView</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;c5fg083sab1b6pm3u290&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;signals&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">meta</span><span class="o">=</span><span class="n">ResourceMetadata</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">annotations</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="s2">&quot;docs-clarify-io/example/environment&quot;</span><span class="p">:</span> <span class="s2">&quot;office&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">attributesHash</span><span class="o">=</span><span class="s1">&#39;9ae4eb17c8b3b9f24cea06f09a1a4cab34569077&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">relationshipsHash</span><span class="o">=</span><span class="s1">&#39;02852897e7fe1e7896360b3c3914c5207d2af6fa&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">updatedAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">199000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">createdAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">897000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">attributes</span><span class="o">=</span><span class="n">SavedSignal</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Total reams of paper&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total count of reams of paper in inventory&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Recycled&#39;</span><span class="p">,</span> <span class="s1">&#39;Bond&#39;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Scranton&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">sourceType</span><span class="o">=&lt;</span><span class="n">SourceTypeSignal</span><span class="o">.</span><span class="n">measurement</span><span class="p">:</span> <span class="s1">&#39;measurement&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">valueType</span><span class="o">=&lt;</span><span class="n">TypeSignal</span><span class="o">.</span><span class="n">numeric</span><span class="p">:</span> <span class="s1">&#39;numeric&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">engUnit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">enumValues</span><span class="o">=</span><span class="p">{},</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">sampleInterval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">gapDetection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="nb">input</span><span class="o">=</span><span class="s1">&#39;inventory_recycled_bond&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">integration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">item</span><span class="o">=</span><span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">relationships</span><span class="o">=</span><span class="n">RelationshipsDict</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">integration</span><span class="o">=</span><span class="n">RelationshipData</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">data</span><span class="o">=</span><span class="n">RelationshipMetadata</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;integrations&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;c5e3u8coh8drsbpi4cvg&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">item</span><span class="o">=</span><span class="n">RelationshipData</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="o">...</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">included</span><span class="o">=</span><span class="n">IncludedField</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">integration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">items</span><span class="o">=</span><span class="p">[</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="n">ItemSelectView</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;c5i41fjsbu8cohpkcpvg&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;items&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">meta</span><span class="o">=</span><span class="n">ResourceMetadata</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">annotations</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="s2">&quot;docs-clarify-io/example/environment&quot;</span><span class="p">:</span> <span class="s2">&quot;office&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">attributesHash</span><span class="o">=</span><span class="s1">&#39;7602afa2fe611e0c8eff17f7936e108ee29e6817&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">relationshipsHash</span><span class="o">=</span><span class="s1">&#39;5f36b2220a14b54ee5ea290645ee34d943ea5be5&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">updatedAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">264000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">createdAt</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">958000</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="n">attributes</span><span class="o">=</span><span class="n">Item</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dunder ReBond Inventory Level&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">valueType</span><span class="o">=&lt;</span><span class="n">TypeSignal</span><span class="o">.</span><span class="n">numeric</span><span class="p">:</span> <span class="s1">&#39;numeric&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;How many reams of the Dunder ReBond we have in the warehouse.&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">labels</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Recycled&#39;</span><span class="p">,</span> <span class="s1">&#39;Bond&#39;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Scranton&#39;</span><span class="p">],</span>
-<span class="gp">&gt;&gt;&gt; </span>                        <span class="s1">&#39;threat-level&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Midnight&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="p">},</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">engUnit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">enumValues</span><span class="o">=</span><span class="p">{},</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">sourceType</span><span class="o">=&lt;</span><span class="n">SourceTypeSignal</span><span class="o">.</span><span class="n">measurement</span><span class="p">:</span> <span class="s1">&#39;measurement&#39;</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">sampleInterval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">gapDetection</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">7200</span><span class="p">),</span>
-<span class="gp">&gt;&gt;&gt; </span>                    <span class="n">visible</span><span class="o">=</span><span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span>                <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>            <span class="o">...</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span><span class="o">=</span><span class="kc">None</span>
-</pre></div>
-</div>
-<p>In case of the error the method return a pydantic model with the following format:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">jsonrpc</span> <span class="o">=</span> <span class="s1">&#39;2.0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">Error</span><span class="p">(</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">code</span> <span class="o">=</span> <span class="s1">&#39;-32602&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;Invalid params&#39;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="n">data</span> <span class="o">=</span> <span class="n">ErrorData</span><span class="p">(</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">trace_id</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">)</span>
-</pre></div>
-</div>
-</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="pyclarify-client">
+<span id="client"></span><h1>PyClarify Client<a class="headerlink" href="#pyclarify-client" title="Permalink to this heading">¶</a></h1>
 </section>
 
 
@@ -693,6 +90,70 @@ For more information click <a class="reference external" href="https://docs.clar
           </div>
         </div>
       </div>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="Quick search" aria-label="Quick search" type="search" name="q" />
+                <input type="submit" value="Go"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">PyClarify Reference</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="oauth2.html"
+                          title="next chapter">PyClarify Auth</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/reference/client.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </nav>
+    </div>
+</div>
+
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <div>
@@ -759,14 +220,21 @@ For more information click <a class="reference external" href="https://docs.clar
 
     <div class="inline-search" role="search">
         <form class="inline-search" action="../search.html" method="get">
-          <input placeholder="Quick search" aria-label="Quick search" type="text" name="q" />
+          <input placeholder="Quick search" aria-label="Quick search" type="search" name="q" />
           <input type="submit" value="Go" />
-          <input type="hidden" name="check_keywords" value="yes" />
-          <input type="hidden" name="area" value="default" />
         </form>
     </div>
                      |
                 </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
             
       </ul>
     </div>  
@@ -789,7 +257,7 @@ For more information click <a class="reference external" href="https://docs.clar
     
     <br />
 
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     </div>
 
   </body>
