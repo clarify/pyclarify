@@ -360,4 +360,4 @@ class DataFrameParams(BaseModel):
     query: Optional[ResourceQuery] = {}
     data: Optional[DataQuery] = {}
     include: Optional[List[str]] = []
-    format: Optional[SelectionFormat] = SelectionFormat()
+    format: Optional[SelectionFormat] = SelectionFormat(dataAsArray=False)

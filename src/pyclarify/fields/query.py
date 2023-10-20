@@ -184,5 +184,5 @@ class DateField(BaseModel):
         extra = Extra.forbid
 
 class SelectionFormat(BaseModel):
-    dataAsArray: Optional[bool] = False
+    dataAsArray: Optional[bool] = True
     groupIncludedByType: Optional[bool] = True

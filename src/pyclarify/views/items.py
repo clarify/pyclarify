@@ -78,6 +78,8 @@ class ItemInfo(BaseModel):
     enumValues: Dict[str, str] = {}
     sampleInterval: timedelta = None
     gapDetection: timedelta = None
+    visible: bool = False
+
 
     class Config:
         json_encoders = {timedelta: timedelta_isoformat}
@@ -175,10 +177,6 @@ class Item(ItemInfo):
         >>> item = Item(name="My new item", visible=True) 
     """
 
-    annotations: Optional[Annotations]
-    visible: bool = False
-
-
 class SelectItemsDataParams(BaseModel, extra=Extra.forbid):
     """
     :meta private:
@@ -195,7 +193,7 @@ class SelectItemsParams(BaseModel, extra=Extra.forbid):
     """
     query: Optional[ResourceQuery] = {}
     include: Optional[List[str]] = []
-    format: SelectionFormat = SelectionFormat
+    format: SelectionFormat = SelectionFormat()
 
 
 class ItemSelectView(BaseResource):

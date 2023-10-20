@@ -192,7 +192,7 @@ class SelectSignalsParams(BaseModel):
     integration: IntegrationID
     query: ResourceQuery
     include: List[str] = []
-    format: SelectionFormat = SelectionFormat
+    format: SelectionFormat = SelectionFormat()
 
 
 class SaveSignalsParams(BaseModel, extra=Extra.forbid):

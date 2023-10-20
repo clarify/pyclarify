@@ -17,6 +17,11 @@ Changes are grouped as follows
 
 ## [0.5.0] - 2023-10-10
 
+### Changed
+
+- API version changed from 1.1beta2 to 1.1. 
+- Changes to internal models to comply with new models in the API.
+
 ### Fixed
 
 - Typo in CONTRIBUTION.md.

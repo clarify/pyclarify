@@ -157,10 +157,8 @@ class Response(GenericResponse):
     
     @pydantic.root_validator()
     def use_correct_response_based_on_method(cls, values):
-        print(values)
         result = values.get("result")
         method = values.get("method")
-        print("result: ", result)
         if result:
             if method == ApiMethod.insert:
                 if not isinstance(result, InsertResponse):
