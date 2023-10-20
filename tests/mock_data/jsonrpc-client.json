@@ -70,7 +70,14 @@
       "jsonrpc": "2.0",
       "id": "1",
       "result": {
-        "meta": { "total": -1, "groupIncludedByType": false },
+        "meta": {
+          "total": -1,
+          "format": {
+            "dataAsArray": true,
+            "groupIncludedByType": true
+          },
+          "issues": null
+        },
         "data": [
           {
             "type": "items",
@@ -97,7 +104,9 @@
               "enumValues": {},
               "visible": true
             },
-            "relationships": {}
+            "relationships": {
+              "signals": null
+            }
           }
         ]
       },

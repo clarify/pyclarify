@@ -5,7 +5,7 @@ from pydantic.error_wrappers import ValidationError
 
 sys.path.insert(1, "src/")
 from pyclarify.fields.constraints import ApiMethod
-from pyclarify.views.generics import Request, Response, Selection
+from pyclarify.views.generics import Request, Response, DataSelection, SignalSelection, ItemSelection
 from pyclarify.views.dataframe import InsertParams, InsertResponse
 from pyclarify.views.items import (
     SelectItemsParams,
@@ -112,19 +112,19 @@ class TestMaps(unittest.TestCase):
 
     def test_select_items_map(self):
         try:
-            Selection(**self.select_items_response)
+            ItemSelection(**self.select_items_response)
         except ValidationError:
             self.fail("Selection raised ValidationError unexpectedly!")
 
     def test_select_signals_map(self):
         try:
-            Selection(**self.select_signals_response)
+            SignalSelection(**self.select_signals_response)
         except ValidationError:
             self.fail("Selection raised ValidationError unexpectedly!")
 
     def test_data_frame_map(self):
         try:
-            Selection(**self.data_frame_response)
+            DataSelection(**self.data_frame_response)
         except ValidationError:
             self.fail("Selection raised ValidationError unexpectedly!")
 

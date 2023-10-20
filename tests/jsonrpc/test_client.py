@@ -94,14 +94,13 @@ class TestJSONRPCClient(unittest.TestCase):
 
         response = self.client.make_request(payload)
         payload = json.loads(payload)
-        # assert valid response type
-        self.assertIsInstance(response, Response)
+
 
         # assert is JSONRPC
-        self.assertEqual(response.jsonrpc, "2.0")
+        self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
-        self.assertEqual(response.id, str(payload["id"]))
+        self.assertEqual(response["id"], str(payload["id"]))
 
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
@@ -118,14 +117,14 @@ class TestJSONRPCClient(unittest.TestCase):
 
         response = self.client.make_request(payload)
         payload = json.loads(payload)
-        # assert valid response type
-        self.assertIsInstance(response, Response)
+
 
         # assert is JSONRPC
+        print(response)
         self.assertEqual(response.jsonrpc, "2.0")
 
         # assert is correct id
-        self.assertEqual(response.id, str(payload["id"]))
+        self.assertEqual(response["id"], str(payload["id"]))
 
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
@@ -142,14 +141,13 @@ class TestJSONRPCClient(unittest.TestCase):
 
         response = self.client.make_request(payload)
         payload = json.loads(payload)
-        # assert valid response type
-        self.assertIsInstance(response, Response)
+
 
         # assert is JSONRPC
-        self.assertEqual(response.jsonrpc, "2.0")
+        self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
-        self.assertEqual(response.id, str(payload["id"]))
+        self.assertEqual(response["id"], str(payload["id"]))
     
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
@@ -166,14 +164,13 @@ class TestJSONRPCClient(unittest.TestCase):
 
         response = self.client.make_request(payload)
         payload = json.loads(payload)
-        # assert valid response type
-        self.assertIsInstance(response, Response)
+
 
         # assert is JSONRPC
-        self.assertEqual(response.jsonrpc, "2.0")
+        self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
-        self.assertEqual(response.id, str(payload["id"]))
+        self.assertEqual(response["id"], str(payload["id"]))
 
 
     def test_authentication(self):
