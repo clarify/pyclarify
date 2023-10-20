@@ -75,10 +75,8 @@ class Client(JSONRPCClient):
             return Response(id=request.id, error=Error(**err))
         response = response.json()
         if hasattr(response, "error"):
-            print("I HAD AN ERROR")
             return Response(id=request.id, error=response["error"])
         response["method"] = request.method
-        print("HANDLE RESPONSE:", response)
         return Response(**response)
 
 
@@ -99,9 +97,7 @@ class Client(JSONRPCClient):
                 responses += response
 
             if stopping_condition(response) if isinstance(stopping_condition, Callable) else False:
-                print("early stopping")
                 return responses
-        print("ITERATE REQUESTS RESULT: ", responses)
         return responses  
 
 

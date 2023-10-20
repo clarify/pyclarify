@@ -323,7 +323,6 @@ class DataFrame(BaseModel):
             data = DataFrame.merge([self, other])
             return data
         except TypeError as e:
-            print("COULD NOT ADD DATAFRAMES")
             raise TypeError(source=self, other=other) from e
 
 

@@ -93,11 +93,11 @@ class JSONRPCClient:
             JSON dictionary response.
 
         """
-        print(f"{self.current_id}--> {self.base_url}, req: {payload}")
+        logging.debug(f"{self.current_id}--> {self.base_url}, req: {payload}")
         res = requests.post(
             self.base_url, data=payload, headers=self.headers
         )
-        print(f"{self.current_id}<-- {self.base_url} ({res.status_code}) ")#\n res:{res.json()}")
+        logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code}) ")#\n res:{res.json()}")
         return res
 
     @increment_id

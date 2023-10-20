@@ -157,6 +157,7 @@ class Response(GenericResponse):
     
     @pydantic.root_validator()
     def use_correct_response_based_on_method(cls, values):
+        #TODO: Not happy with this resolution flow
         result = values.get("result")
         method = values.get("method")
         if result:
@@ -177,7 +178,6 @@ class Response(GenericResponse):
                     values["result"] = ItemSelection(**result.dict())
 
             elif method == ApiMethod.select_signals:
-                print("YEA I SELECT")
                 if not isinstance(result, SignalSelection):
                     values["result"] = SignalSelection(**result.dict())
 
@@ -185,7 +185,7 @@ class Response(GenericResponse):
                 if not isinstance(result, PublishSignalsResponse):
                     values["result"] = PublishSignalsResponse(**result.dict())
         else:
-            print("OMG I AM AN ERROR")
+            pass #TODO: Possible error state 
         values.pop("method") # no need anymore for declaring method
         return values
     
