@@ -78,12 +78,119 @@ class Request(JSONRPCRequest):
         return values
 
 
+class IncludedField(BaseModel):
+    def __add__(self, other):
+        data = {}
+        keys = set(list(self.dict().keys()) + list(other.dict().keys()))
+        for key in keys:
+            data[key] = []
+            self_object = getattr(self, key) if hasattr(self, key) else None
+            other_object = getattr(other, key) if hasattr(other, key) else None
+            if self_object:
+                data[key] += self_object
+            if other_object:
+                data[key] += other_object
+            if self_object is None and other_object is None:
+                data.pop(key)
+            else:
+                data[key] = list(set(data[key]))
+        if hasattr(data, "integration"):
+            data["integration"] = data["integration"][0]
+        return self.__class__(**data)
+
+class IncludedFieldSignals(IncludedField, extra=Extra.ignore):
+    items: Optional[List[ItemSelectView]]
+
+
+class IncludedFieldItems(IncludedField, extra=Extra.ignore):
+    integration: Optional[IntegrationID]
+    signals: Optional[List[SignalSelectView]]
+
+
+
+
+class Selection(BaseModel):
+    meta: SelectionMeta
+
+    def __add__(self, other):
+        try:
+            data = {}
+            data["meta"] = self.meta
+            data["data"] = self.data + other.data
+            if self.included is not None:
+                data["included"] = self.included
+            if other.included is not None:
+                if data["included"] is not None:
+                    data["included"] += other.included
+                else:
+                    data["included"] = other.included
+            if self.included is None and other.included is None:
+                data.pop("included", None)
+
+            return self.__class__(**data)
+        except TypeError as e:
+            raise TypeError(source=self, other=other) from e
+
+class DataSelection(Selection):
+    data:  DataFrame
+    included: Optional[IncludedFieldSignals]
+
+
+class ItemSelection(Selection):
+    data: List[ItemSelectView]
+    included: Optional[IncludedFieldItems]
+
+class SignalSelection(Selection):
+    data:  List[SignalSelectView]
+    included: Optional[IncludedFieldSignals]
+
+
 class GenericResponse(BaseModel, extra=Extra.forbid):
     jsonrpc: str = "2.0"
     id: str
-    result: Optional[Dict]
+    result: Optional[Union[InsertResponse,SaveSignalsResponse,DataSelection,ItemSelection,SignalSelection,PublishSignalsResponse]]
     error: Union[Error, List[Error], None]
 
+
+class Response(GenericResponse):
+    method: Optional[ApiMethod]
+    
+    @pydantic.root_validator()
+    def use_correct_response_based_on_method(cls, values):
+        print(values)
+        result = values.get("result")
+        method = values.get("method")
+        print("result: ", result)
+        if result:
+            if method == ApiMethod.insert:
+                if not isinstance(result, InsertResponse):
+                    values["result"] = InsertResponse(**result.dict())
+
+            elif method == ApiMethod.save_signals:
+                if not isinstance(result, SaveSignalsResponse):
+                    values["result"] = SaveSignalsResponse(**result.dict())
+            
+            elif method == ApiMethod.data_frame:
+                if not isinstance(result, DataSelection):
+                    values["result"] = DataSelection(**result.dict())
+            
+            elif method == ApiMethod.select_items:
+                if not isinstance(result, ItemSelection):
+                    values["result"] = ItemSelection(**result.dict())
+
+            elif method == ApiMethod.select_signals:
+                print("YEA I SELECT")
+                if not isinstance(result, SignalSelection):
+                    values["result"] = SignalSelection(**result.dict())
+
+            elif method == ApiMethod.publish_signals:
+                if not isinstance(result, PublishSignalsResponse):
+                    values["result"] = PublishSignalsResponse(**result.dict())
+        else:
+            print("OMG I AM AN ERROR")
+        values.pop("method") # no need anymore for declaring method
+        return values
+    
     def __add__(self, other):
         try:
             results = None
@@ -94,7 +201,6 @@ class GenericResponse(BaseModel, extra=Extra.forbid):
                     results += other.result
             elif other.result:
                 results = other.result
-
             if self.error:
                 errors = self.error
                 if other.error:
@@ -115,53 +221,3 @@ class GenericResponse(BaseModel, extra=Extra.forbid):
             )
         except TypeError as e:
             raise TypeError(source=self, other=other) from e
-
-
-class IncludedField(BaseModel, extra=Extra.ignore):
-    integration: Optional[IntegrationID]
-    items: Optional[List[ItemSelectView]]
-
-    def __add__(self, other):
-        data = {}
-        data["items"] = []
-        if self.integration is not None:
-            data["integration"] = self.integration
-        if self.items is not None:
-            data["items"] += self.items
-        if other.items is not None:
-            data["items"] += other.items
-        if self.items is None and other.items is None:
-            data.pop("items", None)
-        else:
-            if len(data["items"]) > 1:
-                data["items"] = list(set(data["items"]))
-        return IncludedField(**data)
-
-
-class Selection(BaseModel):
-    meta: SelectionMeta
-    data: Union[List[ItemSelectView], List[SignalSelectView], DataFrame]
-    included: Optional[IncludedField]
-
-    def __add__(self, other):
-        try:
-            data = {}
-            data["meta"] = self.meta
-            data["data"] = self.data + other.data
-            data["included"] = IncludedField()
-            if self.included is not None:
-                data["included"] += self.included
-            if other.included is not None:
-                data["included"] += other.included
-            if self.included is None and other.included is None:
-                data.pop("included", None)
-
-            return Selection(**data)
-        except TypeError as e:
-            raise TypeError(source=self, other=other) from e
-
-
-class Response(GenericResponse, extra=Extra.forbid):
-    result: Optional[
-        Union[InsertResponse, SaveSignalsResponse, Selection, PublishSignalsResponse]
-    ]

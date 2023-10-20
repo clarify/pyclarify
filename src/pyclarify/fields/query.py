@@ -173,7 +173,7 @@ class DateField(BaseModel):
     query: Dict = {}
 
     @root_validator(pre=True, allow_reuse=True)
-    def refomat_payload(cls, values):
+    def reformat_payload(cls, values):
         op = values["operator"]
         time = values["time"]
         values["query"] = {op.value: time}
@@ -182,3 +182,7 @@ class DateField(BaseModel):
 
     class Config:
         extra = Extra.forbid
+
+class SelectionFormat(BaseModel):
+    dataAsArray: Optional[bool] = False
+    groupIncludedByType: Optional[bool] = True

@@ -14,10 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 from pyclarify.fields.constraints import Annotations, SHA1Hash
+from pyclarify.fields.query import SelectionFormat
 
+
+class Identifier(BaseModel):
+    """
+    meta:hidden
+    """
+    type: str
+    id: str
 
 class ResourceMetadata(BaseModel):
     """
@@ -49,7 +57,7 @@ class ResourceMetadata(BaseModel):
     createdAt: datetime
 
 
-class BaseResource(BaseModel):
+class BaseResource(Identifier):
     """
     Base attributes shared by most meta data structures.
 
@@ -64,26 +72,25 @@ class BaseResource(BaseModel):
     meta: ResourceMeta
         An object containing common meta data. (See ResourceMeta for more information)
     """
-
-    id: str
-    type: str
     meta: ResourceMetadata
 
 
 class SelectionMeta(BaseModel):
     total: int
-    groupIncludedByType: bool
+    format: SelectionFormat
+    issues: Optional[dict]
 
 
-class RelationshipMetadata(BaseModel):
-    type: str
-    id: str
 
+class RelationshipDataToOne(BaseModel):
+    data: Optional[Identifier]
 
-class RelationshipData(BaseModel):
-    data: Optional[RelationshipMetadata]
+class RelationshipDataToMany(BaseModel):
+    data: Optional[List[Identifier]]
 
+class RelationshipsDictSignal(BaseModel):
+    integration: Optional[RelationshipDataToOne]
+    item: Optional[RelationshipDataToOne]
 
-class RelationshipsDict(BaseModel):
-    integration: Optional[RelationshipData]
-    item: RelationshipData
+class RelationshipsDictItem(BaseModel):
+    signals: Optional[RelationshipDataToMany]

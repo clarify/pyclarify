@@ -15,6 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.5.0] - 2023-10-10
+
+### Fixed
+
+- Typo in CONTRIBUTION.md.
+
 ## [0.4.5] - 2023-08-09
 
 ### Fixed

@@ -25,11 +25,6 @@ import requests
 import json
 import logging
 import functools
-from copy import deepcopy
-from pyclarify.__utils__.exceptions import AuthError
-from pyclarify.fields.error import Error
-from pyclarify.views.generics import Response
-
 from .oauth2 import Authenticator
 
 
@@ -83,7 +78,7 @@ class JSONRPCClient:
         self.authentication = Authenticator(clarify_credentials)
         
 
-    def make_request(self, payload) -> Response:
+    def make_request(self, payload:dict):
         """
         Uses post request to send JSON RPC payload.
 
@@ -98,24 +93,12 @@ class JSONRPCClient:
             JSON dictionary response.
 
         """
-        logging.debug(f"{self.current_id}--> {self.base_url}, req: {payload}")
+        print(f"{self.current_id}--> {self.base_url}, req: {payload}")
         res = requests.post(
             self.base_url, data=payload, headers=self.headers
         )
-        logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code})")
-        if not res.ok:
-            err = {
-                "code": res.status_code,
-                "message": f"HTTP Response Error: {res.reason}",
-                "data": res.text,
-            }
-            return Response(id=json.loads(payload)["id"], error=Error(**err))
-        
-        if hasattr(res.json(), "error"):
-            if res.json()["error"]:
-                return Response(id=payload["id"], error=res.json()["error"])
-        
-        return Response(**res.json())
+        print(f"{self.current_id}<-- {self.base_url} ({res.status_code}) \n res:{res.json()}")
+        return res
 
     @increment_id
     def create_payload(self, method, params):

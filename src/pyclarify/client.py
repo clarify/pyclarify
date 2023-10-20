@@ -22,6 +22,7 @@ the Clarify API. Methods for reading and writing to the API is implemented with 
 help of jsonrpcclient framework.
 """
 import requests
+import json
 import logging
 import pyclarify
 from pyclarify.__utils__.stopping_conditions import select_stopping_condition
@@ -37,6 +38,8 @@ from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
 from pyclarify.__utils__.pagination import SelectIterator
+from pyclarify.fields.error import Error
+
 
 class Client(JSONRPCClient):
     """
@@ -62,19 +65,40 @@ class Client(JSONRPCClient):
         logging.debug(f"SDK version: {pyclarify.__version__}")
         logging.debug(f"API version: {pyclarify.__API_version__}")
     
-    def iterate_requests(self, request: Request, stopping_condition: Callable, window_size: timedelta = None):
-        iterator = SelectIterator(request, window_size)
+    def handle_response(self, request: Request, response) -> Response:
+        if not response.ok:
+            err = {
+                "code": response.status_code,
+                "message": f"HTTP Response Error: {response.reason}",
+                "data": response.text,
+            }
+            return Response(id=request.id, error=Error(**err))
+        response = response.json()
+        if hasattr(response, "error"):
+            return Response(id=request.id, error=response["error"])
+        response["method"] = request.method
+        return Response(**response)
+
+
+    def iterate_requests(self, request: Request, stopping_condition: Callable = None, window_size: timedelta = None):
+        if request.method in [ApiMethod.data_frame, ApiMethod.select_items, ApiMethod.select_signals]:
+            iterator = SelectIterator(request, window_size)
+        else:
+            iterator = [request]
         responses = None
+        counter = 0
         for request in iterator:
-            response = self.make_request(request.json())
+            counter += 1
+            rpc_response = self.make_request(request.json())
+            response = self.handle_response(request, rpc_response)
             if responses is None:
                 responses = response
             else:
                 responses += response
-            
-            if stopping_condition(response):
-                return responses
 
+            if stopping_condition(response) if isinstance(stopping_condition, Callable) else False:
+                print("early stopping")
+                return responses
         return responses  
 
 
@@ -170,7 +194,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_request(request_data.json())
+        return self.iterate_requests(request_data)
 
     @validate_arguments
     def select_items(
@@ -443,7 +467,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_request(request_data.json())
+        return self.iterate_requests(request_data)
 
     @validate_arguments
     def publish_signals(
@@ -564,7 +588,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_request(request_data.json())
+        return self.iterate_requests(request_data)
 
     @validate_arguments
     def select_signals(

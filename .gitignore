@@ -140,3 +140,4 @@ clarify-credentials-prod.json
 # test files
 demofile.py
 production_test.py
+test.json
