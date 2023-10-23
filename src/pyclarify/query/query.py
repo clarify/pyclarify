@@ -18,11 +18,14 @@ from typing import Union, List, Dict, Optional
 from datetime import timedelta
 from typing_extensions import Literal
 
+from pyclarify.fields.constraints import TimeZone
+
 
 class DataQuery(BaseModel, extra=Extra.forbid):
     filter: Optional[Dict] = {}
     last: Optional[int] = -1
     rollup: Union[timedelta, Literal["window"]] = None
+    timeZone: Optional[TimeZone] = "UTC"
 
 
 class ResourceQuery(BaseModel, extra=Extra.forbid):

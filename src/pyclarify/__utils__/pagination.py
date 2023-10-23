@@ -197,8 +197,9 @@ class SelectIterator:
         return self
 
     def __next__(self):
-        self.request.params.query.skip = self.skip
-        self.request.params.query.limit = self.limit
+        if hasattr(self.request.params, "query"):
+            self.request.params.query.skip = self.skip
+            self.request.params.query.limit = self.limit
         try:
             start_time, end_time = next(self.current_time_iterator)
             dq = DataFilter(gte=start_time, lt=end_time)
