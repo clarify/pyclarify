@@ -191,7 +191,7 @@ class TestResponse(unittest.TestCase):
         except ValidationError:
             self.fail("Response raised ValidationError unexpectedly!")
 
-        self.assertIsInstance(res.result, Selection)
+        self.assertIsInstance(res.result, ItemSelection)
 
     def test_select_signals_response(self):
         response = self.generic_response
@@ -201,7 +201,7 @@ class TestResponse(unittest.TestCase):
         except ValidationError:
             self.fail("Response raised ValidationError unexpectedly!")
 
-        self.assertIsInstance(res.result, Selection)
+        self.assertIsInstance(res.result, SignalSelection)
 
 
 if __name__ == "__main__":

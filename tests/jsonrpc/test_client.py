@@ -92,7 +92,7 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_request(payload)
+        response = self.client.make_request(payload).json()
         payload = json.loads(payload)
 
 
@@ -115,13 +115,12 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_request(payload)
+        response = self.client.make_request(payload).json()
         payload = json.loads(payload)
 
 
         # assert is JSONRPC
-        print(response)
-        self.assertEqual(response.jsonrpc, "2.0")
+        self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
         self.assertEqual(response["id"], str(payload["id"]))
@@ -139,7 +138,7 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_request(payload)
+        response = self.client.make_request(payload).json()
         payload = json.loads(payload)
 
 
@@ -162,7 +161,7 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_request(payload)
+        response = self.client.make_request(payload).json()
         payload = json.loads(payload)
 
 

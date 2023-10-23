@@ -106,9 +106,7 @@
       "filter": {
         "fields": {
           "name": {
-            "value": [
-              "Electricity"
-            ],
+            "value": ["Electricity"],
             "operator": "$in"
           }
         }
@@ -192,9 +190,7 @@
           "filter": {
             "fields": {
               "name": {
-                "value": [
-                  "Electricity"
-                ],
+                "value": ["Electricity"],
                 "operator": "$in"
               }
             }
@@ -206,8 +202,12 @@
           "id": "1",
           "result": {
             "meta": {
-              "total": -1,
-              "groupIncludedByType": false
+              "total": 1,
+              "format": {
+                "dataAsArray": true,
+                "groupIncludedByType": true
+              },
+              "issues": null
             },
             "data": [
               {
@@ -231,18 +231,10 @@
                   "sampleInterval": null,
                   "gapDetection": "PT2H",
                   "labels": {
-                    "city": [
-                      "Oslo"
-                    ],
-                    "country": [
-                      "Norway"
-                    ],
-                    "data-source": [
-                      "Nordpool"
-                    ],
-                    "location": [
-                      "Oslo"
-                    ]
+                    "city": ["Oslo"],
+                    "country": ["Norway"],
+                    "data-source": ["Nordpool"],
+                    "location": ["Oslo"]
                   },
                   "enumValues": {},
                   "visible": true
@@ -266,8 +258,12 @@
           "id": "1",
           "result": {
             "meta": {
-              "total": -1,
-              "groupIncludedByType": false
+              "total": 1,
+              "format": {
+                "dataAsArray": true,
+                "groupIncludedByType": true
+              },
+              "issues": null
             },
             "data": [
               {
@@ -291,18 +287,10 @@
                   "sampleInterval": null,
                   "gapDetection": "PT2H",
                   "labels": {
-                    "city": [
-                      "Oslo"
-                    ],
-                    "country": [
-                      "Norway"
-                    ],
-                    "data-source": [
-                      "Nordpool"
-                    ],
-                    "location": [
-                      "Oslo"
-                    ]
+                    "city": ["Oslo"],
+                    "country": ["Norway"],
+                    "data-source": ["Nordpool"],
+                    "location": ["Oslo"]
                   },
                   "enumValues": {},
                   "visible": true
@@ -320,9 +308,7 @@
           "filter": {
             "fields": {
               "name": {
-                "value": [
-                  "Electricity"
-                ],
+                "value": ["Electricity"],
                 "operator": "$in"
               }
             }
@@ -335,8 +321,12 @@
           "id": "1",
           "result": {
             "meta": {
-              "total": -1,
-              "groupIncludedByType": false
+              "total": 1,
+              "format": {
+                "dataAsArray": true,
+                "groupIncludedByType": true
+              },
+              "issues": null
             },
             "data": [
               {
@@ -360,18 +350,10 @@
                   "sampleInterval": null,
                   "gapDetection": "PT2H",
                   "labels": {
-                    "city": [
-                      "Oslo"
-                    ],
-                    "country": [
-                      "Norway"
-                    ],
-                    "data-source": [
-                      "Nordpool"
-                    ],
-                    "location": [
-                      "Oslo"
-                    ]
+                    "city": ["Oslo"],
+                    "country": ["Norway"],
+                    "data-source": ["Nordpool"],
+                    "location": ["Oslo"]
                   },
                   "enumValues": {},
                   "visible": true

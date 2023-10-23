@@ -31,7 +31,7 @@ from pydantic import validate_arguments
 from typing import Dict, List, Union, Callable, Optional
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
-from pyclarify.views.items import Item
+from pyclarify.views.items import ItemSaveView
 from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
@@ -472,8 +472,8 @@ class Client(JSONRPCClient):
     def publish_signals(
         self,
         signal_ids: List[ResourceID] = [],
-        items: List[Item] = [],
-        items_by_signal: Dict[ResourceID, Item] = {},
+        items: List[ItemSaveView] = [],
+        items_by_signal: Dict[ResourceID, ItemSaveView] = {},
         create_only: bool = False,
         integration: str = None,
     ) -> Response:
