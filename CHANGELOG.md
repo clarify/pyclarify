@@ -17,9 +17,61 @@ Changes are grouped as follows
 
 ## [0.5.0] - 2023-10-10
 
+### Added
+
+- New Evaluate endpoint. A data method for aggregating time-series data and perform evaluate formula expressions. Along with support classes for validation.
+
+  ```python
+  from pyclarify import ItemAggregation, Calculation
+
+  item1 = ItemAggregation(
+      id="cbpmaq6rpn52969vfl00",
+      aggregation="max",
+      alias="i1"
+  )
+
+  item2 = ItemAggregation(
+      id="cbpmaq6rpn52969vfl0g",
+      aggregation="avg",
+      alias="i2"
+  )
+
+  items = [
+      item1, item2
+  ]
+
+
+  step1 = Calculation(
+      formula="i1 * i2",
+      alias="c1"
+  )
+
+  step2 = Calculation(
+      formula="gapfill(i1) / c1",
+      alias="c2"
+  )
+
+  calculations = [step1, step2]
+
+  r = client.evaluate(
+      items=items,
+      calculations=calculations,
+      gte="2023-10-01T00:00:00Z",
+      lt="2023-10-23T00:00:00Z",
+      include=["items"],
+      rollup="PT10M"
+  )
+
+  >>> r.result.data.to_pandas()
+  ...                                   c1        c2   i1        i2
+  ... 2023-10-20 10:20:00+00:00  21.333333  0.281250  6.0  3.555556
+  ... 2023-10-20 10:30:00+00:00  42.428571  0.212121  9.0  4.714286
+  ... 2023-10-20 10:40:00+00:00  36.363636  0.220000  8.0  4.545455
+  ```
+
 ### Changed
 
-- API version changed from 1.1beta2 to 1.1. 
+- API version changed from 1.1beta2 to 1.1.
 - Changes to internal models to comply with new models in the API.
 
 ### Fixed

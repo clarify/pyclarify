@@ -17,7 +17,8 @@ from pyclarify.fields.constraints import ApiMethod
 from pyclarify.views.generics import Request
 
 def unpack_params(request: Request):
-  API_LIMIT = user_limit = skip = user_gte = user_lt = rollup = None
+  #TODO: CLEAN UP THE MESS
+  API_LIMIT = user_limit = skip = user_gte = user_lt = rollup = series= None
   query = getattr(request.params, "query") if hasattr(request.params, "query") else None
   user_limit = getattr(query, "limit") if hasattr(query, "limit") else None
   skip = getattr(query, "skip") if hasattr(query, "skip") else 0
@@ -42,9 +43,10 @@ def unpack_params(request: Request):
     times = data.filter["times"]
     user_gte = times.pop("$gte", None)
     user_lt = times.pop("$lt", None)
+    series = data.filter["series"]["$in"] if "series" in data.filter.keys() else None
     rollup = data.rollup
     user_limit = len(request.params.items)
 
 
 
-  return API_LIMIT, user_limit, skip, user_gte, user_lt, rollup
+  return API_LIMIT, user_limit, skip, user_gte, user_lt, rollup, series

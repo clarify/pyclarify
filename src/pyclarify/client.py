@@ -375,11 +375,11 @@ class Client(JSONRPCClient):
         ----------
         input_ids: List['INPUT_ID']
             List of strings to be the input ID of the signal.
-            Click `here <https://docs.clarify.io/api/1.1beta2/types/fields#input-key>`__ for more information.
+            Click `here <https://docs.clarify.io/api/1.1/types/fields#input-key>`__ for more information.
 
         signals: List[Signal]
             List of Signal object that contains metadata for a signal.
-            Click `here <https://docs.clarify.io/api/1.1beta2/types/views#signal-save-integration-namespace>`__ for more information.
+            Click `here <https://docs.clarify.io/api/1.1/types/views#signal-save-integration-namespace>`__ for more information.
 
         create_only: bool, default False
             If set to true, skip update of information for existing signals. That is, all Input_ID's
@@ -820,18 +820,18 @@ class Client(JSONRPCClient):
             Skip the first N matches. A negative skip is treated as 0.
         total: bool, default: False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
-        gte: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__ , default: <now - 7 days>
+        gte: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1/types/fields#datetime>`__ , default: <now - 7 days>
             An RFC3339 time describing the inclusive start of the window.
-        lt: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__ , default: <now + 7 days>
+        lt: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1/types/fields#datetime>`__ , default: <now + 7 days>
             An RFC3339 time describing the exclusive end of the window.
         last: int, default: -1
             If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
-        rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ or "window", default: None
+        rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__ or "window", default: None
             If duration is specified, roll-up the values into either the full time window
             (`gte` -> `lt`) or evenly sized buckets.
         include: List of strings, default: []
             A list of strings specifying which relationships to be included in the response.
-        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__, default None
+        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__, default None
             If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
             values.
         
@@ -1006,12 +1006,13 @@ class Client(JSONRPCClient):
     @validate_arguments
     def evaluate(
         self,
+        rollup: Union[str, timedelta],
         items: List[Union[Dict, ItemAggregation]] = [],
         calculations: List[Union[Dict, Calculation]] = [],
+        series: List[str] = [],
         gte: Union[datetime, str] = None,
         lt: Union[datetime, str] = None,
         last: int = -1,
-        rollup: Union[str, timedelta] = None,
         include: List[str] = [],
         window_size: Union[str, timedelta] = None
     ) -> Response:
@@ -1027,18 +1028,18 @@ class Client(JSONRPCClient):
         calculations: List[Union[Dict, Calculation]]
             List of calculations, where a calculation has access to items and previous calculations in context.
             See the class from pyclarify.views.evaluate.Calculation for attributes
-        gte: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__ , default: <now - 7 days>
+        gte: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1/types/fields#datetime>`__ , default: <now - 7 days>
             An RFC3339 time describing the inclusive start of the window.
-        lt: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__ , default: <now + 7 days>
+        lt: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1/types/fields#datetime>`__ , default: <now + 7 days>
             An RFC3339 time describing the exclusive end of the window.
         last: int, default: -1
             If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
-        rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ or "window", default: None
+        rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__ or "window", default: None
             If duration is specified, roll-up the values into either the full time window
             (`gte` -> `lt`) or evenly sized buckets.
         include: List of strings, default: []
             A list of strings specifying which relationships to be included in the response.
-        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__, default None
+        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__, default None
             If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
             values.
         
@@ -1049,7 +1050,7 @@ class Client(JSONRPCClient):
 
         See Also
         --------
-        Client.select_items : Retrieve item metadata from selected items.
+        Client.data_frame : Retrieve data with more filter functionality and without rollup.
 
         Notes
         -----
@@ -1066,131 +1067,110 @@ class Client(JSONRPCClient):
         --------
             >>> client = Client("./clarify-credentials.json")
 
-            Getting data frame with a filter.
+            Getting a single item.
 
-            >>> client.data_frame(
-            ...     filter = query.Filter(fields={"name": query.NotEqual(value="Air Temperature")}),
+            >>> item = ItemAggregation(
+            ...     id="cbpmaq6rpn52969vfl00",
+            ...     aggregation="max",
+            ...     alias="i1"
             ... )
+            >>> r = client.evaluate(items=[item1], rollup="PT10M")
+            >>> print(r.result.data.to_pandas())
+            ...                             i1
+            ... 2023-10-20 10:20:00+00:00  6.0
+            ... 2023-10-20 10:30:00+00:00  9.0
+            ... 2023-10-20 10:40:00+00:00  8.0
 
-            Getting data with a time range.
 
-            >>> client.data_frame(
-            ...     gte="2022-01-01T01:01:01Z",
-            ...     lt="2022-01-09T01:01:01Z",
+
+            Getting a single item in a time range.
+
+            >>> r = client.evaluate(items=[item1], gte="2022-08-10T00:00:00Z", lt="2022-08-30T00:00:00Z", rollup="PT10M")
+            >>> print(r.result.data.to_pandas())
+            ...                             i1
+            ... 2022-08-10 09:50:00+00:00  8.0
+            ... 2022-08-10 10:00:00+00:00  9.0
+            ... 2022-08-25 11:30:00+00:00  8.0
+            ... 2022-08-30 15:10:00+00:00  2.0
+            ... 2022-08-30 15:20:00+00:00  9.0
+            ... 2022-08-30 15:30:00+00:00  9.0
+
+            Using a calculation on a single item.
+
+            >>> calc = Calculation(
+            ...     formula="i1**2",
+            ...     alias="power2"
             ... )
+            >>> r = client.evaluate(items=[item1], calculations=[calc], rollup="PT10M")
+            >>> print(r.result.data.to_pandas())
+            ...                             i1  power2
+            ... 2023-10-20 10:20:00+00:00  6.0    36.0
+            ... 2023-10-20 10:30:00+00:00  9.0    81.0
+            ... 2023-10-20 10:40:00+00:00  8.0    64.0
 
-            Skipping first 3 items and only retrieving 5 items, sorted with descending id.
-
-            >>> client.data_frame(
-            ...     sort = ["-id"],
-            ...     limit = 5,
-            ...     skip = 3,
+            Adding two items.
+            
+            >>> item = ItemAggregation(
+            ...     id="cbpmaq6rpn52969vfl0g",
+            ...     aggregation="avg",
+            ...     alias="i2"
             ... )
-
-            Setting a lower window size due to json decoding errors.
-
-            >>> client.data_frame(
-            ...     window_size = "P20DT",
-            ...     limit = 5,
-            ...     skip = 3,
+            >>> calc = Calculation(
+            ...     formula="i1 + i2",
+            ...     alias="sumi1i2"
             ... )
+            >>> r = client.evaluate(items=[item1, item2], calculations=[calc], rollup="PT10M")
+            >>> print(r.result.data.to_pandas())
+            ...                             i1   i2   sumi1i2
+            ... 2023-10-20 10:20:00+00:00  6.0   3.0      9.0
+            ... 2023-10-20 10:30:00+00:00  9.0   4.0     13.0
+            ... 2023-10-20 10:40:00+00:00  8.0   4.0     12.0
 
-            .. warning::
-                We recommend using ``rollup`` instead of ``window_size`` due to execution time being much faster.
+            Tip
+            ----
+            You can limit the number of series to be returned by specifying aliases in the `series` parameter.
 
-            Using rollup to get sampled data.
-
-            >>> r = client.data_frame(
-            ...     rollup = "PT5M",
-            ...     limit = 5,
-            ...     skip = 3,
+            >>> r = client.evaluate(
+            ...     items=[item1, item2], 
+            ...     calculations=[calc], 
+            ...     rollup="PT10M", 
+            ...     series=["sumi1i2"]
             ... )
-            >>> r.result.data
-            ... DataFrame(
-            ...     times=[datetime.datetime(2022, 9, 5, 11, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 10, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 15, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 30, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 35, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 40, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 45, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 50, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 0, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 10, tzinfo=datetime.timezone.utc)], 
-            ...     series={
-            ...         'cbpmaq6rpn52969vfl1g_avg': [1.0, 5.0, 5.875, 6.8, 4.2, 7.0, 3.6, 5.0, 2.0, 2.2, 4.25], 
-            ...         'cbpmaq6rpn52969vfl1g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl1g_max': [1.0, 9.0, 9.0, 9.0, 8.0, 9.0, 6.0, 6.0, 2.0, 6.0, 8.0], 
-            ...         'cbpmaq6rpn52969vfl1g_min': [1.0, 0.0, 0.0, 5.0, 1.0, 6.0, 0.0, 4.0, 2.0, 0.0, 0.0], 
-            ...         'cbpmaq6rpn52969vfl1g_sum': [2.0, 50.0, 47.0, 34.0, 21.0, 21.0, 18.0, 10.0, 2.0, 11.0, 17.0], 
-            ...         'cbpmaq6rpn52969vfl20_avg': [5.0, 4.7, 3.75, 3.6, 5.2, 7.333333333333333, 3.6, 7.0, 9.0, 3.6, 6.75], 
-            ...         'cbpmaq6rpn52969vfl20_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl20_max': [8.0, 9.0, 8.0, 7.0, 9.0, 9.0, 8.0, 9.0, 9.0, 8.0, 9.0], 
-            ...         'cbpmaq6rpn52969vfl20_min': [2.0, 1.0, 0.0, 1.0, 2.0, 4.0, 0.0, 5.0, 9.0, 0.0, 1.0], 
-            ...         'cbpmaq6rpn52969vfl20_sum': [10.0, 47.0, 30.0, 18.0, 26.0, 22.0, 18.0, 14.0, 9.0, 18.0, 27.0], 
-            ...         'cbpmaq6rpn52969vfl2g_avg': [8.0, 3.7, 4.75, 1.6, 3.6, 2.0, 5.6, 8.5, 4.0, 3.8, 5.0], 
-            ...         'cbpmaq6rpn52969vfl2g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl2g_max': [8.0, 9.0, 9.0, 5.0, 8.0, 5.0, 9.0, 9.0, 4.0, 8.0, 7.0], 
-            ...         'cbpmaq6rpn52969vfl2g_min': [8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 8.0, 4.0, 0.0, 1.0], 
-            ...         'cbpmaq6rpn52969vfl2g_sum': [16.0, 37.0, 38.0, 8.0, 18.0, 6.0, 28.0, 17.0, 4.0, 19.0, 20.0], 
-            ...         'cbpmaq6rpn52969vfl30_avg': [2.0, 5.6, 3.875, 3.2, 5.2, 4.666666666666667, 5.0, 4.5, 7.0, 5.8, 8.0], 
-            ...         'cbpmaq6rpn52969vfl30_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl30_max': [3.0, 9.0, 7.0, 9.0, 9.0, 8.0, 7.0, 8.0, 7.0, 9.0, 9.0], 
-            ...         'cbpmaq6rpn52969vfl30_min': [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 2.0, 1.0, 7.0, 1.0, 6.0], 
-            ...         'cbpmaq6rpn52969vfl30_sum': [4.0, 56.0, 31.0, 16.0, 26.0, 14.0, 25.0, 9.0, 7.0, 29.0, 32.0], 
-            ...         'cbpmaq6rpn52969vfl3g_avg': [1.5, 3.3, 6.75, 5.8, 4.8, 5.666666666666667, 3.8, 6.5, 5.0, 3.0, 3.25], 
-            ...         'cbpmaq6rpn52969vfl3g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl3g_max': [2.0, 9.0, 9.0, 9.0, 9.0, 7.0, 8.0, 8.0, 5.0, 7.0, 5.0], 
-            ...         'cbpmaq6rpn52969vfl3g_min': [1.0, 1.0, 4.0, 1.0, 1.0, 3.0, 0.0, 5.0, 5.0, 0.0, 0.0], 
-            ...         'cbpmaq6rpn52969vfl3g_sum': [3.0, 33.0, 54.0, 29.0, 24.0, 17.0, 19.0, 13.0, 5.0, 15.0, 13.0]
-            ... })
+            >>> print(r.result.data.to_pandas())
+            ...                            sumi1i2
+            ... 2023-10-20 10:20:00+00:00      9.0
+            ... 2023-10-20 10:30:00+00:00     13.0
+            ... 2023-10-20 10:40:00+00:00     12.0
 
 
-
-        Response
-            In case of a valid return value, returns a pydantic model with the following format:
-
-                >>> jsonrpc = '2.0'
-                ... id = '1'
-                ... result = Selection(
-                ...     meta={
-                ...         'total': -1,
-                ...         'groupIncludedByType': True
-                ...     },
-                ...     data=DataFrame(
-                ...         times=[
-                ...             datetime.datetime(2022, 1, 1, 12, 0, tzinfo=datetime.timezone.utc),
-                ...             datetime.datetime(2022, 1, 1, 13, 0, tzinfo=datetime.timezone.utc),
-                ...             ...],
-                ...         series={
-                ...             'c5i41fjsbu8cohpkcpvg': [0.18616, 0.18574000000000002, ...],
-                ...             'c5i41fjsbu8cohfdepvg': [450.876543125, 450.176543554, ...],
-                ...             ...
-                ...         }
-                ...     )
-                ...     
-                ... error = None
-
-            In case of the error the method return a pydantic model with the following format:
-
-                >>> jsonrpc = '2.0'
-                ... id = '1'
-                ... result = None
-                ... error = Error(
-                ...         code = '-32602',
-                ...         message = 'Invalid params',
-                ...         data = ErrorData(trace = <trace_id>, params = {})
-                ... )
-
-        Tip
-        ----
-        You can change the `type` of DataFrame from pyclarify to pandas using the `to_pandas()` method.
-
-            >>> r = client.data_frame()
-            >>> c_df = r.result.data
-            >>> p_df = c_df.to_pandas()
-            >>> p_df.head()
-            ...                                   cbpmaq6rpn52969vfl00  cbpmaq6rpn52969vfl0g  ...  cbpmaq6rpn52969vfl90  cbpmaq6rpn52969vfl9g
-            ... 2022-09-05 11:30:11.432725+00:00                   2.0                   8.0  ...                   0.0                   4.0
-            ... 2022-09-05 11:31:11.432723+00:00                   9.0                   2.0  ...                   8.0                   8.0
-            ... 2022-09-05 11:32:11.432722+00:00                   6.0                   4.0  ...                   8.0                   9.0
-            ... 2022-09-05 11:33:11.432720+00:00                   0.0                   7.0  ...                   9.0                   4.0
-            ... 2022-09-05 11:34:11.432719+00:00                   8.0                   6.0  ...                   8.0                   5.0
-
+            Chaining calculations.
+            
+            >>> calc1 = Calculation(
+            ...     formula="i1 + i2",
+            ...     alias="sum"
+            ... )
+            >>> calc2 = Calculation(
+            ...     formula="i1/sum",
+            ...     alias="ratei1"
+            ... )
+            >>> calc2 = Calculation(
+            ...     formula="floor(ratei1*100)",
+            ...     alias="ratio"
+            ... )
+            >>> r = client.evaluate(
+            ...     items=[item1, item2], 
+            ...     calculations=[calc1, calc2, calc3], 
+            ...     rollup="PT10M", 
+            ...     series=["i1", "i2", "ratio"]
+            ... )
+            >>> print(r.result.data.to_pandas())
+            ...                             i1   i2  ratio
+            ... 2023-10-20 10:20:00+00:00  6.0  3.0   66.0
+            ... 2023-10-20 10:30:00+00:00  9.0  4.0   69.0
+            ... 2023-10-20 10:40:00+00:00  8.0  4.0   66.0
         """
 
-        data_filter = DataFilter(gte=gte, lt=lt)
+        data_filter = DataFilter(gte=gte, lt=lt, series=series)
         data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
         params = {
             "items": items,
@@ -1198,9 +1178,7 @@ class Client(JSONRPCClient):
             "data": data_query, 
             "include": include
         }
-
         request_data = Request(method=ApiMethod.evaluate, params=params)
-
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )

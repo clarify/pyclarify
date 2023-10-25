@@ -170,7 +170,8 @@ class SelectIterator:
             self.skip, 
             self.user_gte, 
             self.user_lt, 
-            self.rollup
+            self.rollup,
+            self.series
         ) = unpack_params(self.request)
 
         # support None inputs
@@ -203,6 +204,8 @@ class SelectIterator:
         try:
             start_time, end_time = next(self.current_time_iterator)
             dq = DataFilter(gte=start_time, lt=end_time)
+            if self.series != []:
+                dq.series = self.series
             self.request.params.data.filter = dq.to_query()
         except:            
             try:

@@ -17,9 +17,13 @@ limitations under the License.
 import sys
 import unittest
 import json
+from datetime import datetime, timedelta
 from unittest.mock import patch
 
+from pydantic import ValidationError
+
 sys.path.insert(1, "src/")
+from pyclarify import ItemAggregation, Calculation
 from pyclarify import Client, DataFrame
 from pyclarify.views.items import ItemSelectView
 from pyclarify.query import Filter
@@ -30,9 +34,9 @@ class TestClarifyClientSelectItems(unittest.TestCase):
     def setUp(self):
         self.client = Client("./tests/mock_data/mock-clarify-credentials.json")
 
-        with open("./tests/mock_data/dataframe.json") as f:
+        with open("./tests/mock_data/evaluate.json") as f:
             self.mock_data = json.load(f)
-        test_data = self.mock_data["data_frame"]
+        test_data = self.mock_data["evaluate"]
         self.args = test_data["args"]
         self.response = test_data["response"]
         self.error = test_data["error"]
@@ -42,31 +46,21 @@ class TestClarifyClientSelectItems(unittest.TestCase):
             self.mock_data = json.load(f)
         self.mock_access_token = self.mock_data["mock_access_token"]
 
+    def test_get_data_with_no_params(self):
+        with self.assertRaises(ValidationError):
+            self.client.evaluate()
+
+
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
-    def test_get_data_with_no_params(self, client_req_mock, get_token_mock):
+    def test_get_data_with_only_rollup(self, client_req_mock, get_token_mock):
         return_value = self.response
         return_value["result"]["included"] = None
         get_token_mock.return_value = self.mock_access_token
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: return_value
 
-        response_data = self.client.data_frame()
-
-        self.assertIsInstance(response_data.result.data, DataFrame)
-
-    @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
-    @patch("pyclarify.client.requests.post")
-    def test_get_data_with_filter(self, client_req_mock, get_token_mock):
-        return_value = self.response
-        return_value["result"]["included"] = None
-        get_token_mock.return_value = self.mock_access_token
-        client_req_mock.return_value.ok = True
-        client_req_mock.return_value.json = lambda: return_value
-
-        response_data = self.client.data_frame(
-            filter=Filter(**self.args["filter"])
-        )
+        response_data = self.client.evaluate(rollup="PT5M")
         self.assertIsInstance(response_data.result.data, DataFrame)
 
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
@@ -78,7 +72,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: return_value
 
-        response_data = self.client.data_frame(**self.args)
+        response_data = self.client.evaluate(**self.args)
 
         self.assertIsInstance(response_data.result.data, DataFrame)
 
@@ -91,7 +85,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: return_value
 
-        response_data = self.client.data_frame(**self.args)
+        response_data = self.client.evaluate(**self.args)
 
         self.assertIsInstance(response_data.result.data, DataFrame)
 
@@ -106,7 +100,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.ok = True
         client_req_mock.return_value.json = lambda: return_value
 
-        response_data = self.client.data_frame(**self.args)
+        response_data = self.client.evaluate(**self.args)
 
         if isinstance(response_data.error, list):
             error = response_data.error[0]
@@ -127,7 +121,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         client_req_mock.return_value.status_code = return_value["status_code"]
         client_req_mock.return_value.reason = return_value["reason"]
         client_req_mock.return_value.text = return_value["text"]
-        response_data = self.client.data_frame(**self.args)
+        response_data = self.client.evaluate(**self.args)
         if isinstance(response_data.error, list):
             error = response_data.error[0]
         else:
