@@ -44,6 +44,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.views.signals">Signals module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.views.items">Items module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.views.dataframe">DataFrame module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.views.evaluate">Evaluate module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-pyclarify.query.filter">Filter module</a></li>
 </ul>
 </li>
@@ -460,6 +461,140 @@ Inserts none value to series not containing entry at a given timestamp.</p>
 </pre></div>
 </div>
 </dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyclarify.views.evaluate">
+<span id="evaluate-module"></span><h2>Evaluate module<a class="headerlink" href="#module-pyclarify.views.evaluate" title="Permalink to this headline"></a></h2>
+<p>Copyright 2023 Searis AS</p>
+<p>Licensed under the Apache License, Version 2.0 (the “License”);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.Calculation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.views.evaluate.</span></span><span class="sig-name descname"><span class="pre">Calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formula</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pydantic.types.ConstrainedStrValue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.evaluate.Calculation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for creating a calculation to be used in evaluate endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>formula</strong> (<em>str</em>) – The formula to be applied. Current legal calculations are found <a class="reference external" href="https://docs.clarify.io/users/admin/items/calculated-items#formula">here</a>.</p></li>
+<li><p><strong>alias</strong> (<em>string</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">Calculation</span>
+</pre></div>
+</div>
+<p>Creating a calculation assuming we have items with aliases “i1” and “i2”.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;i1 + i2&quot;</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Creating a calculation using other calculations.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc1</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;i1 + i2&quot;</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc2</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;c1**2 + i1&quot;</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.Calculation.alias">
+<span class="sig-name descname"><span class="pre">alias</span></span><em class="property"><span class="pre">:</span> <span class="pre">pydantic.types.ConstrainedStrValue</span></em><a class="headerlink" href="#pyclarify.views.evaluate.Calculation.alias" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.Calculation.formula">
+<span class="sig-name descname"><span class="pre">formula</span></span><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#pyclarify.views.evaluate.Calculation.formula" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyclarify.views.evaluate.</span></span><span class="sig-name descname"><span class="pre">ItemAggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pydantic.types.ConstrainedStrValue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pyclarify.fields.constraints.DataAggregation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pydantic.types.ConstrainedIntValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lead</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pydantic.types.ConstrainedIntValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pydantic.types.ConstrainedIntValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pydantic.types.ConstrainedStrValue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>Model for creating item aggregations to be used in evaluate endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>ResourceID</em><em> (</em><em>r&quot;^</em><em>[</em><em>a-v0-9</em><em>]</em><em>{20}$&quot;</em><em>)</em>) – The ID of the item to be aggregated.</p></li>
+<li><p><strong>aggregation</strong> (<em>str</em>) – The aggregation type to be done. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.1/types/fields#data-aggregation">here</a>.</p></li>
+<li><p><strong>state</strong> (<em>int</em><em>[</em><em>0:9999</em><em>]</em>) – The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</p></li>
+<li><p><strong>lead</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets backwards by N.</p></li>
+<li><p><strong>lag</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets forwards by N.</p></li>
+<li><p><strong>alias</strong> (<em>string</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ItemAggregation</span>
+</pre></div>
+</div>
+<p>Creating a signal a minimal item aggregation.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">itemAgg</span> <span class="o">=</span> <span class="n">ItemAggregation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;cbpmaq6rpn52969vfl0g&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;avg&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;i2&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Creating a item aggregation with all attributes set.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">ItemAggregation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;cbpmaq6rpn52969vfl00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">lead</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;i1&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation.aggregation">
+<span class="sig-name descname"><span class="pre">aggregation</span></span><em class="property"><span class="pre">:</span> <span class="pre">pyclarify.fields.constraints.DataAggregation</span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.aggregation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation.alias">
+<span class="sig-name descname"><span class="pre">alias</span></span><em class="property"><span class="pre">:</span> <span class="pre">pydantic.types.ConstrainedStrValue</span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.alias" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="pre">:</span> <span class="pre">pydantic.types.ConstrainedStrValue</span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation.lag">
+<span class="sig-name descname"><span class="pre">lag</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.ConstrainedIntValue</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.lag" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation.lead">
+<span class="sig-name descname"><span class="pre">lead</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.ConstrainedIntValue</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.lead" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation.state">
+<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">pydantic.types.ConstrainedIntValue</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.state" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

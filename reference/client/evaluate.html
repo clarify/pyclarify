@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluate &mdash; PyClarify 0.5.0b1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Select Items" href="select_items.html" />
+    <link rel="prev" title="DataFrame" href="dataframe.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> PyClarify
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyClarify Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Client</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="dataframe.html">DataFrame</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Evaluate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="select_items.html">Select Items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="select_signals.html">Select Signals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="save_signals.html">Save Signals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="publish_signals.html">Publish Signals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="insert.html">Insert</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../views.html">Views</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyClarify</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Reference</a> &raquo;</li>
+          <li><a href="index.html">Client</a> &raquo;</li>
+      <li>Evaluate</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/reference/client/evaluate.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="evaluate">
+<h1>Evaluate<a class="headerlink" href="#evaluate" title="Permalink to this headline"></a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyclarify.client.Client.evaluate">
+<span class="sig-prename descclassname"><span class="pre">pyclarify.client.Client.</span></span><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rollup</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.timedelta</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="../views.html#pyclarify.views.evaluate.ItemAggregation" title="pyclarify.views.evaluate.ItemAggregation"><span class="pre">pyclarify.views.evaluate.ItemAggregation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calculations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="../views.html#pyclarify.views.evaluate.Calculation" title="pyclarify.views.evaluate.Calculation"><span class="pre">pyclarify.views.evaluate.Calculation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gte</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime.datetime</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">datetime.timedelta</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pyclarify.views.generics.Response</span></span></span><a class="headerlink" href="#pyclarify.client.Client.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve DataFrame by aggregating time-series data and perform evaluate formula expressions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> (<em>Union</em><em>[</em><em>Dict</em><em>, </em><a class="reference internal" href="../views.html#pyclarify.views.evaluate.ItemAggregation" title="pyclarify.views.evaluate.ItemAggregation"><em>ItemAggregation</em></a><em>]</em>) – List of item aggregations, describing a particular aggregation method for the item in list.
+See the class from pyclarify.views.evaluate.ItemAggregation for attributes.</p></li>
+<li><p><strong>calculations</strong> (<em>List</em><em>[</em><em>Union</em><em>[</em><em>Dict</em><em>, </em><a class="reference internal" href="../views.html#pyclarify.views.evaluate.Calculation" title="pyclarify.views.evaluate.Calculation"><em>Calculation</em></a><em>]</em><em>]</em>) – List of calculations, where a calculation has access to items and previous calculations in context.
+See the class from pyclarify.views.evaluate.Calculation for attributes</p></li>
+<li><p><strong>gte</strong> (<a class="reference external" href="https://docs.clarify.io/api/1.1/types/fields#datetime">ISO 8601 timestamp</a> , default: &lt;now - 7 days&gt;) – An RFC3339 time describing the inclusive start of the window.</p></li>
+<li><p><strong>lt</strong> (<a class="reference external" href="https://docs.clarify.io/api/1.1/types/fields#datetime">ISO 8601 timestamp</a> , default: &lt;now + 7 days&gt;) – An RFC3339 time describing the exclusive end of the window.</p></li>
+<li><p><strong>last</strong> (<em>int</em><em>, </em><em>default: -1</em>) – If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.</p></li>
+<li><p><strong>rollup</strong> (<a class="reference external" href="https://docs.clarify.io/api/1.1/types/fields#fixed-duration">RFC3339 duration</a> or “window”, default: None) – If duration is specified, roll-up the values into either the full time window
+(<cite>gte</cite> -&gt; <cite>lt</cite>) or evenly sized buckets.</p></li>
+<li><p><strong>include</strong> (<em>List of strings</em><em>, </em><em>default:</em><em> [</em><em>]</em>) – A list of strings specifying which relationships to be included in the response.</p></li>
+<li><p><strong>window_size</strong> (<a class="reference external" href="https://docs.clarify.io/api/1.1/types/fields#fixed-duration">RFC3339 duration</a>, default None) – If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
+values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Response.result.data</span></code> is a DataFrame</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Response</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Client.data_frame</span></code></dt><dd><p>Retrieve data with more filter functionality and without rollup.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Time selection:</p>
+<ul class="simple">
+<li><p>Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).</p></li>
+<li><p>Maximum window size is 400 days (400 * 24 hours) when rollup is greater than or equal to PT1M (1 minute).</p></li>
+<li><p>No maximum window size if rollup is window.</p></li>
+</ul>
+<p>The limits are used internally by the Clarify API. Should you have very high resolution data (&gt;=1hz), you can use <code class="docutils literal notranslate"><span class="pre">time_window</span></code> argument to <strong>reduce</strong> the window, resulting in more requests.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;./clarify-credentials.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Getting a single item.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">ItemAggregation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;cbpmaq6rpn52969vfl00&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;i1&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item1</span><span class="p">],</span> <span class="n">rollup</span><span class="o">=</span><span class="s2">&quot;PT10M&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+<span class="gp">... </span>                            <span class="n">i1</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">6.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">9.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">8.0</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>Getting a single item in a time range.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item1</span><span class="p">],</span> <span class="n">gte</span><span class="o">=</span><span class="s2">&quot;2022-08-10T00:00:00Z&quot;</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="s2">&quot;2022-08-30T00:00:00Z&quot;</span><span class="p">,</span> <span class="n">rollup</span><span class="o">=</span><span class="s2">&quot;PT10M&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+<span class="gp">... </span>                            <span class="n">i1</span>
+<span class="gp">... </span><span class="mi">2022</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">10</span> <span class="mi">09</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">8.0</span>
+<span class="gp">... </span><span class="mi">2022</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">10</span> <span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">9.0</span>
+<span class="gp">... </span><span class="mi">2022</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">25</span> <span class="mi">11</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">8.0</span>
+<span class="gp">... </span><span class="mi">2022</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">30</span> <span class="mi">15</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">2.0</span>
+<span class="gp">... </span><span class="mi">2022</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">30</span> <span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">9.0</span>
+<span class="gp">... </span><span class="mi">2022</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">30</span> <span class="mi">15</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">9.0</span>
+</pre></div>
+</div>
+<p>Using a calculation on a single item.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;i1**2&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;power2&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item1</span><span class="p">],</span> <span class="n">calculations</span><span class="o">=</span><span class="p">[</span><span class="n">calc</span><span class="p">],</span> <span class="n">rollup</span><span class="o">=</span><span class="s2">&quot;PT10M&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+<span class="gp">... </span>                            <span class="n">i1</span>  <span class="n">power2</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">6.0</span>    <span class="mf">36.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">9.0</span>    <span class="mf">81.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">8.0</span>    <span class="mf">64.0</span>
+</pre></div>
+</div>
+<p>Adding two items.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item</span> <span class="o">=</span> <span class="n">ItemAggregation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;cbpmaq6rpn52969vfl0g&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;avg&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;i2&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;i1 + i2&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sumi1i2&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item1</span><span class="p">,</span> <span class="n">item2</span><span class="p">],</span> <span class="n">calculations</span><span class="o">=</span><span class="p">[</span><span class="n">calc</span><span class="p">],</span> <span class="n">rollup</span><span class="o">=</span><span class="s2">&quot;PT10M&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+<span class="gp">... </span>                            <span class="n">i1</span>   <span class="n">i2</span>   <span class="n">sumi1i2</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">6.0</span>   <span class="mf">3.0</span>      <span class="mf">9.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">9.0</span>   <span class="mf">4.0</span>     <span class="mf">13.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">8.0</span>   <span class="mf">4.0</span>     <span class="mf">12.0</span>
+</pre></div>
+</div>
+<p>You can limit the number of series to be returned by specifying aliases in the <cite>series</cite> parameter.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item1</span><span class="p">,</span> <span class="n">item2</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">calculations</span><span class="o">=</span><span class="p">[</span><span class="n">calc</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">rollup</span><span class="o">=</span><span class="s2">&quot;PT10M&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">series</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sumi1i2&quot;</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+<span class="gp">... </span>                           <span class="n">sumi1i2</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>      <span class="mf">9.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="mf">13.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>     <span class="mf">12.0</span>
+</pre></div>
+</div>
+<p>Chaining calculations.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc1</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;i1 + i2&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc2</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;i1/sum&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;ratei1&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc2</span> <span class="o">=</span> <span class="n">Calculation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;floor(ratei1*100)&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;ratio&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="n">item1</span><span class="p">,</span> <span class="n">item2</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">calculations</span><span class="o">=</span><span class="p">[</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">calc3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">rollup</span><span class="o">=</span><span class="s2">&quot;PT10M&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">series</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;i1&quot;</span><span class="p">,</span> <span class="s2">&quot;i2&quot;</span><span class="p">,</span> <span class="s2">&quot;ratio&quot;</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+<span class="gp">... </span>                            <span class="n">i1</span>   <span class="n">i2</span>  <span class="n">ratio</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">6.0</span>  <span class="mf">3.0</span>   <span class="mf">66.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">9.0</span>  <span class="mf">4.0</span>   <span class="mf">69.0</span>
+<span class="gp">... </span><span class="mi">2023</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">20</span> <span class="mi">10</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">00</span><span class="o">+</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span>  <span class="mf">8.0</span>  <span class="mf">4.0</span>   <span class="mf">66.0</span>
+</pre></div>
+</div>
+</div></blockquote>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dataframe.html" class="btn btn-neutral float-left" title="DataFrame" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="select_items.html" class="btn btn-neutral float-right" title="Select Items" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Clarify.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
