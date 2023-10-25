@@ -3,8 +3,12 @@
     "args": {
       "integration": "c618rbfqfsj7mjkj0ss1",
       "itemsBySignal": {
-        "c618rbfqfsj7mjkj0ss1": { "name": "signal1" },
-        "c618rbfqfsj7mjkj0ss2": { "name": "signal2" }
+        "c618rbfqfsj7mjkj0ss1": {
+          "name": "signal1"
+        },
+        "c618rbfqfsj7mjkj0ss2": {
+          "name": "signal2"
+        }
       },
       "createOnly": true
     },
@@ -101,47 +105,81 @@
     "args": {
       "filter": {
         "fields": {
-          "name": { "value": ["Electricity"], "operator": "$in" }
+          "name": {
+            "value": ["Electricity"],
+            "operator": "$in"
+          }
         }
       },
       "skip": 0
     },
     "response": {
       "jsonrpc": "2.0",
-      "id": "1",
+      "id": "0",
       "result": {
-        "meta": { "total": -1, "groupIncludedByType": false },
+        "meta": {
+          "total": -1,
+          "format": {
+            "dataAsArray": true,
+            "groupIncludedByType": true
+          },
+          "issues": null
+        },
         "data": [
           {
             "type": "items",
-            "id": "c5ep6ojsbu8cohpih9bg",
+            "id": "cbpmaq6rpn52969vfl00",
             "meta": {
-              "attributesHash": "df105ac1e2dde32794909e3be8c6e435ab1c12f3",
+              "annotations": {},
+              "attributesHash": "f6d49808e47b5996daf602342b597f2b9fb2c546",
               "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
-              "annotations": { "clarify/industry-type": "mysterybox" },
-              "createdAt": "2021-10-06T12:15:30.344Z",
-              "updatedAt": "2022-03-25T09:58:19.598Z"
+              "updatedAt": "2023-10-20T10:46:04.311000+00:00",
+              "createdAt": "2022-08-10T07:59:36.448000+00:00"
             },
             "attributes": {
-              "name": "Electricity price",
-              "description": "Used by Demo data timeline: Mystery box.",
+              "name": "Item 33",
+              "description": "",
+              "labels": {},
+              "sourceType": "measurement",
               "valueType": "numeric",
-              "sourceType": "prediction",
-              "engUnit": "EUR/kWh",
-              "sampleInterval": null,
-              "gapDetection": "PT2H",
-              "labels": {
-                "city": ["Oslo"],
-                "country": ["Norway"],
-                "data-source": ["Nordpool"],
-                "location": ["Oslo"]
-              },
+              "engUnit": "",
               "enumValues": {},
+              "sampleInterval": null,
+              "gapDetection": 3456000.0,
               "visible": true
             },
-            "relationships": {}
+            "relationships": {
+              "signals": null
+            }
+          },
+          {
+            "type": "items",
+            "id": "cbpmaq6rpn52969vfl0g",
+            "meta": {
+              "annotations": {},
+              "attributesHash": "da3d70581ac8a9801da58142b9be24c98d04d37c",
+              "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+              "updatedAt": "2023-10-20T10:46:04.314000+00:00",
+              "createdAt": "2022-08-10T07:59:36.452000+00:00"
+            },
+            "attributes": {
+              "name": "Item 42",
+              "description": "",
+              "labels": {},
+              "sourceType": "measurement",
+              "valueType": "numeric",
+              "engUnit": "",
+              "enumValues": {},
+              "sampleInterval": null,
+              "gapDetection": 3456000.0,
+              "visible": true
+            },
+            "relationships": {
+              "signals": null
+            }
           }
-        ]
+        ],
+        "included": null
       },
       "error": null
     },
@@ -151,7 +189,10 @@
         "args": {
           "filter": {
             "fields": {
-              "name": { "value": ["Electricity"], "operator": "$in" }
+              "name": {
+                "value": ["Electricity"],
+                "operator": "$in"
+              }
             }
           },
           "skip": 0
@@ -160,7 +201,14 @@
           "jsonrpc": "2.0",
           "id": "1",
           "result": {
-            "meta": { "total": -1, "groupIncludedByType": false },
+            "meta": {
+              "total": 1,
+              "format": {
+                "dataAsArray": true,
+                "groupIncludedByType": true
+              },
+              "issues": null
+            },
             "data": [
               {
                 "type": "items",
@@ -168,7 +216,9 @@
                 "meta": {
                   "attributesHash": "df105ac1e2dde32794909e3be8c6e435ab1c12f3",
                   "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
-                  "annotations": { "clarify/industry-type": "mysterybox" },
+                  "annotations": {
+                    "clarify/industry-type": "mysterybox"
+                  },
                   "createdAt": "2021-10-06T12:15:30.344Z",
                   "updatedAt": "2022-03-25T09:58:19.598Z"
                 },
@@ -207,7 +257,14 @@
           "jsonrpc": "2.0",
           "id": "1",
           "result": {
-            "meta": { "total": -1, "groupIncludedByType": false },
+            "meta": {
+              "total": 1,
+              "format": {
+                "dataAsArray": true,
+                "groupIncludedByType": true
+              },
+              "issues": null
+            },
             "data": [
               {
                 "type": "items",
@@ -215,7 +272,9 @@
                 "meta": {
                   "attributesHash": "df105ac1e2dde32794909e3be8c6e435ab1c12f3",
                   "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
-                  "annotations": { "clarify/industry-type": "mysterybox" },
+                  "annotations": {
+                    "clarify/industry-type": "mysterybox"
+                  },
                   "createdAt": "2021-10-06T12:15:30.344Z",
                   "updatedAt": "2022-03-25T09:58:19.598Z"
                 },
@@ -248,7 +307,10 @@
         "args": {
           "filter": {
             "fields": {
-              "name": { "value": ["Electricity"], "operator": "$in" }
+              "name": {
+                "value": ["Electricity"],
+                "operator": "$in"
+              }
             }
           },
           "skip": 0,
@@ -258,7 +320,14 @@
           "jsonrpc": "2.0",
           "id": "1",
           "result": {
-            "meta": { "total": -1, "groupIncludedByType": false },
+            "meta": {
+              "total": 1,
+              "format": {
+                "dataAsArray": true,
+                "groupIncludedByType": true
+              },
+              "issues": null
+            },
             "data": [
               {
                 "type": "items",
@@ -266,7 +335,9 @@
                 "meta": {
                   "attributesHash": "df105ac1e2dde32794909e3be8c6e435ab1c12f3",
                   "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
-                  "annotations": { "clarify/industry-type": "mysterybox" },
+                  "annotations": {
+                    "clarify/industry-type": "mysterybox"
+                  },
                   "createdAt": "2021-10-06T12:15:30.344Z",
                   "updatedAt": "2022-03-25T09:58:19.598Z"
                 },

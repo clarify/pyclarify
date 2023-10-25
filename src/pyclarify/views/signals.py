@@ -27,7 +27,8 @@ from pyclarify.fields.constraints import (
     IntegrationID,
     Annotations,
 )
-from pyclarify.fields.resource import BaseResource, RelationshipsDict
+from pyclarify.fields.query import SelectionFormat
+from pyclarify.fields.resource import BaseResource, RelationshipsDictSignal
 from pyclarify.query.query import ResourceQuery
 
 
@@ -181,7 +182,7 @@ class SignalSelectView(BaseResource):
     :meta private:
     """
     attributes: SavedSignal
-    relationships: RelationshipsDict
+    relationships: RelationshipsDictSignal
 
 
 class SelectSignalsParams(BaseModel):
@@ -191,7 +192,7 @@ class SelectSignalsParams(BaseModel):
     integration: IntegrationID
     query: ResourceQuery
     include: List[str] = []
-    groupIncludedByType: bool = True
+    format: SelectionFormat = SelectionFormat()
 
 
 class SaveSignalsParams(BaseModel, extra=Extra.forbid):

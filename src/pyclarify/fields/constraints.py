@@ -18,8 +18,10 @@ from pydantic import constr, conint
 from typing import List, Union, Dict
 from enum import Enum
 
-# TODO: Add enum values type
-EnumValuesType = conint(ge=0, lt=10000)
+
+State = conint(ge=0, lt=10000)
+BucketOffset = conint(ge=-1000, le=1000)
+
 
 # constrained string defined by the API
 InputID = constr(regex=r"^^[a-zA-Z0-9-_:.#+/]{1,128}$")
@@ -32,13 +34,17 @@ IntegrationID = constr(regex=r"^[a-v0-9]{20}$")
 LimitSelectItems = conint(ge=0, le=1000)
 LimitSelectSignals = conint(ge=0, le=1000)
 Annotations = Dict[AnnotationKey, str]
+Alias = constr(regex="^[A-Za-z_][A-Za-z0-9_]{0,27}$")
 
+
+TimeZone = str
 
 class ApiMethod(str, Enum):
     insert = "integration.Insert"
     save_signals = "integration.SaveSignals"
     select_items = "clarify.SelectItems"
     data_frame = "clarify.dataFrame"
+    evaluate = "clarify.evaluate"
     select_signals = "admin.SelectSignals"
     publish_signals = "admin.PublishSignals"
 
@@ -52,3 +58,13 @@ class SourceTypeSignal(str, Enum):
 class TypeSignal(str, Enum):
     numeric = "numeric"
     enum = "enum"
+
+class DataAggregation(Enum):
+    count = "count"
+    min = "min"
+    max = "max"
+    sum = "sum"
+    avg = "avg"
+    state_histogram_seconds = "state-histogram-seconds"
+    state_histogram_percent = "state-histogram-percent"
+    state_histogram_rate = "state-histogram-rate"

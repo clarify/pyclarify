@@ -20,6 +20,7 @@ from pydantic import BaseModel, Extra, validator
 from typing import ForwardRef, List, Dict, Optional
 from pyclarify.__utils__.auxiliary import local_import
 from pyclarify.__utils__.time import is_datetime
+from pyclarify.fields.query import SelectionFormat
 from pyclarify.fields.constraints import (
     InputID,
     ResourceID,
@@ -358,4 +359,4 @@ class DataFrameParams(BaseModel):
     query: Optional[ResourceQuery] = {}
     data: Optional[DataQuery] = {}
     include: Optional[List[str]] = []
-    groupIncludedByType: bool = True
+    format: Optional[SelectionFormat] = SelectionFormat(dataAsArray=False)

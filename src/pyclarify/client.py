@@ -22,6 +22,7 @@ the Clarify API. Methods for reading and writing to the API is implemented with 
 help of jsonrpcclient framework.
 """
 import requests
+import json
 import logging
 import pyclarify
 from pyclarify.__utils__.stopping_conditions import select_stopping_condition
@@ -30,13 +31,16 @@ from pydantic import validate_arguments
 from typing import Dict, List, Union, Callable, Optional
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame
-from pyclarify.views.items import Item
+from pyclarify.views.evaluate import Calculation, ItemAggregation
+from pyclarify.views.items import ItemSaveView
 from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
 from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
 from pyclarify.__utils__.pagination import SelectIterator
+from pyclarify.fields.error import Error
+
 
 class Client(JSONRPCClient):
     """
@@ -62,19 +66,43 @@ class Client(JSONRPCClient):
         logging.debug(f"SDK version: {pyclarify.__version__}")
         logging.debug(f"API version: {pyclarify.__API_version__}")
     
-    def iterate_requests(self, request: Request, stopping_condition: Callable, window_size: timedelta = None):
-        iterator = SelectIterator(request, window_size)
+    def handle_response(self, request: Request, response) -> Response:
+        if not response.ok:
+            err = {
+                "code": response.status_code,
+                "message": f"HTTP Response Error: {response.reason}",
+                "data": response.text,
+            }
+            return Response(id=request.id, error=Error(**err))
+        response = response.json()
+        if hasattr(response, "error"):
+            return Response(id=request.id, error=response["error"])
+        response["method"] = request.method
+        return Response(**response)
+
+
+    def iterate_requests(self, request: Request, stopping_condition: Callable = None, window_size: timedelta = None):
+        if request.method in [
+            ApiMethod.data_frame, 
+            ApiMethod.select_items, 
+            ApiMethod.select_signals,
+            ApiMethod.evaluate]:
+            iterator = SelectIterator(request, window_size)
+        else:
+            iterator = [request]
         responses = None
+        counter = 0
         for request in iterator:
-            response = self.make_request(request.json())
+            counter += 1
+            rpc_response = self.make_request(request.json())
+            response = self.handle_response(request, rpc_response)
             if responses is None:
                 responses = response
             else:
                 responses += response
-            
-            if stopping_condition(response):
-                return responses
 
+            if stopping_condition(response) if isinstance(stopping_condition, Callable) else False:
+                return responses
         return responses  
 
 
@@ -170,7 +198,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_request(request_data.json())
+        return self.iterate_requests(request_data)
 
     @validate_arguments
     def select_items(
@@ -347,11 +375,11 @@ class Client(JSONRPCClient):
         ----------
         input_ids: List['INPUT_ID']
             List of strings to be the input ID of the signal.
-            Click `here <https://docs.clarify.io/api/1.1beta2/types/fields#input-key>`__ for more information.
+            Click `here <https://docs.clarify.io/api/1.1/types/fields#input-key>`__ for more information.
 
         signals: List[Signal]
             List of Signal object that contains metadata for a signal.
-            Click `here <https://docs.clarify.io/api/1.1beta2/types/views#signal-save-integration-namespace>`__ for more information.
+            Click `here <https://docs.clarify.io/api/1.1/types/views#signal-save-integration-namespace>`__ for more information.
 
         create_only: bool, default False
             If set to true, skip update of information for existing signals. That is, all Input_ID's
@@ -443,14 +471,14 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_request(request_data.json())
+        return self.iterate_requests(request_data)
 
     @validate_arguments
     def publish_signals(
         self,
         signal_ids: List[ResourceID] = [],
-        items: List[Item] = [],
-        items_by_signal: Dict[ResourceID, Item] = {},
+        items: List[ItemSaveView] = [],
+        items_by_signal: Dict[ResourceID, ItemSaveView] = {},
         create_only: bool = False,
         integration: str = None,
     ) -> Response:
@@ -564,7 +592,7 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        return self.make_request(request_data.json())
+        return self.iterate_requests(request_data)
 
     @validate_arguments
     def select_signals(
@@ -792,18 +820,18 @@ class Client(JSONRPCClient):
             Skip the first N matches. A negative skip is treated as 0.
         total: bool, default: False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
-        gte: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__ , default: <now - 7 days>
+        gte: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1/types/fields#datetime>`__ , default: <now - 7 days>
             An RFC3339 time describing the inclusive start of the window.
-        lt: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__ , default: <now + 7 days>
+        lt: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1/types/fields#datetime>`__ , default: <now + 7 days>
             An RFC3339 time describing the exclusive end of the window.
         last: int, default: -1
             If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
-        rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ or "window", default: None
+        rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__ or "window", default: None
             If duration is specified, roll-up the values into either the full time window
             (`gte` -> `lt`) or evenly sized buckets.
         include: List of strings, default: []
             A list of strings specifying which relationships to be included in the response.
-        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__, default None
+        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__, default None
             If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
             values.
         
@@ -968,6 +996,189 @@ class Client(JSONRPCClient):
 
         request_data = Request(method=ApiMethod.data_frame, params=params)
 
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
+        
+        return self.iterate_requests(request_data, lambda x: False, window_size)
+
+
+    @validate_arguments
+    def evaluate(
+        self,
+        rollup: Union[str, timedelta],
+        items: List[Union[Dict, ItemAggregation]] = [],
+        calculations: List[Union[Dict, Calculation]] = [],
+        series: List[str] = [],
+        gte: Union[datetime, str] = None,
+        lt: Union[datetime, str] = None,
+        last: int = -1,
+        include: List[str] = [],
+        window_size: Union[str, timedelta] = None
+    ) -> Response:
+        """
+        Retrieve DataFrame by aggregating time-series data and perform evaluate formula expressions.
+
+
+        Parameters
+        ----------
+        items: Union[Dict, ItemAggregation]
+            List of item aggregations, describing a particular aggregation method for the item in list.
+            See the class from pyclarify.views.evaluate.ItemAggregation for attributes.
+        calculations: List[Union[Dict, Calculation]]
+            List of calculations, where a calculation has access to items and previous calculations in context.
+            See the class from pyclarify.views.evaluate.Calculation for attributes
+        gte: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1/types/fields#datetime>`__ , default: <now - 7 days>
+            An RFC3339 time describing the inclusive start of the window.
+        lt: `ISO 8601 timestamp <https://docs.clarify.io/api/1.1/types/fields#datetime>`__ , default: <now + 7 days>
+            An RFC3339 time describing the exclusive end of the window.
+        last: int, default: -1
+            If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.
+        rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__ or "window", default: None
+            If duration is specified, roll-up the values into either the full time window
+            (`gte` -> `lt`) or evenly sized buckets.
+        include: List of strings, default: []
+            A list of strings specifying which relationships to be included in the response.
+        window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__, default None
+            If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
+            values.
+        
+        Returns
+        -------
+        Response
+            ``Response.result.data`` is a DataFrame
+
+        See Also
+        --------
+        Client.data_frame : Retrieve data with more filter functionality and without rollup.
+
+        Notes
+        -----
+        Time selection:
+
+        - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).
+        - Maximum window size is 400 days (400 * 24 hours) when rollup is greater than or equal to PT1M (1 minute).
+        - No maximum window size if rollup is window.
+
+        The limits are used internally by the Clarify API. Should you have very high resolution data (>=1hz), you can use ``time_window`` argument to **reduce** the window, resulting in more requests.
+
+
+        Examples
+        --------
+            >>> client = Client("./clarify-credentials.json")
+
+            Getting a single item.
+
+            >>> item = ItemAggregation(
+            ...     id="cbpmaq6rpn52969vfl00",
+            ...     aggregation="max",
+            ...     alias="i1"
+            ... )
+            >>> r = client.evaluate(items=[item1], rollup="PT10M")
+            >>> print(r.result.data.to_pandas())
+            ...                             i1
+            ... 2023-10-20 10:20:00+00:00  6.0
+            ... 2023-10-20 10:30:00+00:00  9.0
+            ... 2023-10-20 10:40:00+00:00  8.0
+
+
+
+            Getting a single item in a time range.
+
+            >>> r = client.evaluate(items=[item1], gte="2022-08-10T00:00:00Z", lt="2022-08-30T00:00:00Z", rollup="PT10M")
+            >>> print(r.result.data.to_pandas())
+            ...                             i1
+            ... 2022-08-10 09:50:00+00:00  8.0
+            ... 2022-08-10 10:00:00+00:00  9.0
+            ... 2022-08-25 11:30:00+00:00  8.0
+            ... 2022-08-30 15:10:00+00:00  2.0
+            ... 2022-08-30 15:20:00+00:00  9.0
+            ... 2022-08-30 15:30:00+00:00  9.0
+
+            Using a calculation on a single item.
+
+            >>> calc = Calculation(
+            ...     formula="i1**2",
+            ...     alias="power2"
+            ... )
+            >>> r = client.evaluate(items=[item1], calculations=[calc], rollup="PT10M")
+            >>> print(r.result.data.to_pandas())
+            ...                             i1  power2
+            ... 2023-10-20 10:20:00+00:00  6.0    36.0
+            ... 2023-10-20 10:30:00+00:00  9.0    81.0
+            ... 2023-10-20 10:40:00+00:00  8.0    64.0
+
+            Adding two items.
+            
+            >>> item = ItemAggregation(
+            ...     id="cbpmaq6rpn52969vfl0g",
+            ...     aggregation="avg",
+            ...     alias="i2"
+            ... )
+            >>> calc = Calculation(
+            ...     formula="i1 + i2",
+            ...     alias="sumi1i2"
+            ... )
+            >>> r = client.evaluate(items=[item1, item2], calculations=[calc], rollup="PT10M")
+            >>> print(r.result.data.to_pandas())
+            ...                             i1   i2   sumi1i2
+            ... 2023-10-20 10:20:00+00:00  6.0   3.0      9.0
+            ... 2023-10-20 10:30:00+00:00  9.0   4.0     13.0
+            ... 2023-10-20 10:40:00+00:00  8.0   4.0     12.0
+
+            Tip
+            ----
+            You can limit the number of series to be returned by specifying aliases in the `series` parameter.
+
+            >>> r = client.evaluate(
+            ...     items=[item1, item2], 
+            ...     calculations=[calc], 
+            ...     rollup="PT10M", 
+            ...     series=["sumi1i2"]
+            ... )
+            >>> print(r.result.data.to_pandas())
+            ...                            sumi1i2
+            ... 2023-10-20 10:20:00+00:00      9.0
+            ... 2023-10-20 10:30:00+00:00     13.0
+            ... 2023-10-20 10:40:00+00:00     12.0
+
+
+            Chaining calculations.
+            
+            >>> calc1 = Calculation(
+            ...     formula="i1 + i2",
+            ...     alias="sum"
+            ... )
+            >>> calc2 = Calculation(
+            ...     formula="i1/sum",
+            ...     alias="ratei1"
+            ... )
+            >>> calc2 = Calculation(
+            ...     formula="floor(ratei1*100)",
+            ...     alias="ratio"
+            ... )
+            >>> r = client.evaluate(
+            ...     items=[item1, item2], 
+            ...     calculations=[calc1, calc2, calc3], 
+            ...     rollup="PT10M", 
+            ...     series=["i1", "i2", "ratio"]
+            ... )
+            >>> print(r.result.data.to_pandas())
+            ...                             i1   i2  ratio
+            ... 2023-10-20 10:20:00+00:00  6.0  3.0   66.0
+            ... 2023-10-20 10:30:00+00:00  9.0  4.0   69.0
+            ... 2023-10-20 10:40:00+00:00  8.0  4.0   66.0
+        """
+
+        data_filter = DataFilter(gte=gte, lt=lt, series=series)
+        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
+        params = {
+            "items": items,
+            "calculations": calculations,
+            "data": data_query, 
+            "include": include
+        }
+        request_data = Request(method=ApiMethod.evaluate, params=params)
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )

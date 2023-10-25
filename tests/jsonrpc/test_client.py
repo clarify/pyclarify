@@ -1,5 +1,5 @@
 """
-Copyright 2021 Clarify
+Copyright 2023 Clarify
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -92,16 +92,15 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_request(payload)
+        response = self.client.make_request(payload).json()
         payload = json.loads(payload)
-        # assert valid response type
-        self.assertIsInstance(response, Response)
+
 
         # assert is JSONRPC
-        self.assertEqual(response.jsonrpc, "2.0")
+        self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
-        self.assertEqual(response.id, str(payload["id"]))
+        self.assertEqual(response["id"], str(payload["id"]))
 
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
@@ -116,16 +115,15 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_request(payload)
+        response = self.client.make_request(payload).json()
         payload = json.loads(payload)
-        # assert valid response type
-        self.assertIsInstance(response, Response)
+
 
         # assert is JSONRPC
-        self.assertEqual(response.jsonrpc, "2.0")
+        self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
-        self.assertEqual(response.id, str(payload["id"]))
+        self.assertEqual(response["id"], str(payload["id"]))
 
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
@@ -140,16 +138,15 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_request(payload)
+        response = self.client.make_request(payload).json()
         payload = json.loads(payload)
-        # assert valid response type
-        self.assertIsInstance(response, Response)
+
 
         # assert is JSONRPC
-        self.assertEqual(response.jsonrpc, "2.0")
+        self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
-        self.assertEqual(response.id, str(payload["id"]))
+        self.assertEqual(response["id"], str(payload["id"]))
     
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")
@@ -164,16 +161,15 @@ class TestJSONRPCClient(unittest.TestCase):
             "response"
         ]
 
-        response = self.client.make_request(payload)
+        response = self.client.make_request(payload).json()
         payload = json.loads(payload)
-        # assert valid response type
-        self.assertIsInstance(response, Response)
+
 
         # assert is JSONRPC
-        self.assertEqual(response.jsonrpc, "2.0")
+        self.assertEqual(response["jsonrpc"], "2.0")
 
         # assert is correct id
-        self.assertEqual(response.id, str(payload["id"]))
+        self.assertEqual(response["id"], str(payload["id"]))
 
 
     def test_authentication(self):

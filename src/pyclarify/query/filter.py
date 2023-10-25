@@ -152,6 +152,7 @@ class DataFilter(BaseModel):
 
     gte: Optional[Union[str, datetime]] = None
     lt: Optional[Union[str, datetime]] = None
+    series: Optional[List[str]] = []
 
     @root_validator(pre=False, allow_reuse=True)
     def field_must_reflect_operator(cls, values):
@@ -162,15 +163,18 @@ class DataFilter(BaseModel):
             values["gte"] = DateField(operator=Operators.GTE, time=parse_datetime(gte).astimezone().isoformat())
         if lt:
             values["lt"] = DateField(operator=Operators.LT, time=parse_datetime(lt).astimezone().isoformat())
-
         return values
 
     def to_query(self):
-        q = {}
+        query = {}
+        times = {}
         if self.gte:
             gte = self.gte.dict()["query"]
-            q.update(gte)
+            times.update(gte)
         if self.lt:
             lt = self.lt.dict()["query"]
-            q.update(lt)
-        return {"times": q}
+            times.update(lt)
+        if self.series:
+            query["series"] = {"$in" : self.series}
+        query["times"] =  times
+        return query

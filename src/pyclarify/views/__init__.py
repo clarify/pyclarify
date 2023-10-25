@@ -17,3 +17,4 @@ limitations under the License.
 from .dataframe import DataFrame
 from .items import Item, ItemInfo
 from .signals import Signal, SignalInfo
+from .evaluate import Calculation, ItemAggregation

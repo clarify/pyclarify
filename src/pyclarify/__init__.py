@@ -15,8 +15,8 @@ limitations under the License.
 """
 
 from pyclarify.client import Client
-from pyclarify.views import Signal, SignalInfo, Item, ItemInfo, DataFrame
+from pyclarify.views import Signal, SignalInfo, Item, ItemInfo, DataFrame, ItemAggregation, Calculation
 import pyclarify.query
 
-__version__ = "0.4.5"
-__API_version__ = "1.1beta2"
+__version__ = "0.5.0b1"
+__API_version__ = "1.1"

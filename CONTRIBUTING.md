@@ -15,7 +15,7 @@ Set up tests for all new functionality.
 
 Initiate unit tests by running the following command from the root directory:
 
-`python -m discover -s tests/`
+`python -m unittest discover -s tests/`
 
 ### Documentation
 

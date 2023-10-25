@@ -27,7 +27,7 @@ class TestSelectItems(unittest.TestCase):
             self.fail("SelectItemsParams raised ValidationError unexpectedly!")
 
         try:
-            SelectItemsParams(query= {"filter": {}}, include=[], groupIncludedByType = False)
+            SelectItemsParams(query= {"filter": {}}, include=[])
         except ValidationError:
             self.fail("SelectItemsParams raised ValidationError unexpectedly!")
 
