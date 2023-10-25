@@ -27,6 +27,14 @@ DataFrame module
    :undoc-members:
    :show-inheritance:
 
+Evaluate module
+----------------
+
+.. automodule:: pyclarify.views.evaluate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Filter module
 -------------
 

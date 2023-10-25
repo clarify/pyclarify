@@ -8,6 +8,7 @@ Client
    :maxdepth: 1
 
    dataframe
+   evaluate
    select_items
    select_signals
    save_signals
