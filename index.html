@@ -1,20 +1,29 @@
+
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PyClarify &mdash; PyClarify 0.5.0b1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/favicon.png"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a7c766ee"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=30646c52"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -26,18 +35,22 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> PyClarify
+
+          
+          
+          <a href="#" class="icon icon-home">
+            PyClarify
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/index.html">PyClarify Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">API Reference</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -57,8 +70,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>PyClarify</li>
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PyClarify</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -69,43 +82,74 @@
            <div itemprop="articleBody">
              
   <section id="pyclarify">
-<h1>PyClarify<a class="headerlink" href="#pyclarify" title="Permalink to this headline"></a></h1>
+<h1>PyClarify<a class="headerlink" href="#pyclarify" title="Link to this heading"></a></h1>
 <p><a class="reference external" href="https://pypi.org/project/pyclarify/"><img alt="PyPI package" src="https://img.shields.io/badge/pip%20install-pyclarify-brightgreen" /></a>
-<a class="reference external" href="https://pypi.org/project/pyclarify/"><img alt="version number" src="https://img.shields.io/pypi/v/pyclarify?color=green&amp;label=version" /></a>
+<a class="reference external" href="https://pypi.org/project/pyclarify/"><img alt="Version number" src="https://img.shields.io/pypi/v/pyclarify?color=green&amp;label=version" /></a>
+<a class="reference external" href="https://pepy.tech/project/pyclarify"><img alt="Downloads" src="https://static.pepy.tech/badge/pyclarify" /></a>
+<a class="reference external" href="https://pepy.tech/project/pyclarify"><img alt="Downloads" src="https://static.pepy.tech/personalized-badge/pyclarify?period=month&amp;units=none&amp;left_color=grey&amp;right_color=blue&amp;left_text=downloads/month" /></a>
 <a class="reference external" href="https://github.com/clarify/pyclarify/actions"><img alt="Actions Status" src="https://github.com/clarify/pyclarify/workflows/Build%20status/badge.svg" /></a>
 <a class="reference external" href="https://github.com/clarify/pyclarify/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/clarify/pyclarify" /></a>
 <a class="reference external" href="https://github.com/ambv/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a></p>
 <hr/>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2023-10-27T00:00:00+02:00&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;series&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">19</span><span class="p">],</span>
+        <span class="s2">&quot;pressure&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1025</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;credentials.json&quot;</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>PyClarify helps users of Clarify to easily read, write and manipulate data in Clarify.</p>
-<hr/>
-<p>Our developer guide has been migrated to <a href="https://docs.clarify.io/developers/tools/python" target="_blank">docs.clarify.io</a>.</p>
-<p>Our concepts page has been migrated to <a href="https://docs.clarify.io/developers/quickstart/concepts" target="_blank">docs.clarify.io</a>.</p>
+<ul class="simple">
+<li><p>Data scientists can easily filter data, convert it to <code class="docutils literal notranslate"><span class="pre">pandas</span></code> with our built in methods, and write results back.</p></li>
+<li><p>System integrators can set up pipelines for automatic streaming of data, and update labels on the fly.</p></li>
+</ul>
+</section>
+<section id="useful-tutorials-and-documentation">
+<h1>Useful tutorials and documentation<a class="headerlink" href="#useful-tutorials-and-documentation" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pypi.org/project/pyclarify/">PyClarify SDK</a></p></li>
+<li><p><a class="reference external" href="https://clarify.github.io/pyclarify/">PyClarify documentation</a></p></li>
+<li><p><a class="reference external" href="https://docs.clarify.io/developers/welcome">Clarify Developer documentation</a></p></li>
+<li><p><a class="reference external" href="https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb">Basic tutorial on using Python with Clarify</a></p></li>
+</ul>
+</section>
+<section id="prerequisites">
+<h1>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h1>
+<p>In order to start using the Python SDK, you need</p>
+<ul class="simple">
+<li><p>To know a bit of Python. For a refresher, see the <a class="reference external" href="https://docs.python.org/tutorial/">Official Python tutorial</a>.</p></li>
+<li><p>Python3 (&gt;= 3.7) and pip.</p></li>
+<li><p>Credentials from a Clarify integration. See the <a class="reference external" href="https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb">introduction notebook</a> for a complete introduction.</p></li>
+</ul>
+<section id="where-to-get-it">
+<h2>Where to get it<a class="headerlink" href="#where-to-get-it" title="Link to this heading"></a></h2>
+<p>The source code is currently hosted on GitHub at: <a class="reference external" href="https://github.com/clarify/pyclarify">https://github.com/clarify/pyclarify</a></p>
+<p>Binary installers for the latest released version are available at the <a class="reference external" href="https://pypi.org/project/pyclarify">Python
+Package Index (PyPI)</a>.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># PyPI install</span>
+pip<span class="w"> </span>install<span class="w"> </span>pyclarify
+</pre></div>
+</div>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://requests.readthedocs.io/en/latest/">requests</a> - The most used (and trusted) HTTP library.</p></li>
+<li><p><a class="reference external" href="https://pydantic-docs.helpmanual.io">Pydantic</a> - Allowing for strict typing and data validation.</p></li>
+<li><p><a class="reference external" href="https://typing.readthedocs.io">Typing Extensions</a> - Brings the typing use of new type system features on older Python versions, allowing us to support python 3.7+.</p></li>
+</ul>
+</section>
 </section>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/index.html">PyClarify Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reference/client/index.html">Client</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reference/client/dataframe.html">DataFrame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/client/evaluate.html">Evaluate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/client/select_items.html">Select Items</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/client/select_signals.html">Select Signals</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/client/save_signals.html">Save Signals</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/client/publish_signals.html">Publish Signals</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/client/insert.html">Insert</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="reference/views.html">Views</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="reference/views.html#module-pyclarify.views.signals">Signals module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/views.html#module-pyclarify.views.items">Items module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/views.html#module-pyclarify.views.dataframe">DataFrame module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/views.html#module-pyclarify.views.evaluate">Evaluate module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reference/views.html#module-pyclarify.query.filter">Filter module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 </div>
+<p><strong>Other information</strong></p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>

@@ -1,25 +1,34 @@
+
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Changelog &mdash; PyClarify 0.5.0b1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/favicon.png"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a7c766ee"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=30646c52"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="License" href="license.html" />
-    <link rel="prev" title="Views" href="reference/views.html" /> 
+    <link rel="prev" title="Filter module" href="reference/views/filter.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,18 +36,22 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> PyClarify
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyClarify
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="reference/index.html">PyClarify Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">API Reference</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
@@ -136,8 +149,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Changelog</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Changelog</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/changelog.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -148,7 +161,7 @@
            <div itemprop="articleBody">
              
   <section id="changelog">
-<h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline"></a></h1>
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>, and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <p>The changelog for SDK version 0.x.x can be found here.</p>
@@ -162,9 +175,9 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">Security</span></code> in case of vulnerabilities.</p></li>
 </ul>
 <section id="id1">
-<h2>[0.5.0] - 2023-10-10<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<h2>[0.5.0] - 2023-10-10<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <section id="added">
-<h3>Added<a class="headerlink" href="#added" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h3>
 <ul>
 <li><p>New Evaluate endpoint. A data method for aggregating time-series data and perform evaluate formula expressions. Along with support classes for validation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ItemAggregation</span><span class="p">,</span> <span class="n">Calculation</span>
@@ -218,41 +231,41 @@
 </ul>
 </section>
 <section id="changed">
-<h3>Changed<a class="headerlink" href="#changed" title="Permalink to this headline"></a></h3>
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>API version changed from 1.1beta2 to 1.1.</p></li>
 <li><p>Changes to internal models to comply with new models in the API.</p></li>
 </ul>
 </section>
 <section id="fixed">
-<h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Typo in CONTRIBUTION.md.</p></li>
 </ul>
 </section>
 </section>
 <section id="id2">
-<h2>[0.4.5] - 2023-08-09<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<h2>[0.4.5] - 2023-08-09<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <section id="id3">
-<h3>Fixed<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Still experienced issues. Forced SDK to use pydantic.V1.</p></li>
 </ul>
 </section>
 </section>
 <section id="id4">
-<h2>[0.4.4] - 2023-08-09<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h2>
+<h2>[0.4.4] - 2023-08-09<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
 <section id="id5">
-<h3>Fixed<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Fixed deprecated <code class="docutils literal notranslate"><span class="pre">Pydantic</span></code> dependency to the <code class="docutils literal notranslate"><span class="pre">pydantic.fields.Optional</span></code> resource. Changed all occurances to <code class="docutils literal notranslate"><span class="pre">typing.Optional</span></code>.</p></li>
 </ul>
 </section>
 </section>
 <section id="id6">
-<h2>[0.4.3] - 2023-02-20<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h2>
+<h2>[0.4.3] - 2023-02-20<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
 <section id="id7">
-<h3>Added<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Added possibility to directly insert pd.DataFrame, pd.Series and dictionaries into Clarify. NB! Infers timestamp column and only supports when there only exists one timestamp column.</p></li>
 <li><p>Added possibility to directly insert dictionaries to <code class="docutils literal notranslate"><span class="pre">pyclarify.client.data_frame</span></code>, <code class="docutils literal notranslate"><span class="pre">pyclarify.client.select_signals</span></code>, and <code class="docutils literal notranslate"><span class="pre">pyclarify.client.select_items</span></code>.</p></li>
@@ -260,7 +273,7 @@
 </ul>
 </section>
 <section id="id8">
-<h3>Fixed<a class="headerlink" href="#id8" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Fixed bug where the response was not JSON encoded causing error initialization to fail. Added more tests to check for such issues.</p></li>
 <li><p>Fixed bug where Filter did not allow dictionary without comparison as an input argument for the filter.</p></li>
@@ -269,9 +282,9 @@
 </section>
 </section>
 <section id="id9">
-<h2>[0.4.2] - 2022-12-16<a class="headerlink" href="#id9" title="Permalink to this headline"></a></h2>
+<h2>[0.4.2] - 2022-12-16<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
 <section id="id10">
-<h3>Fixed<a class="headerlink" href="#id10" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Integration parameter in <code class="docutils literal notranslate"><span class="pre">SignalSelectView</span></code> is now optional, as it would break on some occations.</p></li>
 <li><p>More descriptive warning message when using <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">[None]</span></code> in <code class="docutils literal notranslate"><span class="pre">query.Filters</span></code>.</p></li>
@@ -279,9 +292,9 @@
 </section>
 </section>
 <section id="id11">
-<h2>[0.4.1] - 2022-10-11<a class="headerlink" href="#id11" title="Permalink to this headline"></a></h2>
+<h2>[0.4.1] - 2022-10-11<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
 <section id="id12">
-<h3>Added<a class="headerlink" href="#id12" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>All select queries (<code class="docutils literal notranslate"><span class="pre">client.select_items</span></code>, <code class="docutils literal notranslate"><span class="pre">client.select_signals</span></code>) now supports a <code class="docutils literal notranslate"><span class="pre">None</span></code> limit to do an exhaustive query for all resources.</p></li>
 <li><p>Sanity checks for initializing <code class="docutils literal notranslate"><span class="pre">pyclarify.Client</span></code> with more descriptive errors.</p></li>
@@ -289,10 +302,10 @@
 </section>
 </section>
 <section id="id13">
-<h2>[0.4.0] - 2022-07-12<a class="headerlink" href="#id13" title="Permalink to this headline"></a></h2>
+<h2>[0.4.0] - 2022-07-12<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
 <p>Changing to JSON:API format!</p>
 <section id="id14">
-<h3>Added<a class="headerlink" href="#id14" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">fields</span></code> folder containing all fields used internally.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">views</span></code> folder containing all models for communicating with the API.</p></li>
@@ -302,7 +315,7 @@
 </ul>
 </section>
 <section id="id15">
-<h3>Changed<a class="headerlink" href="#id15" title="Permalink to this headline"></a></h3>
+<h3>Changed<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient</span></code> renamed to <code class="docutils literal notranslate"><span class="pre">pyclarify.client.Client</span></code></p></li>
 <li><p>Moved <code class="docutils literal notranslate"><span class="pre">ResourceQuery</span></code> and <code class="docutils literal notranslate"><span class="pre">DataQuery</span></code> models to <code class="docutils literal notranslate"><span class="pre">pyclarify.query.query</span></code>.</p></li>
@@ -354,7 +367,7 @@
 </ul>
 </section>
 <section id="removed">
-<h3>Removed<a class="headerlink" href="#removed" title="Permalink to this headline"></a></h3>
+<h3>Removed<a class="headerlink" href="#removed" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.APIClient</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.Client.get_token()</span></code></p></li>
@@ -365,18 +378,18 @@
 </section>
 </section>
 <section id="id16">
-<h2>[0.3.5] - 2022-05-13<a class="headerlink" href="#id16" title="Permalink to this headline"></a></h2>
+<h2>[0.3.5] - 2022-05-13<a class="headerlink" href="#id16" title="Link to this heading"></a></h2>
 <section id="id17">
-<h3>Fixed<a class="headerlink" href="#id17" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Adding <code class="docutils literal notranslate"><span class="pre">insert</span></code> method to <code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient</span></code></p></li>
 </ul>
 </section>
 </section>
 <section id="id18">
-<h2>[0.3.4] - 2022-04-27<a class="headerlink" href="#id18" title="Permalink to this headline"></a></h2>
+<h2>[0.3.4] - 2022-04-27<a class="headerlink" href="#id18" title="Link to this heading"></a></h2>
 <section id="id19">
-<h3>Added<a class="headerlink" href="#id19" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient.select_items()</span></code> using <code class="docutils literal notranslate"><span class="pre">query.Filter</span></code> model.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient.select_signals_filter()</span></code> using <code class="docutils literal notranslate"><span class="pre">query.Filter</span></code> model. NB! Will be renamed <code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient.select_signals()</span></code> in the future and replace current <code class="docutils literal notranslate"><span class="pre">select_signals()</span></code> method.</p></li>
@@ -384,14 +397,14 @@
 </ul>
 </section>
 <section id="id20">
-<h3>Changed<a class="headerlink" href="#id20" title="Permalink to this headline"></a></h3>
+<h3>Changed<a class="headerlink" href="#id20" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Replaced custom time parse methods with <code class="docutils literal notranslate"><span class="pre">pydantic.datetime_parse</span></code> methods.</p></li>
 <li><p>ContentHash is constrained as plain string and not SHA1.</p></li>
 </ul>
 </section>
 <section id="deprecated">
-<h3>Deprecated<a class="headerlink" href="#deprecated" title="Permalink to this headline"></a></h3>
+<h3>Deprecated<a class="headerlink" href="#deprecated" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient.select_items_metadata()</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient.select_items_data()</span></code></p></li>
@@ -401,9 +414,9 @@
 </section>
 </section>
 <section id="id21">
-<h2>[0.3.3] - 2022-04-26<a class="headerlink" href="#id21" title="Permalink to this headline"></a></h2>
+<h2>[0.3.3] - 2022-04-26<a class="headerlink" href="#id21" title="Link to this heading"></a></h2>
 <section id="id22">
-<h3>Changed<a class="headerlink" href="#id22" title="Permalink to this headline"></a></h3>
+<h3>Changed<a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Renamed file <code class="docutils literal notranslate"><span class="pre">convert.py</span></code> to <code class="docutils literal notranslate"><span class="pre">time.py</span></code>.</p></li>
 <li><p>Refactored <code class="docutils literal notranslate"><span class="pre">pagination.GetDates</span></code> and changed name to <code class="docutils literal notranslate"><span class="pre">pagination.TimeIterator</span></code>.</p></li>
@@ -416,7 +429,7 @@
 </ul>
 </section>
 <section id="id23">
-<h3>Removed<a class="headerlink" href="#id23" title="Permalink to this headline"></a></h3>
+<h3>Removed<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.__utils__.convert.str_to_datetime()</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.pretty_response()</span></code></p></li>
@@ -426,7 +439,7 @@
 </ul>
 </section>
 <section id="id24">
-<h3>Added<a class="headerlink" href="#id24" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#id24" title="Link to this heading"></a></h3>
 <ul>
 <li><p>RFC3339 to time delta function in time.py.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">__add__()</span></code> functionality to SelectItemsResponse model and GenericResponse model.</p></li>
@@ -467,7 +480,7 @@ Filter is based on MongoDB filters and works as described in <a class="reference
 </ul>
 </section>
 <section id="id25">
-<h3>Fixed<a class="headerlink" href="#id25" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id25" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Validator on <code class="docutils literal notranslate"><span class="pre">models.data.DataFrame</span></code> now converts <code class="docutils literal notranslate"><span class="pre">numpy.nan</span></code> to native python <code class="docutils literal notranslate"><span class="pre">none</span></code> .</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">annotations</span></code> field on <code class="docutils literal notranslate"><span class="pre">models.data.SignalInfo</span></code> is now optional.</p></li>
@@ -475,27 +488,27 @@ Filter is based on MongoDB filters and works as described in <a class="reference
 </section>
 </section>
 <section id="id26">
-<h2>[0.3.2] - 2022-04-01<a class="headerlink" href="#id26" title="Permalink to this headline"></a></h2>
+<h2>[0.3.2] - 2022-04-01<a class="headerlink" href="#id26" title="Link to this heading"></a></h2>
 <section id="id27">
-<h3>Fixed<a class="headerlink" href="#id27" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id27" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Hotfix bug in version header.</p></li>
 </ul>
 </section>
 </section>
 <section id="id28">
-<h2>[0.3.1] - 2022-04-01<a class="headerlink" href="#id28" title="Permalink to this headline"></a></h2>
+<h2>[0.3.1] - 2022-04-01<a class="headerlink" href="#id28" title="Link to this heading"></a></h2>
 <section id="id29">
-<h3>Fixed<a class="headerlink" href="#id29" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id29" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Update versioning of API to 1.1beta1 (All prior versions of SDK will not work due API version 1.1 introducing non backwards compatible changes).</p></li>
 </ul>
 </section>
 </section>
 <section id="id30">
-<h2>[0.3.0] - 2022-02-04<a class="headerlink" href="#id30" title="Permalink to this headline"></a></h2>
+<h2>[0.3.0] - 2022-02-04<a class="headerlink" href="#id30" title="Link to this heading"></a></h2>
 <section id="id31">
-<h3>Added<a class="headerlink" href="#id31" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#id31" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Iterators for sending multiple JSONRPC requests, constrained by API limits.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.client.ClarifyClient</span></code> containing all methods supported by <code class="docutils literal notranslate"><span class="pre">APIClient</span></code>, but written in a pythonic manner.</p></li>
@@ -505,31 +518,31 @@ Filter is based on MongoDB filters and works as described in <a class="reference
 </ul>
 </section>
 <section id="fix">
-<h3>Fix<a class="headerlink" href="#fix" title="Permalink to this headline"></a></h3>
+<h3>Fix<a class="headerlink" href="#fix" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Docstrings on several methods in <code class="docutils literal notranslate"><span class="pre">pyclarify.client.py</span></code>.</p></li>
 </ul>
 </section>
 <section id="id32">
-<h3>Changed<a class="headerlink" href="#id32" title="Permalink to this headline"></a></h3>
+<h3>Changed<a class="headerlink" href="#id32" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.models.requests.PublishSignalsParams</span></code> changed type attribute from <code class="docutils literal notranslate"><span class="pre">SignalInfo</span></code> to <code class="docutils literal notranslate"><span class="pre">Item</span></code>.</p></li>
 </ul>
 </section>
 </section>
 <section id="id33">
-<h2>[0.2.2] - 2021-11-23<a class="headerlink" href="#id33" title="Permalink to this headline"></a></h2>
+<h2>[0.2.2] - 2021-11-23<a class="headerlink" href="#id33" title="Link to this heading"></a></h2>
 <section id="id34">
-<h3>Fixed<a class="headerlink" href="#id34" title="Permalink to this headline"></a></h3>
+<h3>Fixed<a class="headerlink" href="#id34" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Fix import dependency for python version 3.7.</p></li>
 </ul>
 </section>
 </section>
 <section id="id35">
-<h2>[0.2.1] - 2021-11-23<a class="headerlink" href="#id35" title="Permalink to this headline"></a></h2>
+<h2>[0.2.1] - 2021-11-23<a class="headerlink" href="#id35" title="Link to this heading"></a></h2>
 <section id="id36">
-<h3>Added<a class="headerlink" href="#id36" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#id36" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Copyright</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyclarify.models.response.Response</span></code> encapsulating all response types.</p></li>
@@ -537,9 +550,9 @@ Filter is based on MongoDB filters and works as described in <a class="reference
 </section>
 </section>
 <section id="id37">
-<h2>[0.2.0] - 2021-11-22<a class="headerlink" href="#id37" title="Permalink to this headline"></a></h2>
+<h2>[0.2.0] - 2021-11-22<a class="headerlink" href="#id37" title="Link to this heading"></a></h2>
 <section id="id38">
-<h3>Added<a class="headerlink" href="#id38" title="Permalink to this headline"></a></h3>
+<h3>Added<a class="headerlink" href="#id38" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Added methods to APIClient for the Admin API.</p></li>
 <li><p>Restructured the Pydantic models into Request and Response types.</p></li>
@@ -552,7 +565,7 @@ Filter is based on MongoDB filters and works as described in <a class="reference
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="reference/views.html" class="btn btn-neutral float-left" title="Views" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reference/views/filter.html" class="btn btn-neutral float-left" title="Filter module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

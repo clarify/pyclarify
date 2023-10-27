@@ -1,0 +1,1335 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyclarify.client &mdash; PyClarify 0.5.0b1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a7c766ee"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PyClarify
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">API Reference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyClarify</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyclarify.client</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyclarify.client</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2023 Searis AS</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Client module is the main module of PyClarify.</span>
+
+<span class="sd">The module provides a class for setting up a JSONRPCClient which will communicate with</span>
+<span class="sd">the Clarify API. Methods for reading and writing to the API is implemented with the</span>
+<span class="sd">help of jsonrpcclient framework.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">pyclarify</span>
+<span class="kn">from</span> <span class="nn">pyclarify.__utils__.stopping_conditions</span> <span class="kn">import</span> <span class="n">select_stopping_condition</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">validate_arguments</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">pyclarify.jsonrpc.client</span> <span class="kn">import</span> <span class="n">JSONRPCClient</span>
+<span class="kn">from</span> <span class="nn">pyclarify.views.dataframe</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">pyclarify.views.evaluate</span> <span class="kn">import</span> <span class="n">Calculation</span><span class="p">,</span> <span class="n">ItemAggregation</span>
+<span class="kn">from</span> <span class="nn">pyclarify.views.items</span> <span class="kn">import</span> <span class="n">ItemSaveView</span>
+<span class="kn">from</span> <span class="nn">pyclarify.views.signals</span> <span class="kn">import</span> <span class="n">Signal</span>
+<span class="kn">from</span> <span class="nn">pyclarify.fields.constraints</span> <span class="kn">import</span> <span class="n">InputID</span><span class="p">,</span> <span class="n">ResourceID</span><span class="p">,</span> <span class="n">ApiMethod</span>
+<span class="kn">from</span> <span class="nn">pyclarify.views.generics</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">pyclarify.query</span> <span class="kn">import</span> <span class="n">Filter</span><span class="p">,</span> <span class="n">DataFilter</span>
+<span class="kn">from</span> <span class="nn">pyclarify.query.query</span> <span class="kn">import</span> <span class="n">ResourceQuery</span><span class="p">,</span> <span class="n">DataQuery</span>
+<span class="kn">from</span> <span class="nn">pyclarify.__utils__.pagination</span> <span class="kn">import</span> <span class="n">SelectIterator</span>
+<span class="kn">from</span> <span class="nn">pyclarify.fields.error</span> <span class="kn">import</span> <span class="n">Error</span>
+
+
+<div class="viewcode-block" id="Client">
+<a class="viewcode-back" href="../../reference/client/index.html#pyclarify.client.Client">[docs]</a>
+<span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">JSONRPCClient</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class containing all rpc methods for talking to Clarify. Uses credential file on initialization.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    clarify_credentials: path to json file</span>
+<span class="sd">        Path to the Clarify credentials json file from the integrations page in clarify. See user guide for more information.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;./clarify-credentials.json&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clarify_credentials</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">({</span><span class="s2">&quot;X-API-Version&quot;</span><span class="p">:</span> <span class="n">pyclarify</span><span class="o">.</span><span class="n">__API_version__</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">({</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;PyClarify/</span><span class="si">{</span><span class="n">pyclarify</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authenticate</span><span class="p">(</span><span class="n">clarify_credentials</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">api_url</span><span class="si">}</span><span class="s2">rpc&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Successfully connected to Clarify!&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SDK version: </span><span class="si">{</span><span class="n">pyclarify</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;API version: </span><span class="si">{</span><span class="n">pyclarify</span><span class="o">.</span><span class="n">__API_version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;HTTP Response Error: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">Error</span><span class="p">(</span><span class="o">**</span><span class="n">err</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span>
+        <span class="n">response</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="o">**</span><span class="n">response</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">iterate_requests</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span>
+        <span class="n">stopping_condition</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">window_size</span><span class="p">:</span> <span class="n">timedelta</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">ApiMethod</span><span class="o">.</span><span class="n">data_frame</span><span class="p">,</span>
+            <span class="n">ApiMethod</span><span class="o">.</span><span class="n">select_items</span><span class="p">,</span>
+            <span class="n">ApiMethod</span><span class="o">.</span><span class="n">select_signals</span><span class="p">,</span>
+            <span class="n">ApiMethod</span><span class="o">.</span><span class="n">evaluate</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="n">iterator</span> <span class="o">=</span> <span class="n">SelectIterator</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">window_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">iterator</span> <span class="o">=</span> <span class="p">[</span><span class="n">request</span><span class="p">]</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">rpc_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_response</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">rpc_response</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">responses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">responses</span> <span class="o">=</span> <span class="n">response</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">responses</span> <span class="o">+=</span> <span class="n">response</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">stopping_condition</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stopping_condition</span><span class="p">,</span> <span class="n">Callable</span><span class="p">)</span>
+                <span class="k">else</span> <span class="kc">False</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">responses</span>
+        <span class="k">return</span> <span class="n">responses</span>
+
+<div class="viewcode-block" id="Client.insert">
+<a class="viewcode-back" href="../../reference/client/index.html#pyclarify.client.Client.insert">[docs]</a>
+    <span class="nd">@validate_arguments</span>
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with</span>
+<span class="sd">        the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.</span>
+<span class="sd">        Mirroring the Clarify API call `integration.insert &lt;https://docs.clarify.io/api/methods/integration/insert&gt;`__ .</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : DataFrame, pd.DataFrame, dict</span>
+<span class="sd">            The data containing the values of a signal in a key-value pair, and separate time axis.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Response</span>
+<span class="sd">            `Response.result.data` is a dictionary mapping INPUT_ID to SIGNAL_ID.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Client.data_frame : Retrieve data from selected items.</span>
+<span class="sd">        Client.save_signals : Save meta data for signals.</span>
+<span class="sd">        DataFrame : Model used for transporting data to and from Clarify.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            &gt;&gt;&gt; from pyclarify import Client, DataFrame</span>
+<span class="sd">            &gt;&gt;&gt; client = Client(&quot;./clarify-credentials.json&quot;)</span>
+
+<span class="sd">            Inserting some dummy data.</span>
+
+<span class="sd">            &gt;&gt;&gt; data = DataFrame(</span>
+<span class="sd">            ...     series={&quot;INPUT_ID_1&quot;: [1, 2], &quot;INPUT_ID_2&quot;: [3, 4]},</span>
+<span class="sd">            ...     times=[&quot;2021-11-01T21:50:06Z&quot;,  &quot;2021-11-02T21:50:06Z&quot;]</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; client.insert(data)</span>
+
+<span class="sd">            Inserting pandas.DataFrame.</span>
+
+<span class="sd">            &gt;&gt;&gt; import pandas as pd</span>
+<span class="sd">            &gt;&gt;&gt; df = pd.DataFrame(data={&quot;INPUT_ID_1&quot;: [1, 2], &quot;INPUT_ID_2&quot;: [3, 4]})</span>
+<span class="sd">            &gt;&gt;&gt; df.index = [&quot;2021-11-01T21:50:06Z&quot;,  &quot;2021-11-02T21:50:06Z&quot;]</span>
+<span class="sd">            &gt;&gt;&gt; client.insert(df)</span>
+
+
+<span class="sd">        Response</span>
+<span class="sd">            In case of a valid return value, returns a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... signalsByInput = {</span>
+<span class="sd">                ...     &#39;INPUT_ID_1&#39;: CreateSummary(id = &#39;SIGNAL_ID_1&#39;, created = True),</span>
+<span class="sd">                ...     &#39;INPUT_ID_2&#39;: CreateSummary(id = &#39;SIGNAL_ID_2&#39;, created = True)</span>
+<span class="sd">                ... }</span>
+<span class="sd">                ... error = None</span>
+
+<span class="sd">            Where:</span>
+
+<span class="sd">            - InsertResponse is a a pydantic model with field signalsByInput.</span>
+<span class="sd">            - signalsByInput is a Dict[InputID, CreateSummary].</span>
+<span class="sd">            - CreateSummary is a a pydantic model with field id: str and created: bool (True if a new instance was created, False is the instance already existed).</span>
+
+<span class="sd">            In case of the error (for example not equal length) the method return a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = None</span>
+<span class="sd">                ... error = Error(</span>
+<span class="sd">                ...         code = &#39;-32602&#39;,</span>
+<span class="sd">                ...         message = &#39;Invalid params&#39;,</span>
+<span class="sd">                ...         data = ErrorData(</span>
+<span class="sd">                ...                     trace = &lt;trace_id&gt;,</span>
+<span class="sd">                ...                     params = {&#39;data.series.id&#39;: [&#39;not same length as times&#39;]}</span>
+<span class="sd">                ...         )</span>
+<span class="sd">                ... )</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s2">&quot;pandas&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">request_data</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="n">method</span><span class="o">=</span><span class="n">ApiMethod</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;integration&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">integration_id</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_requests</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.select_items">
+<a class="viewcode-back" href="../../reference/client/index.html#pyclarify.client.Client.select_items">[docs]</a>
+    <span class="nd">@validate_arguments</span>
+    <span class="k">def</span> <span class="nf">select_items</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">filter</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">include</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">total</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return item metadata from selected items.</span>
+<span class="sd">        For more information click `here &lt;https://docs.clarify.io/api/1.1beta2/methods/clarify/select-items&gt;`__ .</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filter: Filter, optional</span>
+<span class="sd">            A Filter Model that describes a mongodb filter to be applied.</span>
+
+<span class="sd">        include: List of strings, optional</span>
+<span class="sd">            A list of strings specifying which relationships to be included in the response.</span>
+
+<span class="sd">        skip: int, default 0</span>
+<span class="sd">            Integer describing how many of the first N items to exclude from response.</span>
+
+<span class="sd">        limit: int, default 10</span>
+<span class="sd">            Number of items to include in the match.</span>
+
+<span class="sd">        sort: list of strings</span>
+<span class="sd">            List of strings describing the order in which to sort the items in the response.</span>
+
+<span class="sd">        total: bool, default False</span>
+<span class="sd">            When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</span>
+
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Response</span>
+<span class="sd">            ``Response.result.data`` is an array of ItemSelectView</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            &gt;&gt;&gt; client = Client(&quot;./clarify-credentials.json&quot;)</span>
+
+<span class="sd">            Querying items based on a filter.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_items(</span>
+<span class="sd">            ...     filter = Filter(fields={&quot;name&quot;: filter.NotEqual(value=&quot;Air Temperature&quot;)}),</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Getting 1000 items.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_items(</span>
+<span class="sd">            ...     limit = 1000,</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Getting 100 items and sorting by name.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_items(</span>
+<span class="sd">            ...     limit = 100,</span>
+<span class="sd">            ...     sort = [&quot;name&quot;],</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Getting total number of signals (as meta data).</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_items(</span>
+<span class="sd">            ...     total= True,</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Using multiple query parameters.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_items(</span>
+<span class="sd">            ...     filter = query.Filter(fields={&quot;name&quot;: query.NotEqual(value=&quot;Air Temperature&quot;)}),</span>
+<span class="sd">            ...     skip = 3,</span>
+<span class="sd">            ...     limit = 10,</span>
+<span class="sd">            ...     sort = [&quot;-id&quot;, &quot;name&quot;],</span>
+<span class="sd">            ...     total=True,</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">        Response</span>
+<span class="sd">            In case of a valid return value, returns a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = Selection(</span>
+<span class="sd">                ...     meta={</span>
+<span class="sd">                ...         &#39;total&#39;: -1,</span>
+<span class="sd">                ...         &#39;groupIncludedByType&#39;: True</span>
+<span class="sd">                ...     },</span>
+<span class="sd">                ...     data=[</span>
+<span class="sd">                ...         ItemSelectView(</span>
+<span class="sd">                ...             id=&#39;c5i41fjsbu8cohpkcpvg&#39;,</span>
+<span class="sd">                ...             type=&#39;items&#39;,</span>
+<span class="sd">                ...             meta=ResourceMetadata(</span>
+<span class="sd">                ...                 annotations={</span>
+<span class="sd">                ...                     &quot;docs-clarify-io/example/environment&quot;: &quot;office&quot;</span>
+<span class="sd">                ...                  },</span>
+<span class="sd">                ...                 attributesHash=&#39;7602afa2fe611e0c8eff17f7936e108ee29e6817&#39;,</span>
+<span class="sd">                ...                 relationshipsHash=&#39;5f36b2220a14b54ee5ea290645ee34d943ea5be5&#39;,</span>
+<span class="sd">                ...                 updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc),</span>
+<span class="sd">                ...                 createdAt=datetime.datetime(2021, 10, 11, 13, 48, 46, 958000, tzinfo=datetime.timezone.utc)</span>
+<span class="sd">                ...             ),</span>
+<span class="sd">                ...             attributes=Item(</span>
+<span class="sd">                ...                 name=&#39;Dunder ReBond Inventory Level&#39;,</span>
+<span class="sd">                ...                 valueType=&lt;TypeSignal.numeric: &#39;numeric&#39;&gt;,</span>
+<span class="sd">                ...                 description=&#39;How many reams of the Dunder ReBond we have in the warehouse.&#39;,</span>
+<span class="sd">                ...                 labels={</span>
+<span class="sd">                ...                     &#39;type&#39;: [&#39;Recycled&#39;, &#39;Bond&#39;],</span>
+<span class="sd">                ...                     &#39;location&#39;: [&#39;Scranton&#39;],</span>
+<span class="sd">                ...                     &#39;threat-level&#39;: [&#39;Midnight&#39;]</span>
+<span class="sd">                ...                 },</span>
+<span class="sd">                ...                 engUnit=&#39;&#39;,</span>
+<span class="sd">                ...                 enumValues={},</span>
+<span class="sd">                ...                 sourceType=&lt;SourceTypeSignal.measurement: &#39;measurement&#39;&gt;,</span>
+<span class="sd">                ...                 sampleInterval=None,</span>
+<span class="sd">                ...                 gapDetection=datetime.timedelta(seconds=7200),</span>
+<span class="sd">                ...                 visible=True</span>
+<span class="sd">                ...             ),</span>
+<span class="sd">                ...             relationships={}</span>
+<span class="sd">                ...         ),</span>
+<span class="sd">                ...         ItemSelectView(...),</span>
+<span class="sd">                ...         ...</span>
+<span class="sd">                ...     ]</span>
+<span class="sd">                ... ),</span>
+<span class="sd">                ... error=None</span>
+
+
+<span class="sd">            In case of the error the method return a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = None</span>
+<span class="sd">                ... error = Error(</span>
+<span class="sd">                ...         code = &#39;-32602&#39;,</span>
+<span class="sd">                ...         message = &#39;Invalid params&#39;,</span>
+<span class="sd">                ...         data = ErrorData(trace = &lt;trace_id&gt;, params = {})</span>
+<span class="sd">                ... )</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">ResourceQuery</span><span class="p">(</span>
+            <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">Filter</span><span class="p">)</span> <span class="k">else</span> <span class="nb">filter</span><span class="p">,</span>
+            <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">skip</span><span class="o">=</span><span class="n">skip</span><span class="p">,</span>
+            <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="n">include</span><span class="p">}</span>
+
+        <span class="n">request_data</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_id</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">ApiMethod</span><span class="o">.</span><span class="n">select_items</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_requests</span><span class="p">(</span><span class="n">request_data</span><span class="p">,</span> <span class="n">select_stopping_condition</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.save_signals">
+<a class="viewcode-back" href="../../reference/client/index.html#pyclarify.client.Client.save_signals">[docs]</a>
+    <span class="nd">@validate_arguments</span>
+    <span class="k">def</span> <span class="nf">save_signals</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">InputID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">signals</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Signal</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">signals_by_input</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">InputID</span><span class="p">,</span> <span class="n">Signal</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">create_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">integration</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This call inserts metadata to one or multiple signals. The signals are uniquely identified by its INPUT_ID.</span>
+<span class="sd">        Mirroring the Clarify API call `integration.saveSignals &lt;https://docs.clarify.io/api/next/methods/integration/save-signals&gt;`__ .</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        input_ids: List[&#39;INPUT_ID&#39;]</span>
+<span class="sd">            List of strings to be the input ID of the signal.</span>
+<span class="sd">            Click `here &lt;https://docs.clarify.io/api/1.1/types/fields#input-key&gt;`__ for more information.</span>
+
+<span class="sd">        signals: List[Signal]</span>
+<span class="sd">            List of Signal object that contains metadata for a signal.</span>
+<span class="sd">            Click `here &lt;https://docs.clarify.io/api/1.1/types/views#signal-save-integration-namespace&gt;`__ for more information.</span>
+
+<span class="sd">        create_only: bool, default False</span>
+<span class="sd">            If set to true, skip update of information for existing signals. That is, all Input_ID&#39;s</span>
+<span class="sd">            that map to existing signals are silently ignored.</span>
+
+<span class="sd">        integration: str, default None</span>
+<span class="sd">            Integration ID in string format. None means using the integration in credential file.</span>
+
+
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Response</span>
+<span class="sd">            `Response.result.data` is a dictionary mapping INPUT_ID to SIGNAL_ID.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            &gt;&gt;&gt; client = Client(&quot;./clarify-credentials.json&quot;)</span>
+
+<span class="sd">            Saving by using a dictionary.</span>
+
+<span class="sd">            &gt;&gt;&gt; from pyclarify import Signal</span>
+<span class="sd">            &gt;&gt;&gt; signal = Signal(</span>
+<span class="sd">            ...     name = &quot;Home temperature&quot;,</span>
+<span class="sd">            ...     description = &quot;Temperature in the bedroom&quot;,</span>
+<span class="sd">            ...     labels = {</span>
+<span class="sd">            ...         &quot;data-source&quot;: [&quot;Raspberry Pi&quot;],</span>
+<span class="sd">            ...         &quot;location&quot;: [&quot;Home&quot;]</span>
+<span class="sd">            ...     }</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; input_dict = {</span>
+<span class="sd">            ...     &quot;&lt;INPUT_ID&gt;&quot; : signal</span>
+<span class="sd">            ... }</span>
+<span class="sd">            &gt;&gt;&gt; response = client.save_signals(</span>
+<span class="sd">            ...     signals_by_input=input_dict</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Saving using arrays.</span>
+
+
+<span class="sd">            &gt;&gt;&gt; from pyclarify import Signal</span>
+<span class="sd">            &gt;&gt;&gt; signal = Signal(</span>
+<span class="sd">            ...    name = &quot;Home temperature&quot;,</span>
+<span class="sd">            ...    description = &quot;Temperature in the bedroom&quot;,</span>
+<span class="sd">            ...    labels = {&quot;data-source&quot;: [&quot;Raspberry Pi&quot;], &quot;location&quot;: [&quot;Home&quot;]}</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; client.save_signals(input_ids=[&#39;INPUT_ID&#39;], signals=[signal], create_only=False)</span>
+
+<span class="sd">        Response</span>
+<span class="sd">            In case of a valid return value, returns a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = SaveSignalsResponse(</span>
+<span class="sd">                ...             signalsByInput={</span>
+<span class="sd">                ...                 &#39;INPUT_ID&#39;: SaveSummary(id=&#39;SIGNAL_ID&#39;, created=True, updated=False)</span>
+<span class="sd">                ...              }</span>
+<span class="sd">                ...          )</span>
+<span class="sd">                ... error = None</span>
+
+<span class="sd">            In case of the error the method return a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = None</span>
+<span class="sd">                ... error = Error(</span>
+<span class="sd">                ...         code = &#39;-32602&#39;,</span>
+<span class="sd">                ...         message = &#39;Invalid params&#39;,</span>
+<span class="sd">                ...         data = ErrorData(trace = &lt;trace_id&gt;, params = {})</span>
+<span class="sd">                ... )</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># create params dict</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="n">signals_by_input</span><span class="p">,</span>
+            <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="n">create_only</span><span class="p">,</span>
+            <span class="s2">&quot;integration&quot;</span><span class="p">:</span> <span class="n">integration</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># assert integration parameter</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;integration&quot;</span><span class="p">]:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;integration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">integration_id</span>
+
+        <span class="k">if</span> <span class="n">input_ids</span> <span class="o">!=</span> <span class="p">[]</span> <span class="ow">and</span> <span class="n">signals</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="c1"># populate inputs</span>
+            <span class="k">for</span> <span class="n">input_id</span><span class="p">,</span> <span class="n">signal</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">signals</span><span class="p">):</span>
+                <span class="n">params</span><span class="p">[</span><span class="s2">&quot;inputs&quot;</span><span class="p">][</span><span class="n">input_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span>
+
+        <span class="n">request_data</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">ApiMethod</span><span class="o">.</span><span class="n">save_signals</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_requests</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.publish_signals">
+<a class="viewcode-back" href="../../reference/client/index.html#pyclarify.client.Client.publish_signals">[docs]</a>
+    <span class="nd">@validate_arguments</span>
+    <span class="k">def</span> <span class="nf">publish_signals</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">signal_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ResourceID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ItemSaveView</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">items_by_signal</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ResourceID</span><span class="p">,</span> <span class="n">ItemSaveView</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">create_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">integration</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.</span>
+<span class="sd">        Each signal is uniquely identified by its signal ID in combination with the integration ID.</span>
+<span class="sd">        Mirroring the Clarify API call `admin.publishSignals &lt;https://docs.clarify.io/api/next/methods/admin/publish-signals&gt;`__ .</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        signal_ids: List[&#39;&lt;SIGNAL_ID&gt;&#39;]</span>
+<span class="sd">            List of strings to be the signal ID of the signal.</span>
+
+<span class="sd">        items: List[ Item ]</span>
+<span class="sd">            List of Item object that contains metadata for a Item.</span>
+<span class="sd">            Click `here &lt;https://docs.clarify.io/api/next/datatypes/item&gt;`__ for more information.</span>
+
+<span class="sd">        items_by_signal: Dict[ResourceID, Item]</span>
+<span class="sd">            Dictionary with IDs of signals mapped to Item metadata.</span>
+
+<span class="sd">        create_only: bool, default False</span>
+<span class="sd">            If set to True, skip update of information for existing Items. That is, all signal_ids</span>
+<span class="sd">            that map to existing items are silently ignored.</span>
+
+<span class="sd">        integration: str Default None</span>
+<span class="sd">          Integration ID in string format. None means using the integration in credential file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Response</span>
+<span class="sd">            `Response.result.data` is a dictionary mapping &lt;SIGNAL_ID&gt; to &lt;ITEM_ID&gt;.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            &gt;&gt;&gt; client = Client(&quot;./clarify-credentials.json&quot;)</span>
+
+<span class="sd">            Publishing by using a dictionary.</span>
+
+<span class="sd">            &gt;&gt;&gt; from pyclarify import Item</span>
+<span class="sd">            &gt;&gt;&gt; item = Item(</span>
+<span class="sd">            ...     name = &quot;Home temperature&quot;,</span>
+<span class="sd">            ...     description = &quot;Temperature in the bedroom&quot;,</span>
+<span class="sd">            ...     labels = {</span>
+<span class="sd">            ...         &quot;data-source&quot;: [&quot;Raspberry Pi&quot;],</span>
+<span class="sd">            ...         &quot;location&quot;: [&quot;Home&quot;]</span>
+<span class="sd">            ...     },</span>
+<span class="sd">            ...     visible=True</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; items_dict = {</span>
+<span class="sd">            ...     &quot;&lt;SIGNAL_ID&gt;&quot;: item</span>
+<span class="sd">            ... }</span>
+<span class="sd">            &gt;&gt;&gt; response = client.publish_signals(</span>
+<span class="sd">            ...     items_by_signal=item_dict</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Publishing using arrays.</span>
+
+<span class="sd">            &gt;&gt;&gt; from pyclarify import Item</span>
+<span class="sd">            &gt;&gt;&gt; item = Item(</span>
+<span class="sd">            ...     name = &quot;Home temperature&quot;,</span>
+<span class="sd">            ...     description = &quot;Temperature in the bedroom&quot;,</span>
+<span class="sd">            ...     labels = {</span>
+<span class="sd">            ...         &quot;data-source&quot;: [&quot;Raspberry Pi&quot;],</span>
+<span class="sd">            ...         &quot;location&quot;: [&quot;Home&quot;]},</span>
+<span class="sd">            ...     visible=True</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; client.publish_signals(signal_ids=[&#39;SIGNAL_ID&#39;], items=[item], create_only=False)</span>
+
+
+<span class="sd">        Response</span>
+<span class="sd">            In case of a valid return value, returns a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = PublishSignalsResponse(</span>
+<span class="sd">                ...                    itemsBySignal = {&#39;SIGNAL_ID&#39;: SaveSummary(</span>
+<span class="sd">                ...                           id=&#39;ITEM_ID&#39;,</span>
+<span class="sd">                ...                           created=True,</span>
+<span class="sd">                ...                           updated=False )})</span>
+<span class="sd">                ... error = None</span>
+
+<span class="sd">            In case of the error the method return a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = None</span>
+<span class="sd">                ... error = Error(</span>
+<span class="sd">                ...         code = &#39;-32602&#39;,</span>
+<span class="sd">                ...         message = &#39;Invalid params&#39;,</span>
+<span class="sd">                ...         data = ErrorData(trace = &lt;trace_id&gt;, params = {})</span>
+<span class="sd">                ... )</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;itemsBySignal&quot;</span><span class="p">:</span> <span class="n">items_by_signal</span><span class="p">,</span>
+            <span class="s2">&quot;createOnly&quot;</span><span class="p">:</span> <span class="n">create_only</span><span class="p">,</span>
+            <span class="s2">&quot;integration&quot;</span><span class="p">:</span> <span class="n">integration</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;integration&quot;</span><span class="p">]:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;integration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">integration_id</span>
+
+        <span class="k">if</span> <span class="n">signal_ids</span> <span class="o">!=</span> <span class="p">[]</span> <span class="ow">and</span> <span class="n">items</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">for</span> <span class="n">signal_id</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">signal_ids</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+                <span class="n">params</span><span class="p">[</span><span class="s2">&quot;itemsBySignal&quot;</span><span class="p">][</span><span class="n">signal_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+
+        <span class="n">request_data</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">ApiMethod</span><span class="o">.</span><span class="n">publish_signals</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_requests</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.select_signals">
+<a class="viewcode-back" href="../../reference/client/index.html#pyclarify.client.Client.select_signals">[docs]</a>
+    <span class="nd">@validate_arguments</span>
+    <span class="k">def</span> <span class="nf">select_signals</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">filter</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">total</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">include</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">integration</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return signal metadata from selected signals and/or item.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filter: Filter, optional</span>
+<span class="sd">            A Filter Model that describes a mongodb filter to be applied.</span>
+
+<span class="sd">        skip: int, default 0</span>
+<span class="sd">            Integer describing how many of the first N items to exclude from response.</span>
+
+<span class="sd">        limit: int, default 10</span>
+<span class="sd">            Number of items to include in the match.</span>
+
+<span class="sd">        sort: list of strings</span>
+<span class="sd">            List of strings describing the order in which to sort the items in the response.</span>
+
+<span class="sd">        total: bool, default False</span>
+<span class="sd">            When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</span>
+
+<span class="sd">        include: List of strings, optional</span>
+<span class="sd">            A list of strings specifying which relationships to be included in the response.</span>
+
+<span class="sd">        integration: str Default None</span>
+<span class="sd">            Integration ID in string format. None means using the integration in credential file.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Response</span>
+<span class="sd">            ``Response.result.data`` is an array of SignalSelectView</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            &gt;&gt;&gt; client = Client(&quot;./clarify-credentials.json&quot;)</span>
+
+<span class="sd">            Querying signals based on a filter.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_signals(</span>
+<span class="sd">            ...     filter = Filter(fields={&quot;name&quot;: filter.NotEqual(value=&quot;Air Temperature&quot;)}),</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Getting 1000 signals.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_signals(</span>
+<span class="sd">            ...     limit = 1000,</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Getting 100 signals and sorting by name.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_signals(</span>
+<span class="sd">            ...     limit = 100,</span>
+<span class="sd">            ...     sort = [&quot;name&quot;],</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Getting total number of signals (as meta data) and including the exposed items.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.select_signals(</span>
+<span class="sd">            ...     total= True,</span>
+<span class="sd">            ...     include = [&quot;item&quot;]</span>
+<span class="sd">            ... )</span>
+
+
+<span class="sd">        Response</span>
+<span class="sd">            In case of a valid return value, returns a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc=&#39;2.0&#39;</span>
+<span class="sd">                ... id=&#39;1&#39;</span>
+<span class="sd">                ... result=Selection(</span>
+<span class="sd">                ...     meta=SelectionMeta(</span>
+<span class="sd">                ...     total=725,</span>
+<span class="sd">                ...     groupIncludedByType=True</span>
+<span class="sd">                ...     ),</span>
+<span class="sd">                ...     data=[</span>
+<span class="sd">                ...         SignalSelectView(</span>
+<span class="sd">                ...             id=&#39;c5fg083sab1b6pm3u290&#39;,</span>
+<span class="sd">                ...             type=&#39;signals&#39;,</span>
+<span class="sd">                ...             meta=ResourceMetadata(</span>
+<span class="sd">                ...                 annotations={</span>
+<span class="sd">                ...                     &quot;docs-clarify-io/example/environment&quot;: &quot;office&quot;</span>
+<span class="sd">                ...                 },</span>
+<span class="sd">                ...                 attributesHash=&#39;9ae4eb17c8b3b9f24cea06f09a1a4cab34569077&#39;,</span>
+<span class="sd">                ...                 relationshipsHash=&#39;02852897e7fe1e7896360b3c3914c5207d2af6fa&#39;,</span>
+<span class="sd">                ...                 updatedAt=datetime.datetime(2022, 3, 17, 12, 17, 10, 199000, tzinfo=datetime.timezone.utc),</span>
+<span class="sd">                ...                 createdAt=datetime.datetime(2021, 10, 7, 14, 11, 44, 897000, tzinfo=datetime.timezone.utc)</span>
+<span class="sd">                ...             ),</span>
+<span class="sd">                ...             attributes=SavedSignal(</span>
+<span class="sd">                ...                 name=&#39;Total reams of paper&#39;,</span>
+<span class="sd">                ...                 description=&#39;Total count of reams of paper in inventory&#39;,</span>
+<span class="sd">                ...                 labels={</span>
+<span class="sd">                ...                     &#39;type&#39;: [&#39;Recycled&#39;, &#39;Bond&#39;],</span>
+<span class="sd">                ...                     &#39;location&#39;: [&#39;Scranton&#39;]</span>
+<span class="sd">                ...                 },</span>
+<span class="sd">                ...                 sourceType=&lt;SourceTypeSignal.measurement: &#39;measurement&#39;&gt;,</span>
+<span class="sd">                ...                 valueType=&lt;TypeSignal.numeric: &#39;numeric&#39;&gt;,</span>
+<span class="sd">                ...                 engUnit=&#39;&#39;,</span>
+<span class="sd">                ...                 enumValues={},</span>
+<span class="sd">                ...                 sampleInterval=None,</span>
+<span class="sd">                ...                 gapDetection=None,</span>
+<span class="sd">                ...                 input=&#39;inventory_recycled_bond&#39;,</span>
+<span class="sd">                ...                 integration=None,</span>
+<span class="sd">                ...                 item=None</span>
+<span class="sd">                ...             ),</span>
+<span class="sd">                ...             relationships=RelationshipsDict(</span>
+<span class="sd">                ...                 integration=RelationshipData(</span>
+<span class="sd">                ...                     data=RelationshipMetadata(</span>
+<span class="sd">                ...                         type=&#39;integrations&#39;,</span>
+<span class="sd">                ...                         id=&#39;c5e3u8coh8drsbpi4cvg&#39;</span>
+<span class="sd">                ...                     )</span>
+<span class="sd">                ...                 ),</span>
+<span class="sd">                ...                 item=RelationshipData(data=None)</span>
+<span class="sd">                ...             )</span>
+<span class="sd">                ...         ),</span>
+<span class="sd">                ...         ...</span>
+<span class="sd">                ...     ],</span>
+<span class="sd">                ...     included=IncludedField(</span>
+<span class="sd">                ...         integration=None,</span>
+<span class="sd">                ...         items=[</span>
+<span class="sd">                ...             ItemSelectView(</span>
+<span class="sd">                ...                 id=&#39;c5i41fjsbu8cohpkcpvg&#39;,</span>
+<span class="sd">                ...                 type=&#39;items&#39;,</span>
+<span class="sd">                ...                 meta=ResourceMetadata(</span>
+<span class="sd">                ...                     annotations={</span>
+<span class="sd">                ...                         &quot;docs-clarify-io/example/environment&quot;: &quot;office&quot;</span>
+<span class="sd">                ...                     },</span>
+<span class="sd">                ...                     attributesHash=&#39;7602afa2fe611e0c8eff17f7936e108ee29e6817&#39;,</span>
+<span class="sd">                ...                     relationshipsHash=&#39;5f36b2220a14b54ee5ea290645ee34d943ea5be5&#39;,</span>
+<span class="sd">                ...                     updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc),</span>
+<span class="sd">                ...                     createdAt=datetime.datetime(2021, 10, 11, 13, 48, 46, 958000, tzinfo=datetime.timezone.utc)</span>
+<span class="sd">                ...                 ),</span>
+<span class="sd">                ...                 attributes=Item(</span>
+<span class="sd">                ...                     name=&#39;Dunder ReBond Inventory Level&#39;,</span>
+<span class="sd">                ...                     valueType=&lt;TypeSignal.numeric: &#39;numeric&#39;&gt;,</span>
+<span class="sd">                ...                     description=&#39;How many reams of the Dunder ReBond we have in the warehouse.&#39;,</span>
+<span class="sd">                ...                     labels={</span>
+<span class="sd">                ...                         &#39;type&#39;: [&#39;Recycled&#39;, &#39;Bond&#39;],</span>
+<span class="sd">                ...                         &#39;location&#39;: [&#39;Scranton&#39;],</span>
+<span class="sd">                ...                         &#39;threat-level&#39;: [&#39;Midnight&#39;]</span>
+<span class="sd">                ...                     },</span>
+<span class="sd">                ...                     engUnit=&#39;&#39;,</span>
+<span class="sd">                ...                     enumValues={},</span>
+<span class="sd">                ...                     sourceType=&lt;SourceTypeSignal.measurement: &#39;measurement&#39;&gt;,</span>
+<span class="sd">                ...                     sampleInterval=None,</span>
+<span class="sd">                ...                     gapDetection=datetime.timedelta(seconds=7200),</span>
+<span class="sd">                ...                     visible=True</span>
+<span class="sd">                ...                 )</span>
+<span class="sd">                ...             )</span>
+<span class="sd">                ...             ...</span>
+<span class="sd">                ...         ]</span>
+<span class="sd">                ...     )</span>
+<span class="sd">                ... )</span>
+<span class="sd">                ... error=None</span>
+
+<span class="sd">            In case of the error the method return a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = None</span>
+<span class="sd">                ... error = Error(</span>
+<span class="sd">                ...         code = &#39;-32602&#39;,</span>
+<span class="sd">                ...         message = &#39;Invalid params&#39;,</span>
+<span class="sd">                ...         data = ErrorData(trace = &lt;trace_id&gt;, params = {})</span>
+<span class="sd">                ... )</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">ResourceQuery</span><span class="p">(</span>
+            <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">Filter</span><span class="p">)</span> <span class="k">else</span> <span class="nb">filter</span><span class="p">,</span>
+            <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">skip</span><span class="o">=</span><span class="n">skip</span><span class="p">,</span>
+            <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;integration&quot;</span><span class="p">:</span> <span class="n">integration</span><span class="p">,</span> <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="n">include</span><span class="p">}</span>
+
+        <span class="c1"># assert integration parameter</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;integration&quot;</span><span class="p">]:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;integration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">integration_id</span>
+
+        <span class="n">request_data</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">ApiMethod</span><span class="o">.</span><span class="n">select_signals</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_requests</span><span class="p">(</span><span class="n">request_data</span><span class="p">,</span> <span class="n">select_stopping_condition</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.data_frame">
+<a class="viewcode-back" href="../../reference/client/index.html#pyclarify.client.Client.data_frame">[docs]</a>
+    <span class="nd">@validate_arguments</span>
+    <span class="k">def</span> <span class="nf">data_frame</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">filter</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">skip</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">total</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">gte</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">lt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">last</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">rollup</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">include</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">window_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve DataFrame for items stored in Clarify.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filter: Filter, optional</span>
+<span class="sd">            A Filter Model that describes a mongodb filter to be applied.</span>
+<span class="sd">        sort: list of strings</span>
+<span class="sd">            List of strings describing the order in which to sort the items in the response.</span>
+<span class="sd">        limit: int, default 20</span>
+<span class="sd">            The maximum number of resources to select. Negative numbers means no limit, which may or may not be allowed.</span>
+<span class="sd">        skip: int, default: 0</span>
+<span class="sd">            Skip the first N matches. A negative skip is treated as 0.</span>
+<span class="sd">        total: bool, default: False</span>
+<span class="sd">            When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.</span>
+<span class="sd">        gte: `ISO 8601 timestamp &lt;https://docs.clarify.io/api/1.1/types/fields#datetime&gt;`__ , default: &lt;now - 7 days&gt;</span>
+<span class="sd">            An RFC3339 time describing the inclusive start of the window.</span>
+<span class="sd">        lt: `ISO 8601 timestamp &lt;https://docs.clarify.io/api/1.1/types/fields#datetime&gt;`__ , default: &lt;now + 7 days&gt;</span>
+<span class="sd">            An RFC3339 time describing the exclusive end of the window.</span>
+<span class="sd">        last: int, default: -1</span>
+<span class="sd">            If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.</span>
+<span class="sd">        rollup: `RFC3339 duration &lt;https://docs.clarify.io/api/1.1/types/fields#fixed-duration&gt;`__ or &quot;window&quot;, default: None</span>
+<span class="sd">            If duration is specified, roll-up the values into either the full time window</span>
+<span class="sd">            (`gte` -&gt; `lt`) or evenly sized buckets.</span>
+<span class="sd">        include: List of strings, default: []</span>
+<span class="sd">            A list of strings specifying which relationships to be included in the response.</span>
+<span class="sd">        window_size: `RFC3339 duration &lt;https://docs.clarify.io/api/1.1/types/fields#fixed-duration&gt;`__, default None</span>
+<span class="sd">            If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default</span>
+<span class="sd">            values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Response</span>
+<span class="sd">            ``Response.result.data`` is a DataFrame</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Client.select_items : Retrieve item metadata from selected items.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Time selection:</span>
+
+<span class="sd">        - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).</span>
+<span class="sd">        - Maximum window size is 400 days (400 * 24 hours) when rollup is greater than or equal to PT1M (1 minute).</span>
+<span class="sd">        - No maximum window size if rollup is window.</span>
+
+<span class="sd">        The limits are used internally by the Clarify API. Should you have very high resolution data (&gt;=1hz), you can use ``time_window`` argument to **reduce** the window, resulting in more requests.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">            &gt;&gt;&gt; client = Client(&quot;./clarify-credentials.json&quot;)</span>
+
+<span class="sd">            Getting data frame with a filter.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.data_frame(</span>
+<span class="sd">            ...     filter = query.Filter(fields={&quot;name&quot;: query.NotEqual(value=&quot;Air Temperature&quot;)}),</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Getting data with a time range.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.data_frame(</span>
+<span class="sd">            ...     gte=&quot;2022-01-01T01:01:01Z&quot;,</span>
+<span class="sd">            ...     lt=&quot;2022-01-09T01:01:01Z&quot;,</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Skipping first 3 items and only retrieving 5 items, sorted with descending id.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.data_frame(</span>
+<span class="sd">            ...     sort = [&quot;-id&quot;],</span>
+<span class="sd">            ...     limit = 5,</span>
+<span class="sd">            ...     skip = 3,</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            Setting a lower window size due to json decoding errors.</span>
+
+<span class="sd">            &gt;&gt;&gt; client.data_frame(</span>
+<span class="sd">            ...     window_size = &quot;P20DT&quot;,</span>
+<span class="sd">            ...     limit = 5,</span>
+<span class="sd">            ...     skip = 3,</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            .. warning::</span>
+<span class="sd">                We recommend using ``rollup`` instead of ``window_size`` due to execution time being much faster.</span>
+
+<span class="sd">            Using rollup to get sampled data.</span>
+
+<span class="sd">            &gt;&gt;&gt; r = client.data_frame(</span>
+<span class="sd">            ...     rollup = &quot;PT5M&quot;,</span>
+<span class="sd">            ...     limit = 5,</span>
+<span class="sd">            ...     skip = 3,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; r.result.data</span>
+<span class="sd">            ... DataFrame(</span>
+<span class="sd">            ...     times=[datetime.datetime(2022, 9, 5, 11, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 10, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 15, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 30, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 35, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 40, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 45, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 50, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 0, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 10, tzinfo=datetime.timezone.utc)],</span>
+<span class="sd">            ...     series={</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl1g_avg&#39;: [1.0, 5.0, 5.875, 6.8, 4.2, 7.0, 3.6, 5.0, 2.0, 2.2, 4.25],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl1g_count&#39;: [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl1g_max&#39;: [1.0, 9.0, 9.0, 9.0, 8.0, 9.0, 6.0, 6.0, 2.0, 6.0, 8.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl1g_min&#39;: [1.0, 0.0, 0.0, 5.0, 1.0, 6.0, 0.0, 4.0, 2.0, 0.0, 0.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl1g_sum&#39;: [2.0, 50.0, 47.0, 34.0, 21.0, 21.0, 18.0, 10.0, 2.0, 11.0, 17.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl20_avg&#39;: [5.0, 4.7, 3.75, 3.6, 5.2, 7.333333333333333, 3.6, 7.0, 9.0, 3.6, 6.75],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl20_count&#39;: [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl20_max&#39;: [8.0, 9.0, 8.0, 7.0, 9.0, 9.0, 8.0, 9.0, 9.0, 8.0, 9.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl20_min&#39;: [2.0, 1.0, 0.0, 1.0, 2.0, 4.0, 0.0, 5.0, 9.0, 0.0, 1.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl20_sum&#39;: [10.0, 47.0, 30.0, 18.0, 26.0, 22.0, 18.0, 14.0, 9.0, 18.0, 27.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl2g_avg&#39;: [8.0, 3.7, 4.75, 1.6, 3.6, 2.0, 5.6, 8.5, 4.0, 3.8, 5.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl2g_count&#39;: [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl2g_max&#39;: [8.0, 9.0, 9.0, 5.0, 8.0, 5.0, 9.0, 9.0, 4.0, 8.0, 7.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl2g_min&#39;: [8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 8.0, 4.0, 0.0, 1.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl2g_sum&#39;: [16.0, 37.0, 38.0, 8.0, 18.0, 6.0, 28.0, 17.0, 4.0, 19.0, 20.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl30_avg&#39;: [2.0, 5.6, 3.875, 3.2, 5.2, 4.666666666666667, 5.0, 4.5, 7.0, 5.8, 8.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl30_count&#39;: [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl30_max&#39;: [3.0, 9.0, 7.0, 9.0, 9.0, 8.0, 7.0, 8.0, 7.0, 9.0, 9.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl30_min&#39;: [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 2.0, 1.0, 7.0, 1.0, 6.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl30_sum&#39;: [4.0, 56.0, 31.0, 16.0, 26.0, 14.0, 25.0, 9.0, 7.0, 29.0, 32.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl3g_avg&#39;: [1.5, 3.3, 6.75, 5.8, 4.8, 5.666666666666667, 3.8, 6.5, 5.0, 3.0, 3.25],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl3g_count&#39;: [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl3g_max&#39;: [2.0, 9.0, 9.0, 9.0, 9.0, 7.0, 8.0, 8.0, 5.0, 7.0, 5.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl3g_min&#39;: [1.0, 1.0, 4.0, 1.0, 1.0, 3.0, 0.0, 5.0, 5.0, 0.0, 0.0],</span>
+<span class="sd">            ...         &#39;cbpmaq6rpn52969vfl3g_sum&#39;: [3.0, 33.0, 54.0, 29.0, 24.0, 17.0, 19.0, 13.0, 5.0, 15.0, 13.0]</span>
+<span class="sd">            ... })</span>
+
+
+
+<span class="sd">        Response</span>
+<span class="sd">            In case of a valid return value, returns a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = Selection(</span>
+<span class="sd">                ...     meta={</span>
+<span class="sd">                ...         &#39;total&#39;: -1,</span>
+<span class="sd">                ...         &#39;groupIncludedByType&#39;: True</span>
+<span class="sd">                ...     },</span>
+<span class="sd">                ...     data=DataFrame(</span>
+<span class="sd">                ...         times=[</span>
+<span class="sd">                ...             datetime.datetime(2022, 1, 1, 12, 0, tzinfo=datetime.timezone.utc),</span>
+<span class="sd">                ...             datetime.datetime(2022, 1, 1, 13, 0, tzinfo=datetime.timezone.utc),</span>
+<span class="sd">                ...             ...],</span>
+<span class="sd">                ...         series={</span>
+<span class="sd">                ...             &#39;c5i41fjsbu8cohpkcpvg&#39;: [0.18616, 0.18574000000000002, ...],</span>
+<span class="sd">                ...             &#39;c5i41fjsbu8cohfdepvg&#39;: [450.876543125, 450.176543554, ...],</span>
+<span class="sd">                ...             ...</span>
+<span class="sd">                ...         }</span>
+<span class="sd">                ...     )</span>
+<span class="sd">                ...</span>
+<span class="sd">                ... error = None</span>
+
+<span class="sd">            In case of the error the method return a pydantic model with the following format:</span>
+
+<span class="sd">                &gt;&gt;&gt; jsonrpc = &#39;2.0&#39;</span>
+<span class="sd">                ... id = &#39;1&#39;</span>
+<span class="sd">                ... result = None</span>
+<span class="sd">                ... error = Error(</span>
+<span class="sd">                ...         code = &#39;-32602&#39;,</span>
+<span class="sd">                ...         message = &#39;Invalid params&#39;,</span>
+<span class="sd">                ...         data = ErrorData(trace = &lt;trace_id&gt;, params = {})</span>
+<span class="sd">                ... )</span>
+
+<span class="sd">        Tip</span>
+<span class="sd">        ----</span>
+<span class="sd">        You can change the `type` of DataFrame from pyclarify to pandas using the `to_pandas()` method.</span>
+
+<span class="sd">            &gt;&gt;&gt; r = client.data_frame()</span>
+<span class="sd">            &gt;&gt;&gt; c_df = r.result.data</span>
+<span class="sd">            &gt;&gt;&gt; p_df = c_df.to_pandas()</span>
+<span class="sd">            &gt;&gt;&gt; p_df.head()</span>
+<span class="sd">            ...                                   cbpmaq6rpn52969vfl00  cbpmaq6rpn52969vfl0g  ...  cbpmaq6rpn52969vfl90  cbpmaq6rpn52969vfl9g</span>
+<span class="sd">            ... 2022-09-05 11:30:11.432725+00:00                   2.0                   8.0  ...                   0.0                   4.0</span>
+<span class="sd">            ... 2022-09-05 11:31:11.432723+00:00                   9.0                   2.0  ...                   8.0                   8.0</span>
+<span class="sd">            ... 2022-09-05 11:32:11.432722+00:00                   6.0                   4.0  ...                   8.0                   9.0</span>
+<span class="sd">            ... 2022-09-05 11:33:11.432720+00:00                   0.0                   7.0  ...                   9.0                   4.0</span>
+<span class="sd">            ... 2022-09-05 11:34:11.432719+00:00                   8.0                   6.0  ...                   8.0                   5.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="n">ResourceQuery</span><span class="p">(</span>
+            <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="o">.</span><span class="n">to_query</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">Filter</span><span class="p">)</span> <span class="k">else</span> <span class="nb">filter</span><span class="p">,</span>
+            <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">skip</span><span class="o">=</span><span class="n">skip</span><span class="p">,</span>
+            <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">data_filter</span> <span class="o">=</span> <span class="n">DataFilter</span><span class="p">(</span><span class="n">gte</span><span class="o">=</span><span class="n">gte</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="n">lt</span><span class="p">)</span>
+        <span class="n">data_query</span> <span class="o">=</span> <span class="n">DataQuery</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">data_filter</span><span class="o">.</span><span class="n">to_query</span><span class="p">(),</span> <span class="n">last</span><span class="o">=</span><span class="n">last</span><span class="p">,</span> <span class="n">rollup</span><span class="o">=</span><span class="n">rollup</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data_query</span><span class="p">,</span> <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="n">include</span><span class="p">}</span>
+
+        <span class="n">request_data</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">ApiMethod</span><span class="o">.</span><span class="n">data_frame</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_requests</span><span class="p">(</span><span class="n">request_data</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="n">window_size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Client.evaluate">
+<a class="viewcode-back" href="../../reference/client/index.html#pyclarify.client.Client.evaluate">[docs]</a>
+    <span class="nd">@validate_arguments</span>
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rollup</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">],</span>
+        <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">ItemAggregation</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">calculations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Calculation</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">series</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">gte</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">lt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">last</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">include</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">window_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve DataFrame by aggregating time-series data and perform evaluate formula expressions.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        items: Union[Dict, ItemAggregation]</span>
+<span class="sd">            List of item aggregations, describing a particular aggregation method for the item in list.</span>
+<span class="sd">            See the class from pyclarify.views.evaluate.ItemAggregation for attributes.</span>
+<span class="sd">        calculations: List[Union[Dict, Calculation]]</span>
+<span class="sd">            List of calculations, where a calculation has access to items and previous calculations in context.</span>
+<span class="sd">            See the class from pyclarify.views.evaluate.Calculation for attributes</span>
+<span class="sd">        gte: `ISO 8601 timestamp &lt;https://docs.clarify.io/api/1.1/types/fields#datetime&gt;`__ , default: &lt;now - 7 days&gt;</span>
+<span class="sd">            An RFC3339 time describing the inclusive start of the window.</span>
+<span class="sd">        lt: `ISO 8601 timestamp &lt;https://docs.clarify.io/api/1.1/types/fields#datetime&gt;`__ , default: &lt;now + 7 days&gt;</span>
+<span class="sd">            An RFC3339 time describing the exclusive end of the window.</span>
+<span class="sd">        last: int, default: -1</span>
+<span class="sd">            If above 0, select last N timestamps per series. The selection happens after the rollup aggregation.</span>
+<span class="sd">        rollup: `RFC3339 duration &lt;https://docs.clarify.io/api/1.1/types/fields#fixed-duration&gt;`__ or &quot;window&quot;, default: None</span>
+<span class="sd">            If duration is specified, roll-up the values into either the full time window</span>
+<span class="sd">            (`gte` -&gt; `lt`) or evenly sized buckets.</span>
+<span class="sd">        include: List of strings, default: []</span>
+<span class="sd">            A list of strings specifying which relationships to be included in the response.</span>
+<span class="sd">        window_size: `RFC3339 duration &lt;https://docs.clarify.io/api/1.1/types/fields#fixed-duration&gt;`__, default None</span>
+<span class="sd">            If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default</span>
+<span class="sd">            values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Response</span>
+<span class="sd">            ``Response.result.data`` is a DataFrame</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Client.data_frame : Retrieve data with more filter functionality and without rollup.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Time selection:</span>
+
+<span class="sd">        - Maximum window size is 40 days (40 * 24 hours) when rollup is null or less than PT1M (1 minute).</span>
+<span class="sd">        - Maximum window size is 400 days (400 * 24 hours) when rollup is greater than or equal to PT1M (1 minute).</span>
+<span class="sd">        - No maximum window size if rollup is window.</span>
+
+<span class="sd">        The limits are used internally by the Clarify API. Should you have very high resolution data (&gt;=1hz), you can use ``time_window`` argument to **reduce** the window, resulting in more requests.</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; client = Client(&quot;./clarify-credentials.json&quot;)</span>
+
+<span class="sd">        Getting a single item.</span>
+
+<span class="sd">        &gt;&gt;&gt; item = ItemAggregation(</span>
+<span class="sd">        ...     id=&quot;cbpmaq6rpn52969vfl00&quot;,</span>
+<span class="sd">        ...     aggregation=&quot;max&quot;,</span>
+<span class="sd">        ...     alias=&quot;i1&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; r = client.evaluate(items=[item1], rollup=&quot;PT10M&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(r.result.data.to_pandas())</span>
+<span class="sd">        ...                             i1</span>
+<span class="sd">        ... 2023-10-20 10:20:00+00:00  6.0</span>
+<span class="sd">        ... 2023-10-20 10:30:00+00:00  9.0</span>
+<span class="sd">        ... 2023-10-20 10:40:00+00:00  8.0</span>
+
+<span class="sd">        Getting a single item in a time range.</span>
+
+<span class="sd">        &gt;&gt;&gt; r = client.evaluate(items=[item1], gte=&quot;2022-08-10T00:00:00Z&quot;, lt=&quot;2022-08-30T00:00:00Z&quot;, rollup=&quot;PT10M&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(r.result.data.to_pandas())</span>
+<span class="sd">        ...                             i1</span>
+<span class="sd">        ... 2022-08-10 09:50:00+00:00  8.0</span>
+<span class="sd">        ... 2022-08-10 10:00:00+00:00  9.0</span>
+<span class="sd">        ... 2022-08-25 11:30:00+00:00  8.0</span>
+<span class="sd">        ... 2022-08-30 15:10:00+00:00  2.0</span>
+<span class="sd">        ... 2022-08-30 15:20:00+00:00  9.0</span>
+<span class="sd">        ... 2022-08-30 15:30:00+00:00  9.0</span>
+
+<span class="sd">        Using a calculation on a single item.</span>
+
+<span class="sd">        &gt;&gt;&gt; calc = Calculation(</span>
+<span class="sd">        ...     formula=&quot;i1**2&quot;,</span>
+<span class="sd">        ...     alias=&quot;power2&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; r = client.evaluate(items=[item1], calculations=[calc], rollup=&quot;PT10M&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(r.result.data.to_pandas())</span>
+<span class="sd">        ...                             i1  power2</span>
+<span class="sd">        ... 2023-10-20 10:20:00+00:00  6.0    36.0</span>
+<span class="sd">        ... 2023-10-20 10:30:00+00:00  9.0    81.0</span>
+<span class="sd">        ... 2023-10-20 10:40:00+00:00  8.0    64.0</span>
+
+<span class="sd">        Adding two items.</span>
+
+<span class="sd">        &gt;&gt;&gt; item = ItemAggregation(</span>
+<span class="sd">        ...     id=&quot;cbpmaq6rpn52969vfl0g&quot;,</span>
+<span class="sd">        ...     aggregation=&quot;avg&quot;,</span>
+<span class="sd">        ...     alias=&quot;i2&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; calc = Calculation(</span>
+<span class="sd">        ...     formula=&quot;i1 + i2&quot;,</span>
+<span class="sd">        ...     alias=&quot;sumi1i2&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; r = client.evaluate(items=[item1, item2], calculations=[calc], rollup=&quot;PT10M&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(r.result.data.to_pandas())</span>
+<span class="sd">        ...                             i1   i2   sumi1i2</span>
+<span class="sd">        ... 2023-10-20 10:20:00+00:00  6.0   3.0      9.0</span>
+<span class="sd">        ... 2023-10-20 10:30:00+00:00  9.0   4.0     13.0</span>
+<span class="sd">        ... 2023-10-20 10:40:00+00:00  8.0   4.0     12.0</span>
+
+<span class="sd">        Tip</span>
+<span class="sd">        ----</span>
+<span class="sd">        You can limit the number of series to be returned by specifying aliases in the `series` parameter.</span>
+
+<span class="sd">        &gt;&gt;&gt; r = client.evaluate(</span>
+<span class="sd">        ...     items=[item1, item2],</span>
+<span class="sd">        ...     calculations=[calc],</span>
+<span class="sd">        ...     rollup=&quot;PT10M&quot;,</span>
+<span class="sd">        ...     series=[&quot;sumi1i2&quot;]</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; print(r.result.data.to_pandas())</span>
+<span class="sd">        ...                            sumi1i2</span>
+<span class="sd">        ... 2023-10-20 10:20:00+00:00      9.0</span>
+<span class="sd">        ... 2023-10-20 10:30:00+00:00     13.0</span>
+<span class="sd">        ... 2023-10-20 10:40:00+00:00     12.0</span>
+
+
+<span class="sd">        Chaining calculations.</span>
+
+<span class="sd">        &gt;&gt;&gt; calc1 = Calculation(</span>
+<span class="sd">        ...     formula=&quot;i1 + i2&quot;,</span>
+<span class="sd">        ...     alias=&quot;sum&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; calc2 = Calculation(</span>
+<span class="sd">        ...     formula=&quot;i1/sum&quot;,</span>
+<span class="sd">        ...     alias=&quot;ratei1&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; calc2 = Calculation(</span>
+<span class="sd">        ...     formula=&quot;floor(ratei1*100)&quot;,</span>
+<span class="sd">        ...     alias=&quot;ratio&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; r = client.evaluate(</span>
+<span class="sd">        ...     items=[item1, item2],</span>
+<span class="sd">        ...     calculations=[calc1, calc2, calc3],</span>
+<span class="sd">        ...     rollup=&quot;PT10M&quot;,</span>
+<span class="sd">        ...     series=[&quot;i1&quot;, &quot;i2&quot;, &quot;ratio&quot;]</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; print(r.result.data.to_pandas())</span>
+<span class="sd">        ...                             i1   i2  ratio</span>
+<span class="sd">        ... 2023-10-20 10:20:00+00:00  6.0  3.0   66.0</span>
+<span class="sd">        ... 2023-10-20 10:30:00+00:00  9.0  4.0   69.0</span>
+<span class="sd">        ... 2023-10-20 10:40:00+00:00  8.0  4.0   66.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data_filter</span> <span class="o">=</span> <span class="n">DataFilter</span><span class="p">(</span><span class="n">gte</span><span class="o">=</span><span class="n">gte</span><span class="p">,</span> <span class="n">lt</span><span class="o">=</span><span class="n">lt</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="n">series</span><span class="p">)</span>
+        <span class="n">data_query</span> <span class="o">=</span> <span class="n">DataQuery</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">data_filter</span><span class="o">.</span><span class="n">to_query</span><span class="p">(),</span> <span class="n">last</span><span class="o">=</span><span class="n">last</span><span class="p">,</span> <span class="n">rollup</span><span class="o">=</span><span class="n">rollup</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">,</span>
+            <span class="s2">&quot;calculations&quot;</span><span class="p">:</span> <span class="n">calculations</span><span class="p">,</span>
+            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data_query</span><span class="p">,</span>
+            <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="n">include</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">request_data</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">ApiMethod</span><span class="o">.</span><span class="n">evaluate</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_headers</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">authentication</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_requests</span><span class="p">(</span><span class="n">request_data</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="n">window_size</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Clarify.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
