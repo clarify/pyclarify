@@ -19,7 +19,7 @@ needs_sphinx = "4.1.2"
 
 sys.path.insert(0, os.path.abspath("../../src/"))
 import pyclarify
-from datetime import datetime 
+from datetime import datetime
 
 
 # -- Project information -----------------------------------------------------
@@ -36,7 +36,13 @@ release = pyclarify.__version__
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.napoleon", 'myst_parser']
+extensions = [
+    "sphinx.ext.napoleon",  # Support Numpy docstrings
+    "myst_parser",  # read markdown
+    "sphinx_copybutton",  # copy code blocks
+    "sphinx.ext.duration",  # Duration report in console
+    "sphinx.ext.viewcode",  # Add links to highlighted source code¶
+]
 
 napoleon_google_docstring = True
 
@@ -60,3 +66,26 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["_static"]
+
+# Making copying smoother for code blocks
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True
+
+html_favicon = "favicon.png"
+
+add_module_names = False
+
+html_theme_options = {
+    "logo_only": False,
+    "display_version": True,
+    "prev_next_buttons_location": "bottom",
+    "style_external_links": False,
+    "vcs_pageview_mode": "",
+    #'style_nav_header_background': 'white',
+    # Toc options
+    "collapse_navigation": True,
+    "sticky_navigation": True,
+    "navigation_depth": 4,
+    "includehidden": True,
+    "titles_only": False,
+}

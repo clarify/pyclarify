@@ -1,18 +1,17 @@
-"""
-Copyright 2023 Searis AS
+# Copyright 2023 Searis AS
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 
 from itertools import compress
 from datetime import datetime
@@ -62,6 +61,9 @@ class DataFrame(BaseModel):
 
     @validator("series", allow_reuse=True)
     def convert_numpy_to_native(cls, v):
+        """
+        :meta private:
+        """
         if isinstance(v, Dict):
             for key, value in v.items():
                 v[key] = [None if x != x else x for x in value]
@@ -103,6 +105,7 @@ class DataFrame(BaseModel):
         """
 
         from copy import deepcopy
+
         _data = deepcopy(data)
         keys = list(_data.keys())
 
@@ -123,23 +126,29 @@ class DataFrame(BaseModel):
         possible_indexes = [is_datetime(v) for v in val_arr]
         time_keys = list(compress(keys, possible_indexes))
         if sum(possible_indexes) > 1:
-            raise ValueError(f"Unambiguous time index! {time_keys} could be index. Use `time_col` variable or set time to index.")
-
+            raise ValueError(
+                f"Unambiguous time index! {time_keys} could be index. Use `time_col` variable or set time to index."
+            )
 
         if sum(possible_indexes) == 0:
             raise ValueError("No time variable in the data. Can not convert.")
-                
-        times=data[time_keys[0]]
 
-        try:        
-            return DataFrame(times=times, series={key: _data[key] for key in keys if key not in time_keys})
+        times = data[time_keys[0]]
+
+        try:
+            return DataFrame(
+                times=times,
+                series={key: _data[key] for key in keys if key not in time_keys},
+            )
         except:
-            raise ValueError(f'Could not parse dictionary. "{time_keys[0]}" was used as time axis.')
-    
+            raise ValueError(
+                f'Could not parse dictionary. "{time_keys[0]}" was used as time axis.'
+            )
+
     @classmethod
     def from_pandas(cls, df, time_col=None):
         """Convert a pandas DataFrame into a Clarify DataFrame.
-        
+
         Parameters
         ----------
         df: pandas.DataFrame
@@ -154,7 +163,7 @@ class DataFrame(BaseModel):
 
         Example
         -------
-                
+
             >>> from pyclarify import DataFrame
             >>> import pandas as pd
             >>> df = pd.DataFrame(data={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]})
@@ -162,30 +171,30 @@ class DataFrame(BaseModel):
             >>> DataFrame.from_pandas(df)
             ... DataFrame(
             ...     times=[
-            ...         datetime.datetime(2021, 11, 1, 21, 50, 6, tzinfo=datetime.timezone.utc), 
-            ...         datetime.datetime(2021, 11, 2, 21, 50, 6, tzinfo=datetime.timezone.utc)], 
+            ...         datetime.datetime(2021, 11, 1, 21, 50, 6, tzinfo=datetime.timezone.utc),
+            ...         datetime.datetime(2021, 11, 2, 21, 50, 6, tzinfo=datetime.timezone.utc)],
             ...     series={
-            ...         'INPUT_ID_1': [1.0, 2.0], 
+            ...         'INPUT_ID_1': [1.0, 2.0],
             ...         'INPUT_ID_2': [3.0, 4.0]
             ...     }
             ... )
 
             With specific time column.
-            
+
             >>> from pyclarify import DataFrame
             >>> import pandas as pd
             >>> df = pd.DataFrame(data={
-            ...     "INPUT_ID_1": [1, 2], 
+            ...     "INPUT_ID_1": [1, 2],
             ...     "INPUT_ID_2": [3, 4],
             ...     "timestamps": ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
             ...})
             >>> DataFrame.from_pandas(df, time_col="timestamps")
             ... DataFrame(
             ...     times=[
-            ...         datetime.datetime(2021, 11, 1, 21, 50, 6, tzinfo=datetime.timezone.utc), 
-            ...         datetime.datetime(2021, 11, 2, 21, 50, 6, tzinfo=datetime.timezone.utc)], 
+            ...         datetime.datetime(2021, 11, 1, 21, 50, 6, tzinfo=datetime.timezone.utc),
+            ...         datetime.datetime(2021, 11, 2, 21, 50, 6, tzinfo=datetime.timezone.utc)],
             ...     series={
-            ...         'INPUT_ID_1': [1.0, 2.0], 
+            ...         'INPUT_ID_1': [1.0, 2.0],
             ...         'INPUT_ID_2': [3.0, 4.0]
             ...     }
             ... )
@@ -197,7 +206,7 @@ class DataFrame(BaseModel):
             series = df.to_dict(orient="list")
         if isinstance(df, pd.Series):
             if df.name is not None:
-                series =  {df.name : list(df.values)}
+                series = {df.name: list(df.values)}
             else:
                 raise ValueError("The series you are converting does not have a name.")
 
@@ -209,13 +218,19 @@ class DataFrame(BaseModel):
                 times = df.index.values
             else:
                 import warnings
-                warnings.warn("No obvious time index! Attempting to select based on data.", stacklevel=2)
+
+                warnings.warn(
+                    "No obvious time index! Attempting to select based on data.",
+                    stacklevel=2,
+                )
                 possible_indexes = [is_datetime(c) for c in df.values[0]]
                 if sum(possible_indexes) == 0:
                     raise ValueError("No time variable in the data. Can not convert.")
                 col = df.columns[possible_indexes]
                 if sum(possible_indexes) > 1:
-                    raise ValueError(f"Unambiguous time index! {list(df.columns[possible_indexes])} could be index. Use `time_col` variable or set time to index.")
+                    raise ValueError(
+                        f"Unambiguous time index! {list(df.columns[possible_indexes])} could be index. Use `time_col` variable or set time to index."
+                    )
                 else:
                     times = df[col[0]].values
                     series.pop(col[0])
@@ -262,7 +277,7 @@ class DataFrame(BaseModel):
         Warning
         -----
 
-            Notice from the example above that when time series have overlapping timestamps the last data frame overwrites the first. 
+            Notice from the example above that when time series have overlapping timestamps the last data frame overwrites the first.
 
             >>> df1 = DataFrame(
             ...     series={"INPUT_ID_1": [1, 2]},
@@ -333,6 +348,7 @@ class InsertParams(BaseModel):
     """
     :meta private:
     """
+
     integration: IntegrationID
     data: DataFrame
 
@@ -341,6 +357,7 @@ class CreateSummary(BaseModel, extra=Extra.forbid):
     """
     :meta private:
     """
+
     id: ResourceID
     created: bool
 
@@ -349,6 +366,7 @@ class InsertResponse(BaseModel, extra=Extra.forbid):
     """
     :meta private:
     """
+
     signalsByInput: Dict[InputID, CreateSummary]
 
 
@@ -356,6 +374,7 @@ class DataFrameParams(BaseModel):
     """
     :meta private:
     """
+
     query: Optional[ResourceQuery] = {}
     data: Optional[DataQuery] = {}
     include: Optional[List[str]] = []

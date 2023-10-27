@@ -1,18 +1,17 @@
-"""
-Copyright 2023 Searis AS
+# Copyright 2023 Searis AS
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 
 """
 Client module is the main module of PyClarify.
@@ -44,7 +43,7 @@ from pyclarify.fields.error import Error
 
 class Client(JSONRPCClient):
     """
-    The class containing all rpc methods for talking to Clarify. Uses credential file on initialization. 
+    The class containing all rpc methods for talking to Clarify. Uses credential file on initialization.
 
     Parameters
     ----------
@@ -65,8 +64,11 @@ class Client(JSONRPCClient):
         logging.debug("Successfully connected to Clarify!")
         logging.debug(f"SDK version: {pyclarify.__version__}")
         logging.debug(f"API version: {pyclarify.__API_version__}")
-    
+
     def handle_response(self, request: Request, response) -> Response:
+        """
+        :meta private:
+        """
         if not response.ok:
             err = {
                 "code": response.status_code,
@@ -80,13 +82,21 @@ class Client(JSONRPCClient):
         response["method"] = request.method
         return Response(**response)
 
-
-    def iterate_requests(self, request: Request, stopping_condition: Callable = None, window_size: timedelta = None):
+    def iterate_requests(
+        self,
+        request: Request,
+        stopping_condition: Callable = None,
+        window_size: timedelta = None,
+    ):
+        """
+        :meta private:
+        """
         if request.method in [
-            ApiMethod.data_frame, 
-            ApiMethod.select_items, 
+            ApiMethod.data_frame,
+            ApiMethod.select_items,
             ApiMethod.select_signals,
-            ApiMethod.evaluate]:
+            ApiMethod.evaluate,
+        ]:
             iterator = SelectIterator(request, window_size)
         else:
             iterator = [request]
@@ -101,10 +111,13 @@ class Client(JSONRPCClient):
             else:
                 responses += response
 
-            if stopping_condition(response) if isinstance(stopping_condition, Callable) else False:
+            if (
+                stopping_condition(response)
+                if isinstance(stopping_condition, Callable)
+                else False
+            ):
                 return responses
-        return responses  
-
+        return responses
 
     @validate_arguments
     def insert(self, data) -> Response:
@@ -116,7 +129,7 @@ class Client(JSONRPCClient):
         Parameters
         ----------
         data : DataFrame, pd.DataFrame, dict
-            The data containing the values of a signal in a key-value pair, and separate time axis. 
+            The data containing the values of a signal in a key-value pair, and separate time axis.
 
         Returns
         -------
@@ -143,7 +156,7 @@ class Client(JSONRPCClient):
             >>> client.insert(data)
 
             Inserting pandas.DataFrame.
-            
+
             >>> import pandas as pd
             >>> df = pd.DataFrame(data={"INPUT_ID_1": [1, 2], "INPUT_ID_2": [3, 4]})
             >>> df.index = ["2021-11-01T21:50:06Z",  "2021-11-02T21:50:06Z"]
@@ -189,7 +202,6 @@ class Client(JSONRPCClient):
             if isinstance(data, dict):
                 data = DataFrame.from_dict(data)
 
-
         request_data = Request(
             method=ApiMethod.insert,
             params={"integration": self.authentication.integration_id, "data": data},
@@ -203,7 +215,7 @@ class Client(JSONRPCClient):
     @validate_arguments
     def select_items(
         self,
-        filter = {},
+        filter={},
         include: Optional[List] = [],
         skip: int = 0,
         limit: Optional[int] = 10,
@@ -230,7 +242,7 @@ class Client(JSONRPCClient):
 
         sort: list of strings
             List of strings describing the order in which to sort the items in the response.
-        
+
         total: bool, default False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
 
@@ -239,7 +251,7 @@ class Client(JSONRPCClient):
         Returns
         -------
         Response
-            ``Response.result.data`` is an array of ItemSelectView            
+            ``Response.result.data`` is an array of ItemSelectView
 
 
         Examples
@@ -252,7 +264,7 @@ class Client(JSONRPCClient):
             ...     filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
             ... )
 
-            Getting 1000 items. 
+            Getting 1000 items.
 
             >>> client.select_items(
             ...     limit = 1000,
@@ -266,7 +278,7 @@ class Client(JSONRPCClient):
             ... )
 
             Getting total number of signals (as meta data).
-            
+
             >>> client.select_items(
             ...     total= True,
             ... )
@@ -280,7 +292,7 @@ class Client(JSONRPCClient):
             ...     sort = ["-id", "name"],
             ...     total=True,
             ... )
-        
+
         Response
             In case of a valid return value, returns a pydantic model with the following format:
 
@@ -293,31 +305,31 @@ class Client(JSONRPCClient):
                 ...     },
                 ...     data=[
                 ...         ItemSelectView(
-                ...             id='c5i41fjsbu8cohpkcpvg', 
-                ...             type='items', 
+                ...             id='c5i41fjsbu8cohpkcpvg',
+                ...             type='items',
                 ...             meta=ResourceMetadata(
                 ...                 annotations={
                 ...                     "docs-clarify-io/example/environment": "office"
-                ...                  }, 
-                ...                 attributesHash='7602afa2fe611e0c8eff17f7936e108ee29e6817', 
-                ...                 relationshipsHash='5f36b2220a14b54ee5ea290645ee34d943ea5be5', 
-                ...                 updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc), 
+                ...                  },
+                ...                 attributesHash='7602afa2fe611e0c8eff17f7936e108ee29e6817',
+                ...                 relationshipsHash='5f36b2220a14b54ee5ea290645ee34d943ea5be5',
+                ...                 updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc),
                 ...                 createdAt=datetime.datetime(2021, 10, 11, 13, 48, 46, 958000, tzinfo=datetime.timezone.utc)
-                ...             ), 
+                ...             ),
                 ...             attributes=Item(
-                ...                 name='Dunder ReBond Inventory Level', 
-                ...                 valueType=<TypeSignal.numeric: 'numeric'>, 
-                ...                 description='How many reams of the Dunder ReBond we have in the warehouse.', 
+                ...                 name='Dunder ReBond Inventory Level',
+                ...                 valueType=<TypeSignal.numeric: 'numeric'>,
+                ...                 description='How many reams of the Dunder ReBond we have in the warehouse.',
                 ...                 labels={
-                ...                     'type': ['Recycled', 'Bond'], 
+                ...                     'type': ['Recycled', 'Bond'],
                 ...                     'location': ['Scranton'],
-                ...                     'threat-level': ['Midnight'] 
-                ...                 }, 
-                ...                 engUnit='', 
-                ...                 enumValues={}, 
-                ...                 sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
-                ...                 sampleInterval=None, 
-                ...                 gapDetection=datetime.timedelta(seconds=7200), 
+                ...                     'threat-level': ['Midnight']
+                ...                 },
+                ...                 engUnit='',
+                ...                 enumValues={},
+                ...                 sourceType=<SourceTypeSignal.measurement: 'measurement'>,
+                ...                 sampleInterval=None,
+                ...                 gapDetection=datetime.timedelta(seconds=7200),
                 ...                 visible=True
                 ...             ),
                 ...             relationships={}
@@ -455,7 +467,11 @@ class Client(JSONRPCClient):
         """
 
         # create params dict
-        params = {"inputs": signals_by_input, "createOnly": create_only, "integration": integration}
+        params = {
+            "inputs": signals_by_input,
+            "createOnly": create_only,
+            "integration": integration,
+        }
 
         # assert integration parameter
         if not params["integration"]:
@@ -511,7 +527,7 @@ class Client(JSONRPCClient):
         Response
             `Response.result.data` is a dictionary mapping <SIGNAL_ID> to <ITEM_ID>.
 
-    
+
         Examples
         --------
             >>> client = Client("./clarify-credentials.json")
@@ -542,12 +558,12 @@ class Client(JSONRPCClient):
             ...     name = "Home temperature",
             ...     description = "Temperature in the bedroom",
             ...     labels = {
-            ...         "data-source": ["Raspberry Pi"], 
+            ...         "data-source": ["Raspberry Pi"],
             ...         "location": ["Home"]},
             ...     visible=True
             ... )
             >>> client.publish_signals(signal_ids=['SIGNAL_ID'], items=[item], create_only=False)
-            
+
 
         Response
             In case of a valid return value, returns a pydantic model with the following format:
@@ -597,7 +613,7 @@ class Client(JSONRPCClient):
     @validate_arguments
     def select_signals(
         self,
-        filter = {},
+        filter={},
         skip: int = 0,
         limit: Optional[int] = 20,
         sort: List[str] = [],
@@ -621,10 +637,10 @@ class Client(JSONRPCClient):
 
         sort: list of strings
             List of strings describing the order in which to sort the items in the response.
-        
+
         total: bool, default False
             When true, force the inclusion of a total count in the response. A total count is the total number of resources that matches filter.
-        
+
         include: List of strings, optional
             A list of strings specifying which relationships to be included in the response.
 
@@ -635,7 +651,7 @@ class Client(JSONRPCClient):
         -------
         Response
             ``Response.result.data`` is an array of SignalSelectView
-                    
+
         Examples
         --------
             >>> client = Client("./clarify-credentials.json")
@@ -646,7 +662,7 @@ class Client(JSONRPCClient):
             ...     filter = Filter(fields={"name": filter.NotEqual(value="Air Temperature")}),
             ... )
 
-            Getting 1000 signals. 
+            Getting 1000 signals.
 
             >>> client.select_signals(
             ...     limit = 1000,
@@ -670,91 +686,91 @@ class Client(JSONRPCClient):
         Response
             In case of a valid return value, returns a pydantic model with the following format:
 
-                >>> jsonrpc='2.0' 
-                ... id='1' 
+                >>> jsonrpc='2.0'
+                ... id='1'
                 ... result=Selection(
                 ...     meta=SelectionMeta(
-                ...     total=725, 
+                ...     total=725,
                 ...     groupIncludedByType=True
-                ...     ), 
+                ...     ),
                 ...     data=[
                 ...         SignalSelectView(
-                ...             id='c5fg083sab1b6pm3u290', 
-                ...             type='signals', 
+                ...             id='c5fg083sab1b6pm3u290',
+                ...             type='signals',
                 ...             meta=ResourceMetadata(
                 ...                 annotations={
                 ...                     "docs-clarify-io/example/environment": "office"
-                ...                 }, 
-                ...                 attributesHash='9ae4eb17c8b3b9f24cea06f09a1a4cab34569077', 
-                ...                 relationshipsHash='02852897e7fe1e7896360b3c3914c5207d2af6fa', 
-                ...                 updatedAt=datetime.datetime(2022, 3, 17, 12, 17, 10, 199000, tzinfo=datetime.timezone.utc), 
+                ...                 },
+                ...                 attributesHash='9ae4eb17c8b3b9f24cea06f09a1a4cab34569077',
+                ...                 relationshipsHash='02852897e7fe1e7896360b3c3914c5207d2af6fa',
+                ...                 updatedAt=datetime.datetime(2022, 3, 17, 12, 17, 10, 199000, tzinfo=datetime.timezone.utc),
                 ...                 createdAt=datetime.datetime(2021, 10, 7, 14, 11, 44, 897000, tzinfo=datetime.timezone.utc)
-                ...             ), 
+                ...             ),
                 ...             attributes=SavedSignal(
-                ...                 name='Total reams of paper', 
-                ...                 description='Total count of reams of paper in inventory', 
+                ...                 name='Total reams of paper',
+                ...                 description='Total count of reams of paper in inventory',
                 ...                 labels={
-                ...                     'type': ['Recycled', 'Bond'], 
+                ...                     'type': ['Recycled', 'Bond'],
                 ...                     'location': ['Scranton']
-                ...                 }, 
-                ...                 sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
-                ...                 valueType=<TypeSignal.numeric: 'numeric'>, 
-                ...                 engUnit='', 
-                ...                 enumValues={}, 
-                ...                 sampleInterval=None, 
-                ...                 gapDetection=None, 
-                ...                 input='inventory_recycled_bond', 
-                ...                 integration=None, 
+                ...                 },
+                ...                 sourceType=<SourceTypeSignal.measurement: 'measurement'>,
+                ...                 valueType=<TypeSignal.numeric: 'numeric'>,
+                ...                 engUnit='',
+                ...                 enumValues={},
+                ...                 sampleInterval=None,
+                ...                 gapDetection=None,
+                ...                 input='inventory_recycled_bond',
+                ...                 integration=None,
                 ...                 item=None
-                ...             ), 
+                ...             ),
                 ...             relationships=RelationshipsDict(
                 ...                 integration=RelationshipData(
                 ...                     data=RelationshipMetadata(
-                ...                         type='integrations', 
+                ...                         type='integrations',
                 ...                         id='c5e3u8coh8drsbpi4cvg'
                 ...                     )
-                ...                 ), 
+                ...                 ),
                 ...                 item=RelationshipData(data=None)
                 ...             )
-                ...         ), 
+                ...         ),
                 ...         ...
-                ...     ], 
+                ...     ],
                 ...     included=IncludedField(
-                ...         integration=None, 
+                ...         integration=None,
                 ...         items=[
                 ...             ItemSelectView(
-                ...                 id='c5i41fjsbu8cohpkcpvg', 
-                ...                 type='items', 
+                ...                 id='c5i41fjsbu8cohpkcpvg',
+                ...                 type='items',
                 ...                 meta=ResourceMetadata(
                 ...                     annotations={
                 ...                         "docs-clarify-io/example/environment": "office"
-                ...                     }, 
-                ...                     attributesHash='7602afa2fe611e0c8eff17f7936e108ee29e6817', 
-                ...                     relationshipsHash='5f36b2220a14b54ee5ea290645ee34d943ea5be5', 
-                ...                     updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc), 
+                ...                     },
+                ...                     attributesHash='7602afa2fe611e0c8eff17f7936e108ee29e6817',
+                ...                     relationshipsHash='5f36b2220a14b54ee5ea290645ee34d943ea5be5',
+                ...                     updatedAt=datetime.datetime(2022, 3, 25, 9, 58, 20, 264000, tzinfo=datetime.timezone.utc),
                 ...                     createdAt=datetime.datetime(2021, 10, 11, 13, 48, 46, 958000, tzinfo=datetime.timezone.utc)
-                ...                 ), 
+                ...                 ),
                 ...                 attributes=Item(
-                ...                     name='Dunder ReBond Inventory Level', 
-                ...                     valueType=<TypeSignal.numeric: 'numeric'>, 
-                ...                     description='How many reams of the Dunder ReBond we have in the warehouse.', 
+                ...                     name='Dunder ReBond Inventory Level',
+                ...                     valueType=<TypeSignal.numeric: 'numeric'>,
+                ...                     description='How many reams of the Dunder ReBond we have in the warehouse.',
                 ...                     labels={
-                ...                         'type': ['Recycled', 'Bond'], 
+                ...                         'type': ['Recycled', 'Bond'],
                 ...                         'location': ['Scranton'],
-                ...                         'threat-level': ['Midnight'] 
-                ...                     }, 
-                ...                     engUnit='', 
-                ...                     enumValues={}, 
-                ...                     sourceType=<SourceTypeSignal.measurement: 'measurement'>, 
-                ...                     sampleInterval=None, 
-                ...                     gapDetection=datetime.timedelta(seconds=7200), 
+                ...                         'threat-level': ['Midnight']
+                ...                     },
+                ...                     engUnit='',
+                ...                     enumValues={},
+                ...                     sourceType=<SourceTypeSignal.measurement: 'measurement'>,
+                ...                     sampleInterval=None,
+                ...                     gapDetection=datetime.timedelta(seconds=7200),
                 ...                     visible=True
                 ...                 )
                 ...             )
                 ...             ...
                 ...         ]
                 ...     )
-                ... ) 
+                ... )
                 ... error=None
 
             In case of the error the method return a pydantic model with the following format:
@@ -792,7 +808,7 @@ class Client(JSONRPCClient):
     @validate_arguments
     def data_frame(
         self,
-        filter = {},
+        filter={},
         sort: List[str] = [],
         limit: int = 20,
         skip: int = 0,
@@ -802,7 +818,7 @@ class Client(JSONRPCClient):
         last: int = -1,
         rollup: Union[str, timedelta] = None,
         include: List[str] = [],
-        window_size: Union[str, timedelta] = None
+        window_size: Union[str, timedelta] = None,
     ) -> Response:
         """
         Retrieve DataFrame for items stored in Clarify.
@@ -834,7 +850,7 @@ class Client(JSONRPCClient):
         window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__, default None
             If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
             values.
-        
+
         Returns
         -------
         Response
@@ -900,32 +916,32 @@ class Client(JSONRPCClient):
             ... )
             >>> r.result.data
             ... DataFrame(
-            ...     times=[datetime.datetime(2022, 9, 5, 11, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 10, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 15, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 30, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 35, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 40, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 45, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 50, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 0, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 10, tzinfo=datetime.timezone.utc)], 
+            ...     times=[datetime.datetime(2022, 9, 5, 11, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 10, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 15, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 30, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 5, 11, 35, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 40, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 45, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 6, 13, 50, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 0, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 5, tzinfo=datetime.timezone.utc), datetime.datetime(2022, 9, 7, 13, 10, tzinfo=datetime.timezone.utc)],
             ...     series={
-            ...         'cbpmaq6rpn52969vfl1g_avg': [1.0, 5.0, 5.875, 6.8, 4.2, 7.0, 3.6, 5.0, 2.0, 2.2, 4.25], 
-            ...         'cbpmaq6rpn52969vfl1g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl1g_max': [1.0, 9.0, 9.0, 9.0, 8.0, 9.0, 6.0, 6.0, 2.0, 6.0, 8.0], 
-            ...         'cbpmaq6rpn52969vfl1g_min': [1.0, 0.0, 0.0, 5.0, 1.0, 6.0, 0.0, 4.0, 2.0, 0.0, 0.0], 
-            ...         'cbpmaq6rpn52969vfl1g_sum': [2.0, 50.0, 47.0, 34.0, 21.0, 21.0, 18.0, 10.0, 2.0, 11.0, 17.0], 
-            ...         'cbpmaq6rpn52969vfl20_avg': [5.0, 4.7, 3.75, 3.6, 5.2, 7.333333333333333, 3.6, 7.0, 9.0, 3.6, 6.75], 
-            ...         'cbpmaq6rpn52969vfl20_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl20_max': [8.0, 9.0, 8.0, 7.0, 9.0, 9.0, 8.0, 9.0, 9.0, 8.0, 9.0], 
-            ...         'cbpmaq6rpn52969vfl20_min': [2.0, 1.0, 0.0, 1.0, 2.0, 4.0, 0.0, 5.0, 9.0, 0.0, 1.0], 
-            ...         'cbpmaq6rpn52969vfl20_sum': [10.0, 47.0, 30.0, 18.0, 26.0, 22.0, 18.0, 14.0, 9.0, 18.0, 27.0], 
-            ...         'cbpmaq6rpn52969vfl2g_avg': [8.0, 3.7, 4.75, 1.6, 3.6, 2.0, 5.6, 8.5, 4.0, 3.8, 5.0], 
-            ...         'cbpmaq6rpn52969vfl2g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl2g_max': [8.0, 9.0, 9.0, 5.0, 8.0, 5.0, 9.0, 9.0, 4.0, 8.0, 7.0], 
-            ...         'cbpmaq6rpn52969vfl2g_min': [8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 8.0, 4.0, 0.0, 1.0], 
-            ...         'cbpmaq6rpn52969vfl2g_sum': [16.0, 37.0, 38.0, 8.0, 18.0, 6.0, 28.0, 17.0, 4.0, 19.0, 20.0], 
-            ...         'cbpmaq6rpn52969vfl30_avg': [2.0, 5.6, 3.875, 3.2, 5.2, 4.666666666666667, 5.0, 4.5, 7.0, 5.8, 8.0], 
-            ...         'cbpmaq6rpn52969vfl30_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl30_max': [3.0, 9.0, 7.0, 9.0, 9.0, 8.0, 7.0, 8.0, 7.0, 9.0, 9.0], 
-            ...         'cbpmaq6rpn52969vfl30_min': [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 2.0, 1.0, 7.0, 1.0, 6.0], 
-            ...         'cbpmaq6rpn52969vfl30_sum': [4.0, 56.0, 31.0, 16.0, 26.0, 14.0, 25.0, 9.0, 7.0, 29.0, 32.0], 
-            ...         'cbpmaq6rpn52969vfl3g_avg': [1.5, 3.3, 6.75, 5.8, 4.8, 5.666666666666667, 3.8, 6.5, 5.0, 3.0, 3.25], 
-            ...         'cbpmaq6rpn52969vfl3g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0], 
-            ...         'cbpmaq6rpn52969vfl3g_max': [2.0, 9.0, 9.0, 9.0, 9.0, 7.0, 8.0, 8.0, 5.0, 7.0, 5.0], 
-            ...         'cbpmaq6rpn52969vfl3g_min': [1.0, 1.0, 4.0, 1.0, 1.0, 3.0, 0.0, 5.0, 5.0, 0.0, 0.0], 
+            ...         'cbpmaq6rpn52969vfl1g_avg': [1.0, 5.0, 5.875, 6.8, 4.2, 7.0, 3.6, 5.0, 2.0, 2.2, 4.25],
+            ...         'cbpmaq6rpn52969vfl1g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],
+            ...         'cbpmaq6rpn52969vfl1g_max': [1.0, 9.0, 9.0, 9.0, 8.0, 9.0, 6.0, 6.0, 2.0, 6.0, 8.0],
+            ...         'cbpmaq6rpn52969vfl1g_min': [1.0, 0.0, 0.0, 5.0, 1.0, 6.0, 0.0, 4.0, 2.0, 0.0, 0.0],
+            ...         'cbpmaq6rpn52969vfl1g_sum': [2.0, 50.0, 47.0, 34.0, 21.0, 21.0, 18.0, 10.0, 2.0, 11.0, 17.0],
+            ...         'cbpmaq6rpn52969vfl20_avg': [5.0, 4.7, 3.75, 3.6, 5.2, 7.333333333333333, 3.6, 7.0, 9.0, 3.6, 6.75],
+            ...         'cbpmaq6rpn52969vfl20_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],
+            ...         'cbpmaq6rpn52969vfl20_max': [8.0, 9.0, 8.0, 7.0, 9.0, 9.0, 8.0, 9.0, 9.0, 8.0, 9.0],
+            ...         'cbpmaq6rpn52969vfl20_min': [2.0, 1.0, 0.0, 1.0, 2.0, 4.0, 0.0, 5.0, 9.0, 0.0, 1.0],
+            ...         'cbpmaq6rpn52969vfl20_sum': [10.0, 47.0, 30.0, 18.0, 26.0, 22.0, 18.0, 14.0, 9.0, 18.0, 27.0],
+            ...         'cbpmaq6rpn52969vfl2g_avg': [8.0, 3.7, 4.75, 1.6, 3.6, 2.0, 5.6, 8.5, 4.0, 3.8, 5.0],
+            ...         'cbpmaq6rpn52969vfl2g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],
+            ...         'cbpmaq6rpn52969vfl2g_max': [8.0, 9.0, 9.0, 5.0, 8.0, 5.0, 9.0, 9.0, 4.0, 8.0, 7.0],
+            ...         'cbpmaq6rpn52969vfl2g_min': [8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0, 8.0, 4.0, 0.0, 1.0],
+            ...         'cbpmaq6rpn52969vfl2g_sum': [16.0, 37.0, 38.0, 8.0, 18.0, 6.0, 28.0, 17.0, 4.0, 19.0, 20.0],
+            ...         'cbpmaq6rpn52969vfl30_avg': [2.0, 5.6, 3.875, 3.2, 5.2, 4.666666666666667, 5.0, 4.5, 7.0, 5.8, 8.0],
+            ...         'cbpmaq6rpn52969vfl30_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],
+            ...         'cbpmaq6rpn52969vfl30_max': [3.0, 9.0, 7.0, 9.0, 9.0, 8.0, 7.0, 8.0, 7.0, 9.0, 9.0],
+            ...         'cbpmaq6rpn52969vfl30_min': [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 2.0, 1.0, 7.0, 1.0, 6.0],
+            ...         'cbpmaq6rpn52969vfl30_sum': [4.0, 56.0, 31.0, 16.0, 26.0, 14.0, 25.0, 9.0, 7.0, 29.0, 32.0],
+            ...         'cbpmaq6rpn52969vfl3g_avg': [1.5, 3.3, 6.75, 5.8, 4.8, 5.666666666666667, 3.8, 6.5, 5.0, 3.0, 3.25],
+            ...         'cbpmaq6rpn52969vfl3g_count': [2.0, 10.0, 8.0, 5.0, 5.0, 3.0, 5.0, 2.0, 1.0, 5.0, 4.0],
+            ...         'cbpmaq6rpn52969vfl3g_max': [2.0, 9.0, 9.0, 9.0, 9.0, 7.0, 8.0, 8.0, 5.0, 7.0, 5.0],
+            ...         'cbpmaq6rpn52969vfl3g_min': [1.0, 1.0, 4.0, 1.0, 1.0, 3.0, 0.0, 5.0, 5.0, 0.0, 0.0],
             ...         'cbpmaq6rpn52969vfl3g_sum': [3.0, 33.0, 54.0, 29.0, 24.0, 17.0, 19.0, 13.0, 5.0, 15.0, 13.0]
             ... })
 
@@ -952,7 +968,7 @@ class Client(JSONRPCClient):
                 ...             ...
                 ...         }
                 ...     )
-                ...     
+                ...
                 ... error = None
 
             In case of the error the method return a pydantic model with the following format:
@@ -999,9 +1015,8 @@ class Client(JSONRPCClient):
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        
-        return self.iterate_requests(request_data, lambda x: False, window_size)
 
+        return self.iterate_requests(request_data, lambda x: False, window_size)
 
     @validate_arguments
     def evaluate(
@@ -1014,7 +1029,7 @@ class Client(JSONRPCClient):
         lt: Union[datetime, str] = None,
         last: int = -1,
         include: List[str] = [],
-        window_size: Union[str, timedelta] = None
+        window_size: Union[str, timedelta] = None,
     ) -> Response:
         """
         Retrieve DataFrame by aggregating time-series data and perform evaluate formula expressions.
@@ -1042,7 +1057,7 @@ class Client(JSONRPCClient):
         window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__, default None
             If duration is specified, the iterator will use the specified window as a paging size instead of default API limits. This is commonly used when resolution of data is too high to be packaged with default
             values.
-        
+
         Returns
         -------
         Response
@@ -1065,109 +1080,107 @@ class Client(JSONRPCClient):
 
         Examples
         --------
-            >>> client = Client("./clarify-credentials.json")
+        >>> client = Client("./clarify-credentials.json")
 
-            Getting a single item.
+        Getting a single item.
 
-            >>> item = ItemAggregation(
-            ...     id="cbpmaq6rpn52969vfl00",
-            ...     aggregation="max",
-            ...     alias="i1"
-            ... )
-            >>> r = client.evaluate(items=[item1], rollup="PT10M")
-            >>> print(r.result.data.to_pandas())
-            ...                             i1
-            ... 2023-10-20 10:20:00+00:00  6.0
-            ... 2023-10-20 10:30:00+00:00  9.0
-            ... 2023-10-20 10:40:00+00:00  8.0
+        >>> item = ItemAggregation(
+        ...     id="cbpmaq6rpn52969vfl00",
+        ...     aggregation="max",
+        ...     alias="i1"
+        ... )
+        >>> r = client.evaluate(items=[item1], rollup="PT10M")
+        >>> print(r.result.data.to_pandas())
+        ...                             i1
+        ... 2023-10-20 10:20:00+00:00  6.0
+        ... 2023-10-20 10:30:00+00:00  9.0
+        ... 2023-10-20 10:40:00+00:00  8.0
 
+        Getting a single item in a time range.
 
+        >>> r = client.evaluate(items=[item1], gte="2022-08-10T00:00:00Z", lt="2022-08-30T00:00:00Z", rollup="PT10M")
+        >>> print(r.result.data.to_pandas())
+        ...                             i1
+        ... 2022-08-10 09:50:00+00:00  8.0
+        ... 2022-08-10 10:00:00+00:00  9.0
+        ... 2022-08-25 11:30:00+00:00  8.0
+        ... 2022-08-30 15:10:00+00:00  2.0
+        ... 2022-08-30 15:20:00+00:00  9.0
+        ... 2022-08-30 15:30:00+00:00  9.0
 
-            Getting a single item in a time range.
+        Using a calculation on a single item.
 
-            >>> r = client.evaluate(items=[item1], gte="2022-08-10T00:00:00Z", lt="2022-08-30T00:00:00Z", rollup="PT10M")
-            >>> print(r.result.data.to_pandas())
-            ...                             i1
-            ... 2022-08-10 09:50:00+00:00  8.0
-            ... 2022-08-10 10:00:00+00:00  9.0
-            ... 2022-08-25 11:30:00+00:00  8.0
-            ... 2022-08-30 15:10:00+00:00  2.0
-            ... 2022-08-30 15:20:00+00:00  9.0
-            ... 2022-08-30 15:30:00+00:00  9.0
+        >>> calc = Calculation(
+        ...     formula="i1**2",
+        ...     alias="power2"
+        ... )
+        >>> r = client.evaluate(items=[item1], calculations=[calc], rollup="PT10M")
+        >>> print(r.result.data.to_pandas())
+        ...                             i1  power2
+        ... 2023-10-20 10:20:00+00:00  6.0    36.0
+        ... 2023-10-20 10:30:00+00:00  9.0    81.0
+        ... 2023-10-20 10:40:00+00:00  8.0    64.0
 
-            Using a calculation on a single item.
+        Adding two items.
 
-            >>> calc = Calculation(
-            ...     formula="i1**2",
-            ...     alias="power2"
-            ... )
-            >>> r = client.evaluate(items=[item1], calculations=[calc], rollup="PT10M")
-            >>> print(r.result.data.to_pandas())
-            ...                             i1  power2
-            ... 2023-10-20 10:20:00+00:00  6.0    36.0
-            ... 2023-10-20 10:30:00+00:00  9.0    81.0
-            ... 2023-10-20 10:40:00+00:00  8.0    64.0
+        >>> item = ItemAggregation(
+        ...     id="cbpmaq6rpn52969vfl0g",
+        ...     aggregation="avg",
+        ...     alias="i2"
+        ... )
+        >>> calc = Calculation(
+        ...     formula="i1 + i2",
+        ...     alias="sumi1i2"
+        ... )
+        >>> r = client.evaluate(items=[item1, item2], calculations=[calc], rollup="PT10M")
+        >>> print(r.result.data.to_pandas())
+        ...                             i1   i2   sumi1i2
+        ... 2023-10-20 10:20:00+00:00  6.0   3.0      9.0
+        ... 2023-10-20 10:30:00+00:00  9.0   4.0     13.0
+        ... 2023-10-20 10:40:00+00:00  8.0   4.0     12.0
 
-            Adding two items.
-            
-            >>> item = ItemAggregation(
-            ...     id="cbpmaq6rpn52969vfl0g",
-            ...     aggregation="avg",
-            ...     alias="i2"
-            ... )
-            >>> calc = Calculation(
-            ...     formula="i1 + i2",
-            ...     alias="sumi1i2"
-            ... )
-            >>> r = client.evaluate(items=[item1, item2], calculations=[calc], rollup="PT10M")
-            >>> print(r.result.data.to_pandas())
-            ...                             i1   i2   sumi1i2
-            ... 2023-10-20 10:20:00+00:00  6.0   3.0      9.0
-            ... 2023-10-20 10:30:00+00:00  9.0   4.0     13.0
-            ... 2023-10-20 10:40:00+00:00  8.0   4.0     12.0
+        Tip
+        ----
+        You can limit the number of series to be returned by specifying aliases in the `series` parameter.
 
-            Tip
-            ----
-            You can limit the number of series to be returned by specifying aliases in the `series` parameter.
-
-            >>> r = client.evaluate(
-            ...     items=[item1, item2], 
-            ...     calculations=[calc], 
-            ...     rollup="PT10M", 
-            ...     series=["sumi1i2"]
-            ... )
-            >>> print(r.result.data.to_pandas())
-            ...                            sumi1i2
-            ... 2023-10-20 10:20:00+00:00      9.0
-            ... 2023-10-20 10:30:00+00:00     13.0
-            ... 2023-10-20 10:40:00+00:00     12.0
+        >>> r = client.evaluate(
+        ...     items=[item1, item2],
+        ...     calculations=[calc],
+        ...     rollup="PT10M",
+        ...     series=["sumi1i2"]
+        ... )
+        >>> print(r.result.data.to_pandas())
+        ...                            sumi1i2
+        ... 2023-10-20 10:20:00+00:00      9.0
+        ... 2023-10-20 10:30:00+00:00     13.0
+        ... 2023-10-20 10:40:00+00:00     12.0
 
 
-            Chaining calculations.
-            
-            >>> calc1 = Calculation(
-            ...     formula="i1 + i2",
-            ...     alias="sum"
-            ... )
-            >>> calc2 = Calculation(
-            ...     formula="i1/sum",
-            ...     alias="ratei1"
-            ... )
-            >>> calc2 = Calculation(
-            ...     formula="floor(ratei1*100)",
-            ...     alias="ratio"
-            ... )
-            >>> r = client.evaluate(
-            ...     items=[item1, item2], 
-            ...     calculations=[calc1, calc2, calc3], 
-            ...     rollup="PT10M", 
-            ...     series=["i1", "i2", "ratio"]
-            ... )
-            >>> print(r.result.data.to_pandas())
-            ...                             i1   i2  ratio
-            ... 2023-10-20 10:20:00+00:00  6.0  3.0   66.0
-            ... 2023-10-20 10:30:00+00:00  9.0  4.0   69.0
-            ... 2023-10-20 10:40:00+00:00  8.0  4.0   66.0
+        Chaining calculations.
+
+        >>> calc1 = Calculation(
+        ...     formula="i1 + i2",
+        ...     alias="sum"
+        ... )
+        >>> calc2 = Calculation(
+        ...     formula="i1/sum",
+        ...     alias="ratei1"
+        ... )
+        >>> calc2 = Calculation(
+        ...     formula="floor(ratei1*100)",
+        ...     alias="ratio"
+        ... )
+        >>> r = client.evaluate(
+        ...     items=[item1, item2],
+        ...     calculations=[calc1, calc2, calc3],
+        ...     rollup="PT10M",
+        ...     series=["i1", "i2", "ratio"]
+        ... )
+        >>> print(r.result.data.to_pandas())
+        ...                             i1   i2  ratio
+        ... 2023-10-20 10:20:00+00:00  6.0  3.0   66.0
+        ... 2023-10-20 10:30:00+00:00  9.0  4.0   69.0
+        ... 2023-10-20 10:40:00+00:00  8.0  4.0   66.0
         """
 
         data_filter = DataFilter(gte=gte, lt=lt, series=series)
@@ -1175,12 +1188,12 @@ class Client(JSONRPCClient):
         params = {
             "items": items,
             "calculations": calculations,
-            "data": data_query, 
-            "include": include
+            "data": data_query,
+            "include": include,
         }
         request_data = Request(method=ApiMethod.evaluate, params=params)
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )
-        
+
         return self.iterate_requests(request_data, lambda x: False, window_size)

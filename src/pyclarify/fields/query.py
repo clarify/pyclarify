@@ -1,18 +1,16 @@
-"""
-Copyright 2023 Searis AS
+# Copyright 2023 Searis AS
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
 import warnings
@@ -25,6 +23,10 @@ from datetime import datetime
 
 
 class Operators(str, Enum):
+    """
+    :meta private:
+    """
+
     NE = "$ne"
     REGEX = "$regex"
     IN = "$in"
@@ -36,7 +38,13 @@ class Operators(str, Enum):
 
 
 class Comparison(BaseModel):
-    value: Union[str, List[str], int, List[int], float, List[float], bool, None, List[None]] = None
+    """
+    :meta private:
+    """
+
+    value: Union[
+        str, List[str], int, List[int], float, List[float], bool, None, List[None]
+    ] = None
     operator: Optional[Operators]
 
     @root_validator(pre=False, allow_reuse=True)
@@ -49,14 +57,20 @@ class Comparison(BaseModel):
                 if not isinstance(value, list):
                     raise FilterError(operator, list, value)
                 elif None in value:
-                    warnings.warn("You are using a null value as a filter. This will result in no results.", UserWarning)
-        
+                    warnings.warn(
+                        "You are using a null value as a filter. This will result in no results.",
+                        UserWarning,
+                    )
+
             # Field value should not be list
             if operator not in [Operators.IN, Operators.NIN]:
                 if isinstance(value, list):
                     raise FilterError(operator, list, value)
                 elif not value:
-                    warnings.warn("You are using a null value as a filter. This will result in no results.", UserWarning)
+                    warnings.warn(
+                        "You are using a null value as a filter. This will result in no results.",
+                        UserWarning,
+                    )
         # No operator means Equals
         else:
             if isinstance(value, list):
@@ -75,9 +89,12 @@ class Equal(Comparison):
 
     Example
     -------
-    filter_value = Equal(value="foo")
+    >>> from pyclarify.query import Equal
+    >>> filter_value = Equal(value="foo")
     """
+
     pass
+
 
 class NotEqual(Comparison):
     """
@@ -85,8 +102,10 @@ class NotEqual(Comparison):
 
     Example
     -------
-    filter_value = NotEqual(value="bar")
+    >>> from pyclarify.query import NotEqual
+    >>> filter_value = NotEqual(value="bar")
     """
+
     operator = Operators.NE
 
 
@@ -96,8 +115,10 @@ class Regex(Comparison):
 
     Example
     -------
-    filter_value = Regex(value="fo[o]{1}")
+    >>> from pyclarify.query import Regex
+    >>> filter_value = Regex(value="fo[o]{1}")
     """
+
     operator = Operators.REGEX
 
 
@@ -107,8 +128,10 @@ class In(Comparison):
 
     Example
     -------
-    filter_value = In(value=["foo", "bar"])
+    >>> from pyclarify.query import In
+    >>> filter_value = In(value=["foo", "bar"])
     """
+
     operator = Operators.IN
 
 
@@ -118,8 +141,10 @@ class NotIn(Comparison):
 
     Example
     -------
-    filter_value = NotIn(value=["baz", "qux"])
+    >>> from pyclarify.query import NotIn
+    >>> filter_value = NotIn(value=["baz", "qux"])
     """
+
     operator = Operators.NIN
 
 
@@ -129,8 +154,10 @@ class Less(Comparison):
 
     Example
     -------
-    filter_value = Less(value=10)
+    >>> from pyclarify.query import Less
+    >>> filter_value = Less(value=10)
     """
+
     operator = Operators.LT
 
 
@@ -140,8 +167,10 @@ class LessOrEqual(Comparison):
 
     Example
     -------
-    filter_value = LessOrEqual(value=10)
+    >>> from pyclarify.query import LessOrEqual
+    >>> filter_value = LessOrEqual(value=10)
     """
+
     operator = Operators.LTE
 
 
@@ -151,8 +180,10 @@ class Greater(Comparison):
 
     Example
     -------
-    filter_value = Greater(value=10)
+    >>> from pyclarify.query import Greater
+    >>> filter_value = Greater(value=10)
     """
+
     operator = Operators.GT
 
 
@@ -162,12 +193,18 @@ class GreaterOrEqual(Comparison):
 
     Example
     -------
-    filter_value = GreaterOrEqual(value=10)
+    >>> from pyclarify.query import GreaterOrEqual
+    >>> filter_value = GreaterOrEqual(value=10)
     """
+
     operator = Operators.GTE
 
 
 class DateField(BaseModel):
+    """
+    :meta private:
+    """
+
     operator: Optional[Operators]
     time: Optional[Union[str, datetime]]
     query: Dict = {}
@@ -182,6 +219,7 @@ class DateField(BaseModel):
 
     class Config:
         extra = Extra.forbid
+
 
 class SelectionFormat(BaseModel):
     dataAsArray: Optional[bool] = True
