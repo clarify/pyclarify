@@ -33,7 +33,13 @@ from pyclarify.views.dataframe import DataFrame
 from pyclarify.views.evaluate import Calculation, ItemAggregation
 from pyclarify.views.items import ItemSaveView
 from pyclarify.views.signals import Signal
-from pyclarify.fields.constraints import InputID, ResourceID, ApiMethod
+from pyclarify.fields.constraints import (
+    InputID,
+    IntWeekDays,
+    ResourceID,
+    ApiMethod,
+    TimeZone,
+)
 from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
@@ -815,8 +821,11 @@ class Client(JSONRPCClient):
         total: bool = False,
         gte: Union[datetime, str] = None,
         lt: Union[datetime, str] = None,
-        last: int = -1,
         rollup: Union[str, timedelta] = None,
+        timeZone: Optional[TimeZone] = "UTC",
+        firstDayOfWeek: Optional[IntWeekDays] = 1,
+        origin: Optional[Union[str, datetime]] = None,
+        last: int = -1,
         include: List[str] = [],
         window_size: Union[str, timedelta] = None,
     ) -> Response:
@@ -1008,6 +1017,14 @@ class Client(JSONRPCClient):
         )
         data_filter = DataFilter(gte=gte, lt=lt)
         data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
+        data_query = DataQuery(
+            filter=data_filter.to_query(),
+            rollup=rollup,
+            timeZone=timeZone,
+            firstDayOfWeek=firstDayOfWeek,
+            origin=origin,
+            last=last,
+        )
         params = {"query": query, "data": data_query, "include": include}
 
         request_data = Request(method=ApiMethod.data_frame, params=params)
@@ -1022,6 +1039,9 @@ class Client(JSONRPCClient):
     def evaluate(
         self,
         rollup: Union[str, timedelta],
+        timeZone: Optional[TimeZone] = None,
+        firstDayOfWeek: Optional[IntWeekDays] = None,
+        origin: Optional[Union[str, datetime]] = None,
         items: List[Union[Dict, ItemAggregation]] = [],
         calculations: List[Union[Dict, Calculation]] = [],
         series: List[str] = [],
@@ -1184,7 +1204,14 @@ class Client(JSONRPCClient):
         """
 
         data_filter = DataFilter(gte=gte, lt=lt, series=series)
-        data_query = DataQuery(filter=data_filter.to_query(), last=last, rollup=rollup)
+        data_query = DataQuery(
+            filter=data_filter.to_query(),
+            rollup=rollup,
+            timeZone=timeZone,
+            firstDayOfWeek=firstDayOfWeek,
+            origin=origin,
+            last=last,
+        )
         params = {
             "items": items,
             "calculations": calculations,

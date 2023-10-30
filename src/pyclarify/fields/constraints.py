@@ -34,9 +34,11 @@ LimitSelectItems = conint(ge=0, le=1000)
 LimitSelectSignals = conint(ge=0, le=1000)
 Annotations = Dict[AnnotationKey, str]
 Alias = constr(regex="^[A-Za-z_][A-Za-z0-9_]{0,27}$")
+IntWeekDays = conint(ge=0, le=6)
 
 
 TimeZone = str
+
 
 class ApiMethod(str, Enum):
     insert = "integration.Insert"
@@ -57,6 +59,7 @@ class SourceTypeSignal(str, Enum):
 class TypeSignal(str, Enum):
     numeric = "numeric"
     enum = "enum"
+
 
 class DataAggregation(Enum):
     count = "count"

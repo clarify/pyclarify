@@ -14,17 +14,19 @@
 
 from pydantic import BaseModel, Extra
 from typing import Union, List, Dict, Optional
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing_extensions import Literal
 
-from pyclarify.fields.constraints import TimeZone
+from pyclarify.fields.constraints import TimeZone, IntWeekDays
 
 
 class DataQuery(BaseModel, extra=Extra.forbid):
     filter: Optional[Dict] = {}
-    last: Optional[int] = -1
     rollup: Union[timedelta, Literal["window"]] = None
     timeZone: Optional[TimeZone] = "UTC"
+    firstDayOfWeek: Optional[IntWeekDays] = 1
+    origin: Optional[Union[str, datetime]] = None
+    last: Optional[int] = -1
 
 
 class ResourceQuery(BaseModel, extra=Extra.forbid):
