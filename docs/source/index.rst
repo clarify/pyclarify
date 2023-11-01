@@ -2,9 +2,13 @@
    :parser: myst_parser.sphinx_
 
 .. toctree::
-   :maxdepth: 3
+   :hidden:
+   :maxdepth: 2
 
-   PyClarify Reference <reference/index>
+   API Reference <reference/index>
+
+
+**Other information**
 
 .. toctree::
    :maxdepth: 1

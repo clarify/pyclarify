@@ -1,18 +1,17 @@
-"""
-Copyright 2023 Searis AS
+# Copyright 2023 Searis AS
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from datetime import timedelta
 from pydantic.datetime_parse import parse_datetime, parse_duration
 from pyclarify.query.filter import DataFilter
@@ -51,7 +50,7 @@ class SegmentIterator:
         self.remaining_resources = user_limit
         self.LIMIT_PER_CALL = limit_per_call
         self.skip = skip
-
+            
     def __iter__(self):
         self.ending_condition = False
         return self
@@ -171,12 +170,11 @@ class SelectIterator:
             self.user_gte, 
             self.user_lt, 
             self.rollup,
-            self.series
         ) = unpack_params(self.request)
 
         # support None inputs
         if self.user_limit == None:
-            self.user_limit = float("inf")
+            self.user_limit = self.API_LIMIT
 
         self.segment_iterator = iter(SegmentIterator(
                 user_limit=self.user_limit, 
@@ -204,9 +202,7 @@ class SelectIterator:
         try:
             start_time, end_time = next(self.current_time_iterator)
             dq = DataFilter(gte=start_time, lt=end_time)
-            if self.series != []:
-                dq.series = self.series
-            self.request.params.data.filter = dq.to_query()
+            self.request.params.data.filter["times"] = dq.to_query()["times"]
         except:            
             try:
                 self.skip, self.limit = next(self.segment_iterator)

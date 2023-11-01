@@ -1,18 +1,17 @@
-"""
-Copyright 2023 Searis AS
+# Copyright 2023 Searis AS
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 
 from pyclarify.fields.query import Comparison, DateField, Operators
 from pydantic.class_validators import root_validator
@@ -30,7 +29,7 @@ class Filter(BaseModel):
     """
     Pydantic model for handling filtering. The filter supports pythons built in "&" and "|" operators for chaining filters.
     The model has a to_query() method used internally to convert model to MongoDB format.
-    
+
     Parameters
     ----------
     fields : dict[str, Comparison]
@@ -52,22 +51,12 @@ class Filter(BaseModel):
     ...     ]
     ... }
 
-    Complete list of operators
-    --------------------------
-    - Equal
-    - NotEqual
-    - Regex
-    - In
-    - NotIn
-    - LessThan
-    - Greater
-    - GreaterOrEqual
+    Complete list of operators can be found in `pyclarify.fields.query`.
     """
 
     and_list: Optional[List[Filter]]
     or_list: Optional[List[Filter]]
     fields: Optional[Dict[str, Union[str, Comparison]]]
-
 
     def __and__(self, other):
         _tmp = []
@@ -103,6 +92,9 @@ class Filter(BaseModel):
         return Filter(or_list=_tmp)
 
     def field_to_query(self, field):
+        """
+        :meta private:
+        """
         field, comparison = list(field.items())[0]
         if isinstance(comparison, Comparison):
             comparison = comparison.dict()
@@ -113,6 +105,9 @@ class Filter(BaseModel):
         return {field: comparison["value"]}
 
     def to_query(self):
+        """
+        :meta private:
+        """
         q = {}
         if self.and_list:
             q["$and"] = [f.to_query() for f in self.and_list]
@@ -133,7 +128,7 @@ Filter.update_forward_refs()
 class DataFilter(BaseModel):
     """
     Pydantic model for handeling filtering. The model has a to_query() method used internally to convert model to MongoDB format.
-    
+
     Parameters
     ----------
     gte: string(`ISO 8601 timestamp <https://docs.clarify.io/api/1.1beta2/types/fields#datetime>`__) or python datetime, optional, default <now - 7 days>
@@ -148,6 +143,8 @@ class DataFilter(BaseModel):
     >>> data_filter = query.DataFilter(gte='2022-08-01T16:00:20Z',lt='2022-08-02T16:00:20Z')
     >>> data_filter.to_query()
     ... {'times': {'$gte': '2022-08-01T16:00:20Z', '$lt': '2022-08-02T16:00:20Z'}}
+
+    :meta private:
     """
 
     gte: Optional[Union[str, datetime]] = None
@@ -156,16 +153,27 @@ class DataFilter(BaseModel):
 
     @root_validator(pre=False, allow_reuse=True)
     def field_must_reflect_operator(cls, values):
+        """
+        :meta private:
+        """
         gte = values["gte"] if "gte" in values.keys() else None
         lt = values["lt"] if "lt" in values.keys() else None
 
         if gte:
-            values["gte"] = DateField(operator=Operators.GTE, time=parse_datetime(gte).astimezone().isoformat())
+            values["gte"] = DateField(
+                operator=Operators.GTE,
+                time=parse_datetime(gte).astimezone().isoformat(),
+            )
         if lt:
-            values["lt"] = DateField(operator=Operators.LT, time=parse_datetime(lt).astimezone().isoformat())
+            values["lt"] = DateField(
+                operator=Operators.LT, time=parse_datetime(lt).astimezone().isoformat()
+            )
         return values
 
     def to_query(self):
+        """
+        :meta private:
+        """
         query = {}
         times = {}
         if self.gte:
@@ -175,6 +183,6 @@ class DataFilter(BaseModel):
             lt = self.lt.dict()["query"]
             times.update(lt)
         if self.series:
-            query["series"] = {"$in" : self.series}
-        query["times"] =  times
+            query["series"] = {"$in": self.series}
+        query["times"] = times
         return query

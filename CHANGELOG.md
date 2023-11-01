@@ -73,6 +73,7 @@ Changes are grouped as follows
 
 - API version changed from 1.1beta2 to 1.1.
 - Changes to internal models to comply with new models in the API.
+- Added `origin`, `timeZone`, and `firstDayOfWeek` parameters to `pyclarify.Client.data_frame` method, allowing higher control of rollup options.
 
 ### Fixed
 
