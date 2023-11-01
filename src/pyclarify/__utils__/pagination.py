@@ -50,7 +50,7 @@ class SegmentIterator:
         self.remaining_resources = user_limit
         self.LIMIT_PER_CALL = limit_per_call
         self.skip = skip
-
+            
     def __iter__(self):
         self.ending_condition = False
         return self
@@ -170,12 +170,11 @@ class SelectIterator:
             self.user_gte, 
             self.user_lt, 
             self.rollup,
-            self.series
         ) = unpack_params(self.request)
 
         # support None inputs
         if self.user_limit == None:
-            self.user_limit = float("inf")
+            self.user_limit = self.API_LIMIT
 
         self.segment_iterator = iter(SegmentIterator(
                 user_limit=self.user_limit, 
@@ -203,9 +202,7 @@ class SelectIterator:
         try:
             start_time, end_time = next(self.current_time_iterator)
             dq = DataFilter(gte=start_time, lt=end_time)
-            if self.series != []:
-                dq.series = self.series
-            self.request.params.data.filter = dq.to_query()
+            self.request.params.data.filter["times"] = dq.to_query()["times"]
         except:            
             try:
                 self.skip, self.limit = next(self.segment_iterator)
