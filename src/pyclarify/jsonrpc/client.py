@@ -62,7 +62,7 @@ class JSONRPCClient:
 
     def authenticate(self, clarify_credentials):
         """
-        Authenticates the client by using the Authenticator class (see oauth2.py).
+        Authenticates the client by using the Authenticator class (see oauth2.py).!!!!
 
         Parameters
         ----------
