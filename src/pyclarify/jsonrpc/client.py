@@ -96,7 +96,7 @@ class JSONRPCClient:
         res = requests.post(
             self.base_url, data=payload, headers=self.headers
         )
-        logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code}) ")#\n res:{res.json()}")
+        logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code})  res:{res.json()}")
         return res
 
     @increment_id
