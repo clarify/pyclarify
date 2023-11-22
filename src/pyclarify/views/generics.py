@@ -146,7 +146,7 @@ class SignalSelection(Selection):
 class GenericResponse(BaseModel, extra=Extra.forbid):
     jsonrpc: str = "2.0"
     id: str
-    result: Optional[dict]
+    result: Optional[Union[InsertResponse,SaveSignalsResponse,DataSelection,ItemSelection,SignalSelection,PublishSignalsResponse]]
     error: Union[Error, List[Error], None]
 
 
@@ -161,22 +161,31 @@ class Response(GenericResponse):
         error = values.get("error")
         if result:
             if method == ApiMethod.insert:
-                values["result"] = InsertResponse(**result)
+                if not isinstance(result, InsertResponse):
+                    values["result"] = InsertResponse(**result.dict())
 
             elif method == ApiMethod.save_signals:
-                values["result"] = SaveSignalsResponse(**result)
+                if not isinstance(result, SaveSignalsResponse):
+                    values["result"] = SaveSignalsResponse(**result.dict())
             
             elif method == ApiMethod.data_frame or method == ApiMethod.evaluate:
-                values["result"] = DataSelection(**result)
+                if not isinstance(result, DataSelection):
+                    values["result"] = DataSelection(**result.dict())
             
             elif method == ApiMethod.select_items:
-                values["result"] = ItemSelection(**result)
+                if not isinstance(result, ItemSelection):
+                    values["result"] = ItemSelection(**result.dict())
 
             elif method == ApiMethod.select_signals:
-                values["result"] = SignalSelection(**result)
+                if not isinstance(result, SignalSelection):
+                    values["result"] = SignalSelection(**result.dict())
 
             elif method == ApiMethod.publish_signals:
-                values["result"] = PublishSignalsResponse(**result)
+                if not isinstance(result, PublishSignalsResponse):
+                    values["result"] = PublishSignalsResponse(**result.dict())
+            else:
+                # If has no method signature, assume its a valid object type
+                return values
         elif error:          
             pass #TODO: Possible error state 
         values.pop("method") # no need anymore for declaring method
