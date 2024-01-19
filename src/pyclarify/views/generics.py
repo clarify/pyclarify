@@ -15,7 +15,7 @@
 
 from datetime import datetime, timedelta
 import pydantic
-from pydantic import BaseModel, validate_arguments, Extra
+from pydantic import BaseModel, validate_arguments, Extra, validator
 from pydantic.json import timedelta_isoformat
 from pyclarify.__utils__.time import time_to_string
 from pyclarify.__utils__.exceptions import TypeError
@@ -117,36 +117,31 @@ class Selection(BaseModel):
 
     def __add__(self, other):
         try:
-            data = {}
-            data["meta"] = self.meta
-            data["data"] = self.data + other.data
-            if self.included is not None:
-                data["included"] = self.included
-            if other.included is not None:
-                if data["included"] is not None:
-                    data["included"] += other.included
-                else:
-                    data["included"] = other.included
-            if self.included is None and other.included is None:
-                data.pop("included", None)
-
-            return self.__class__(**data)
+            self.data += other.data
+            if self.included:
+                if other.included:
+                    self.included += other.included
+            elif other.included:
+                self.included = other.included
+            
+            return self
         except TypeError as e:
             raise TypeError(source=self, other=other) from e
 
 class DataSelection(Selection):
-    data:  DataFrame
+    data: DataFrame
     included: Optional[IncludedFieldSignals]
 
 
 class ItemSelection(Selection):
-    data: List[ItemSelectView]
+    data: Optional[List[ItemSelectView]]
     included: Optional[IncludedFieldItems]
 
-class SignalSelection(Selection):
-    data:  List[SignalSelectView]
-    included: Optional[IncludedFieldSignals]
 
+class SignalSelection(Selection):
+    data:  Optional[List[SignalSelectView]]
+    included: Optional[IncludedFieldSignals]
+    
 
 class GenericResponse(BaseModel, extra=Extra.forbid):
     jsonrpc: str = "2.0"
@@ -163,6 +158,7 @@ class Response(GenericResponse):
         #TODO: Not happy with this resolution flow
         result = values.get("result")
         method = values.get("method")
+        error = values.get("error")
         if result:
             if method == ApiMethod.insert:
                 if not isinstance(result, InsertResponse):
@@ -187,7 +183,10 @@ class Response(GenericResponse):
             elif method == ApiMethod.publish_signals:
                 if not isinstance(result, PublishSignalsResponse):
                     values["result"] = PublishSignalsResponse(**result.dict())
-        else:
+            else:
+                # If has no method signature, assume its a valid object type
+                return values
+        elif error:          
             pass #TODO: Possible error state 
         values.pop("method") # no need anymore for declaring method
         return values
@@ -202,23 +201,21 @@ class Response(GenericResponse):
                     results += other.result
             elif other.result:
                 results = other.result
+            if results:
+                self.result = results
+
             if self.error:
                 errors = self.error
                 if other.error:
                     if isinstance(self.error, List):
-                        if isinstance(other.error, List):
-                            errors = self.error + other.error
-                        else:
-                            errors = self.error + [other.error]
-                    elif isinstance(other.error, List):
-                        errors = [self.error] + other.error
+                        errors = self.error + [other.error]
                     else:
                         errors = [self.error, other.error]
             elif other.error:
                 errors = other.error
-
-            return Response(
-                jsonrpc=self.jsonrpc, id=self.id, result=results, error=errors
-            )
+            if errors:
+                self.error = errors
+            
+            return self
         except TypeError as e:
             raise TypeError(source=self, other=other) from e

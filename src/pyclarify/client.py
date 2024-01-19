@@ -116,12 +116,7 @@ class Client(JSONRPCClient):
                 responses = response
             else:
                 responses += response
-
-            if (
-                stopping_condition(response)
-                if isinstance(stopping_condition, Callable)
-                else False
-            ):
+            if stopping_condition(response) if isinstance(stopping_condition, Callable) else False:
                 return responses
         return responses
 

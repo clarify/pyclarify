@@ -335,8 +335,13 @@ class DataFrame(BaseModel):
 
     def __add__(self, other):
         try:
-            data = DataFrame.merge([self, other])
-            return data
+            if isinstance(other, DataFrame):
+                data = DataFrame.merge([self, other])
+                return data
+            elif isinstance(other, dict):
+                data = DataFrame.merge([self, DataFrame.from_dict(other)])
+            else:
+                data = DataFrame.merge([self, DataFrame.from_pandas(other)])
         except TypeError as e:
             raise TypeError(source=self, other=other) from e
 
