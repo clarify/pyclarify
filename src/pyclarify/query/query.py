@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, ConfigDict
 from typing import Union, List, Dict, Optional
 from datetime import datetime, timedelta
 from typing_extensions import Literal
@@ -20,18 +20,22 @@ from typing_extensions import Literal
 from pyclarify.fields.constraints import TimeZone, IntWeekDays
 
 
-class DataQuery(BaseModel, extra=Extra.forbid):
+class DataQuery(BaseModel):
     filter: Optional[Dict] = {}
-    rollup: Union[timedelta, Literal["window"]] = None
+    rollup: Optional[Union[timedelta, Literal["window"]]]
     timeZone: Optional[TimeZone] = "UTC"
     firstDayOfWeek: Optional[IntWeekDays] = 1
     origin: Optional[Union[str, datetime]] = None
     last: Optional[int] = -1
 
+    model_config = ConfigDict(extra="forbid")
 
-class ResourceQuery(BaseModel, extra=Extra.forbid):
+
+class ResourceQuery(BaseModel):
     filter: Optional[Dict] = {}
-    sort: Optional[List[str]]
-    limit: Optional[int]
-    skip: Optional[int]
-    total: Optional[bool]
+    sort: Optional[List[str]] = None
+    limit: Optional[int] = None
+    skip: Optional[int] = None
+    total: Optional[bool] = None
+
+    model_config = ConfigDict(extra="forbid")

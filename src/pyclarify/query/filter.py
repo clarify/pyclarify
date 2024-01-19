@@ -14,10 +14,9 @@
 
 
 from pyclarify.fields.query import Comparison, DateField, Operators
-from pydantic.class_validators import root_validator
-from pydantic import BaseModel
-from pydantic.fields import Optional
-from pydantic.datetime_parse import parse_datetime
+from pydantic import model_validator, BaseModel
+from typing import Optional
+from ..__utils__.time import parse_datetime
 from typing import ForwardRef, Union, List, Dict
 from datetime import datetime
 
@@ -54,9 +53,9 @@ class Filter(BaseModel):
     Complete list of operators can be found in `pyclarify.fields.query`.
     """
 
-    and_list: Optional[List[Filter]]
-    or_list: Optional[List[Filter]]
-    fields: Optional[Dict[str, Union[str, Comparison]]]
+    and_list: Optional[List[Filter]] = None
+    or_list: Optional[List[Filter]] = None
+    fields: Optional[Dict[str, Union[str, Comparison]]] = None
 
     def __and__(self, other):
         _tmp = []
@@ -97,7 +96,7 @@ class Filter(BaseModel):
         """
         field, comparison = list(field.items())[0]
         if isinstance(comparison, Comparison):
-            comparison = comparison.dict()
+            comparison = comparison.model_dump()
         else:
             comparison = {"operator": None, "value": comparison}
         if comparison["operator"]:
@@ -122,7 +121,7 @@ class Filter(BaseModel):
         return q
 
 
-Filter.update_forward_refs()
+Filter.model_rebuild()
 
 
 class DataFilter(BaseModel):
@@ -147,11 +146,12 @@ class DataFilter(BaseModel):
     :meta private:
     """
 
-    gte: Optional[Union[str, datetime]] = None
-    lt: Optional[Union[str, datetime]] = None
+    gte: Optional[Union[str, datetime, DateField]] = None
+    lt: Optional[Union[str, datetime, DateField]] = None
     series: Optional[List[str]] = []
 
-    @root_validator(pre=False, allow_reuse=True)
+    @model_validator(mode="before")
+    @classmethod
     def field_must_reflect_operator(cls, values):
         """
         :meta private:
@@ -160,13 +160,14 @@ class DataFilter(BaseModel):
         lt = values["lt"] if "lt" in values.keys() else None
 
         if gte:
-            values["gte"] = DateField(
+            values["gte"]: DateField = DateField(
                 operator=Operators.GTE,
                 time=parse_datetime(gte).astimezone().isoformat(),
             )
         if lt:
-            values["lt"] = DateField(
-                operator=Operators.LT, time=parse_datetime(lt).astimezone().isoformat()
+            values["lt"]: DateField = DateField(
+                operator=Operators.LT, 
+                time=parse_datetime(lt).astimezone().isoformat()
             )
         return values
 
@@ -177,10 +178,10 @@ class DataFilter(BaseModel):
         query = {}
         times = {}
         if self.gte:
-            gte = self.gte.dict()["query"]
+            gte = self.gte.model_dump()["query"]
             times.update(gte)
         if self.lt:
-            lt = self.lt.dict()["query"]
+            lt = self.lt.model_dump()["query"]
             times.update(lt)
         if self.series:
             query["series"] = {"$in": self.series}

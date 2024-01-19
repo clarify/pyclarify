@@ -77,19 +77,19 @@ class BaseResource(Identifier):
 class SelectionMeta(BaseModel):
     total: int
     format: SelectionFormat
-    issues: Optional[dict]
+    issues: Optional[dict] = None
 
 
 
 class RelationshipDataToOne(BaseModel):
-    data: Optional[Identifier]
+    data: Optional[Identifier] = None
 
 class RelationshipDataToMany(BaseModel):
-    data: Optional[List[Identifier]]
+    data: Optional[List[Identifier]] = None
 
 class RelationshipsDictSignal(BaseModel):
-    integration: Optional[RelationshipDataToOne]
-    item: Optional[RelationshipDataToOne]
+    integration: Optional[RelationshipDataToOne] = None
+    item: Optional[RelationshipDataToOne] = None
 
 class RelationshipsDictItem(BaseModel):
-    signals: Optional[RelationshipDataToMany]
+    signals: Optional[RelationshipDataToMany] = None

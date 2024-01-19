@@ -1,7 +1,6 @@
 import unittest
 import sys
 import json
-from pydantic.error_wrappers import ValidationError
 
 sys.path.insert(1, "src/")
 from pyclarify.fields.constraints import ApiMethod
@@ -50,8 +49,8 @@ class TestRequest(unittest.TestCase):
     def test_insert_creation(self):
         try:
             req = Request(method=ApiMethod.insert, params=self.insert_args)
-        except ValidationError:
-            self.fail("Request raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Request raised ValueError unexpectedly!")
 
         self.assertIsInstance(req.params, InsertParams)
 
@@ -60,8 +59,8 @@ class TestRequest(unittest.TestCase):
             req = Request(
                 method=ApiMethod.save_signals, params=self.save_signals_args
             )
-        except ValidationError:
-            self.fail("Request raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Request raised ValueError unexpectedly!")
 
         self.assertIsInstance(req.params, SaveSignalsParams)
 
@@ -70,8 +69,8 @@ class TestRequest(unittest.TestCase):
             req = Request(
                 method=ApiMethod.select_items, params=self.select_items_params
             )
-        except ValidationError:
-            self.fail("Request raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Request raised ValueError unexpectedly!")
 
         self.assertIsInstance(req.params, SelectItemsParams)
 
@@ -80,8 +79,8 @@ class TestRequest(unittest.TestCase):
             req = Request(
                 method=ApiMethod.select_signals, params=self.select_signals_params
             )
-        except ValidationError:
-            self.fail("Request raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Request raised ValueError unexpectedly!")
 
         self.assertIsInstance(req.params, SelectSignalsParams)
 
@@ -90,8 +89,8 @@ class TestRequest(unittest.TestCase):
             req = Request(
                 method=ApiMethod.publish_signals, params=self.publish_signals_args
             )
-        except ValidationError:
-            self.fail("Request raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Request raised ValueError unexpectedly!")
 
         self.assertIsInstance(req.params, PublishSignalsParams)
 
@@ -113,20 +112,20 @@ class TestMaps(unittest.TestCase):
     def test_select_items_map(self):
         try:
             ItemSelection(**self.select_items_response)
-        except ValidationError:
-            self.fail("Selection raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Selection raised ValueError unexpectedly!")
 
     def test_select_signals_map(self):
         try:
             SignalSelection(**self.select_signals_response)
-        except ValidationError:
-            self.fail("Selection raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Selection raised ValueError unexpectedly!")
 
     def test_data_frame_map(self):
         try:
             DataSelection(**self.data_frame_response)
-        except ValidationError:
-            self.fail("Selection raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Selection raised ValueError unexpectedly!")
 
 
 class TestResponse(unittest.TestCase):
@@ -158,8 +157,8 @@ class TestResponse(unittest.TestCase):
         response["result"] = self.insert_response
         try:
             res = Response(**self.insert_response)
-        except ValidationError:
-            self.fail("Response raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Response raised ValueError unexpectedly!")
 
         self.assertIsInstance(res.result, InsertResponse)
 
@@ -168,8 +167,8 @@ class TestResponse(unittest.TestCase):
         response["result"] = self.save_signal_response
         try:
             res = Response(**response)
-        except ValidationError:
-            self.fail("Response raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Response raised ValueError unexpectedly!")
 
         self.assertIsInstance(res.result, SaveSignalsResponse)
 
@@ -178,8 +177,8 @@ class TestResponse(unittest.TestCase):
         response["result"] = self.publish_signal_response
         try:
             res = Response(**response)
-        except ValidationError:
-            self.fail("Response raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Response raised ValueError unexpectedly!")
 
         self.assertIsInstance(res.result, PublishSignalsResponse)
 
@@ -188,8 +187,8 @@ class TestResponse(unittest.TestCase):
         response["result"] = self.select_items_response
         try:
             res = Response(**response)
-        except ValidationError:
-            self.fail("Response raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Response raised ValueError unexpectedly!")
 
         self.assertIsInstance(res.result, ItemSelection)
 
@@ -198,8 +197,8 @@ class TestResponse(unittest.TestCase):
         response["result"] = self.select_signals_response
         try:
             res = Response(**response)
-        except ValidationError:
-            self.fail("Response raised ValidationError unexpectedly!")
+        except ValueError:
+            self.fail("Response raised ValueError unexpectedly!")
 
         self.assertIsInstance(res.result, SignalSelection)
 

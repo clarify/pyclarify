@@ -155,7 +155,7 @@
       "jsonrpc": "2.0",
       "id": 1,
       "error": {
-        "code": "-32602",
+        "code": -32602,
         "message": "Invalid params",
         "data": {
           "trace": "00000000000000000000",
@@ -166,7 +166,7 @@
       }
     },
     "http_error": {
-      "status_code": "404",
+      "status_code": 404,
       "reason": "HTTP Response Error: Could not find the requested resource",
       "text": "Lorem ipsum dolor sit amet, consectetur adip"
     }

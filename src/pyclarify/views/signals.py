@@ -14,7 +14,7 @@
 
 
 from datetime import timedelta
-from pydantic import BaseModel, Extra
+from pydantic import ConfigDict, BaseModel
 from pydantic.json import timedelta_isoformat
 from typing import List, Dict, Optional
 from pyclarify.fields.constraints import (
@@ -74,12 +74,11 @@ class SignalInfo(BaseModel):
     valueType: TypeSignal = TypeSignal.numeric
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
-    sampleInterval: timedelta = None
-    gapDetection: timedelta = None
-
-    class Config:
-        json_encoders = {timedelta: timedelta_isoformat}
-        extra = Extra.forbid
+    sampleInterval: Optional[timedelta] = None
+    gapDetection: Optional[timedelta] = None
+    # TODO[pydantic]: The following keys were removed: `json_encoders`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(json_encoders={timedelta: timedelta_isoformat}, extra="forbid")
 
 
 class Signal(SignalInfo):
@@ -164,7 +163,7 @@ class Signal(SignalInfo):
         ... )
     """
 
-    annotations: Optional[Annotations]
+    annotations: Optional[Annotations] = None
 
 
 class SavedSignal(SignalInfo):
@@ -172,8 +171,8 @@ class SavedSignal(SignalInfo):
     :meta private:
     """
     input: str
-    integration: Optional[IntegrationID]
-    item: Optional[ResourceID]
+    integration: Optional[IntegrationID] = None
+    item: Optional[ResourceID] = None
 
 
 class SignalSelectView(BaseResource):
@@ -194,26 +193,30 @@ class SelectSignalsParams(BaseModel):
     format: SelectionFormat = SelectionFormat()
 
 
-class SaveSignalsParams(BaseModel, extra=Extra.forbid):
+class SaveSignalsParams(BaseModel):
     """
     :meta private:
     """
     integration: IntegrationID
     inputs: Dict[InputID, Signal]
     createOnly: Optional[bool] = False
+    model_config = ConfigDict(extra="forbid")
 
 
-class SaveSummary(BaseModel, extra=Extra.forbid):
+
+class SaveSummary(BaseModel):
     """
     :meta private:
     """
     id: ResourceID
     created: bool
     updated: bool
+    model_config = ConfigDict(extra="forbid")
 
 
-class SaveSignalsResponse(BaseModel, extra=Extra.forbid):
+class SaveSignalsResponse(BaseModel):
     """
     :meta private:
     """
     signalsByInput: Dict[InputID, SaveSummary]
+    model_config = ConfigDict(extra="forbid")

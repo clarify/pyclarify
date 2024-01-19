@@ -1,7 +1,7 @@
 import unittest
 import sys
 import json
-from pydantic.error_wrappers import ValidationError
+from pydantic import ValidationError
 from datetime import datetime, timedelta
 
 sys.path.insert(1, "src/")

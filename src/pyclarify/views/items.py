@@ -14,7 +14,7 @@
 
 
 from datetime import timedelta, datetime
-from pydantic import BaseModel, Extra
+from pydantic import ConfigDict, BaseModel, Extra
 from pydantic.json import timedelta_isoformat
 from typing import List, Dict, Union, Optional
 from typing_extensions import Literal
@@ -75,14 +75,12 @@ class ItemInfo(BaseModel):
     valueType: TypeSignal = TypeSignal.numeric
     engUnit: str = ""
     enumValues: Dict[str, str] = {}
-    sampleInterval: timedelta = None
-    gapDetection: timedelta = None
+    sampleInterval: Optional[timedelta] = None
+    gapDetection: Optional[timedelta] = None
     visible: bool = False
-
-
-    class Config:
-        json_encoders = {timedelta: timedelta_isoformat}
-        extra = Extra.forbid
+    # TODO[pydantic]: The following keys were removed: `json_encoders`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(json_encoders={timedelta: timedelta_isoformat}, extra="forbid")
 
 
 class Item(ItemInfo):
@@ -181,9 +179,9 @@ class SelectItemsDataParams(BaseModel, extra=Extra.forbid):
     :meta private:
     """
     include: Optional[bool] = False
-    notBefore: Optional[datetime]
-    before: Optional[datetime]
-    rollup: Optional[Union[timedelta, Literal["window"]]]
+    notBefore: Optional[datetime] = None
+    before: Optional[datetime] = None
+    rollup: Optional[Union[timedelta, Literal["window"]]] = None
 
 
 class SelectItemsParams(BaseModel, extra=Extra.forbid):
@@ -201,7 +199,7 @@ class ItemSelectView(BaseResource):
     :meta private:
     """
     attributes: Item
-    relationships: Optional[RelationshipsDictItem]
+    relationships: Optional[RelationshipsDictItem] = None
 
     def __hash__(self):
         return hash(self.id)

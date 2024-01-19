@@ -22,7 +22,7 @@
     "params": {}
   },
   "error": {
-    "code": "-30900",
+    "code": -30900,
     "message": "An error message",
     "data": "Here is a description of the error."
   }

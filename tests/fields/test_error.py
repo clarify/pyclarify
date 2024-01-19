@@ -16,15 +16,15 @@ class TestError(unittest.TestCase):
     def test_error_data(self):
         error_data = ErrorData(**self.error_data)
         self.assertEqual(
-            error_data.json(),
-            json.dumps(self.error_data),
+            error_data.model_dump_json(),
+            json.dumps(self.error_data, separators=(',', ':')),
         )
 
     def test_error(self):
         error = Error(**self.error)
         self.assertEqual(
-            error.json(),
-            json.dumps(self.error),
+            error.model_dump_json(),
+            json.dumps(self.error, separators=(',', ':')),
         )
 
 
