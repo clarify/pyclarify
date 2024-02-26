@@ -102,18 +102,17 @@
 <span class="sd">the Clarify API. Methods for reading and writing to the API is implemented with the</span>
 <span class="sd">help of jsonrpcclient framework.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">pyclarify</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">pyclarify.__utils__.stopping_conditions</span> <span class="kn">import</span> <span class="n">select_stopping_condition</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">validate_arguments</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">pyclarify.jsonrpc.client</span> <span class="kn">import</span> <span class="n">JSONRPCClient</span>
-<span class="kn">from</span> <span class="nn">pyclarify.views.dataframe</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">pyclarify.views.dataframe</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">DataFrameParams</span>
 <span class="kn">from</span> <span class="nn">pyclarify.views.evaluate</span> <span class="kn">import</span> <span class="n">Calculation</span><span class="p">,</span> <span class="n">ItemAggregation</span>
-<span class="kn">from</span> <span class="nn">pyclarify.views.items</span> <span class="kn">import</span> <span class="n">ItemSaveView</span>
+<span class="kn">from</span> <span class="nn">pyclarify.views.items</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">ItemSaveView</span>
 <span class="kn">from</span> <span class="nn">pyclarify.views.signals</span> <span class="kn">import</span> <span class="n">Signal</span>
 <span class="kn">from</span> <span class="nn">pyclarify.fields.constraints</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">InputID</span><span class="p">,</span>
@@ -192,7 +191,8 @@
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">rpc_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">()</span>
+            <span class="n">rpc_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_response</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">rpc_response</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">responses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">responses</span> <span class="o">=</span> <span class="n">response</span>
@@ -576,8 +576,8 @@
     <span class="k">def</span> <span class="nf">publish_signals</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">signal_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ResourceID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
-        <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ItemSaveView</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
-        <span class="n">items_by_signal</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ResourceID</span><span class="p">,</span> <span class="n">ItemSaveView</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Item</span><span class="p">,</span> <span class="n">ItemSaveView</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">items_by_signal</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ResourceID</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Item</span><span class="p">,</span> <span class="n">ItemSaveView</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">create_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">integration</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>

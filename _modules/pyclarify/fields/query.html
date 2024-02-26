@@ -97,7 +97,7 @@
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">pyclarify.__utils__.exceptions</span> <span class="kn">import</span> <span class="n">FilterError</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Extra</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">model_validator</span><span class="p">,</span> <span class="n">ConfigDict</span><span class="p">,</span> <span class="n">BaseModel</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">pydantic.class_validators</span> <span class="kn">import</span> <span class="n">root_validator</span>
@@ -127,12 +127,13 @@
     <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
         <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">bool</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
     <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Operators</span><span class="p">]</span>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Operators</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="nd">@root_validator</span><span class="p">(</span><span class="n">pre</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">field_must_reflect_operator</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">operator</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;operator&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;operator&quot;</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">field_must_reflect_operator</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>     
+        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="s2">&quot;value&quot;</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">operator</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">operator</span> <span class="k">if</span> <span class="s2">&quot;operator&quot;</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">operator</span><span class="p">:</span>
             <span class="c1"># Field value should be list</span>
             <span class="k">if</span> <span class="n">operator</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Operators</span><span class="o">.</span><span class="n">IN</span><span class="p">,</span> <span class="n">Operators</span><span class="o">.</span><span class="n">NIN</span><span class="p">]:</span>
@@ -159,10 +160,7 @@
                 <span class="k">raise</span> <span class="n">FilterError</span><span class="p">(</span><span class="s2">&quot;Equals (None)&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">values</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">use_enum_values</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">use_enum_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="s2">&quot;forbid&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Equal"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.Equal">[docs]</a><span class="k">class</span> <span class="nc">Equal</span><span class="p">(</span><span class="n">Comparison</span><span class="p">):</span>
@@ -188,7 +186,7 @@
 <span class="sd">    &gt;&gt;&gt; filter_value = NotEqual(value=&quot;bar&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">NE</span></div>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Operators</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">NE</span></div>
 
 
 <div class="viewcode-block" id="Regex"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.Regex">[docs]</a><span class="k">class</span> <span class="nc">Regex</span><span class="p">(</span><span class="n">Comparison</span><span class="p">):</span>
@@ -201,7 +199,7 @@
 <span class="sd">    &gt;&gt;&gt; filter_value = Regex(value=&quot;fo[o]{1}&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">REGEX</span></div>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Operators</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">REGEX</span></div>
 
 
 <div class="viewcode-block" id="In"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.In">[docs]</a><span class="k">class</span> <span class="nc">In</span><span class="p">(</span><span class="n">Comparison</span><span class="p">):</span>
@@ -214,7 +212,7 @@
 <span class="sd">    &gt;&gt;&gt; filter_value = In(value=[&quot;foo&quot;, &quot;bar&quot;])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">IN</span></div>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Operators</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">IN</span></div>
 
 
 <div class="viewcode-block" id="NotIn"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.NotIn">[docs]</a><span class="k">class</span> <span class="nc">NotIn</span><span class="p">(</span><span class="n">Comparison</span><span class="p">):</span>
@@ -227,7 +225,7 @@
 <span class="sd">    &gt;&gt;&gt; filter_value = NotIn(value=[&quot;baz&quot;, &quot;qux&quot;])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">NIN</span></div>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Operators</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">NIN</span></div>
 
 
 <div class="viewcode-block" id="Less"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.Less">[docs]</a><span class="k">class</span> <span class="nc">Less</span><span class="p">(</span><span class="n">Comparison</span><span class="p">):</span>
@@ -240,7 +238,7 @@
 <span class="sd">    &gt;&gt;&gt; filter_value = Less(value=10)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">LT</span></div>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Operators</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">LT</span></div>
 
 
 <div class="viewcode-block" id="LessOrEqual"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.LessOrEqual">[docs]</a><span class="k">class</span> <span class="nc">LessOrEqual</span><span class="p">(</span><span class="n">Comparison</span><span class="p">):</span>
@@ -253,7 +251,7 @@
 <span class="sd">    &gt;&gt;&gt; filter_value = LessOrEqual(value=10)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">LTE</span></div>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Operators</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">LTE</span></div>
 
 
 <div class="viewcode-block" id="Greater"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.Greater">[docs]</a><span class="k">class</span> <span class="nc">Greater</span><span class="p">(</span><span class="n">Comparison</span><span class="p">):</span>
@@ -266,7 +264,7 @@
 <span class="sd">    &gt;&gt;&gt; filter_value = Greater(value=10)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">GT</span></div>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Operators</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">GT</span></div>
 
 
 <div class="viewcode-block" id="GreaterOrEqual"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.GreaterOrEqual">[docs]</a><span class="k">class</span> <span class="nc">GreaterOrEqual</span><span class="p">(</span><span class="n">Comparison</span><span class="p">):</span>
@@ -279,7 +277,7 @@
 <span class="sd">    &gt;&gt;&gt; filter_value = GreaterOrEqual(value=10)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">GTE</span></div>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Operators</span> <span class="o">=</span> <span class="n">Operators</span><span class="o">.</span><span class="n">GTE</span></div>
 
 
 <span class="k">class</span> <span class="nc">DateField</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -287,25 +285,24 @@
 <span class="sd">    :meta private:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Operators</span><span class="p">]</span>
-    <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]]</span>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Operators</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">query</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="nd">@root_validator</span><span class="p">(</span><span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">reformat_payload</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="n">op</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;operator&quot;</span><span class="p">]</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
         <span class="n">values</span><span class="p">[</span><span class="s2">&quot;query&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">time</span><span class="p">}</span>
 
         <span class="k">return</span> <span class="n">values</span>
-
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-        <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;forbid&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SelectionFormat</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectionFormat"><a class="viewcode-back" href="../../../reference/views/filter.html#pyclarify.fields.query.SelectionFormat">[docs]</a><span class="k">class</span> <span class="nc">SelectionFormat</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">dataAsArray</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">groupIncludedByType</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">groupIncludedByType</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span></div>
 </pre></div>
 
            </div>
