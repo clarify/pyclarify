@@ -15,6 +15,21 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.6.0] - 2024-02-27
+
+### Changed
+
+- Bumping pydantic version from 1.10 to 2.6.0.
+- Removed specific versioning of other dependencies.
+
+### Security
+
+- Python 3.7 reached upstream end-of-life on June 27th, 2023, and no longer receives security or bug fixes. Removing Python 3.7 from build order.
+
+### Removed
+
+- typing_extensions support is removed, due to Python 3.7 no longer being supported.
+
 ## [0.5.0] - 2023-10-10
 
 ### Added

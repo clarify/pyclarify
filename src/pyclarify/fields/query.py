@@ -15,7 +15,7 @@
 
 import warnings
 from pyclarify.__utils__.exceptions import FilterError
-from pydantic import BaseModel, Extra
+from pydantic import model_validator, ConfigDict, BaseModel
 from enum import Enum
 from typing import Union, List, Dict, Optional
 from pydantic.class_validators import root_validator
@@ -45,12 +45,13 @@ class Comparison(BaseModel):
     value: Union[
         str, List[str], int, List[int], float, List[float], bool, None, List[None]
     ] = None
-    operator: Optional[Operators]
+    operator: Optional[Operators] = None
 
-    @root_validator(pre=False, allow_reuse=True)
-    def field_must_reflect_operator(cls, values):
-        value = values["value"] if "value" in values.keys() else None
-        operator = values["operator"] if "operator" in values.keys() else None
+    @model_validator(mode="after")
+    @classmethod
+    def field_must_reflect_operator(cls, values):     
+        value = values.value if "value" in values.model_dump().keys() else None
+        operator = values.operator if "operator" in values.model_dump().keys() else None
         if operator:
             # Field value should be list
             if operator in [Operators.IN, Operators.NIN]:
@@ -77,10 +78,7 @@ class Comparison(BaseModel):
                 raise FilterError("Equals (None)", list, value)
 
         return values
-
-    class Config:
-        use_enum_values = True
-        extra = Extra.forbid
+    model_config = ConfigDict(use_enum_values=True, extra="forbid")
 
 
 class Equal(Comparison):
@@ -106,7 +104,7 @@ class NotEqual(Comparison):
     >>> filter_value = NotEqual(value="bar")
     """
 
-    operator = Operators.NE
+    operator: Operators = Operators.NE
 
 
 class Regex(Comparison):
@@ -119,7 +117,7 @@ class Regex(Comparison):
     >>> filter_value = Regex(value="fo[o]{1}")
     """
 
-    operator = Operators.REGEX
+    operator: Operators = Operators.REGEX
 
 
 class In(Comparison):
@@ -132,7 +130,7 @@ class In(Comparison):
     >>> filter_value = In(value=["foo", "bar"])
     """
 
-    operator = Operators.IN
+    operator: Operators = Operators.IN
 
 
 class NotIn(Comparison):
@@ -145,7 +143,7 @@ class NotIn(Comparison):
     >>> filter_value = NotIn(value=["baz", "qux"])
     """
 
-    operator = Operators.NIN
+    operator: Operators = Operators.NIN
 
 
 class Less(Comparison):
@@ -158,7 +156,7 @@ class Less(Comparison):
     >>> filter_value = Less(value=10)
     """
 
-    operator = Operators.LT
+    operator: Operators = Operators.LT
 
 
 class LessOrEqual(Comparison):
@@ -171,7 +169,7 @@ class LessOrEqual(Comparison):
     >>> filter_value = LessOrEqual(value=10)
     """
 
-    operator = Operators.LTE
+    operator: Operators = Operators.LTE
 
 
 class Greater(Comparison):
@@ -184,7 +182,7 @@ class Greater(Comparison):
     >>> filter_value = Greater(value=10)
     """
 
-    operator = Operators.GT
+    operator: Operators = Operators.GT
 
 
 class GreaterOrEqual(Comparison):
@@ -197,7 +195,7 @@ class GreaterOrEqual(Comparison):
     >>> filter_value = GreaterOrEqual(value=10)
     """
 
-    operator = Operators.GTE
+    operator: Operators = Operators.GTE
 
 
 class DateField(BaseModel):
@@ -205,20 +203,19 @@ class DateField(BaseModel):
     :meta private:
     """
 
-    operator: Optional[Operators]
-    time: Optional[Union[str, datetime]]
+    operator: Optional[Operators] = None
+    time: Optional[Union[str, datetime]] = None
     query: Dict = {}
 
-    @root_validator(pre=True, allow_reuse=True)
+    @model_validator(mode="before")
+    @classmethod
     def reformat_payload(cls, values):
         op = values["operator"]
         time = values["time"]
         values["query"] = {op.value: time}
 
         return values
-
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra="forbid")
 
 
 class SelectionFormat(BaseModel):

@@ -19,10 +19,10 @@ from typing import List, Union, Dict, Optional
 
 class ErrorData(BaseModel):
     trace: str
-    params: Optional[Dict[str, List[str]]]
+    params: Optional[Dict[str, List[str]]] = None
 
 
 class Error(BaseModel):
-    code: str
+    code: int
     message: str
-    data: Optional[Union[ErrorData, str]]
+    data: Optional[Union[ErrorData, str]] = None

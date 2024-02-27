@@ -14,8 +14,7 @@
 
 
 from datetime import datetime, timedelta
-import pydantic
-from pydantic import BaseModel, validate_arguments, Extra, validator
+from pydantic import ConfigDict, BaseModel, validate_arguments, model_validator
 from pydantic.json import timedelta_isoformat
 from pyclarify.__utils__.time import time_to_string
 from pyclarify.__utils__.exceptions import TypeError
@@ -43,48 +42,49 @@ from .signals import (
 class JSONRPCRequest(BaseModel):
     jsonrpc: str = "2.0"
     method: ApiMethod = ApiMethod.select_items
-    id: str = "1"
-    params: Dict = {}
-
-    class Config:
-        json_encoders = {timedelta: timedelta_isoformat, datetime: time_to_string}
+    id: Union[str,int] = "1"
+    params: Union[
+        dict,
+        InsertParams, 
+        SaveSignalsParams, 
+        SelectItemsParams, 
+        SelectSignalsParams, 
+        PublishSignalsParams, 
+        DataFrameParams, 
+        EvaluateParams] = {}
+    # TODO[pydantic]: The following keys are deprecated: `json_encoders`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(json_encoders={timedelta: timedelta_isoformat, datetime: time_to_string})
 
 
 @validate_arguments
 class Request(JSONRPCRequest):
     method: ApiMethod
 
-    @pydantic.root_validator(allow_reuse=True)
+    @model_validator(mode='after')
     @classmethod
     def use_correct_params_based_on_method(cls, values):
-        if values["method"] == ApiMethod.insert:
-            values["params"] = InsertParams(**values["params"])
-            return values
-        elif values["method"] == ApiMethod.save_signals:
-            values["params"] = SaveSignalsParams(**values["params"])
-            return values
-        elif values["method"] == ApiMethod.select_items:
-            values["params"] = SelectItemsParams(**values["params"])
-            return values
-        elif values["method"] == ApiMethod.select_signals:
-            values["params"] = SelectSignalsParams(**values["params"])
-            return values
-        elif values["method"] == ApiMethod.publish_signals:
-            values["params"] = PublishSignalsParams(**values["params"])
-            return values
-        elif values["method"] == ApiMethod.data_frame:
-            values["params"] = DataFrameParams(**values["params"])
-            return values
-        elif values["method"] == ApiMethod.evaluate:
-            values["params"] = EvaluateParams(**values["params"])
-            return values
+        if values.method == ApiMethod.insert:
+           values.params = InsertParams(**values.params)
+        elif values.method == ApiMethod.save_signals:
+           values.params = SaveSignalsParams(**values.params)
+        elif values.method == ApiMethod.select_items:
+           values.params = SelectItemsParams(**values.params)
+        elif values.method == ApiMethod.select_signals:
+           values.params = SelectSignalsParams(**values.params)
+        elif values.method == ApiMethod.publish_signals:
+           values.params = PublishSignalsParams(**values.params)
+        elif values.method == ApiMethod.data_frame:
+           values.params = DataFrameParams(**values.params)
+        elif values.method == ApiMethod.evaluate:
+           values.params = EvaluateParams(**values.params)
         return values
 
 
 class IncludedField(BaseModel):
     def __add__(self, other):
         data = {}
-        keys = set(list(self.dict().keys()) + list(other.dict().keys()))
+        keys = set(list(self.model_dump().keys()) + list(other.model_dump().keys()))
         for key in keys:
             data[key] = []
             self_object = getattr(self, key) if hasattr(self, key) else None
@@ -101,15 +101,16 @@ class IncludedField(BaseModel):
             data["integration"] = data["integration"][0]
         return self.__class__(**data)
 
-class IncludedFieldSignals(IncludedField, extra=Extra.ignore):
-    items: Optional[List[ItemSelectView]]
+
+class IncludedFieldSignals(IncludedField):
+    items: Optional[List[ItemSelectView]] = None
+    model_config = ConfigDict(extra="ignore")
 
 
-class IncludedFieldItems(IncludedField, extra=Extra.ignore):
-    integration: Optional[IntegrationID]
-    signals: Optional[List[SignalSelectView]]
-
-
+class IncludedFieldItems(IncludedField):
+    integration: Optional[IntegrationID] = None
+    signals: Optional[List[SignalSelectView]] = None
+    model_config = ConfigDict(extra="forbid")
 
 
 class Selection(BaseModel):
@@ -130,65 +131,62 @@ class Selection(BaseModel):
 
 class DataSelection(Selection):
     data: DataFrame
-    included: Optional[IncludedFieldSignals]
+    included: Optional[IncludedFieldSignals] = None
 
 
 class ItemSelection(Selection):
-    data: Optional[List[ItemSelectView]]
-    included: Optional[IncludedFieldItems]
+    data: Optional[List[ItemSelectView]] = None
+    included: Optional[IncludedFieldItems] = None
 
 
 class SignalSelection(Selection):
-    data:  Optional[List[SignalSelectView]]
-    included: Optional[IncludedFieldSignals]
+    data:  Optional[List[SignalSelectView]] = None
+    included: Optional[IncludedFieldSignals] = None
     
 
-class GenericResponse(BaseModel, extra=Extra.forbid):
+class GenericResponse(BaseModel):
     jsonrpc: str = "2.0"
-    id: str
-    result: Optional[Union[InsertResponse,SaveSignalsResponse,DataSelection,ItemSelection,SignalSelection,PublishSignalsResponse]]
-    error: Union[Error, List[Error], None]
+    id: Union[str,int] = "1"
+    result: Optional[Union[DataSelection, SignalSelection, InsertResponse,SaveSignalsResponse,ItemSelection,PublishSignalsResponse]] = None
+    error: Union[Error, List[Error], None] = None
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class Response(GenericResponse):
-    method: Optional[ApiMethod]
+    method: Optional[ApiMethod] = None
     
-    @pydantic.root_validator()
+    @model_validator(mode='after')
     def use_correct_response_based_on_method(cls, values):
         #TODO: Not happy with this resolution flow
-        result = values.get("result")
-        method = values.get("method")
-        error = values.get("error")
+        result = values.result
+        method = values.method
+        error = values.error
         if result:
             if method == ApiMethod.insert:
                 if not isinstance(result, InsertResponse):
-                    values["result"] = InsertResponse(**result.dict())
-
+                    values.result = InsertResponse(**result.model_dump())
             elif method == ApiMethod.save_signals:
                 if not isinstance(result, SaveSignalsResponse):
-                    values["result"] = SaveSignalsResponse(**result.dict())
-            
+                    values.result  = SaveSignalsResponse(**result.model_dump())
             elif method == ApiMethod.data_frame or method == ApiMethod.evaluate:
                 if not isinstance(result, DataSelection):
-                    values["result"] = DataSelection(**result.dict())
-            
+                    values.result  = DataSelection(**result.model_dump())
             elif method == ApiMethod.select_items:
                 if not isinstance(result, ItemSelection):
-                    values["result"] = ItemSelection(**result.dict())
-
+                    values.result  = ItemSelection(**result.model_dump())
             elif method == ApiMethod.select_signals:
                 if not isinstance(result, SignalSelection):
-                    values["result"] = SignalSelection(**result.dict())
-
+                    values.result  = SignalSelection(**result.model_dump())
             elif method == ApiMethod.publish_signals:
                 if not isinstance(result, PublishSignalsResponse):
-                    values["result"] = PublishSignalsResponse(**result.dict())
+                    values.result  = PublishSignalsResponse(**result.model_dump())
             else:
                 # If has no method signature, assume its a valid object type
                 return values
         elif error:          
             pass #TODO: Possible error state 
-        values.pop("method") # no need anymore for declaring method
+        values.method = None # no need anymore for declaring method
         return values
     
     def __add__(self, other):

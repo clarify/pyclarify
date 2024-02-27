@@ -80,9 +80,9 @@ class ItemAggregation(BaseModel):
 
     id: ResourceID
     aggregation: DataAggregation
-    state: Optional[State]
-    lead: Optional[BucketOffset]
-    lag: Optional[BucketOffset]
+    state: Optional[State] = None
+    lead: Optional[BucketOffset] = None
+    lag: Optional[BucketOffset] = None
     alias: Alias
 
 

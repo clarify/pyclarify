@@ -54,7 +54,7 @@ class TestClarifyClientInsert(unittest.TestCase):
         client_req_mock.return_value.json = lambda: self.insert_response
 
         signal_id = "c5vv12btaf7d0qbk0l0e"
-        data = DataFrame(values={signal_id: self.values}, times=self.times)
+        data = DataFrame(series={signal_id: self.values}, times=self.times)
 
         result = self.client.insert(data)
         self.assertIn(signal_id, result.result.signalsByInput)

@@ -13,11 +13,10 @@
 # limitations under the License.
 
 from datetime import timedelta
-from pydantic.datetime_parse import parse_datetime, parse_duration
 from pyclarify.query.filter import DataFilter
 
 from pyclarify.views.generics import Request
-from .time import compute_iso_timewindow
+from .time import compute_iso_timewindow, parse_datetime, parse_duration
 from .payload import unpack_params
 
 

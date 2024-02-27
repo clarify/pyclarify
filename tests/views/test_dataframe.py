@@ -1,12 +1,12 @@
 import unittest
 import sys
 import json
-from pydantic.error_wrappers import ValidationError
-from pydantic.datetime_parse import parse_datetime
-
+from pydantic import ValidationError
 sys.path.insert(1, "src/")
 from pyclarify.views.dataframe import DataFrame, InsertParams, InsertResponse, CreateSummary
 from pyclarify.__utils__.auxiliary import local_import
+from pyclarify.__utils__.time import parse_datetime
+
 
 class TestMerge(unittest.TestCase):
     def setUp(self):

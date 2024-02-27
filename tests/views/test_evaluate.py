@@ -1,7 +1,6 @@
 import unittest
 import sys
-import json
-from pydantic.error_wrappers import ValidationError
+from pydantic import ValidationError
 
 sys.path.insert(1, "src/")
 
@@ -57,8 +56,8 @@ class TestItemAggregation(unittest.TestCase):
         self.assertEqual(item.lag, 1)
         self.assertEqual(item.alias, "i1")
 
-        p = '{"id": "cbpmaq6rpn52969vfl00", "aggregation": "max", "state": 1, "lead": 1, "lag": 1, "alias": "i1"}'
-        self.assertEquals(item.json(), p)
+        p = '{"id":"cbpmaq6rpn52969vfl00","aggregation":"max","state":1,"lead":1,"lag":1,"alias":"i1"}'
+        self.assertEqual(item.model_dump_json(), p)
 
     def test_item_aggregation_invalid_id(self):
         with self.assertRaises(ValidationError):
@@ -179,8 +178,8 @@ class TestItemCalculation(unittest.TestCase):
         self.assertEqual(calc.formula, "i1 * i2")
         self.assertEqual(calc.alias, "c1")
 
-        p = '{"formula": "i1 * i2", "alias": "c1"}'
-        self.assertEquals(calc.json(), p)
+        p = '{"formula":"i1 * i2","alias":"c1"}'
+        self.assertEqual(calc.model_dump_json(), p)
 
     def test_calculation_invalid_alias(self):
         with self.assertRaises(ValidationError):

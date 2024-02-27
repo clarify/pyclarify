@@ -15,10 +15,10 @@
 
 from itertools import compress
 from datetime import datetime
-from pydantic import BaseModel, Extra, validator
+from pydantic import ConfigDict, field_validator, BaseModel, Extra
 from typing import ForwardRef, List, Dict, Optional
 from pyclarify.__utils__.auxiliary import local_import
-from pyclarify.__utils__.time import is_datetime
+from pyclarify.__utils__.time import is_datetime, parse_datetime, time_to_string
 from pyclarify.fields.query import SelectionFormat
 from pyclarify.fields.constraints import (
     InputID,
@@ -40,7 +40,7 @@ class DataFrame(BaseModel):
     Parameters
     ----------
         series: Dict[InputID, List[Union[None, float, int]]]
-            Map of inputid to Array of data points to insert by Input ID.
+            Map of input ids to Array of data points to insert by Input ID.
             The length of each array must match that of the times array.
             To omit a value for a given timestamp in times, use the value null.
 
@@ -59,7 +59,16 @@ class DataFrame(BaseModel):
     times: List[datetime] = None
     series: Dict[InputID, NumericalValuesType] = None
 
-    @validator("series", allow_reuse=True)
+    @field_validator("times", mode="before")
+    @classmethod
+    def use_custom_datetime_converter(cls, v):
+        """
+        :meta private:
+        """
+        return [parse_datetime(t) for t in v]
+
+    @field_validator("series")
+    @classmethod
     def convert_numpy_to_native(cls, v):
         """
         :meta private:
@@ -345,8 +354,9 @@ class DataFrame(BaseModel):
         except TypeError as e:
             raise TypeError(source=self, other=other) from e
 
+    model_config = ConfigDict(json_encoders={datetime: time_to_string}, extra="forbid") 
 
-DataFrame.update_forward_refs()
+DataFrame.model_rebuild()
 
 
 class InsertParams(BaseModel):
@@ -358,29 +368,29 @@ class InsertParams(BaseModel):
     data: DataFrame
 
 
-class CreateSummary(BaseModel, extra=Extra.forbid):
+class CreateSummary(BaseModel):
     """
     :meta private:
     """
 
     id: ResourceID
     created: bool
+    model_config = ConfigDict(extra="forbid") 
 
-
-class InsertResponse(BaseModel, extra=Extra.forbid):
+class InsertResponse(BaseModel):
     """
     :meta private:
     """
 
     signalsByInput: Dict[InputID, CreateSummary]
-
+    model_config = ConfigDict(extra="forbid") 
 
 class DataFrameParams(BaseModel):
     """
     :meta private:
     """
 
-    query: Optional[ResourceQuery] = {}
-    data: Optional[DataQuery] = {}
+    query: Optional[ResourceQuery]
+    data: Optional[DataQuery]
     include: Optional[List[str]] = []
     format: Optional[SelectionFormat] = SelectionFormat(dataAsArray=False)

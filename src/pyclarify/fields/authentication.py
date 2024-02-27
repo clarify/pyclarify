@@ -27,7 +27,7 @@ class OAuthRequestBody(BaseModel):
 
 class OAuthResponse(BaseModel):
     access_token: str
-    scope: Optional[str]
+    scope: Optional[str] = None
     expires_in: timedelta
     token_type: str = "Bearer"
 

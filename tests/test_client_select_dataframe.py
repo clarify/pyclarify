@@ -116,7 +116,7 @@ class TestClarifyClientSelectItems(unittest.TestCase):
         self.assertIsInstance(error, Error)
         self.assertEqual(error.code, return_value["error"]["code"])
         self.assertEqual(error.message, return_value["error"]['message'])
-        self.assertEqual(error.data, return_value["error"]["data"])
+        self.assertEqual(error.data.model_dump(), return_value["error"]["data"])
     
     @patch("pyclarify.jsonrpc.oauth2.Authenticator.get_token")
     @patch("pyclarify.client.requests.post")

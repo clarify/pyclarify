@@ -104,22 +104,16 @@
       "filter": {
         "fields": {
           "name": {
-            "value": [
-              "Electricity"
-            ],
+            "value": ["Electricity"],
             "operator": "$in"
           }
         }
       },
-      "sort": [
-        "-id"
-      ],
+      "sort": ["-id"],
       "limit": 100,
       "skip": 100,
       "total": false,
-      "include": [
-        "item"
-      ]
+      "include": ["item"]
     },
     "response": {
       "jsonrpc": "2.0",

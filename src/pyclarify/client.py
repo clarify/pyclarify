@@ -20,18 +20,17 @@ The module provides a class for setting up a JSONRPCClient which will communicat
 the Clarify API. Methods for reading and writing to the API is implemented with the
 help of jsonrpcclient framework.
 """
-import requests
-import json
 import logging
 import pyclarify
+import requests
 from pyclarify.__utils__.stopping_conditions import select_stopping_condition
 from datetime import timedelta, datetime
 from pydantic import validate_arguments
 from typing import Dict, List, Union, Callable, Optional
 from pyclarify.jsonrpc.client import JSONRPCClient
-from pyclarify.views.dataframe import DataFrame
+from pyclarify.views.dataframe import DataFrame, DataFrameParams
 from pyclarify.views.evaluate import Calculation, ItemAggregation
-from pyclarify.views.items import ItemSaveView
+from pyclarify.views.items import Item, ItemSaveView
 from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import (
     InputID,
@@ -110,7 +109,8 @@ class Client(JSONRPCClient):
         counter = 0
         for request in iterator:
             counter += 1
-            rpc_response = self.make_request(request.json())
+            r = request.model_dump_json()
+            rpc_response = self.make_request(r)
             response = self.handle_response(request, rpc_response)
             if responses is None:
                 responses = response
@@ -494,8 +494,8 @@ class Client(JSONRPCClient):
     def publish_signals(
         self,
         signal_ids: List[ResourceID] = [],
-        items: List[ItemSaveView] = [],
-        items_by_signal: Dict[ResourceID, ItemSaveView] = {},
+        items: List[Union[Item, ItemSaveView]] = [],
+        items_by_signal: Dict[ResourceID, Union[Item, ItemSaveView]] = {},
         create_only: bool = False,
         integration: str = None,
     ) -> Response:

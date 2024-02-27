@@ -103,7 +103,7 @@ class Authenticator:
             Access token.
         """
         response = requests.post(
-            url=self.auth_endpoint, headers=self.headers, data=self.credentials.dict(),
+            url=self.auth_endpoint, headers=self.headers, data=self.credentials.model_dump(),
         )
 
         if response.ok:

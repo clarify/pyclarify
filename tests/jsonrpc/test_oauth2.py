@@ -47,7 +47,7 @@ class TestAuthenticator(unittest.TestCase):
         """
 
         token_client = Authenticator(self.credentials_path)
-        self.assertEqual(token_client.credentials, self.oauth_request_body)
+        self.assertEqual(token_client.credentials.model_dump(), self.oauth_request_body)
 
     def test_read_credentials_string(self):
         """
@@ -55,14 +55,14 @@ class TestAuthenticator(unittest.TestCase):
         """
         credentials_string = json.dumps(self.credentials_dict)
         token_client = Authenticator(credentials_string)
-        self.assertEqual(token_client.credentials, self.oauth_request_body)
+        self.assertEqual(token_client.credentials.model_dump(), self.oauth_request_body)
 
     def test_read_credentials_dict(self):
         """
         Test that it can read the credentials from a dictionary
         """
         token_client = Authenticator(self.credentials_dict)
-        self.assertEqual(token_client.credentials, self.oauth_request_body)
+        self.assertEqual(token_client.credentials.model_dump(), self.oauth_request_body)
 
     def test_no_input(self):
         """
