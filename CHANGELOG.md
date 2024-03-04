@@ -15,6 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.6.1] - 2024-03-04
+
+### Added
+
+- Experimental folder with experimental features. Experimental features might be added to stable or removed.
+
 ## [0.6.0] - 2024-02-27
 
 ### Changed

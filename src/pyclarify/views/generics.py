@@ -57,7 +57,6 @@ class JSONRPCRequest(BaseModel):
     model_config = ConfigDict(json_encoders={timedelta: timedelta_isoformat, datetime: time_to_string})
 
 
-@validate_arguments
 class Request(JSONRPCRequest):
     method: ApiMethod
 

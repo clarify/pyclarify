@@ -144,6 +144,7 @@ clarify-credentials-prod.json
 
 # test files
 demofile.py
+experimental_demo.py
 production_test.py
 stress_test.py
 test.json
