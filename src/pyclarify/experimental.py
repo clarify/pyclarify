@@ -1,10 +1,12 @@
-from typing import List, Optional
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Union
 import pyclarify
-from pyclarify.fields.constraints import ResourceID, IntegrationID
+from pyclarify.fields.constraints import ApiMethod, IntWeekDays, ResourceID, IntegrationID, TimeZone
 from pyclarify.fields.error import Error
-from pyclarify.query.filter import Filter
-from pyclarify.query.query import ResourceQuery
+from pyclarify.query.filter import DataFilter, Filter
+from pyclarify.query.query import DataQuery, ResourceQuery
 from pyclarify.views.generics import Request, Response
+from pyclarify.views.evaluate import Calculation, GroupAggregation, ItemAggregation
 from .client import Client
 from pydantic import validate_arguments
 from enum import Enum
@@ -37,6 +39,7 @@ class ExperimentalClient(Client):
         self.update_headers({"User-Agent": f"PyClarify/{pyclarify.__version__}/experimental"})
         self.authenticate(clarify_credentials)
         self.base_url = f"{self.authentication.api_url}rpc"
+        super().__post_init__()
 
     def handle_response(self, request: ExperimentalRequest, response) -> ExperimentalResponse:
         """
@@ -132,3 +135,49 @@ class ExperimentalClient(Client):
                 {"Authorization": f"Bearer {self.authentication.get_token()}"}
             )
             return self.iterate_requests(request_data, lambda x: False)
+
+    @validate_arguments
+    def evaluate(
+        self,
+        rollup: Union[str, timedelta],
+        timeZone: Optional[TimeZone] = None,
+        firstDayOfWeek: Optional[IntWeekDays] = None,
+        origin: Optional[Union[str, datetime]] = None,
+        items: List[Union[Dict, ItemAggregation]] = [],
+        groups: List[Union[Dict, GroupAggregation]] = [],
+        calculations: List[Union[Dict, Calculation]] = [],
+        series: List[str] = [],
+        gte: Union[datetime, str] = None,
+        lt: Union[datetime, str] = None,
+        last: int = -1,
+        include: List[str] = [],
+        window_size: Union[str, timedelta] = None,
+    ) -> Response:
+        
+        data_filter = DataFilter(gte=gte, lt=lt, series=series)
+        data_query = DataQuery(
+            filter=data_filter.to_query(),
+            rollup=rollup,
+            timeZone=timeZone,
+            firstDayOfWeek=firstDayOfWeek,
+            origin=origin,
+            last=last,
+        )
+        
+        params = {
+            "calculations": calculations,
+            "data": data_query,
+            "include": include,
+        }
+        if items:
+            params['items'] = items
+        if groups:
+            params['groups'] = groups
+        
+        
+        request_data = Request(method=ApiMethod.evaluate, params=params)
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
+
+        return self.iterate_requests(request_data, lambda x: False, window_size)

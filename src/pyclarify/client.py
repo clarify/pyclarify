@@ -1,4 +1,4 @@
-# Copyright 2023 Searis AS
+# Copyright 2023-2024 Searis AS
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ from pydantic import validate_arguments
 from typing import Dict, List, Union, Callable, Optional
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame, DataFrameParams
-from pyclarify.views.evaluate import Calculation, ItemAggregation
+from pyclarify.views.evaluate import Calculation, GroupAggregation, ItemAggregation
 from pyclarify.views.items import Item, ItemSaveView
 from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import (
@@ -67,9 +67,11 @@ class Client(JSONRPCClient):
         self.update_headers({"User-Agent": f"PyClarify/{pyclarify.__version__}"})
         self.authenticate(clarify_credentials)
         self.base_url = f"{self.authentication.api_url}rpc"
+    
+    def __post_init__(self):
         logging.debug("Successfully connected to Clarify!")
-        logging.debug(f"SDK version: {pyclarify.__version__}")
-        logging.debug(f"API version: {pyclarify.__API_version__}")
+        logging.debug(f"SDK version: {self.headers['User-Agent']}")
+        logging.debug(f"API version: {self.headers['X-API-Version']}")
 
     def handle_response(self, request: Request, response) -> Response:
         """
@@ -1039,6 +1041,7 @@ class Client(JSONRPCClient):
         firstDayOfWeek: Optional[IntWeekDays] = None,
         origin: Optional[Union[str, datetime]] = None,
         items: List[Union[Dict, ItemAggregation]] = [],
+        groups: List[Union[Dict, GroupAggregation]] = [],
         calculations: List[Union[Dict, Calculation]] = [],
         series: List[str] = [],
         gte: Union[datetime, str] = None,
@@ -1210,6 +1213,7 @@ class Client(JSONRPCClient):
         )
         params = {
             "items": items,
+            "groups": groups,
             "calculations": calculations,
             "data": data_query,
             "include": include,

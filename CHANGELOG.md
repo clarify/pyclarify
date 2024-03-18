@@ -15,6 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.6.4] - 2024-09-16
+
+### Added
+
+- Added group parameter in experimental client.
+
 ## [0.6.3] - 2024-03-12
 
 ### Fixed
