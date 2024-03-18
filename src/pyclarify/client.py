@@ -29,7 +29,7 @@ from pydantic import validate_arguments
 from typing import Dict, List, Union, Callable, Optional
 from pyclarify.jsonrpc.client import JSONRPCClient
 from pyclarify.views.dataframe import DataFrame, DataFrameParams
-from pyclarify.views.evaluate import Calculation, ItemAggregation
+from pyclarify.views.evaluate import Calculation, GroupAggregation, ItemAggregation
 from pyclarify.views.items import Item, ItemSaveView
 from pyclarify.views.signals import Signal
 from pyclarify.fields.constraints import (
@@ -1038,6 +1038,7 @@ class Client(JSONRPCClient):
         firstDayOfWeek: Optional[IntWeekDays] = None,
         origin: Optional[Union[str, datetime]] = None,
         items: List[Union[Dict, ItemAggregation]] = [],
+        groups: List[Union[Dict, GroupAggregation]] = [],
         calculations: List[Union[Dict, Calculation]] = [],
         series: List[str] = [],
         gte: Union[datetime, str] = None,
@@ -1209,6 +1210,7 @@ class Client(JSONRPCClient):
         )
         params = {
             "items": items,
+            "groups": groups,
             "calculations": calculations,
             "data": data_query,
             "include": include,
