@@ -93,6 +93,7 @@
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -103,11 +104,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation.aggregation">aggregation (ItemAggregation attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.Calculation.alias">alias (Calculation attribute)</a>
 
       <ul>
+        <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.alias">(GroupAggregation attribute)</a>
+</li>
         <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation.alias">(ItemAggregation attribute)</a>
 </li>
       </ul></li>
@@ -171,9 +172,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/views/filter.html#pyclarify.fields.query.Greater">Greater (class in pyclarify.fields.query)</a>
 </li>
+      <li><a href="reference/views/filter.html#pyclarify.fields.query.GreaterOrEqual">GreaterOrEqual (class in pyclarify.fields.query)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/views/filter.html#pyclarify.fields.query.GreaterOrEqual">GreaterOrEqual (class in pyclarify.fields.query)</a>
+      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation">GroupAggregation (class in pyclarify.views.evaluate)</a>
+</li>
+      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.groupAggregation">groupAggregation (GroupAggregation attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -199,10 +204,18 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation.lag">lag (ItemAggregation attribute)</a>
+      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.lag">lag (GroupAggregation attribute)</a>
+
+      <ul>
+        <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation.lag">(ItemAggregation attribute)</a>
 </li>
-      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation.lead">lead (ItemAggregation attribute)</a>
+      </ul></li>
+      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.lead">lead (GroupAggregation attribute)</a>
+
+      <ul>
+        <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation.lead">(ItemAggregation attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/views/filter.html#pyclarify.fields.query.Less">Less (class in pyclarify.fields.query)</a>
@@ -229,6 +242,8 @@
         <li><a href="reference/views/filter.html#pyclarify.fields.query.Greater.model_computed_fields">(Greater attribute)</a>
 </li>
         <li><a href="reference/views/filter.html#pyclarify.fields.query.GreaterOrEqual.model_computed_fields">(GreaterOrEqual attribute)</a>
+</li>
+        <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.model_computed_fields">(GroupAggregation attribute)</a>
 </li>
         <li><a href="reference/views/filter.html#pyclarify.fields.query.In.model_computed_fields">(In attribute)</a>
 </li>
@@ -263,6 +278,8 @@
         <li><a href="reference/views/filter.html#pyclarify.fields.query.Greater.model_config">(Greater attribute)</a>
 </li>
         <li><a href="reference/views/filter.html#pyclarify.fields.query.GreaterOrEqual.model_config">(GreaterOrEqual attribute)</a>
+</li>
+        <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.model_config">(GroupAggregation attribute)</a>
 </li>
         <li><a href="reference/views/filter.html#pyclarify.fields.query.In.model_config">(In attribute)</a>
 </li>
@@ -299,6 +316,8 @@
         <li><a href="reference/views/filter.html#pyclarify.fields.query.Greater.model_fields">(Greater attribute)</a>
 </li>
         <li><a href="reference/views/filter.html#pyclarify.fields.query.GreaterOrEqual.model_fields">(GreaterOrEqual attribute)</a>
+</li>
+        <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.model_fields">(GroupAggregation attribute)</a>
 </li>
         <li><a href="reference/views/filter.html#pyclarify.fields.query.In.model_fields">(In attribute)</a>
 </li>
@@ -405,6 +424,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.query">query (GroupAggregation attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -422,26 +449,32 @@
 </li>
       <li><a href="reference/client/index.html#pyclarify.client.Client.select_signals">select_signals() (Client method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/views/filter.html#pyclarify.fields.query.SelectionFormat">SelectionFormat (class in pyclarify.fields.query)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/views/dataframe.html#pyclarify.views.dataframe.DataFrame.series">series (DataFrame attribute)</a>
 </li>
       <li><a href="reference/views/signals.html#pyclarify.views.signals.Signal">Signal (class in pyclarify.views.signals)</a>
 </li>
-      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation.state">state (ItemAggregation attribute)</a>
+      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.state">state (GroupAggregation attribute)</a>
+
+      <ul>
+        <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation.state">(ItemAggregation attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/views/dataframe.html#pyclarify.views.dataframe.DataFrame.times">times (DataFrame attribute)</a>
+      <li><a href="reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation.timeAggregation">timeAggregation (GroupAggregation attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/views/dataframe.html#pyclarify.views.dataframe.DataFrame.times">times (DataFrame attribute)</a>
+</li>
       <li><a href="reference/views/dataframe.html#pyclarify.views.dataframe.DataFrame.to_pandas">to_pandas() (DataFrame method)</a>
 </li>
   </ul></td>
