@@ -62,12 +62,20 @@ class TypeSignal(str, Enum):
     enum = "enum"
 
 
-class DataAggregation(Enum):
+class TimeAggregationMethod(Enum):
     count = "count"
     min = "min"
     max = "max"
     sum = "sum"
     avg = "avg"
-    state_histogram_seconds = "state-histogram-seconds"
-    state_histogram_percent = "state-histogram-percent"
-    state_histogram_rate = "state-histogram-rate"
+    state_histogram_seconds = "state-seconds"
+    state_histogram_percent = "state-percent"
+    state_histogram_rate = "state-rate"
+
+
+class GroupAggregationMethod(Enum):
+    count = "count"
+    min = "min"
+    max = "max"
+    sum = "sum"
+    avg = "avg"

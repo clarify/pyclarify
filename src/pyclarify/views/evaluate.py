@@ -18,18 +18,22 @@ from pydantic import BaseModel, Extra
 from pyclarify.fields.constraints import (
     Alias,
     BucketOffset,
-    DataAggregation,
+    TimeAggregationMethod,
+    GroupAggregationMethod,
     ResourceID,
     State,
 )
 
 from pyclarify.fields.query import SelectionFormat
-from pyclarify.query.query import DataQuery
+from pyclarify.query.query import (
+    DataQuery,
+    ResourceQuery,
+)
 
 
 class ItemAggregation(BaseModel):
     """
-    Model for creating item aggregations to be used in evaluate endpoint.
+    Model for creating an item aggregation to be used with the `clarify.evaluate` method.
 
     Parameters
     ----------
@@ -58,7 +62,7 @@ class ItemAggregation(BaseModel):
 
         >>> from pyclarify import ItemAggregation
 
-        Creating a signal a minimal item aggregation.
+        Creating a minimal item aggregation.
 
         >>> item_aggregation = ItemAggregation(
         ...     id="cbpmaq6rpn52969vfl0g",
@@ -66,7 +70,7 @@ class ItemAggregation(BaseModel):
         ...     alias="i2"
         ... )
 
-        Creating a item aggregation with all attributes set.
+        Creating an item aggregation with all attributes set.
 
         >>> item_aggregation = ItemAggregation(
         ...     id="cbpmaq6rpn52969vfl00",
@@ -79,7 +83,72 @@ class ItemAggregation(BaseModel):
     """
 
     id: ResourceID
-    aggregation: DataAggregation
+    aggregation: TimeAggregationMethod
+    state: Optional[State] = None
+    lead: Optional[BucketOffset] = None
+    lag: Optional[BucketOffset] = None
+    alias: Alias
+
+
+class GroupAggregation(BaseModel):
+    """
+    Model for creating a group aggregation to be used with the `clarify.evaluate` method.
+
+    Parameters
+    ----------
+
+    query: ResourceQuery
+        A query matching items in an integration to be added to the group.
+
+    timeAggregation: str
+        The time aggregation type to be done within items. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
+
+    timeAggregation: str
+        The group aggregation type to be done across groups. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#group-aggregation>`__.
+
+    state: int[0:9999]
+        The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation. This only applies to time aggregations of type `state-seconds`, `state-percent`, and `state-rate`.
+
+    lead: int[-1000:1000]
+        Shift buckets backwards by N.
+
+    lag: int[-1000:1000]
+        Shift buckets forwards by N.
+
+    alias: string
+        A short alias to use in formulas as well as in the data frame results.
+
+
+    Example
+    -------
+
+        >>> from pyclarify import GroupAggregation
+
+        Creating a minimal group aggregation.
+
+        >>> group_aggregation = GroupAggregation(
+        ...     query=ResourceQuery(filter={}),
+        ...     timeAggregation="avg",
+        ...     groupAggregationMethod="avg"
+        ...     alias="g1"
+        ... )
+
+        Creating a group aggregation with all attributes set.
+
+        >>> group_aggregation = GroupAggregation(
+        ...     query=ResourceQuery(filter={}),
+        ...     timeAggregationMethod="max",
+        ...     groupAggregationMethod="avg",
+        ...     state=1,
+        ...     lead=1,
+        ...     lag=1,
+        ...     alias="g1"
+        ... )
+    """
+
+    query: ResourceQuery
+    timeAggregation: TimeAggregationMethod
+    groupAggregation: GroupAggregationMethod
     state: Optional[State] = None
     lead: Optional[BucketOffset] = None
     lag: Optional[BucketOffset] = None
@@ -134,7 +203,9 @@ class EvaluateParams(BaseModel):
     :meta private:
     """
 
+    # items: Optional[List[ItemAggregation]] = []
     items: List[ItemAggregation]
+    groups: Optional[List[GroupAggregation]] = []
     calculations: List[Calculation]
     data: DataQuery
     include: List
