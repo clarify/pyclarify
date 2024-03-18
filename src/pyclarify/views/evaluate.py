@@ -203,8 +203,7 @@ class EvaluateParams(BaseModel):
     :meta private:
     """
 
-    # items: Optional[List[ItemAggregation]] = []
-    items: List[ItemAggregation]
+    items: Optional[List[ItemAggregation]] = []
     groups: Optional[List[GroupAggregation]] = []
     calculations: List[Calculation]
     data: DataQuery
