@@ -68,9 +68,13 @@ class TimeAggregationMethod(Enum):
     max = "max"
     sum = "sum"
     avg = "avg"
-    state_histogram_seconds = "state-seconds"
-    state_histogram_percent = "state-percent"
-    state_histogram_rate = "state-rate"
+    state_seconds = "state-seconds"
+    state_percent = "state-percent"
+    state_rate = "state-rate"
+    # deprecated names for the same three methods as above
+    state_histogram_seconds = "state-histogram-seconds"
+    state_histogram_percent = "state-histogram-percent"
+    state_histogram_rate = "state-histogram-rate"
 
 
 class GroupAggregationMethod(Enum):
