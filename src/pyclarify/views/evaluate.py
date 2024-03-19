@@ -42,7 +42,7 @@ class ItemAggregation(BaseModel):
         The ID of the item to be aggregated.
 
     aggregation: str
-        The aggregation type to be done. Current legal aggregations are found `here <https://docs.clarify.io/api/1.1/types/fields#data-aggregation>`__.
+        The aggregation type to be done. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
 
     state: int[0:9999]
         The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.
