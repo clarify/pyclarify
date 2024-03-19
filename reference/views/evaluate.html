@@ -180,7 +180,7 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <li><p><strong>query</strong> (<em>ResourceQuery</em>) – A query matching items in an integration to be added to the group.</p></li>
 <li><p><strong>timeAggregation</strong> (<em>str</em>) – The time aggregation type to be done within items. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#time-aggregation">here</a>.</p></li>
 <li><p><strong>groupAggregation</strong> (<em>str</em>) – The group aggregation type to be done across groups. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#group-aggregation">here</a>.</p></li>
-<li><p><strong>state</strong> (<em>int</em><em>[</em><em>0:9999</em><em>]</em>) – The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation. This only applies to time aggregations of type <cite>state-seconds</cite>, <cite>state-percent</cite>, and <cite>state-rate</cite>.</p></li>
+<li><p><strong>state</strong> (<em>int</em><em>[</em><em>0:9999</em><em>]</em>) – The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</p></li>
 <li><p><strong>lead</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets backwards by N.</p></li>
 <li><p><strong>lag</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets forwards by N.</p></li>
 <li><p><strong>alias</strong> (<em>string</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
