@@ -107,7 +107,7 @@ class GroupAggregation(BaseModel):
         The group aggregation type to be done across groups. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#group-aggregation>`__.
 
     state: int[0:9999]
-        The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation. This only applies to time aggregations of type `state-seconds`, `state-percent`, and `state-rate`.
+        The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.
 
     lead: int[-1000:1000]
         Shift buckets backwards by N.
