@@ -103,7 +103,7 @@ class GroupAggregation(BaseModel):
     timeAggregation: str
         The time aggregation type to be done within items. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
 
-    timeAggregation: str
+    groupAggregation: str
         The group aggregation type to be done across groups. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#group-aggregation>`__.
 
     state: int[0:9999]

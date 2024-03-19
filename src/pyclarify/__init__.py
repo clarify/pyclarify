@@ -26,4 +26,4 @@ from pyclarify.views import (
 import pyclarify.query
 
 __version__ = "0.6.1"
-__API_version__ = "1.1"
+__API_version__ = "1.2alpha1"
