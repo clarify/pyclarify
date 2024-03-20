@@ -98,7 +98,7 @@ class GroupAggregation(BaseModel):
     ----------
 
     query: ResourceQuery
-        A query matching items in an integration to be added to the group.
+        A query matching items to be added to the group.
 
     timeAggregation: TimeAggregationMethod | str
         The time aggregation type to be done within items. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
