@@ -41,7 +41,7 @@ class ItemAggregation(BaseModel):
     id: ResourceID
         The ID of the item to be aggregated.
 
-    aggregation: str
+    aggregation: TimeAggregationMethod | str
         The aggregation type to be done. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
 
     state: int[0:9999]
@@ -53,7 +53,7 @@ class ItemAggregation(BaseModel):
     lag: int[-1000:1000]
         Shift buckets forwards by N.
 
-    alias: string
+    alias: str
         A short alias to use in formulas as well as in the data frame results.
 
 
@@ -66,7 +66,7 @@ class ItemAggregation(BaseModel):
 
         >>> item_aggregation = ItemAggregation(
         ...     id="cbpmaq6rpn52969vfl0g",
-        ...     aggregation="avg",
+        ...     aggregation="max",
         ...     alias="i2"
         ... )
 
@@ -100,10 +100,10 @@ class GroupAggregation(BaseModel):
     query: ResourceQuery
         A query matching items in an integration to be added to the group.
 
-    timeAggregation: str
+    timeAggregation: TimeAggregationMethod | str
         The time aggregation type to be done within items. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
 
-    groupAggregation: str
+    groupAggregation: GroupAggregationMethod | str
         The group aggregation type to be done across groups. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#group-aggregation>`__.
 
     state: int[0:9999]
@@ -115,7 +115,7 @@ class GroupAggregation(BaseModel):
     lag: int[-1000:1000]
         Shift buckets forwards by N.
 
-    alias: string
+    alias: str
         A short alias to use in formulas as well as in the data frame results.
 
 
@@ -128,8 +128,8 @@ class GroupAggregation(BaseModel):
 
         >>> group_aggregation = GroupAggregation(
         ...     query=ResourceQuery(filter={}),
-        ...     timeAggregation="avg",
-        ...     groupAggregationMethod="avg"
+        ...     timeAggregation="max",
+        ...     groupAggregationMethod="max"
         ...     alias="g1"
         ... )
 
@@ -138,7 +138,7 @@ class GroupAggregation(BaseModel):
         >>> group_aggregation = GroupAggregation(
         ...     query=ResourceQuery(filter={}),
         ...     timeAggregationMethod="max",
-        ...     groupAggregationMethod="avg",
+        ...     groupAggregationMethod="max",
         ...     state=1,
         ...     lead=1,
         ...     lag=1,
