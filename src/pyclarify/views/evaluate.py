@@ -194,6 +194,9 @@ class Calculation(BaseModel):
     """
 
     # TODO: constraints for formula?
+    # suggestions:
+    # 1. split on a regexp containing all operators, comma, and parentheses, validate against a list of built in functions, constants, numbers, and aliases
+    # 2. create a recursive descent parser that retains the function context so syntax errors can be reported in the relevant part of the formula expression
     formula: str
     alias: Alias
 
