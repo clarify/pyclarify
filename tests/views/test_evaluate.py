@@ -169,6 +169,7 @@ class TestItemAggregation(unittest.TestCase):
 
 
 class TestGroupAggregation(unittest.TestCase):
+    
     def test_group_aggregation(self):
         group = GroupAggregation(
             query=ResourceQuery(filter={}),
@@ -233,7 +234,7 @@ class TestGroupAggregation(unittest.TestCase):
                 alias="g1"
             )
 
-    def test_item_aggregation_invalid_lead(self):
+    def test_group_aggregation_invalid_lead(self):
         with self.assertRaises(ValidationError):
             GroupAggregation(
                 query=ResourceQuery(filter={}),
@@ -256,7 +257,7 @@ class TestGroupAggregation(unittest.TestCase):
                 alias="g1"
             )
 
-    def test_item_aggregation_invalid_lag(self):
+    def test_group_aggregation_invalid_lag(self):
         with self.assertRaises(ValidationError):
             GroupAggregation(
                 query=ResourceQuery(filter={}),
@@ -279,7 +280,7 @@ class TestGroupAggregation(unittest.TestCase):
                 alias="g1"
             )
 
-    def test_item_aggregation_invalid_alias(self):
+    def test_group_aggregation_invalid_alias(self):
         with self.assertRaises(ValidationError):
             GroupAggregation(
                 query=ResourceQuery(filter={}),
