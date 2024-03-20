@@ -95,8 +95,8 @@
 <span class="c1"># limitations under the License.</span>
 
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Extra</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 <span class="kn">from</span> <span class="nn">pyclarify.fields.constraints</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Alias</span><span class="p">,</span>
     <span class="n">BucketOffset</span><span class="p">,</span>
@@ -276,6 +276,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># TODO: constraints for formula?</span>
+    <span class="c1"># suggestions:</span>
+    <span class="c1"># 1. split on a regexp containing all operators, comma, and parentheses, validate against a list of built in functions, constants, numbers, and aliases</span>
+    <span class="c1"># 2. create a recursive descent parser that retains the function context so syntax errors can be reported in the relevant part of the formula expression</span>
     <span class="n">formula</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">alias</span><span class="p">:</span> <span class="n">Alias</span></div>
 
