@@ -1,11 +1,13 @@
 import unittest
 import sys
+from pyclarify.query.query import ResourceQuery
+from pyclarify.views.evaluate import GroupAggregation
 from pydantic import ValidationError
 
 sys.path.insert(1, "src/")
 
 from pyclarify import ItemAggregation, Calculation
-from pyclarify.fields.constraints import DataAggregation
+from pyclarify.fields.constraints import GroupAggregationMethod, TimeAggregationMethod
 
 item1 = ItemAggregation(
     id="cbpmaq6rpn52969vfl00",
@@ -50,7 +52,7 @@ class TestItemAggregation(unittest.TestCase):
 
         self.assertIsInstance(item, ItemAggregation)
         self.assertEqual(item.id, "cbpmaq6rpn52969vfl00")
-        self.assertEqual(item.aggregation, DataAggregation.max)
+        self.assertEqual(item.aggregation, TimeAggregationMethod.max)
         self.assertEqual(item.state, 1)
         self.assertEqual(item.lead, 1)
         self.assertEqual(item.lag, 1)
@@ -163,6 +165,142 @@ class TestItemAggregation(unittest.TestCase):
                 lead=1,
                 lag=1,
                 alias="a_very_long_alias_that_cant_be_used_in_item_aggregation"
+            )
+
+
+class TestGroupAggregation(unittest.TestCase):
+    
+    def test_group_aggregation(self):
+        group = GroupAggregation(
+            query=ResourceQuery(filter={}),
+            timeAggregation="max",
+            groupAggregation="max",
+            state=1,
+            lead=1,
+            lag=1,
+            alias="g1"
+        )
+
+        self.assertIsInstance(group, GroupAggregation)
+        self.assertEqual(group.query, ResourceQuery(filter={}))
+        self.assertEqual(group.timeAggregation, TimeAggregationMethod.max)
+        self.assertEqual(group.groupAggregation, GroupAggregationMethod.max)
+        self.assertEqual(group.state, 1)
+        self.assertEqual(group.lead, 1)
+        self.assertEqual(group.lag, 1)
+        self.assertEqual(group.alias, "g1")
+
+        p = '{"query":{"filter":{},"sort":null,"limit":null,"skip":null,"total":null},"timeAggregation":"max","groupAggregation":"max","state":1,"lead":1,"lag":1,"alias":"g1"}'
+        self.assertEqual(group.model_dump_json(), p)
+    
+    def test_group_aggregation_invalid_time_aggregation_method(self):
+        with self.assertRaises(ValidationError):
+         GroupAggregation(
+            query=ResourceQuery(filter={}),
+            timeAggregation="hey",
+            groupAggregation="max",
+            alias="g1"
+        )
+         
+    def test_group_aggregation_invalid_group_aggregation_method(self):
+        with self.assertRaises(ValidationError):
+         GroupAggregation(
+            query=ResourceQuery(filter={}),
+            timeAggregation="max",
+            groupAggregation="hey",
+            alias="g1"
+        )
+
+    def test_group_aggregation_invalid_state(self):
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                timeAggregation="sum",
+                groupAggregation="sum",
+                state=-1,
+                lead=1,
+                lag=1,
+                alias="g1"
+            )
+        
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                timeAggregation="sum",
+                groupAggregation="sum",
+                state=10000,
+                lead=1,
+                lag=1,
+                alias="g1"
+            )
+
+    def test_group_aggregation_invalid_lead(self):
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                timeAggregation="sum",
+                groupAggregation="sum",
+                state=1,
+                lead=-1001,
+                lag=1,
+                alias="g1"
+            )
+        
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                timeAggregation="sum",
+                groupAggregation="sum",
+                state=1,
+                lead=1001,
+                lag=1,
+                alias="g1"
+            )
+
+    def test_group_aggregation_invalid_lag(self):
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                timeAggregation="sum",
+                groupAggregation="sum",
+                state=1,
+                lead=1,
+                lag=-1001,
+                alias="g1"
+            )
+        
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                timeAggregation="sum",
+                groupAggregation="sum",
+                state=1,
+                lead=1,
+                lag=1001,
+                alias="g1"
+            )
+
+    def test_group_aggregation_invalid_alias(self):
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                timeAggregation="sum",
+                groupAggregation="sum",
+                state=1,
+                lead=1,
+                lag=1,
+                alias=""
+            )
+
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                timeAggregation="sum",
+                groupAggregation="sum",
+                state=1,
+                lead=1,
+                lag=1,
+                alias="a_very_long_alias_that_cant_be_used_in_group_aggregation"
             )
 
 
