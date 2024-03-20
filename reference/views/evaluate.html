@@ -178,12 +178,12 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> (<em>ResourceQuery</em>) – A query matching items in an integration to be added to the group.</p></li>
-<li><p><strong>timeAggregation</strong> (<em>str</em>) – The time aggregation type to be done within items. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#time-aggregation">here</a>.</p></li>
-<li><p><strong>groupAggregation</strong> (<em>str</em>) – The group aggregation type to be done across groups. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#group-aggregation">here</a>.</p></li>
+<li><p><strong>timeAggregation</strong> (<em>TimeAggregationMethod</em><em> | </em><em>str</em>) – The time aggregation type to be done within items. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#time-aggregation">here</a>.</p></li>
+<li><p><strong>groupAggregation</strong> (<em>GroupAggregationMethod</em><em> | </em><em>str</em>) – The group aggregation type to be done across groups. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#group-aggregation">here</a>.</p></li>
 <li><p><strong>state</strong> (<em>int</em><em>[</em><em>0:9999</em><em>]</em>) – The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</p></li>
 <li><p><strong>lead</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets backwards by N.</p></li>
 <li><p><strong>lag</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets forwards by N.</p></li>
-<li><p><strong>alias</strong> (<em>string</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
+<li><p><strong>alias</strong> (<em>str</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
 </ul>
 </dd>
 </dl>
@@ -194,8 +194,8 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <p>Creating a minimal group aggregation.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">group_aggregation</span> <span class="o">=</span> <span class="n">GroupAggregation</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">query</span><span class="o">=</span><span class="n">ResourceQuery</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="p">{}),</span>
-<span class="gp">... </span>    <span class="n">timeAggregation</span><span class="o">=</span><span class="s2">&quot;avg&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">groupAggregationMethod</span><span class="o">=</span><span class="s2">&quot;avg&quot;</span>
+<span class="gp">... </span>    <span class="n">timeAggregation</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">groupAggregationMethod</span><span class="o">=</span><span class="s2">&quot;max&quot;</span>
 <span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;g1&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
@@ -204,7 +204,7 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">group_aggregation</span> <span class="o">=</span> <span class="n">GroupAggregation</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">query</span><span class="o">=</span><span class="n">ResourceQuery</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="p">{}),</span>
 <span class="gp">... </span>    <span class="n">timeAggregationMethod</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">groupAggregationMethod</span><span class="o">=</span><span class="s2">&quot;avg&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">groupAggregationMethod</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">lead</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -278,11 +278,11 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<em>ResourceID</em>) – The ID of the item to be aggregated.</p></li>
-<li><p><strong>aggregation</strong> (<em>str</em>) – The aggregation type to be done. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#time-aggregation">here</a>.</p></li>
+<li><p><strong>aggregation</strong> (<em>TimeAggregationMethod</em><em> | </em><em>str</em>) – The aggregation type to be done. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#time-aggregation">here</a>.</p></li>
 <li><p><strong>state</strong> (<em>int</em><em>[</em><em>0:9999</em><em>]</em>) – The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</p></li>
 <li><p><strong>lead</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets backwards by N.</p></li>
 <li><p><strong>lag</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets forwards by N.</p></li>
-<li><p><strong>alias</strong> (<em>string</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
+<li><p><strong>alias</strong> (<em>str</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
 </ul>
 </dd>
 </dl>
@@ -293,7 +293,7 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <p>Creating a minimal item aggregation.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item_aggregation</span> <span class="o">=</span> <span class="n">ItemAggregation</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;cbpmaq6rpn52969vfl0g&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;avg&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;i2&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>

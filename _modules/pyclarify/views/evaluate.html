@@ -123,7 +123,7 @@
 <span class="sd">    id: ResourceID</span>
 <span class="sd">        The ID of the item to be aggregated.</span>
 
-<span class="sd">    aggregation: str</span>
+<span class="sd">    aggregation: TimeAggregationMethod | str</span>
 <span class="sd">        The aggregation type to be done. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#time-aggregation&gt;`__.</span>
 
 <span class="sd">    state: int[0:9999]</span>
@@ -135,7 +135,7 @@
 <span class="sd">    lag: int[-1000:1000]</span>
 <span class="sd">        Shift buckets forwards by N.</span>
 
-<span class="sd">    alias: string</span>
+<span class="sd">    alias: str</span>
 <span class="sd">        A short alias to use in formulas as well as in the data frame results.</span>
 
 
@@ -148,7 +148,7 @@
 
 <span class="sd">        &gt;&gt;&gt; item_aggregation = ItemAggregation(</span>
 <span class="sd">        ...     id=&quot;cbpmaq6rpn52969vfl0g&quot;,</span>
-<span class="sd">        ...     aggregation=&quot;avg&quot;,</span>
+<span class="sd">        ...     aggregation=&quot;max&quot;,</span>
 <span class="sd">        ...     alias=&quot;i2&quot;</span>
 <span class="sd">        ... )</span>
 
@@ -182,10 +182,10 @@
 <span class="sd">    query: ResourceQuery</span>
 <span class="sd">        A query matching items in an integration to be added to the group.</span>
 
-<span class="sd">    timeAggregation: str</span>
+<span class="sd">    timeAggregation: TimeAggregationMethod | str</span>
 <span class="sd">        The time aggregation type to be done within items. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#time-aggregation&gt;`__.</span>
 
-<span class="sd">    groupAggregation: str</span>
+<span class="sd">    groupAggregation: GroupAggregationMethod | str</span>
 <span class="sd">        The group aggregation type to be done across groups. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#group-aggregation&gt;`__.</span>
 
 <span class="sd">    state: int[0:9999]</span>
@@ -197,7 +197,7 @@
 <span class="sd">    lag: int[-1000:1000]</span>
 <span class="sd">        Shift buckets forwards by N.</span>
 
-<span class="sd">    alias: string</span>
+<span class="sd">    alias: str</span>
 <span class="sd">        A short alias to use in formulas as well as in the data frame results.</span>
 
 
@@ -210,8 +210,8 @@
 
 <span class="sd">        &gt;&gt;&gt; group_aggregation = GroupAggregation(</span>
 <span class="sd">        ...     query=ResourceQuery(filter={}),</span>
-<span class="sd">        ...     timeAggregation=&quot;avg&quot;,</span>
-<span class="sd">        ...     groupAggregationMethod=&quot;avg&quot;</span>
+<span class="sd">        ...     timeAggregation=&quot;max&quot;,</span>
+<span class="sd">        ...     groupAggregationMethod=&quot;max&quot;</span>
 <span class="sd">        ...     alias=&quot;g1&quot;</span>
 <span class="sd">        ... )</span>
 
@@ -220,7 +220,7 @@
 <span class="sd">        &gt;&gt;&gt; group_aggregation = GroupAggregation(</span>
 <span class="sd">        ...     query=ResourceQuery(filter={}),</span>
 <span class="sd">        ...     timeAggregationMethod=&quot;max&quot;,</span>
-<span class="sd">        ...     groupAggregationMethod=&quot;avg&quot;,</span>
+<span class="sd">        ...     groupAggregationMethod=&quot;max&quot;,</span>
 <span class="sd">        ...     state=1,</span>
 <span class="sd">        ...     lead=1,</span>
 <span class="sd">        ...     lag=1,</span>
