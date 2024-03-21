@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyclarify.client &mdash; PyClarify 0.6.1 documentation</title>
+  <title>pyclarify.client &mdash; PyClarify 0.6.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
@@ -80,7 +80,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pyclarify.client</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2023-2024 Searis AS</span>
+<span></span><span class="c1"># Copyright 2023 Searis AS</span>
 
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -111,7 +111,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">pyclarify.jsonrpc.client</span> <span class="kn">import</span> <span class="n">JSONRPCClient</span>
 <span class="kn">from</span> <span class="nn">pyclarify.views.dataframe</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">DataFrameParams</span>
-<span class="kn">from</span> <span class="nn">pyclarify.views.evaluate</span> <span class="kn">import</span> <span class="n">Calculation</span><span class="p">,</span> <span class="n">GroupAggregation</span><span class="p">,</span> <span class="n">ItemAggregation</span>
+<span class="kn">from</span> <span class="nn">pyclarify.views.evaluate</span> <span class="kn">import</span> <span class="n">Calculation</span><span class="p">,</span> <span class="n">ItemAggregation</span>
 <span class="kn">from</span> <span class="nn">pyclarify.views.items</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">ItemSaveView</span>
 <span class="kn">from</span> <span class="nn">pyclarify.views.signals</span> <span class="kn">import</span> <span class="n">Signal</span>
 <span class="kn">from</span> <span class="nn">pyclarify.fields.constraints</span> <span class="kn">import</span> <span class="p">(</span>
@@ -1120,7 +1120,6 @@
         <span class="n">firstDayOfWeek</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IntWeekDays</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">origin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">ItemAggregation</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
-        <span class="n">groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">GroupAggregation</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
         <span class="n">calculations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Calculation</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
         <span class="n">series</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
         <span class="n">gte</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1292,7 +1291,6 @@
         <span class="p">)</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">,</span>
-            <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="n">groups</span><span class="p">,</span>
             <span class="s2">&quot;calculations&quot;</span><span class="p">:</span> <span class="n">calculations</span><span class="p">,</span>
             <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data_query</span><span class="p">,</span>
             <span class="s2">&quot;include&quot;</span><span class="p">:</span> <span class="n">include</span><span class="p">,</span>

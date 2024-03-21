@@ -7,7 +7,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Evaluate module &mdash; PyClarify 0.6.1 documentation</title>
+  <title>Evaluate module &mdash; PyClarify 0.6.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
@@ -59,7 +59,6 @@
 <li class="toctree-l3"><a class="reference internal" href="dataframe.html">DataFrame module</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Evaluate module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pyclarify.views.evaluate.Calculation"><code class="docutils literal notranslate"><span class="pre">Calculation</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pyclarify.views.evaluate.GroupAggregation"><code class="docutils literal notranslate"><span class="pre">GroupAggregation</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pyclarify.views.evaluate.ItemAggregation"><code class="docutils literal notranslate"><span class="pre">ItemAggregation</span></code></a></li>
 </ul>
 </li>
@@ -170,119 +169,19 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GroupAggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ResourceQuery</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeAggregation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TimeAggregationMethod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupAggregation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GroupAggregationMethod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lead</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyclarify/views/evaluate.html#GroupAggregation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
-<p>Model for creating a group aggregation to be used with the <cite>clarify.evaluate</cite> method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>query</strong> (<em>ResourceQuery</em>) – A query matching items to be added to the group.</p></li>
-<li><p><strong>timeAggregation</strong> (<em>TimeAggregationMethod</em><em> | </em><em>str</em>) – The time aggregation type to be done within items. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#time-aggregation">here</a>.</p></li>
-<li><p><strong>groupAggregation</strong> (<em>GroupAggregationMethod</em><em> | </em><em>str</em>) – The group aggregation type to be done across groups. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#group-aggregation">here</a>.</p></li>
-<li><p><strong>state</strong> (<em>int</em><em>[</em><em>0:9999</em><em>]</em>) – The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</p></li>
-<li><p><strong>lead</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets backwards by N.</p></li>
-<li><p><strong>lag</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets forwards by N.</p></li>
-<li><p><strong>alias</strong> (<em>str</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">GroupAggregation</span>
-</pre></div>
-</div>
-<p>Creating a minimal group aggregation.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">group_aggregation</span> <span class="o">=</span> <span class="n">GroupAggregation</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">query</span><span class="o">=</span><span class="n">ResourceQuery</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="p">{}),</span>
-<span class="gp">... </span>    <span class="n">timeAggregation</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">groupAggregationMethod</span><span class="o">=</span><span class="s2">&quot;max&quot;</span>
-<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;g1&quot;</span>
-<span class="gp">... </span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Creating a group aggregation with all attributes set.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">group_aggregation</span> <span class="o">=</span> <span class="n">GroupAggregation</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">query</span><span class="o">=</span><span class="n">ResourceQuery</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="p">{}),</span>
-<span class="gp">... </span>    <span class="n">timeAggregationMethod</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">groupAggregationMethod</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">lead</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">lag</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;g1&quot;</span>
-<span class="gp">... </span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.alias">
-<span class="sig-name descname"><span class="pre">alias</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.alias" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.groupAggregation">
-<span class="sig-name descname"><span class="pre">groupAggregation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">GroupAggregationMethod</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.groupAggregation" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.lag">
-<span class="sig-name descname"><span class="pre">lag</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.lag" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.lead">
-<span class="sig-name descname"><span class="pre">lead</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.lead" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.model_computed_fields">
-<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.model_computed_fields" title="Permalink to this definition"></a></dt>
-<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.model_config">
-<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.model_config" title="Permalink to this definition"></a></dt>
-<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.model_fields">
-<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'alias':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[_PydanticGeneralMetadata(pattern='^[A-Za-z_][A-Za-z0-9_]{0,27}$')]),</span> <span class="pre">'groupAggregation':</span> <span class="pre">FieldInfo(annotation=GroupAggregationMethod,</span> <span class="pre">required=True),</span> <span class="pre">'lag':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=-1000),</span> <span class="pre">Le(le=1000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'lead':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=-1000),</span> <span class="pre">Le(le=1000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'query':</span> <span class="pre">FieldInfo(annotation=ResourceQuery,</span> <span class="pre">required=True),</span> <span class="pre">'state':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=0),</span> <span class="pre">Lt(lt=10000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'timeAggregation':</span> <span class="pre">FieldInfo(annotation=TimeAggregationMethod,</span> <span class="pre">required=True)}</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.model_fields" title="Permalink to this definition"></a></dt>
-<dd><p>Metadata about the fields defined on the model,
-mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
-<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.query">
-<span class="sig-name descname"><span class="pre">query</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ResourceQuery</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.query" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.state">
-<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.state" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pyclarify.views.evaluate.GroupAggregation.timeAggregation">
-<span class="sig-name descname"><span class="pre">timeAggregation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TimeAggregationMethod</span></em><a class="headerlink" href="#pyclarify.views.evaluate.GroupAggregation.timeAggregation" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ItemAggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TimeAggregationMethod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lead</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyclarify/views/evaluate.html#ItemAggregation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ItemAggregation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataAggregation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lead</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyclarify/views/evaluate.html#ItemAggregation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
-<p>Model for creating an item aggregation to be used with the <cite>clarify.evaluate</cite> method.</p>
+<p>Model for creating item aggregations to be used in evaluate endpoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>id</strong> (<em>ResourceID</em>) – The ID of the item to be aggregated.</p></li>
-<li><p><strong>aggregation</strong> (<em>TimeAggregationMethod</em><em> | </em><em>str</em>) – The aggregation type to be done. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.2/types/fields#time-aggregation">here</a>.</p></li>
+<li><p><strong>aggregation</strong> (<em>str</em>) – The aggregation type to be done. Current legal aggregations are found <a class="reference external" href="https://docs.clarify.io/api/1.1/types/fields#data-aggregation">here</a>.</p></li>
 <li><p><strong>state</strong> (<em>int</em><em>[</em><em>0:9999</em><em>]</em>) – The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</p></li>
 <li><p><strong>lead</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets backwards by N.</p></li>
 <li><p><strong>lag</strong> (<em>int</em><em>[</em><em>-1000:1000</em><em>]</em>) – Shift buckets forwards by N.</p></li>
-<li><p><strong>alias</strong> (<em>str</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
+<li><p><strong>alias</strong> (<em>string</em>) – A short alias to use in formulas as well as in the data frame results.</p></li>
 </ul>
 </dd>
 </dl>
@@ -290,15 +189,15 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyclarify</span> <span class="kn">import</span> <span class="n">ItemAggregation</span>
 </pre></div>
 </div>
-<p>Creating a minimal item aggregation.</p>
+<p>Creating a signal a minimal item aggregation.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item_aggregation</span> <span class="o">=</span> <span class="n">ItemAggregation</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;cbpmaq6rpn52969vfl0g&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;avg&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;i2&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Creating an item aggregation with all attributes set.</p>
+<p>Creating a item aggregation with all attributes set.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">item_aggregation</span> <span class="o">=</span> <span class="n">ItemAggregation</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;cbpmaq6rpn52969vfl00&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">aggregation</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">,</span>
@@ -311,7 +210,7 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation.aggregation">
-<span class="sig-name descname"><span class="pre">aggregation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">TimeAggregationMethod</span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.aggregation" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">aggregation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataAggregation</span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.aggregation" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -348,7 +247,7 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyclarify.views.evaluate.ItemAggregation.model_fields">
-<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'aggregation':</span> <span class="pre">FieldInfo(annotation=TimeAggregationMethod,</span> <span class="pre">required=True),</span> <span class="pre">'alias':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[_PydanticGeneralMetadata(pattern='^[A-Za-z_][A-Za-z0-9_]{0,27}$')]),</span> <span class="pre">'id':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[_PydanticGeneralMetadata(pattern='^[a-v0-9]{20}$')]),</span> <span class="pre">'lag':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=-1000),</span> <span class="pre">Le(le=1000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'lead':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=-1000),</span> <span class="pre">Le(le=1000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'state':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=0),</span> <span class="pre">Lt(lt=10000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False)}</span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.model_fields" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'aggregation':</span> <span class="pre">FieldInfo(annotation=DataAggregation,</span> <span class="pre">required=True),</span> <span class="pre">'alias':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[_PydanticGeneralMetadata(pattern='^[A-Za-z_][A-Za-z0-9_]{0,27}$')]),</span> <span class="pre">'id':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[_PydanticGeneralMetadata(pattern='^[a-v0-9]{20}$')]),</span> <span class="pre">'lag':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=-1000),</span> <span class="pre">Le(le=1000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'lead':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=-1000),</span> <span class="pre">Le(le=1000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False),</span> <span class="pre">'state':</span> <span class="pre">FieldInfo(annotation=Union[Annotated[int,</span> <span class="pre">FieldInfo(annotation=NoneType,</span> <span class="pre">required=True,</span> <span class="pre">metadata=[Ge(ge=0),</span> <span class="pre">Lt(lt=10000)])],</span> <span class="pre">NoneType],</span> <span class="pre">required=False)}</span></em><a class="headerlink" href="#pyclarify.views.evaluate.ItemAggregation.model_fields" title="Permalink to this definition"></a></dt>
 <dd><p>Metadata about the fields defined on the model,
 mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
 <p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
