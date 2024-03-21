@@ -15,6 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.6.3] - 2024-03-12
+
+### Fixed
+
+- Fixed json decoding bug in in Pydantic where special characters where not serialized correctly. More specifically two byte characters would be read as 1 byte, resulting in incorrect content length.
+
 ## [0.6.2] - 2024-03-12
 
 ### Fixed
