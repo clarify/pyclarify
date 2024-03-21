@@ -23,6 +23,7 @@ help of jsonrpcclient framework.
 import logging
 import pyclarify
 import requests
+import json
 from pyclarify.__utils__.stopping_conditions import select_stopping_condition
 from datetime import timedelta, datetime
 from pydantic import validate_arguments
@@ -109,7 +110,7 @@ class Client(JSONRPCClient):
         counter = 0
         for request in iterator:
             counter += 1
-            r = request.model_dump_json()
+            r = json.dumps(request.model_dump(mode='json')) # TODO: Pydantic V2 does not do this in an elegant way
             rpc_response = self.make_request(r)
             response = self.handle_response(request, rpc_response)
             if responses is None:
