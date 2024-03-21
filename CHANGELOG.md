@@ -15,6 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.6.2] - 2024-03-12
+
+### Fixed
+
+- Fixed json decoding bug in JSONRPC client where execution would crash on non 200-range response.
+
 ## [0.6.1] - 2024-03-04
 
 ### Added
