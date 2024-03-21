@@ -96,7 +96,11 @@ class JSONRPCClient:
         res = requests.post(
             self.base_url, data=payload, headers=self.headers
         )
-        logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code})  res:{res.json()}")
+        if res.ok and res.status_code != 204:
+            try:
+                logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code})  res:{res.json()}")
+            except Exception as e:
+                logging.debug(f"{self.current_id}<-- {self.base_url} ({res.status_code}) - Could not decode json payload.")
         return res
 
     @increment_id
