@@ -59,6 +59,9 @@ Package Index (PyPI)](https://pypi.org/project/pyclarify).
 ```sh
 # PyPI install
 pip install pyclarify
+
+# Conda install
+conda install pyclarify
 ```
 
 ## Dependencies
