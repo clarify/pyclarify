@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyclarify.views.evaluate &mdash; PyClarify 0.6.3 documentation</title>
+  <title>pyclarify.views.evaluate &mdash; PyClarify 0.6.4 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
@@ -80,7 +80,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pyclarify.views.evaluate</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright 2023 Searis AS</span>
+<span></span><span class="c1"># Copyright 2023-2024 Searis AS</span>
 
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -100,18 +100,22 @@
 <span class="kn">from</span> <span class="nn">pyclarify.fields.constraints</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Alias</span><span class="p">,</span>
     <span class="n">BucketOffset</span><span class="p">,</span>
-    <span class="n">DataAggregation</span><span class="p">,</span>
+    <span class="n">TimeAggregationMethod</span><span class="p">,</span>
+    <span class="n">GroupAggregationMethod</span><span class="p">,</span>
     <span class="n">ResourceID</span><span class="p">,</span>
     <span class="n">State</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">pyclarify.fields.query</span> <span class="kn">import</span> <span class="n">SelectionFormat</span>
-<span class="kn">from</span> <span class="nn">pyclarify.query.query</span> <span class="kn">import</span> <span class="n">DataQuery</span>
+<span class="kn">from</span> <span class="nn">pyclarify.query.query</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DataQuery</span><span class="p">,</span>
+    <span class="n">ResourceQuery</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="ItemAggregation"><a class="viewcode-back" href="../../../reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation">[docs]</a><span class="k">class</span> <span class="nc">ItemAggregation</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Model for creating item aggregations to be used in evaluate endpoint.</span>
+<span class="sd">    Model for creating an item aggregation to be used with the `clarify.evaluate` method.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -119,8 +123,8 @@
 <span class="sd">    id: ResourceID</span>
 <span class="sd">        The ID of the item to be aggregated.</span>
 
-<span class="sd">    aggregation: str</span>
-<span class="sd">        The aggregation type to be done. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.1/types/fields#data-aggregation&gt;`__.</span>
+<span class="sd">    aggregation: TimeAggregationMethod | str</span>
+<span class="sd">        The aggregation type to be done. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#time-aggregation&gt;`__.</span>
 
 <span class="sd">    state: int[0:9999]</span>
 <span class="sd">        The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</span>
@@ -131,7 +135,7 @@
 <span class="sd">    lag: int[-1000:1000]</span>
 <span class="sd">        Shift buckets forwards by N.</span>
 
-<span class="sd">    alias: string</span>
+<span class="sd">    alias: str</span>
 <span class="sd">        A short alias to use in formulas as well as in the data frame results.</span>
 
 
@@ -140,15 +144,15 @@
 
 <span class="sd">        &gt;&gt;&gt; from pyclarify import ItemAggregation</span>
 
-<span class="sd">        Creating a signal a minimal item aggregation.</span>
+<span class="sd">        Creating a minimal item aggregation.</span>
 
 <span class="sd">        &gt;&gt;&gt; item_aggregation = ItemAggregation(</span>
 <span class="sd">        ...     id=&quot;cbpmaq6rpn52969vfl0g&quot;,</span>
-<span class="sd">        ...     aggregation=&quot;avg&quot;,</span>
+<span class="sd">        ...     aggregation=&quot;max&quot;,</span>
 <span class="sd">        ...     alias=&quot;i2&quot;</span>
 <span class="sd">        ... )</span>
 
-<span class="sd">        Creating a item aggregation with all attributes set.</span>
+<span class="sd">        Creating an item aggregation with all attributes set.</span>
 
 <span class="sd">        &gt;&gt;&gt; item_aggregation = ItemAggregation(</span>
 <span class="sd">        ...     id=&quot;cbpmaq6rpn52969vfl00&quot;,</span>
@@ -161,7 +165,72 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="n">ResourceID</span>
-    <span class="n">aggregation</span><span class="p">:</span> <span class="n">DataAggregation</span>
+    <span class="n">aggregation</span><span class="p">:</span> <span class="n">TimeAggregationMethod</span>
+    <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">lead</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BucketOffset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">lag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BucketOffset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">alias</span><span class="p">:</span> <span class="n">Alias</span></div>
+
+
+<div class="viewcode-block" id="GroupAggregation"><a class="viewcode-back" href="../../../reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation">[docs]</a><span class="k">class</span> <span class="nc">GroupAggregation</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model for creating a group aggregation to be used with the `clarify.evaluate` method.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    query: ResourceQuery</span>
+<span class="sd">        A query matching items to be added to the group.</span>
+
+<span class="sd">    timeAggregation: TimeAggregationMethod | str</span>
+<span class="sd">        The time aggregation type to be done within items. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#time-aggregation&gt;`__.</span>
+
+<span class="sd">    groupAggregation: GroupAggregationMethod | str</span>
+<span class="sd">        The group aggregation type to be done across groups. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#group-aggregation&gt;`__.</span>
+
+<span class="sd">    state: int[0:9999]</span>
+<span class="sd">        The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</span>
+
+<span class="sd">    lead: int[-1000:1000]</span>
+<span class="sd">        Shift buckets backwards by N.</span>
+
+<span class="sd">    lag: int[-1000:1000]</span>
+<span class="sd">        Shift buckets forwards by N.</span>
+
+<span class="sd">    alias: str</span>
+<span class="sd">        A short alias to use in formulas as well as in the data frame results.</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">        &gt;&gt;&gt; from pyclarify import GroupAggregation</span>
+
+<span class="sd">        Creating a minimal group aggregation.</span>
+
+<span class="sd">        &gt;&gt;&gt; group_aggregation = GroupAggregation(</span>
+<span class="sd">        ...     query=ResourceQuery(filter={}),</span>
+<span class="sd">        ...     timeAggregation=&quot;max&quot;,</span>
+<span class="sd">        ...     groupAggregationMethod=&quot;max&quot;</span>
+<span class="sd">        ...     alias=&quot;g1&quot;</span>
+<span class="sd">        ... )</span>
+
+<span class="sd">        Creating a group aggregation with all attributes set.</span>
+
+<span class="sd">        &gt;&gt;&gt; group_aggregation = GroupAggregation(</span>
+<span class="sd">        ...     query=ResourceQuery(filter={}),</span>
+<span class="sd">        ...     timeAggregationMethod=&quot;max&quot;,</span>
+<span class="sd">        ...     groupAggregationMethod=&quot;max&quot;,</span>
+<span class="sd">        ...     state=1,</span>
+<span class="sd">        ...     lead=1,</span>
+<span class="sd">        ...     lag=1,</span>
+<span class="sd">        ...     alias=&quot;g1&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">query</span><span class="p">:</span> <span class="n">ResourceQuery</span>
+    <span class="n">timeAggregation</span><span class="p">:</span> <span class="n">TimeAggregationMethod</span>
+    <span class="n">groupAggregation</span><span class="p">:</span> <span class="n">GroupAggregationMethod</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">lead</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BucketOffset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">lag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BucketOffset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -207,6 +276,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># TODO: constraints for formula?</span>
+    <span class="c1"># suggestions:</span>
+    <span class="c1"># 1. split on a regexp containing all operators, comma, and parentheses, validate against a list of built in functions, constants, numbers, and aliases</span>
+    <span class="c1"># 2. create a recursive descent parser that retains the function context so syntax errors can be reported in the relevant part of the formula expression</span>
     <span class="n">formula</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">alias</span><span class="p">:</span> <span class="n">Alias</span></div>
 
@@ -216,7 +288,8 @@
 <span class="sd">    :meta private:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ItemAggregation</span><span class="p">]</span>
+    <span class="n">items</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ItemAggregation</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">GroupAggregation</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">calculations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Calculation</span><span class="p">]</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">DataQuery</span>
     <span class="n">include</span><span class="p">:</span> <span class="n">List</span>
