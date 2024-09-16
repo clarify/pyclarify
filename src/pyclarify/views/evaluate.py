@@ -1,4 +1,4 @@
-# Copyright 2023 Searis AS
+# Copyright 2023-2024 Searis AS
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,18 +18,22 @@ from pydantic import BaseModel, Extra
 from pyclarify.fields.constraints import (
     Alias,
     BucketOffset,
-    DataAggregation,
+    TimeAggregationMethod,
+    GroupAggregationMethod,
     ResourceID,
     State,
 )
 
 from pyclarify.fields.query import SelectionFormat
-from pyclarify.query.query import DataQuery
+from pyclarify.query.query import (
+    DataQuery,
+    ResourceQuery,
+)
 
 
 class ItemAggregation(BaseModel):
     """
-    Model for creating item aggregations to be used in evaluate endpoint.
+    Model for creating an item aggregation to be used with the `clarify.evaluate` method.
 
     Parameters
     ----------
@@ -37,8 +41,8 @@ class ItemAggregation(BaseModel):
     id: ResourceID
         The ID of the item to be aggregated.
 
-    aggregation: str
-        The aggregation type to be done. Current legal aggregations are found `here <https://docs.clarify.io/api/1.1/types/fields#data-aggregation>`__.
+    aggregation: TimeAggregationMethod | str
+        The aggregation type to be done. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
 
     state: int[0:9999]
         The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.
@@ -49,7 +53,7 @@ class ItemAggregation(BaseModel):
     lag: int[-1000:1000]
         Shift buckets forwards by N.
 
-    alias: string
+    alias: str
         A short alias to use in formulas as well as in the data frame results.
 
 
@@ -58,15 +62,15 @@ class ItemAggregation(BaseModel):
 
         >>> from pyclarify import ItemAggregation
 
-        Creating a signal a minimal item aggregation.
+        Creating a minimal item aggregation.
 
         >>> item_aggregation = ItemAggregation(
         ...     id="cbpmaq6rpn52969vfl0g",
-        ...     aggregation="avg",
+        ...     aggregation="max",
         ...     alias="i2"
         ... )
 
-        Creating a item aggregation with all attributes set.
+        Creating an item aggregation with all attributes set.
 
         >>> item_aggregation = ItemAggregation(
         ...     id="cbpmaq6rpn52969vfl00",
@@ -79,7 +83,72 @@ class ItemAggregation(BaseModel):
     """
 
     id: ResourceID
-    aggregation: DataAggregation
+    aggregation: TimeAggregationMethod
+    state: Optional[State] = None
+    lead: Optional[BucketOffset] = None
+    lag: Optional[BucketOffset] = None
+    alias: Alias
+
+
+class GroupAggregation(BaseModel):
+    """
+    Model for creating a group aggregation to be used with the `clarify.evaluate` method.
+
+    Parameters
+    ----------
+
+    query: ResourceQuery
+        A query matching items to be added to the group.
+
+    timeAggregation: TimeAggregationMethod | str
+        The time aggregation type to be done within items. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
+
+    groupAggregation: GroupAggregationMethod | str
+        The group aggregation type to be done across groups. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#group-aggregation>`__.
+
+    state: int[0:9999]
+        The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.
+
+    lead: int[-1000:1000]
+        Shift buckets backwards by N.
+
+    lag: int[-1000:1000]
+        Shift buckets forwards by N.
+
+    alias: str
+        A short alias to use in formulas as well as in the data frame results.
+
+
+    Example
+    -------
+
+        >>> from pyclarify import GroupAggregation
+
+        Creating a minimal group aggregation.
+
+        >>> group_aggregation = GroupAggregation(
+        ...     query=ResourceQuery(filter={}),
+        ...     timeAggregation="max",
+        ...     groupAggregationMethod="max"
+        ...     alias="g1"
+        ... )
+
+        Creating a group aggregation with all attributes set.
+
+        >>> group_aggregation = GroupAggregation(
+        ...     query=ResourceQuery(filter={}),
+        ...     timeAggregationMethod="max",
+        ...     groupAggregationMethod="max",
+        ...     state=1,
+        ...     lead=1,
+        ...     lag=1,
+        ...     alias="g1"
+        ... )
+    """
+
+    query: ResourceQuery
+    timeAggregation: TimeAggregationMethod
+    groupAggregation: GroupAggregationMethod
     state: Optional[State] = None
     lead: Optional[BucketOffset] = None
     lag: Optional[BucketOffset] = None
@@ -125,6 +194,9 @@ class Calculation(BaseModel):
     """
 
     # TODO: constraints for formula?
+    # suggestions:
+    # 1. split on a regexp containing all operators, comma, and parentheses, validate against a list of built in functions, constants, numbers, and aliases
+    # 2. create a recursive descent parser that retains the function context so syntax errors can be reported in the relevant part of the formula expression
     formula: str
     alias: Alias
 
@@ -134,7 +206,20 @@ class EvaluateParams(BaseModel):
     :meta private:
     """
 
-    items: List[ItemAggregation]
+    items: Optional[List[ItemAggregation]] = []
+    calculations: List[Calculation]
+    data: DataQuery
+    include: List
+    format: Optional[SelectionFormat] = SelectionFormat(dataAsArray=False)
+
+
+class ExperimentalEvaluateParams(BaseModel):
+    """
+    :meta private:
+    """
+
+    items: Optional[List[ItemAggregation]] = []
+    groups: Optional[List[GroupAggregation]] = []
     calculations: List[Calculation]
     data: DataQuery
     include: List

@@ -354,7 +354,7 @@ class DataFrame(BaseModel):
         except TypeError as e:
             raise TypeError(source=self, other=other) from e
 
-    model_config = ConfigDict(json_encoders={datetime: time_to_string}, extra="forbid") 
+    model_config = ConfigDict(allow_inf_nan=False, json_encoders={datetime: time_to_string}, extra="forbid") 
 
 DataFrame.model_rebuild()
 

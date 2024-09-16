@@ -1,4 +1,4 @@
-# Copyright 2023 Searis AS
+# Copyright 2023-2024 Searis AS
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -62,12 +62,26 @@ class TypeSignal(str, Enum):
     enum = "enum"
 
 
-class DataAggregation(Enum):
+class TimeAggregationMethod(Enum):
     count = "count"
     min = "min"
     max = "max"
     sum = "sum"
     avg = "avg"
-    state_histogram_seconds = "state-histogram-seconds"
-    state_histogram_percent = "state-histogram-percent"
-    state_histogram_rate = "state-histogram-rate"
+    state_seconds = "state-seconds"
+    state_percent = "state-percent"
+    state_rate = "state-rate"
+    first = "first"
+    last = "last"
+    # deprecated names for the same three methods as above
+    state_histogram_seconds = "state-seconds"
+    state_histogram_percent = "state-percent"
+    state_histogram_rate = "state-rate"
+
+
+class GroupAggregationMethod(Enum):
+    count = "count"
+    min = "min"
+    max = "max"
+    sum = "sum"
+    avg = "avg"
