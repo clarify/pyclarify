@@ -21,6 +21,10 @@ Changes are grouped as follows
 
 - Added group parameter in experimental client.
 
+## Fixed
+
+- No longer allows Inf+/- values in DataFrame. (Server never allowed it).
+
 ## [0.6.3] - 2024-03-12
 
 ### Fixed
