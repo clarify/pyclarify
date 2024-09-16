@@ -1041,7 +1041,6 @@ class Client(JSONRPCClient):
         firstDayOfWeek: Optional[IntWeekDays] = None,
         origin: Optional[Union[str, datetime]] = None,
         items: List[Union[Dict, ItemAggregation]] = [],
-        groups: List[Union[Dict, GroupAggregation]] = [],
         calculations: List[Union[Dict, Calculation]] = [],
         series: List[str] = [],
         gte: Union[datetime, str] = None,
@@ -1213,7 +1212,6 @@ class Client(JSONRPCClient):
         )
         params = {
             "items": items,
-            "groups": groups,
             "calculations": calculations,
             "data": data_query,
             "include": include,

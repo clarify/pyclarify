@@ -1,14 +1,19 @@
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Union
+from pydantic.json import timedelta_isoformat
 import pyclarify
+from pyclarify.__utils__.time import time_to_string
 from pyclarify.fields.constraints import ApiMethod, IntWeekDays, ResourceID, IntegrationID, TimeZone
 from pyclarify.fields.error import Error
 from pyclarify.query.filter import DataFilter, Filter
 from pyclarify.query.query import DataQuery, ResourceQuery
+from pyclarify.views.dataframe import DataFrameParams, InsertParams
 from pyclarify.views.generics import Request, Response
-from pyclarify.views.evaluate import Calculation, GroupAggregation, ItemAggregation
+from pyclarify.views.evaluate import Calculation, ExperimentalEvaluateParams, GroupAggregation, ItemAggregation
+from pyclarify.views.items import PublishSignalsParams, SelectItemsParams
+from pyclarify.views.signals import SaveSignalsParams, SelectSignalsParams
 from .client import Client
-from pydantic import validate_arguments
+from pydantic import BaseModel, ConfigDict, model_validator, validate_arguments
 from enum import Enum
 
 
@@ -24,8 +29,45 @@ class ExperimentalApiMethod(str, Enum):
     disconnect_signals = "admin.disconnectSignals"
 
 
-class ExperimentalRequest(Request):
-    method: ExperimentalApiMethod
+class JSONRPCRequest(BaseModel):
+    jsonrpc: str = "2.0"
+    method: ExperimentalApiMethod = ApiMethod.select_items
+    id: Union[str,int] = "1"
+    params: Union[
+        dict,
+        InsertParams, 
+        SaveSignalsParams, 
+        SelectItemsParams, 
+        SelectSignalsParams, 
+        PublishSignalsParams, 
+        DataFrameParams, 
+        ExperimentalEvaluateParams] = {}
+    # TODO[pydantic]: The following keys are deprecated: `json_encoders`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(json_encoders={timedelta: timedelta_isoformat, datetime: time_to_string})
+
+
+class ExperimentalRequest(JSONRPCRequest):
+    method: ApiMethod
+
+    @model_validator(mode='after')
+    @classmethod
+    def use_correct_params_based_on_method(cls, values):
+        if values.method == ApiMethod.insert:
+           values.params = InsertParams(**values.params)
+        elif values.method == ApiMethod.save_signals:
+           values.params = SaveSignalsParams(**values.params)
+        elif values.method == ApiMethod.select_items:
+           values.params = SelectItemsParams(**values.params)
+        elif values.method == ApiMethod.select_signals:
+           values.params = SelectSignalsParams(**values.params)
+        elif values.method == ApiMethod.publish_signals:
+           values.params = PublishSignalsParams(**values.params)
+        elif values.method == ApiMethod.data_frame:
+           values.params = DataFrameParams(**values.params)
+        elif values.method == ApiMethod.evaluate:
+           values.params = ExperimentalEvaluateParams(**values.params)
+        return values
 
 
 class ExperimentalResponse(Response):
@@ -175,7 +217,7 @@ class ExperimentalClient(Client):
             params['groups'] = groups
         
         
-        request_data = Request(method=ApiMethod.evaluate, params=params)
+        request_data = ExperimentalRequest(method=ApiMethod.evaluate, params=params)
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}
         )

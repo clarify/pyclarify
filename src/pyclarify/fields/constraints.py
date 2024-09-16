@@ -71,6 +71,8 @@ class TimeAggregationMethod(Enum):
     state_seconds = "state-seconds"
     state_percent = "state-percent"
     state_rate = "state-rate"
+    first = "first"
+    last = "last"
     # deprecated names for the same three methods as above
     state_histogram_seconds = "state-seconds"
     state_histogram_percent = "state-percent"

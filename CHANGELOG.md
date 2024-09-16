@@ -20,6 +20,7 @@ Changes are grouped as follows
 ### Added
 
 - Added group parameter in experimental client.
+- Added `first` and `last` as possible time aggregations.
 
 ## Fixed
 
