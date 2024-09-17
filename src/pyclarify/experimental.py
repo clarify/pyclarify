@@ -48,7 +48,7 @@ class JSONRPCRequest(BaseModel):
 
 
 class ExperimentalRequest(JSONRPCRequest):
-    method: ApiMethod
+    method: ExperimentalApiMethod
 
     @model_validator(mode='after')
     @classmethod

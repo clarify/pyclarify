@@ -15,6 +15,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.6.5] - 2024-09-17
+
+## Fixed
+
+- Bug where ExperimentalClient would not except new API methods.
+
 ## [0.6.4] - 2024-09-16
 
 ### Added
