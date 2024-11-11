@@ -5,17 +5,20 @@ import pyclarify
 from pyclarify.__utils__.time import time_to_string
 from pyclarify.fields.constraints import ApiMethod, IntWeekDays, ResourceID, IntegrationID, TimeZone
 from pyclarify.fields.error import Error
+from pyclarify.fields.query import SelectionFormat
 from pyclarify.query.filter import DataFilter, Filter
 from pyclarify.query.query import DataQuery, ResourceQuery
 from pyclarify.views.dataframe import DataFrameParams, InsertParams
 from pyclarify.views.generics import Request, Response
-from pyclarify.views.evaluate import Calculation, ExperimentalEvaluateParams, GroupAggregation, ItemAggregation
+from pyclarify.views.evaluate import Calculation, GroupAggregation, ItemAggregation
 from pyclarify.views.items import PublishSignalsParams, SelectItemsParams
 from pyclarify.views.signals import SaveSignalsParams, SelectSignalsParams
 from .client import Client
 from pydantic import BaseModel, ConfigDict, model_validator, validate_arguments
 from enum import Enum
+from typing_extensions import Literal
 
+from pyclarify.fields.constraints import TimeZone, IntWeekDays
 
 class ExperimentalApiMethod(str, Enum):
     insert = "integration.Insert"
@@ -27,6 +30,31 @@ class ExperimentalApiMethod(str, Enum):
     publish_signals = "admin.PublishSignals"
     connect_signals = "admin.connectSignals"
     disconnect_signals = "admin.disconnectSignals"
+
+
+class ExperimentalDataQuery(BaseModel):
+    outsidePoints: Optional[bool] = False
+    filter: Optional[Dict] = {}
+    rollup: Optional[Union[timedelta, Literal["window"]]]
+    timeZone: Optional[TimeZone] = "UTC"
+    firstDayOfWeek: Optional[IntWeekDays] = 1
+    origin: Optional[Union[str, datetime]] = None
+    last: Optional[int] = -1
+
+    model_config = ConfigDict(extra="forbid")
+
+
+class ExperimentalEvaluateParams(BaseModel):
+    """
+    :meta private:
+    """
+
+    items: Optional[List[ItemAggregation]] = []
+    groups: Optional[List[GroupAggregation]] = []
+    calculations: List[Calculation]
+    data: ExperimentalDataQuery
+    include: List
+    format: Optional[SelectionFormat] = SelectionFormat(dataAsArray=False)
 
 
 class JSONRPCRequest(BaseModel):
@@ -184,6 +212,7 @@ class ExperimentalClient(Client):
         rollup: Union[str, timedelta],
         timeZone: Optional[TimeZone] = None,
         firstDayOfWeek: Optional[IntWeekDays] = None,
+        outsidePoints: Optional[bool] = False,
         origin: Optional[Union[str, datetime]] = None,
         items: List[Union[Dict, ItemAggregation]] = [],
         groups: List[Union[Dict, GroupAggregation]] = [],
@@ -197,8 +226,9 @@ class ExperimentalClient(Client):
     ) -> Response:
         
         data_filter = DataFilter(gte=gte, lt=lt, series=series)
-        data_query = DataQuery(
+        data_query = ExperimentalDataQuery(
             filter=data_filter.to_query(),
+            outsidePoints=outsidePoints,
             rollup=rollup,
             timeZone=timeZone,
             firstDayOfWeek=firstDayOfWeek,

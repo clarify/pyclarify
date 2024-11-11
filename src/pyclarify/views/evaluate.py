@@ -213,17 +213,4 @@ class EvaluateParams(BaseModel):
     format: Optional[SelectionFormat] = SelectionFormat(dataAsArray=False)
 
 
-class ExperimentalEvaluateParams(BaseModel):
-    """
-    :meta private:
-    """
-
-    items: Optional[List[ItemAggregation]] = []
-    groups: Optional[List[GroupAggregation]] = []
-    calculations: List[Calculation]
-    data: DataQuery
-    include: List
-    format: Optional[SelectionFormat] = SelectionFormat(dataAsArray=False)
-
-
 # Evaluate uses DataFrame as response
