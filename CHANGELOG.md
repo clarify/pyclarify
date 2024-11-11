@@ -15,6 +15,16 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.6.7] - 2024-11-11
+
+## Added
+
+- Added outsidePoints to experimental evaluate.
+
+## Fixed
+
+- ISO DayOfWeek was fixed from 0-6 to 1-7.
+
 ## [0.6.6] - 2024-09-30
 
 ## Fixed

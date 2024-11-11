@@ -35,7 +35,7 @@ LimitSelectItems = Annotated[int, Field(ge=0, le=1000)]
 LimitSelectSignals = Annotated[int, Field(ge=0, le=1000)]
 Annotations = Dict[AnnotationKey, str]
 Alias = Annotated[str, Field(pattern="^[A-Za-z_][A-Za-z0-9_]{0,27}$")]
-IntWeekDays = Annotated[int, Field(ge=0, le=6)]
+IntWeekDays = Annotated[int, Field(ge=1, le=7)]
 
 
 TimeZone = str
