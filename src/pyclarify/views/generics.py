@@ -14,29 +14,36 @@
 
 
 from datetime import datetime, timedelta
-from pydantic import ConfigDict, BaseModel, validate_arguments, model_validator
+from pydantic import ConfigDict, BaseModel, model_validator
 from pydantic.json import timedelta_isoformat
+from typing import List, Union, Optional
+
 from pyclarify.__utils__.time import time_to_string
 from pyclarify.__utils__.exceptions import TypeError
-from typing import List, Dict, Union, Optional, Self
 from pyclarify.fields.constraints import ApiMethod, IntegrationID
 from pyclarify.fields.error import Error
 from pyclarify.fields.resource import SelectionMeta
 from pyclarify.views.evaluate import EvaluateParams
-from .dataframe import InsertParams, InsertResponse, DataFrameParams
-from .dataframe import DataFrame
-from .items import (
+from pyclarify.views.dataframe import InsertParams, InsertResponse, DataFrameParams
+from pyclarify.views.dataframe import DataFrame
+from pyclarify.views.items import (
     SelectItemsParams,
     PublishSignalsParams,
     PublishSignalsResponse,
     ItemSelectView,
 )
-from .signals import (
+from pyclarify.views.signals import (
     SelectSignalsParams,
     SaveSignalsParams,
     SaveSignalsResponse,
     SignalSelectView,
 )
+
+try:
+    from typing import Self  # Python 3.11+
+except ImportError:
+    from typing_extensions import Self  # Python 3.10 and earlier
+
 
 
 class JSONRPCRequest(BaseModel):
