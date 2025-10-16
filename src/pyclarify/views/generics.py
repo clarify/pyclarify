@@ -14,29 +14,36 @@
 
 
 from datetime import datetime, timedelta
-from pydantic import ConfigDict, BaseModel, validate_arguments, model_validator
+from pydantic import ConfigDict, BaseModel, model_validator
 from pydantic.json import timedelta_isoformat
+from typing import List, Union, Optional
+
 from pyclarify.__utils__.time import time_to_string
 from pyclarify.__utils__.exceptions import TypeError
-from typing import List, Dict, Union, Optional
 from pyclarify.fields.constraints import ApiMethod, IntegrationID
 from pyclarify.fields.error import Error
 from pyclarify.fields.resource import SelectionMeta
 from pyclarify.views.evaluate import EvaluateParams
-from .dataframe import InsertParams, InsertResponse, DataFrameParams
-from .dataframe import DataFrame
-from .items import (
+from pyclarify.views.dataframe import InsertParams, InsertResponse, DataFrameParams
+from pyclarify.views.dataframe import DataFrame
+from pyclarify.views.items import (
     SelectItemsParams,
     PublishSignalsParams,
     PublishSignalsResponse,
     ItemSelectView,
 )
-from .signals import (
+from pyclarify.views.signals import (
     SelectSignalsParams,
     SaveSignalsParams,
     SaveSignalsResponse,
     SignalSelectView,
 )
+
+try:
+    from typing import Self  # Python 3.11+
+except ImportError:
+    from typing_extensions import Self  # Python 3.10 and earlier
+
 
 
 class JSONRPCRequest(BaseModel):
@@ -156,37 +163,37 @@ class Response(GenericResponse):
     method: Optional[ApiMethod] = None
     
     @model_validator(mode='after')
-    def use_correct_response_based_on_method(cls, values):
+    def use_correct_response_based_on_method(self) -> Self:
         #TODO: Not happy with this resolution flow
-        result = values.result
-        method = values.method
-        error = values.error
+        result = self.result
+        method = self.method
+        error = self.error
         if result:
             if method == ApiMethod.insert:
                 if not isinstance(result, InsertResponse):
-                    values.result = InsertResponse(**result.model_dump())
+                    self.result = InsertResponse(**result.model_dump())
             elif method == ApiMethod.save_signals:
                 if not isinstance(result, SaveSignalsResponse):
-                    values.result  = SaveSignalsResponse(**result.model_dump())
+                    self.result  = SaveSignalsResponse(**result.model_dump())
             elif method == ApiMethod.data_frame or method == ApiMethod.evaluate:
                 if not isinstance(result, DataSelection):
-                    values.result  = DataSelection(**result.model_dump())
+                    self.result  = DataSelection(**result.model_dump())
             elif method == ApiMethod.select_items:
                 if not isinstance(result, ItemSelection):
-                    values.result  = ItemSelection(**result.model_dump())
+                    self.result  = ItemSelection(**result.model_dump())
             elif method == ApiMethod.select_signals:
                 if not isinstance(result, SignalSelection):
-                    values.result  = SignalSelection(**result.model_dump())
+                    self.result  = SignalSelection(**result.model_dump())
             elif method == ApiMethod.publish_signals:
                 if not isinstance(result, PublishSignalsResponse):
-                    values.result  = PublishSignalsResponse(**result.model_dump())
+                    self.result  = PublishSignalsResponse(**result.model_dump())
             else:
                 # If has no method signature, assume its a valid object type
-                return values
+                return self
         elif error:          
             pass #TODO: Possible error state 
-        values.method = None # no need anymore for declaring method
-        return values
+        self.method = None # no need anymore for declaring method
+        return self
     
     def __add__(self, other):
         try:

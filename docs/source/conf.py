@@ -26,7 +26,7 @@ from datetime import datetime
 
 project = "PyClarify"
 copyright = f"{datetime.now().year}, Clarify"
-author = "Alexia Artemis Baikas, Eliezer de Souza da Silva, Odd Gunnar Aspaas"
+author = "Odd Gunnar Aspaas"
 
 # The full version, including alpha/beta/rc tags
 release = pyclarify.__version__
