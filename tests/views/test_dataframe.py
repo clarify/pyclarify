@@ -115,8 +115,8 @@ class TestPandas(unittest.TestCase):
         # NB: Change both values to timestamp
         from datetime import datetime
 
-        # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x / 1e9) for x in df.index.values.tolist()]
+        # Seconds since the epoch, whatever the resolution (pandas 2: ns, pandas 3: us)
+        numpy_ts = [int(t.timestamp()) for t in df.index]
         clarify_ts = [datetime.timestamp(x) for x in self.cdf.times]
         self.assertEqual(clarify_ts, numpy_ts)
 
@@ -141,8 +141,8 @@ class TestPandas(unittest.TestCase):
         # NB: Change both values to timestamp
         from datetime import datetime
 
-        # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x / 1e9) for x in df.index.values.tolist()]
+        # Seconds since the epoch, whatever the resolution (pandas 2: ns, pandas 3: us)
+        numpy_ts = [int(t.timestamp()) for t in df.index]
         clarify_ts = [datetime.timestamp(x) for x in self.cdf3.times]
         self.assertEqual(clarify_ts, numpy_ts)
 
@@ -206,8 +206,8 @@ class TestGenericInput(unittest.TestCase):
         # NB: Change both values to timestamp
         from datetime import datetime
 
-        # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        # Seconds since the epoch, whatever the resolution (pandas 2: ns, pandas 3: us)
+        numpy_ts = [int(t.timestamp()) for t in self.pandas.index]
         clarify_ts = [datetime.timestamp(x) for x in df.times]
         self.assertEqual(clarify_ts, numpy_ts)
 
@@ -235,8 +235,8 @@ class TestGenericInput(unittest.TestCase):
         # NB: Change both values to timestamp
         from datetime import datetime
 
-        # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        # Seconds since the epoch, whatever the resolution (pandas 2: ns, pandas 3: us)
+        numpy_ts = [int(t.timestamp()) for t in self.pandas.index]
         clarify_ts = [datetime.timestamp(x) for x in df.times]
         self.assertEqual(clarify_ts, numpy_ts)
 
@@ -264,8 +264,8 @@ class TestGenericInput(unittest.TestCase):
         # NB: Change both values to timestamp
         from datetime import datetime
 
-        # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        # Seconds since the epoch, whatever the resolution (pandas 2: ns, pandas 3: us)
+        numpy_ts = [int(t.timestamp()) for t in self.pandas.index]
         clarify_ts = [datetime.timestamp(x) for x in df.times]
         self.assertEqual(clarify_ts, numpy_ts)
 
@@ -293,10 +293,19 @@ class TestGenericInput(unittest.TestCase):
         # NB: Change both values to timestamp
         from datetime import datetime
 
-        # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        # Seconds since the epoch, whatever the resolution (pandas 2: ns, pandas 3: us)
+        numpy_ts = [int(t.timestamp()) for t in self.pandas.index]
         clarify_ts = [datetime.timestamp(x) for x in df.times]
         self.assertEqual(clarify_ts, numpy_ts)
+
+    def test_convert_from_data_frame_of_any_time_resolution(self):
+        # pandas 2 indexes times in nanoseconds, pandas 3 in microseconds.
+        for unit in ("ns", "us", "ms", "s"):
+            with self.subTest(unit=unit):
+                pandas = self.pandas.copy()
+                pandas.index = pandas.index.as_unit(unit)
+                self.assertEqual(DataFrame.from_pandas(pandas).times, self.base.times)
+                self.assertEqual(DataFrame.from_pandas(pandas.reset_index(), time_col="index").times, self.base.times)
 
     def test_convert_from_series(self):
         df = DataFrame.from_pandas(self.series)
@@ -320,8 +329,8 @@ class TestGenericInput(unittest.TestCase):
         # NB: Change both values to timestamp
         from datetime import datetime
 
-        # Divide by 10^9 because of microseconds
-        numpy_ts = [int(x / 1e9) for x in self.pandas.index.values.tolist()]
+        # Seconds since the epoch, whatever the resolution (pandas 2: ns, pandas 3: us)
+        numpy_ts = [int(t.timestamp()) for t in self.pandas.index]
         clarify_ts = [datetime.timestamp(x) for x in df.times]
         self.assertEqual(clarify_ts, numpy_ts)
 

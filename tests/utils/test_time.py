@@ -2,7 +2,7 @@ import unittest
 import sys
 
 sys.path.insert(1, "src/")
-from pyclarify.__utils__.time import is_datetime
+from pyclarify.__utils__.time import is_datetime, parse_datetime
 import datetime
 import numpy as np
 
@@ -33,6 +33,16 @@ class TestTime(unittest.TestCase):
         
         # Timestamp of < 2122
         self.assertTrue(is_datetime(4799999999))
+
+    def test_numpy_datetimes_of_any_resolution(self):
+        # pandas 2 gives nanosecond datetimes, pandas 3 microsecond ones.
+        expected = datetime.datetime(2021, 11, 1, 21, 50, 6, 500000, tzinfo=datetime.timezone.utc)
+        for unit in ("ns", "us", "ms"):
+            with self.subTest(unit=unit):
+                value = np.datetime64("2021-11-01T21:50:06.500", unit)
+                self.assertEqual(parse_datetime(value), expected)
+                self.assertTrue(is_datetime(value))
+        self.assertFalse(is_datetime(np.datetime64("NaT")))
 
 if __name__ == "__main__":
     unittest.main()

@@ -63,6 +63,7 @@ Changes are grouped as follows
 - A rollup of `PT1M` used 40 day time windows instead of 400.
 - A rollup of `P1M` was sent as `P30D`, and `PT24H` as `P1D`.
 - Passing `None` for `rollup`, `gte`, `lt`, `window_size` or `integration` raised a `ValidationError`.
+- With pandas 3, `DataFrame.from_pandas` and `Client.insert` with a pandas DataFrame failed, because pandas 3 stores times in microseconds instead of nanoseconds.
 - `ExperimentalClient` raised on HTTP errors, and its `data_frame` failed on API 1.2beta1.
 - The `deprecated` decorator in `pyclarify.__utils__.warnings` changed the warning filters of the application.
 
