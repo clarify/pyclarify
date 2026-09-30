@@ -1,0 +1,33 @@
+{
+  "_provenance": "Hand-written from the group aggregation example in Client.evaluate; response shape checked against API 1.2.0 on dev on 2026-09-29. Synthetic data.",
+  "response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "meta": {
+        "total": 1,
+        "format": {
+          "dataAsArray": false,
+          "groupIncludedByType": true,
+          "flattenResourceFields": false,
+          "includeResourceHashFields": true,
+          "usePathErrors": false
+        }
+      },
+      "data": {
+        "times": [
+          "2023-10-20T10:20:00Z",
+          "2023-10-20T10:30:00Z",
+          "2023-10-20T10:40:00Z"
+        ],
+        "series": {
+          "g1": [
+            9.0,
+            13.0,
+            12.0
+          ]
+        }
+      }
+    }
+  }
+}

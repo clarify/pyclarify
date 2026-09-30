@@ -14,7 +14,7 @@
 
 from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from pyclarify.fields.constraints import Annotations, SHA1Hash
 from pyclarify.fields.query import SelectionFormat
 
@@ -36,24 +36,27 @@ class ResourceMetadata(BaseModel):
     annotations: Annotations
         A key-value store where integrations can store programmatic meta-data about the resource instance. Filtering is done one member fields.
     
-    attributesHash: string
+    attributesHash: string, optional
         A SHA1 hash generated from all attribute fields. The hash is not stored, and can not be queried.
-    
-    relationshipsHash: string
+        API 1.2 leaves it out when the request format sets ``includeResourceHashFields`` to false.
+
+    relationshipsHash: string, optional
         A SHA1 hash generated from all relationship fields. The hash is not stored, and can not be queried.
+        API 1.2 leaves it out when the request format sets ``includeResourceHashFields`` to false.
 
     updatedAt: Date/Time
         A timestamp for when the resource was last updated.
-    
-    createdAt: Date/Time	
-        A timestamp for when the resource was created.    
+
+    createdAt: Date/Time
+        A timestamp for when the resource was created.
     """
 
-    annotations: Annotations
-    attributesHash: SHA1Hash
-    relationshipsHash: SHA1Hash
+    annotations: Annotations = {}
+    attributesHash: Optional[SHA1Hash] = None
+    relationshipsHash: Optional[SHA1Hash] = None
     updatedAt: datetime
     createdAt: datetime
+    model_config = ConfigDict(extra="allow")
 
 
 class BaseResource(Identifier):
@@ -78,6 +81,7 @@ class SelectionMeta(BaseModel):
     total: int
     format: SelectionFormat
     issues: Optional[dict] = None
+    model_config = ConfigDict(extra="allow")
 
 
 
@@ -90,6 +94,8 @@ class RelationshipDataToMany(BaseModel):
 class RelationshipsDictSignal(BaseModel):
     integration: Optional[RelationshipDataToOne] = None
     item: Optional[RelationshipDataToOne] = None
+    model_config = ConfigDict(extra="allow")
 
 class RelationshipsDictItem(BaseModel):
     signals: Optional[RelationshipDataToMany] = None
+    model_config = ConfigDict(extra="allow")

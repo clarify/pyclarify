@@ -12,17 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pydantic import BaseModel, ConfigDict
-from typing import Union, List, Dict, Optional
+from pydantic import BaseModel, ConfigDict, Field
+from typing import ClassVar, FrozenSet, Union, List, Dict, Optional
 from datetime import datetime, timedelta
 from typing_extensions import Literal
 
-from pyclarify.fields.constraints import TimeZone, IntWeekDays
+from pyclarify.fields.constraints import CalendarDuration, TimeZone, IntWeekDays
+from pyclarify.fields.request import OmitNoneModel
 
 
-class DataQuery(BaseModel):
+class DataQuery(OmitNoneModel):
+    # Left out when unset, so the API applies its own defaults.
+    omit_if_none: ClassVar[FrozenSet[str]] = frozenset({"outsidePoints", "timeZone", "firstDayOfWeek"})
+
+    outsidePoints: Optional[bool] = None
     filter: Optional[Dict] = {}
-    rollup: Optional[Union[timedelta, Literal["window"]]]
+    # Durations given as RFC 3339 strings are sent unchanged; other forms, such as a timedelta
+    # or a number of seconds, are converted as before.
+    rollup: Optional[Union[Literal["window"], CalendarDuration, timedelta]] = Field(union_mode="left_to_right")
     timeZone: Optional[TimeZone] = "UTC"
     firstDayOfWeek: Optional[IntWeekDays] = 1
     origin: Optional[Union[str, datetime]] = None

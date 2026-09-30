@@ -13,8 +13,10 @@
 # limitations under the License.
 
 
-from typing import Dict, List, Optional
-from pydantic import BaseModel, Extra
+import warnings
+from typing import ClassVar, Dict, FrozenSet, List, Optional
+from pydantic import BaseModel, model_validator
+from typing_extensions import deprecated
 from pyclarify.fields.constraints import (
     Alias,
     BucketOffset,
@@ -25,13 +27,14 @@ from pyclarify.fields.constraints import (
 )
 
 from pyclarify.fields.query import SelectionFormat
+from pyclarify.fields.request import OmitNoneModel
 from pyclarify.query.query import (
     DataQuery,
     ResourceQuery,
 )
 
 
-class ItemAggregation(BaseModel):
+class ItemAggregation(OmitNoneModel):
     """
     Model for creating an item aggregation to be used with the `clarify.evaluate` method.
 
@@ -42,7 +45,7 @@ class ItemAggregation(BaseModel):
         The ID of the item to be aggregated.
 
     aggregation: TimeAggregationMethod | str
-        The aggregation type to be done. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
+        The aggregation type to be done. Current legal aggregations are found `here <https://docs.clarify.io/api/1.1/types/fields#time-aggregation>`__.
 
     state: int[0:9999]
         The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.
@@ -82,6 +85,8 @@ class ItemAggregation(BaseModel):
         ... )
     """
 
+    omit_if_none: ClassVar[FrozenSet[str]] = frozenset({"state", "lead", "lag"})
+
     id: ResourceID
     aggregation: TimeAggregationMethod
     state: Optional[State] = None
@@ -90,21 +95,25 @@ class ItemAggregation(BaseModel):
     alias: Alias
 
 
-class GroupAggregation(BaseModel):
+class GroupAggregation(OmitNoneModel):
     """
     Model for creating a group aggregation to be used with the `clarify.evaluate` method.
+    Requires API version 1.2 or newer.
 
     Parameters
     ----------
 
+    filter: dict
+        A resource filter matching the items to aggregate, e.g. ``{"labels.site": "oslo"}``.
+
     query: ResourceQuery
-        A query matching items to be added to the group.
+        Deprecated, use ``filter``. Only the filter of the query is used.
 
     timeAggregation: TimeAggregationMethod | str
-        The time aggregation type to be done within items. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#time-aggregation>`__.
+        The time aggregation type to be done within items. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/time-aggregation>`__.
 
     groupAggregation: GroupAggregationMethod | str
-        The group aggregation type to be done across groups. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/fields#group-aggregation>`__.
+        The group aggregation type to be done across groups. Current legal aggregations are found `here <https://docs.clarify.io/api/1.2/types/group-aggregation>`__.
 
     state: int[0:9999]
         The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.
@@ -127,18 +136,18 @@ class GroupAggregation(BaseModel):
         Creating a minimal group aggregation.
 
         >>> group_aggregation = GroupAggregation(
-        ...     query=ResourceQuery(filter={}),
+        ...     filter={"labels.site": "oslo"},
         ...     timeAggregation="max",
-        ...     groupAggregationMethod="max"
+        ...     groupAggregation="max",
         ...     alias="g1"
         ... )
 
         Creating a group aggregation with all attributes set.
 
         >>> group_aggregation = GroupAggregation(
-        ...     query=ResourceQuery(filter={}),
-        ...     timeAggregationMethod="max",
-        ...     groupAggregationMethod="max",
+        ...     filter={"labels.site": "oslo"},
+        ...     timeAggregation="max",
+        ...     groupAggregation="max",
         ...     state=1,
         ...     lead=1,
         ...     lag=1,
@@ -146,13 +155,42 @@ class GroupAggregation(BaseModel):
         ... )
     """
 
-    query: ResourceQuery
+    omit_if_none: ClassVar[FrozenSet[str]] = frozenset({"state", "lead", "lag"})
+
+    filter: Dict
     timeAggregation: TimeAggregationMethod
     groupAggregation: GroupAggregationMethod
     state: Optional[State] = None
     lead: Optional[BucketOffset] = None
     lag: Optional[BucketOffset] = None
     alias: Alias
+
+    @model_validator(mode="before")
+    @classmethod
+    def accept_deprecated_query(cls, values):
+        """
+        :meta private:
+        """
+        if not isinstance(values, dict) or "query" not in values:
+            return values
+        if "filter" in values:
+            raise ValueError("Use either filter or the deprecated query, not both.")
+        warnings.warn(
+            "GroupAggregation(query=...) is deprecated, use GroupAggregation(filter=...).",
+            DeprecationWarning,
+            stacklevel=3,
+        )
+        values = dict(values)
+        query = values.pop("query")
+        if isinstance(query, ResourceQuery):
+            query = query.model_dump()
+        values["filter"] = (query or {}).get("filter") or {}
+        return values
+
+    @property
+    @deprecated("GroupAggregation.query is deprecated, use GroupAggregation.filter.")
+    def query(self) -> ResourceQuery:
+        return ResourceQuery(filter=self.filter)
 
 
 class Calculation(BaseModel):
@@ -201,12 +239,15 @@ class Calculation(BaseModel):
     alias: Alias
 
 
-class EvaluateParams(BaseModel):
+class EvaluateParams(OmitNoneModel):
     """
     :meta private:
     """
 
+    omit_if_none: ClassVar[FrozenSet[str]] = frozenset({"groups"})  # API 1.1 rejects groups
+
     items: Optional[List[ItemAggregation]] = []
+    groups: Optional[List[GroupAggregation]] = None
     calculations: List[Calculation]
     data: DataQuery
     include: List

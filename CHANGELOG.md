@@ -15,6 +15,57 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [0.7.0] - Unreleased
+
+### Added
+
+- `Client(..., api_version="1.2")` chooses the Clarify API version per client. The default is still API 1.1 (`pyclarify.__API_version__`).
+- Group aggregations in `Client.evaluate(groups=[...])` with `GroupAggregation`, now exported from `pyclarify`. Requires API 1.2.
+
+  ```python
+  from pyclarify import Client, GroupAggregation
+
+  client = Client("./clarify-credentials.json", api_version="1.2")
+  group = GroupAggregation(
+      filter={"labels.site": "oslo"},
+      timeAggregation="avg",
+      groupAggregation="sum",
+      alias="g1",
+  )
+  response = client.evaluate(groups=[group], rollup="PT1H")
+  ```
+
+- `outsidePoints` in `Client.evaluate`, previously only in the experimental client.
+- `Client.connect_signals` and `Client.disconnect_signals`. Requires API 1.2.
+- Using a feature the client's API version does not have raises `ApiVersionError` (a `ValueError`) before anything is sent.
+
+### Changed
+
+- Requests use the method and parameter names documented for API 1.1, which API 1.2 keeps as aliases, such as `integration.saveSignals` and `signalsByInput`.
+- Unset optional fields are left out of requests, and of `model_dump()` of the request models, instead of being sent as null, so the API applies its defaults. `sampleInterval` and `gapDetection` are still sent as null when unset.
+- Rollups given as RFC 3339 durations are sent as given, so calendar durations like `P1M` and `P1Y` keep their meaning.
+- `data_frame` and `evaluate` use the longer time windows the API documents for daily and monthly rollups, so long time ranges need fewer requests.
+- Requires pydantic 2.6 or newer, which the NaN handling from 0.6.6 already needed.
+- Note that this is an API change rather than a PyClarify change: Clarify gives items published without a `gapDetection` a default of `PT1H30M`, where earlier API versions left it unset (40 days). This is announced for API 1.2, and dev applied it for API 1.1 too on 2026-09-30. It affects every PyClarify version, because PyClarify sends an unset `gapDetection` as null, which the API treats as missing. Set `gapDetection` on the `Item` to keep another value.
+
+### Deprecated
+
+- `GroupAggregation(query=...)` and `GroupAggregation.query`: use `filter`.
+- `ExperimentalClient`: use `Client(..., api_version="1.2")`.
+
+### Fixed
+
+- A response with a field or enum value PyClarify did not know raised a `ValidationError`. Unknown fields are now kept, and unknown enum values are plain strings.
+- An error without a `trace`, as the API returns for invalid parameters, raised a `ValidationError` instead of being returned in `Response.error`.
+- `save_signals` and `publish_signals` sent the signals and items of earlier calls again, and changed dictionaries passed to them.
+- `select_items` and `select_signals` with a `limit` above 1000 left out the last page.
+- `data_frame` with a `limit` above 50 sent a request twice.
+- A rollup of `PT1M` used 40 day time windows instead of 400.
+- A rollup of `P1M` was sent as `P30D`, and `PT24H` as `P1D`.
+- Passing `None` for `rollup`, `gte`, `lt`, `window_size` or `integration` raised a `ValidationError`.
+- `ExperimentalClient` raised on HTTP errors, and its `data_frame` failed on API 1.2beta1.
+- The `deprecated` decorator in `pyclarify.__utils__.warnings` changed the warning filters of the application.
+
 ## [0.6.7] - 2024-11-11
 
 ## Added

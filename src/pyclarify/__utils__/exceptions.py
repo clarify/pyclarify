@@ -115,3 +115,17 @@ class CredentialError(PyClarifyException):
         return (
             f"Credentials error: {self.error}. Description: {self.error_description}"
         )
+
+
+class ApiVersionError(PyClarifyException, ValueError):
+    """
+    Raised before a request is sent, when it uses a feature the client's API version lacks.
+    """
+
+    def __init__(self, feature, api_version, hint):
+        self.feature = feature
+        self.api_version = api_version
+        self.hint = hint
+
+    def __str__(self):
+        return f"{self.feature} is not available in API version {self.api_version}; {self.hint}."

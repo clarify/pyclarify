@@ -13,73 +13,41 @@
 # limitations under the License.
 
 
-import functools
 import inspect
-import warnings
+
+from typing_extensions import deprecated as _deprecated
 
 string_types = (type(b""), type(""))
 
 
 def deprecated(reason):
     """
-    Decorator which throws deprecation warning.
+    Decorator which marks a function or class as deprecated: using it emits a DeprecationWarning,
+    and type checkers and IDEs flag it (PEP 702). Use as ``@deprecated`` or ``@deprecated("reason")``.
 
     Parameters
     ----------
-    func : function
-        Decorator wraps around function using @depricated.
+    reason : str or function or class
+        Why it is deprecated, or the function or class itself.
 
     Returns
     -------
-    func : function
-        returns the wrapped function.
+    The decorated function or class, or a decorator when given a reason.
     """
 
+    def kind(obj):
+        return "class" if inspect.isclass(obj) else "function"
+
     if isinstance(reason, string_types):
+        reason = reason.decode() if isinstance(reason, bytes) else reason
 
-        def decorator(func1):
-
-            if inspect.isclass(func1):
-                fmt1 = "Call to deprecated class {name} ({reason})."
-            else:
-                fmt1 = "Call to deprecated function {name} ({reason})."
-
-            @functools.wraps(func1)
-            def new_func1(*args, **kwargs):
-                warnings.simplefilter("always", DeprecationWarning)
-                warnings.warn(
-                    fmt1.format(name=func1.__name__, reason=reason),
-                    category=DeprecationWarning,
-                    stacklevel=2,
-                )
-                warnings.simplefilter("default", DeprecationWarning)
-                return func1(*args, **kwargs)
-
-            return new_func1
+        def decorator(obj):
+            return _deprecated(f"Call to deprecated {kind(obj)} {obj.__name__} ({reason}).")(obj)
 
         return decorator
 
     elif inspect.isclass(reason) or inspect.isfunction(reason):
-
-        func2 = reason
-
-        if inspect.isclass(func2):
-            fmt2 = "Call to deprecated class {name}."
-        else:
-            fmt2 = "Call to deprecated function {name}."
-
-        @functools.wraps(func2)
-        def new_func2(*args, **kwargs):
-            warnings.simplefilter("always", DeprecationWarning)
-            warnings.warn(
-                fmt2.format(name=func2.__name__),
-                category=DeprecationWarning,
-                stacklevel=2,
-            )
-            warnings.simplefilter("default", DeprecationWarning)
-            return func2(*args, **kwargs)
-
-        return new_func2
+        return _deprecated(f"Call to deprecated {kind(reason)} {reason.__name__}.")(reason)
 
     else:
         raise TypeError(repr(type(reason)))

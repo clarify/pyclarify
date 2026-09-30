@@ -15,9 +15,19 @@
 from datetime import timedelta
 from pyclarify.query.filter import DataFilter
 
+from pyclarify.fields.constraints import ApiMethod
 from pyclarify.views.generics import Request
-from .time import compute_iso_timewindow, parse_datetime, parse_duration
+from .time import compute_iso_timewindow, duration_lower_bound, parse_datetime, parse_duration
 from .payload import unpack_params
+
+# Longest time window per request: 40 days for raw data (or a rollup under PT1M), otherwise
+# the window of the first (rollup at least, window) pair the rollup reaches.
+RAW_DATA_WINDOW = timedelta(days=40)
+EVALUATE_WINDOWS = (
+    (timedelta(hours=24), timedelta(days=1900)),
+    (timedelta(minutes=1), timedelta(days=400)),
+)
+DATA_FRAME_WINDOWS = ((timedelta(days=30), timedelta(days=3660)),) + EVALUATE_WINDOWS
 
 
 class SegmentIterator:
@@ -81,14 +91,17 @@ class TimeIterator:
         The global end time of the API call. This is the time that the user put in the before parameter.
         It is the final date to be returned from the API.
 
-    rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ or "window", default None
-                    If `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ is specified, roll-up the values into either the full time window
+    rollup: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__ or "window", default None
+                    If `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__ is specified, roll-up the values into either the full time window
                     (`notBefore` -> `before`) or evenly sized buckets.
 
-    window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__, default None
-                If `RFC3339 duration <https://docs.clarify.io/api/1.1beta2/types/fields#fixed-duration>`__ is specified, the iterator will use the specified window as a paging size instead
+    window_size: `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__, default None
+                If `RFC3339 duration <https://docs.clarify.io/api/1.1/types/fields#fixed-duration>`__ is specified, the iterator will use the specified window as a paging size instead
                 of default API limits. This is commonly used when resolution of data is too high to be packaged with default
                 values.
+
+    windows: tuple of (rollup, window) pairs, default EVALUATE_WINDOWS
+                The longest window per request for rollups of at least the given length, longest rollup first.
 
     Returns
     -------
@@ -98,23 +111,16 @@ class TimeIterator:
         The before parameter to be used in an API call
     """
 
-    def __init__(self, start_time=None, end_time=None, rollup=None, window_size=None):
+    def __init__(self, start_time=None, end_time=None, rollup=None, window_size=None, windows=EVALUATE_WINDOWS):
         start_time, end_time = compute_iso_timewindow(start_time, end_time)
         self.current_start_time = parse_datetime(start_time)
         self.GLOBAL_END_TIME = parse_datetime(end_time)
 
-        # CONSTRAINT: Time window from an API call cannot be longer than 40 days if rollup is smaller than 1 minute
-        self.API_LIMIT = timedelta(days=40)
-        if rollup:
-            if rollup == "window":
-                self.rollup = rollup
-            else:
-                self.rollup = parse_duration(rollup)
-                # CONSTRAINT: 400 days constraint if rollup is larger than 1 minute
-                if self.rollup > timedelta(minutes=1):
-                    self.API_LIMIT = timedelta(days=400)
-        else:
-            self.rollup = rollup
+        self.rollup = rollup
+        self.API_LIMIT = RAW_DATA_WINDOW
+        if rollup and rollup != "window":
+            shortest = duration_lower_bound(rollup)
+            self.API_LIMIT = next((window for least, window in windows if shortest >= least), RAW_DATA_WINDOW)
         if window_size:
             self.API_LIMIT = parse_duration(window_size)
 
@@ -148,7 +154,8 @@ class TimeIterator:
 
 class SelectIterator:
     """
-    Computes the next request for select queries. 
+    Computes the requests for select queries: one per page of resources and time window, in
+    that order. The same request is updated and yielded each time.
 
     Parameters
     ----------
@@ -163,11 +170,11 @@ class SelectIterator:
         self.request = request
         self.window_size = window_size
         (
-            self.API_LIMIT, 
-            self.user_limit, 
-            self.skip, 
-            self.user_gte, 
-            self.user_lt, 
+            self.API_LIMIT,
+            self.user_limit,
+            self.skip,
+            self.user_gte,
+            self.user_lt,
             self.rollup,
         ) = unpack_params(self.request)
 
@@ -175,46 +182,24 @@ class SelectIterator:
         if self.user_limit == None:
             self.user_limit = self.API_LIMIT
 
-        self.segment_iterator = iter(SegmentIterator(
-                user_limit=self.user_limit, 
-                limit_per_call=self.API_LIMIT, 
-                skip=self.skip
-        ))
-        self.current_time_iterator = iter(TimeIterator(
-            start_time=self.user_gte, 
-            end_time=self.user_lt, 
-            rollup=self.rollup, 
-            window_size=self.window_size
-        ))
-
+        self.windows = DATA_FRAME_WINDOWS if request.method == ApiMethod.data_frame else EVALUATE_WINDOWS
 
     def __iter__(self):
-        self.stopping_condition = False
-        self.first_iteration = True
-        self.skip, self.limit = next(self.segment_iterator)
-        return self
-
-    def __next__(self):
-        if hasattr(self.request.params, "query"):
-            self.request.params.query.skip = self.skip
-            self.request.params.query.limit = self.limit
-        try:
-            start_time, end_time = next(self.current_time_iterator)
-            dq = DataFilter(gte=start_time, lt=end_time)
-            self.request.params.data.filter["times"] = dq.to_query()["times"]
-        except:            
-            try:
-                self.skip, self.limit = next(self.segment_iterator)
-                self.current_time_iterator = iter(TimeIterator(
-                    start_time=self.user_gte, 
-                    end_time=self.user_lt, 
-                    rollup=self.rollup, 
-                    window_size=self.window_size
-                ))
-            except:
-                self.stopping_condition = True
-        if self.stopping_condition and not self.first_iteration:
-            raise StopIteration
-        else:
-            self.first_iteration = False
-            return self.request
+        params = self.request.params
+        for skip, limit in SegmentIterator(user_limit=self.user_limit, limit_per_call=self.API_LIMIT, skip=self.skip):
+            if hasattr(params, "query"):
+                params.query.skip = skip
+                params.query.limit = limit
+            if not getattr(params, "data", None):
+                yield self.request
+                continue
+            time_windows = TimeIterator(
+                start_time=self.user_gte,
+                end_time=self.user_lt,
+                rollup=self.rollup,
+                window_size=self.window_size,
+                windows=self.windows,
+            )
+            for start_time, end_time in time_windows:
+                params.data.filter["times"] = DataFilter(gte=start_time, lt=end_time).to_query()["times"]
+                yield self.request

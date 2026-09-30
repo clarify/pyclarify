@@ -1,11 +1,11 @@
 import unittest
 import sys
-from pyclarify.query.query import ResourceQuery
-from pyclarify.views.evaluate import GroupAggregation
 from pydantic import ValidationError
 
 sys.path.insert(1, "src/")
 
+from pyclarify.query.query import ResourceQuery
+from pyclarify.views.evaluate import GroupAggregation
 from pyclarify import ItemAggregation, Calculation
 from pyclarify.fields.constraints import GroupAggregationMethod, TimeAggregationMethod
 
@@ -172,7 +172,7 @@ class TestGroupAggregation(unittest.TestCase):
     
     def test_group_aggregation(self):
         group = GroupAggregation(
-            query=ResourceQuery(filter={}),
+            filter={},
             timeAggregation="max",
             groupAggregation="max",
             state=1,
@@ -182,7 +182,7 @@ class TestGroupAggregation(unittest.TestCase):
         )
 
         self.assertIsInstance(group, GroupAggregation)
-        self.assertEqual(group.query, ResourceQuery(filter={}))
+        self.assertEqual(group.filter, {})
         self.assertEqual(group.timeAggregation, TimeAggregationMethod.max)
         self.assertEqual(group.groupAggregation, GroupAggregationMethod.max)
         self.assertEqual(group.state, 1)
@@ -190,13 +190,39 @@ class TestGroupAggregation(unittest.TestCase):
         self.assertEqual(group.lag, 1)
         self.assertEqual(group.alias, "g1")
 
-        p = '{"query":{"filter":{},"sort":null,"limit":null,"skip":null,"total":null},"timeAggregation":"max","groupAggregation":"max","state":1,"lead":1,"lag":1,"alias":"g1"}'
+        p = '{"filter":{},"timeAggregation":"max","groupAggregation":"max","state":1,"lead":1,"lag":1,"alias":"g1"}'
         self.assertEqual(group.model_dump_json(), p)
     
+    def test_group_aggregation_is_exported(self):
+        from pyclarify import GroupAggregation as exported
+
+        self.assertIs(exported, GroupAggregation)
+
+    def test_group_aggregation_with_deprecated_query(self):
+        with self.assertWarns(DeprecationWarning):
+            group = GroupAggregation(
+                query=ResourceQuery(filter={"labels.site": "oslo"}),
+                timeAggregation="max",
+                groupAggregation="max",
+                alias="g1"
+            )
+        self.assertEqual(group.filter, {"labels.site": "oslo"})
+        with self.assertWarns(DeprecationWarning):
+            self.assertEqual(group.query, ResourceQuery(filter={"labels.site": "oslo"}))
+
+        with self.assertRaises(ValidationError):
+            GroupAggregation(
+                query=ResourceQuery(filter={}),
+                filter={},
+                timeAggregation="max",
+                groupAggregation="max",
+                alias="g1"
+            )
+
     def test_group_aggregation_invalid_time_aggregation_method(self):
         with self.assertRaises(ValidationError):
          GroupAggregation(
-            query=ResourceQuery(filter={}),
+            filter={},
             timeAggregation="hey",
             groupAggregation="max",
             alias="g1"
@@ -205,7 +231,7 @@ class TestGroupAggregation(unittest.TestCase):
     def test_group_aggregation_invalid_group_aggregation_method(self):
         with self.assertRaises(ValidationError):
          GroupAggregation(
-            query=ResourceQuery(filter={}),
+            filter={},
             timeAggregation="max",
             groupAggregation="hey",
             alias="g1"
@@ -214,7 +240,7 @@ class TestGroupAggregation(unittest.TestCase):
     def test_group_aggregation_invalid_state(self):
         with self.assertRaises(ValidationError):
             GroupAggregation(
-                query=ResourceQuery(filter={}),
+                filter={},
                 timeAggregation="sum",
                 groupAggregation="sum",
                 state=-1,
@@ -225,7 +251,7 @@ class TestGroupAggregation(unittest.TestCase):
         
         with self.assertRaises(ValidationError):
             GroupAggregation(
-                query=ResourceQuery(filter={}),
+                filter={},
                 timeAggregation="sum",
                 groupAggregation="sum",
                 state=10000,
@@ -237,7 +263,7 @@ class TestGroupAggregation(unittest.TestCase):
     def test_group_aggregation_invalid_lead(self):
         with self.assertRaises(ValidationError):
             GroupAggregation(
-                query=ResourceQuery(filter={}),
+                filter={},
                 timeAggregation="sum",
                 groupAggregation="sum",
                 state=1,
@@ -248,7 +274,7 @@ class TestGroupAggregation(unittest.TestCase):
         
         with self.assertRaises(ValidationError):
             GroupAggregation(
-                query=ResourceQuery(filter={}),
+                filter={},
                 timeAggregation="sum",
                 groupAggregation="sum",
                 state=1,
@@ -260,7 +286,7 @@ class TestGroupAggregation(unittest.TestCase):
     def test_group_aggregation_invalid_lag(self):
         with self.assertRaises(ValidationError):
             GroupAggregation(
-                query=ResourceQuery(filter={}),
+                filter={},
                 timeAggregation="sum",
                 groupAggregation="sum",
                 state=1,
@@ -271,7 +297,7 @@ class TestGroupAggregation(unittest.TestCase):
         
         with self.assertRaises(ValidationError):
             GroupAggregation(
-                query=ResourceQuery(filter={}),
+                filter={},
                 timeAggregation="sum",
                 groupAggregation="sum",
                 state=1,
@@ -283,7 +309,7 @@ class TestGroupAggregation(unittest.TestCase):
     def test_group_aggregation_invalid_alias(self):
         with self.assertRaises(ValidationError):
             GroupAggregation(
-                query=ResourceQuery(filter={}),
+                filter={},
                 timeAggregation="sum",
                 groupAggregation="sum",
                 state=1,
@@ -294,7 +320,7 @@ class TestGroupAggregation(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             GroupAggregation(
-                query=ResourceQuery(filter={}),
+                filter={},
                 timeAggregation="sum",
                 groupAggregation="sum",
                 state=1,

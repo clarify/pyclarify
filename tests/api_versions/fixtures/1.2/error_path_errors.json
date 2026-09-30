@@ -1,0 +1,19 @@
+{
+  "_provenance": "Error shape the live API returns for invalid params (1.1.2 and 1.2.0, 2026-09-29): pathErrors instead of params, and no trace.",
+  "response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "error": {
+      "code": -32602,
+      "message": "Invalid params",
+      "data": {
+        "pathErrors": [
+          {
+            "path": "params.groups",
+            "error": "unknown parameter"
+          }
+        ]
+      }
+    }
+  }
+}

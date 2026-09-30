@@ -265,6 +265,29 @@ def parse_duration(value: StrBytesIntFloat) -> timedelta:
 
     return sign * timedelta(**kw_)
 
+_calendar_duration_re = re.compile(
+    r"^P(?!$)(?:(?P<years>\d+)Y)?(?:(?P<months>\d+)M)?(?:(?P<weeks>\d+)W)?(?:(?P<days>\d+)D)?"
+    r"(?:T(?=\d)(?:(?P<hours>\d+)H)?(?:(?P<minutes>\d+)M)?(?:(?P<seconds>\d+(?:\.\d+)?)S)?)?$"
+)
+
+
+def is_calendar_duration(value) -> bool:
+    """Whether `value` is an RFC 3339 duration string, which may use years, months and weeks."""
+    return isinstance(value, str) and _calendar_duration_re.match(value) is not None
+
+
+def duration_lower_bound(value) -> timedelta:
+    """
+    The shortest time a duration can span. Months and years have no fixed length, so they
+    count as 28 and 365 days.
+    """
+    if isinstance(value, str) and is_calendar_duration(value):
+        parts = {k: float(v) for k, v in _calendar_duration_re.match(value).groupdict().items() if v}
+        parts["days"] = parts.get("days", 0) + parts.pop("years", 0) * 365 + parts.pop("months", 0) * 28
+        return timedelta(**parts)
+    return parse_duration(value)
+
+
 def time_to_string(time):
     return time.astimezone().isoformat()
 
