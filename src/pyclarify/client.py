@@ -44,6 +44,8 @@ from pyclarify.views.generics import Request, Response
 from pyclarify.query import Filter, DataFilter
 from pyclarify.query.query import ResourceQuery, DataQuery
 from pyclarify.__utils__.pagination import SelectIterator
+from pyclarify.__utils__.api_versions import CONNECT_SIGNALS, GROUPS, adapt_request, at_least
+from pyclarify.__utils__.exceptions import ApiVersionError
 from pyclarify.fields.error import Error
 
 
@@ -56,14 +58,24 @@ class Client(JSONRPCClient):
     clarify_credentials: path to json file
         Path to the Clarify credentials json file from the integrations page in clarify. See user guide for more information.
 
+    api_version: str, default None
+        The Clarify API version to use, e.g. "1.2". Defaults to ``pyclarify.__API_version__``.
+
     Example
     -------
         >>> client = Client("./clarify-credentials.json")
+
+        Using API version 1.2.
+
+        >>> client = Client("./clarify-credentials.json", api_version="1.2")
     """
 
-    def __init__(self, clarify_credentials):
+    def __init__(self, clarify_credentials, api_version=None):
         super().__init__(None)
-        self.update_headers({"X-API-Version": pyclarify.__API_version__})
+        if api_version is not None and not isinstance(api_version, str):
+            raise TypeError(f"api_version must be a string such as '1.2', got {api_version!r}")
+        self.api_version = api_version or pyclarify.__API_version__
+        self.update_headers({"X-API-Version": self.api_version})
         self.update_headers({"User-Agent": f"PyClarify/{pyclarify.__version__}"})
         self.authenticate(clarify_credentials)
         self.base_url = f"{self.authentication.api_url}rpc"
@@ -112,7 +124,8 @@ class Client(JSONRPCClient):
         counter = 0
         for request in iterator:
             counter += 1
-            r = json.dumps(request.model_dump(mode='json')) # TODO: Pydantic V2 does not do this in an elegant way
+            payload = adapt_request(request.model_dump(mode='json'), self.api_version)
+            r = json.dumps(payload) # TODO: Pydantic V2 does not do this in an elegant way
             rpc_response = self.make_request(r)
             response = self.handle_response(request, rpc_response)
             if responses is None:
@@ -128,7 +141,7 @@ class Client(JSONRPCClient):
         """
         This call inserts data to one or multiple signals. The signal is given an input id by the user. The signal is uniquely identified by its input ID in combination with
         the integration ID. If no signal with the given combination exists, an empty signal is created. With the creation of the signal, a unique signal id gets assigned to it.
-        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/api/methods/integration/insert>`__ .
+        Mirroring the Clarify API call `integration.insert <https://docs.clarify.io/api/1.1/methods/integration/insert>`__ .
 
         Parameters
         ----------
@@ -228,7 +241,7 @@ class Client(JSONRPCClient):
     ) -> Response:
         """
         Return item metadata from selected items.
-        For more information click `here <https://docs.clarify.io/api/1.1beta2/methods/clarify/select-items>`__ .
+        For more information click `here <https://docs.clarify.io/api/1.1/methods/clarify/select-items>`__ .
 
         Parameters
         ----------
@@ -381,11 +394,11 @@ class Client(JSONRPCClient):
         signals: List[Signal] = [],
         signals_by_input: Dict[InputID, Signal] = {},
         create_only: bool = False,
-        integration: str = None,
+        integration: Optional[str] = None,
     ) -> Response:
         """
         This call inserts metadata to one or multiple signals. The signals are uniquely identified by its INPUT_ID.
-        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/api/next/methods/integration/save-signals>`__ .
+        Mirroring the Clarify API call `integration.saveSignals <https://docs.clarify.io/api/1.1/methods/integration/save-signals>`__ .
 
         Parameters
         ----------
@@ -472,7 +485,7 @@ class Client(JSONRPCClient):
 
         # create params dict
         params = {
-            "inputs": signals_by_input,
+            "signalsByInput": dict(signals_by_input),
             "createOnly": create_only,
             "integration": integration,
         }
@@ -484,7 +497,7 @@ class Client(JSONRPCClient):
         if input_ids != [] and signals != []:
             # populate inputs
             for input_id, signal in zip(input_ids, signals):
-                params["inputs"][input_id] = signal
+                params["signalsByInput"][input_id] = signal
 
         request_data = Request(method=ApiMethod.save_signals, params=params)
 
@@ -500,12 +513,12 @@ class Client(JSONRPCClient):
         items: List[Union[Item, ItemSaveView]] = [],
         items_by_signal: Dict[ResourceID, Union[Item, ItemSaveView]] = {},
         create_only: bool = False,
-        integration: str = None,
+        integration: Optional[str] = None,
     ) -> Response:
         """
         Publishes one or multiple signals to create one or multiple items, and creates or updates a set of signals with the provided metadata.
         Each signal is uniquely identified by its signal ID in combination with the integration ID.
-        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/api/next/methods/admin/publish-signals>`__ .
+        Mirroring the Clarify API call `admin.publishSignals <https://docs.clarify.io/api/1.1/methods/admin/publish-signals>`__ .
 
         Parameters
         ----------
@@ -514,7 +527,7 @@ class Client(JSONRPCClient):
 
         items: List[ Item ]
             List of Item object that contains metadata for a Item.
-            Click `here <https://docs.clarify.io/api/next/datatypes/item>`__ for more information.
+            Click `here <https://docs.clarify.io/api/1.1/types/views#item-save-admin-namespace>`__ for more information.
 
         items_by_signal: Dict[ResourceID, Item]
             Dictionary with IDs of signals mapped to Item metadata.
@@ -595,7 +608,7 @@ class Client(JSONRPCClient):
         """
 
         params = {
-            "itemsBySignal": items_by_signal,
+            "itemsBySignal": dict(items_by_signal),
             "createOnly": create_only,
             "integration": integration,
         }
@@ -623,7 +636,7 @@ class Client(JSONRPCClient):
         sort: List[str] = [],
         total: Optional[bool] = False,
         include: Optional[List] = [],
-        integration: str = None,
+        integration: Optional[str] = None,
     ) -> Response:
         """
         Return signal metadata from selected signals and/or item.
@@ -810,6 +823,148 @@ class Client(JSONRPCClient):
         return self.iterate_requests(request_data, select_stopping_condition)
 
     @validate_arguments
+    def connect_signals(
+        self,
+        item: ResourceID,
+        filter={},
+        skip: int = 0,
+        limit: Optional[int] = 20,
+        sort: List[str] = [],
+        total: Optional[bool] = False,
+        include: Optional[List] = [],
+        dry_run: bool = False,
+        integration: Optional[str] = None,
+    ) -> Response:
+        """
+        Connect the signals matching a query to an existing item, so that the item exposes their data.
+        Mirroring the Clarify API call `admin.signals.connect <https://docs.clarify.io/api/1.2/methods/admin.signals.connect>`__.
+        Requires API version 1.2 or newer, e.g. ``Client(..., api_version="1.2")``.
+
+        Parameters
+        ----------
+        item: ResourceID
+            The ID of the item to connect the signals to.
+
+        filter: Filter, optional
+            A Filter Model that describes a mongodb filter to be applied.
+
+        skip: int, default 0
+            Integer describing how many of the first N signals to exclude.
+
+        limit: int, default 20
+            Number of signals to connect, at most 1000.
+
+        sort: list of strings
+            List of strings describing the order in which to sort the signals.
+
+        total: bool, default False
+            When true, force the inclusion of a total count in the response.
+
+        include: List of strings, optional
+            A list of strings specifying which relationships to be included in the response.
+
+        dry_run: bool, default False
+            If true, validate the connection without applying it.
+
+        integration: str, default None
+            Integration ID in string format. None means using the integration in credential file.
+
+        Returns
+        -------
+        Response
+            ``Response.result.data`` is an array of SignalSelectView with the connected signals.
+
+        Example
+        -------
+            >>> client = Client("./clarify-credentials.json", api_version="1.2")
+            >>> client.connect_signals(
+            ...     item="<ITEM_ID>",
+            ...     filter=query.Filter(fields={"input": query.Equal(value="banana-stand/status")}),
+            ...     dry_run=True,
+            ... )
+        """
+        return self._connect_or_disconnect(
+            ApiMethod.connect_signals, filter, skip, limit, sort, total, include, dry_run, integration, item=item
+        )
+
+    @validate_arguments
+    def disconnect_signals(
+        self,
+        filter={},
+        skip: int = 0,
+        limit: Optional[int] = 20,
+        sort: List[str] = [],
+        total: Optional[bool] = False,
+        include: Optional[List] = [],
+        dry_run: bool = False,
+        integration: Optional[str] = None,
+    ) -> Response:
+        """
+        Disconnect the signals matching a query from the items they are connected to, if any.
+        Mirroring the Clarify API call `admin.signals.disconnect <https://docs.clarify.io/api/1.2/methods/admin.signals.disconnect>`__.
+        Requires API version 1.2 or newer, e.g. ``Client(..., api_version="1.2")``.
+
+        Parameters
+        ----------
+        filter: Filter, optional
+            A Filter Model that describes a mongodb filter to be applied.
+
+        skip: int, default 0
+            Integer describing how many of the first N signals to exclude.
+
+        limit: int, default 20
+            Number of signals to disconnect, at most 1000.
+
+        sort: list of strings
+            List of strings describing the order in which to sort the signals.
+
+        total: bool, default False
+            When true, force the inclusion of a total count in the response.
+
+        include: List of strings, optional
+            A list of strings specifying which relationships to be included in the response.
+
+        dry_run: bool, default False
+            If true, validate the disconnection without applying it.
+
+        integration: str, default None
+            Integration ID in string format. None means using the integration in credential file.
+
+        Returns
+        -------
+        Response
+            ``Response.result.data`` is an array of SignalSelectView with the disconnected signals.
+        """
+        return self._connect_or_disconnect(
+            ApiMethod.disconnect_signals, filter, skip, limit, sort, total, include, dry_run, integration
+        )
+
+    def _connect_or_disconnect(self, method, filter, skip, limit, sort, total, include, dry_run, integration, **extra):
+        if not at_least(self.api_version, CONNECT_SIGNALS):
+            raise ApiVersionError(
+                "Connecting and disconnecting signals", self.api_version, 'create the client with Client(..., api_version="1.2")'
+            )
+        query = ResourceQuery(
+            filter=filter.to_query() if isinstance(filter, Filter) else filter,
+            sort=sort,
+            limit=limit,
+            skip=skip,
+            total=total,
+        )
+        params = {
+            "integration": integration or self.authentication.integration_id,
+            "query": query,
+            "include": include,
+            "dryRun": dry_run,
+            **extra,
+        }
+        request_data = Request(method=method, params=params)
+        self.update_headers(
+            {"Authorization": f"Bearer {self.authentication.get_token()}"}
+        )
+        return self.iterate_requests(request_data)
+
+    @validate_arguments
     def data_frame(
         self,
         filter={},
@@ -817,15 +972,15 @@ class Client(JSONRPCClient):
         limit: int = 20,
         skip: int = 0,
         total: bool = False,
-        gte: Union[datetime, str] = None,
-        lt: Union[datetime, str] = None,
-        rollup: Union[str, timedelta] = None,
+        gte: Optional[Union[datetime, str]] = None,
+        lt: Optional[Union[datetime, str]] = None,
+        rollup: Optional[Union[str, timedelta]] = None,
         timeZone: Optional[TimeZone] = "UTC",
         firstDayOfWeek: Optional[IntWeekDays] = 1,
         origin: Optional[Union[str, datetime]] = None,
         last: int = -1,
         include: List[str] = [],
-        window_size: Union[str, timedelta] = None,
+        window_size: Optional[Union[str, timedelta]] = None,
     ) -> Response:
         """
         Retrieve DataFrame for items stored in Clarify.
@@ -1039,15 +1194,17 @@ class Client(JSONRPCClient):
         rollup: Union[str, timedelta],
         timeZone: Optional[TimeZone] = None,
         firstDayOfWeek: Optional[IntWeekDays] = None,
+        outsidePoints: Optional[bool] = False,
         origin: Optional[Union[str, datetime]] = None,
         items: List[Union[Dict, ItemAggregation]] = [],
+        groups: List[Union[Dict, GroupAggregation]] = [],
         calculations: List[Union[Dict, Calculation]] = [],
         series: List[str] = [],
-        gte: Union[datetime, str] = None,
-        lt: Union[datetime, str] = None,
+        gte: Optional[Union[datetime, str]] = None,
+        lt: Optional[Union[datetime, str]] = None,
         last: int = -1,
         include: List[str] = [],
-        window_size: Union[str, timedelta] = None,
+        window_size: Optional[Union[str, timedelta]] = None,
     ) -> Response:
         """
         Retrieve DataFrame by aggregating time-series data and perform evaluate formula expressions.
@@ -1055,9 +1212,16 @@ class Client(JSONRPCClient):
 
         Parameters
         ----------
-        items: Union[Dict, ItemAggregation]
+        items: List[Union[Dict, ItemAggregation]]
             List of item aggregations, describing a particular aggregation method for the item in list.
             See the class from pyclarify.views.evaluate.ItemAggregation for attributes.
+        groups: List[Union[Dict, GroupAggregation]]
+            Alternative to items. An entity that has one or more items grouped together with a filter. Groups can be aggregated
+            in both time and groups, meaning you can have both the avg value in a timeframe, but also the avg value of the items in the group in that timeframe.
+            See the class from pyclarify.views.evaluate.GroupAggregation for attributes.
+            Requires API version 1.2 or newer, e.g. ``Client(..., api_version="1.2")``.
+        outsidePoints: bool, default: False
+            Sets the ``outsidePoints`` option of the data query. Only sent when True.
         calculations: List[Union[Dict, Calculation]]
             List of calculations, where a calculation has access to items and previous calculations in context.
             See the class from pyclarify.views.evaluate.Calculation for attributes
@@ -1138,6 +1302,26 @@ class Client(JSONRPCClient):
         ... 2023-10-20 10:20:00+00:00  6.0    36.0
         ... 2023-10-20 10:30:00+00:00  9.0    81.0
         ... 2023-10-20 10:40:00+00:00  8.0    64.0
+        
+        Adding two items using a group (API 1.2 or newer).
+
+        >>> client = Client("./clarify-credentials.json", api_version="1.2")
+        >>> group = GroupAggregation(
+        ...     filter={
+        ...         'id': {
+        ...             '$in': ['cbpmaq6rpn52969vfl00', 'cbpmaq6rpn52969vfl0g']
+        ...         }
+        ...     },
+        ...     timeAggregation="avg",
+        ...     groupAggregation="sum",
+        ...     alias="g1"
+        ... )
+        >>> r = client.evaluate(groups=[group], rollup="PT10M")
+        >>> print(r.result.data.to_pandas())
+        ...                              g1  
+        ... 2023-10-20 10:20:00+00:00   9.0  
+        ... 2023-10-20 10:30:00+00:00  13.0
+        ... 2023-10-20 10:40:00+00:00  12.0
 
         Adding two items.
 
@@ -1201,9 +1385,15 @@ class Client(JSONRPCClient):
         ... 2023-10-20 10:40:00+00:00  8.0  4.0   66.0
         """
 
+        if groups and not at_least(self.api_version, GROUPS):
+            raise ApiVersionError(
+                "Group aggregation", self.api_version, 'create the client with Client(..., api_version="1.2")'
+            )
+
         data_filter = DataFilter(gte=gte, lt=lt, series=series)
         data_query = DataQuery(
             filter=data_filter.to_query(),
+            outsidePoints=outsidePoints or None,
             rollup=rollup,
             timeZone=timeZone,
             firstDayOfWeek=firstDayOfWeek,
@@ -1211,11 +1401,15 @@ class Client(JSONRPCClient):
             last=last,
         )
         params = {
-            "items": items,
             "calculations": calculations,
             "data": data_query,
             "include": include,
         }
+        if items:
+            params['items'] = items
+        if groups:
+            params['groups'] = groups
+
         request_data = Request(method=ApiMethod.evaluate, params=params)
         self.update_headers(
             {"Authorization": f"Bearer {self.authentication.get_token()}"}

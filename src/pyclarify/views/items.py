@@ -14,7 +14,7 @@
 
 
 from datetime import timedelta, datetime
-from pydantic import ConfigDict, BaseModel, Extra
+from pydantic import ConfigDict, BaseModel, Extra, Field
 from pydantic.json import timedelta_isoformat
 from typing import List, Dict, Union, Optional
 from typing_extensions import Literal
@@ -193,12 +193,24 @@ class SelectItemsParams(BaseModel, extra=Extra.forbid):
     format: SelectionFormat = SelectionFormat()
 
 
+class SavedItem(Item):
+    """
+    Item attributes as returned by the API. Unlike Item, it keeps fields it does not know and
+    accepts enum values added by newer API versions.
+
+    :meta private:
+    """
+    sourceType: Union[SourceTypeSignal, str] = Field(SourceTypeSignal.measurement, union_mode="left_to_right")
+    valueType: Union[TypeSignal, str] = Field(TypeSignal.numeric, union_mode="left_to_right")
+    model_config = ConfigDict(extra="allow")
+
+
 class ItemSelectView(BaseResource):
     # Note BaseResource (Not BaseModel)
     """
     :meta private:
     """
-    attributes: Item
+    attributes: SavedItem
     relationships: Optional[RelationshipsDictItem] = None
 
     def __hash__(self):
@@ -225,17 +237,19 @@ class PublishSignalsParams(BaseModel):
     createOnly: Optional[bool] = False
 
 
-class SaveSummary(BaseModel, extra=Extra.forbid):
+class SaveSummary(BaseModel):
     """
     :meta private:
     """
     id: ResourceID
     created: bool
     updated: bool
+    model_config = ConfigDict(extra="allow")
 
 
-class PublishSignalsResponse(BaseModel, extra=Extra.forbid):
+class PublishSignalsResponse(BaseModel):
     """
     :meta private:
     """
     itemsBySignal: Dict[ResourceID, SaveSummary]
+    model_config = ConfigDict(extra="allow")

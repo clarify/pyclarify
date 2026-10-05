@@ -1,60 +1,33 @@
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 from pydantic.json import timedelta_isoformat
 import pyclarify
 from pyclarify.__utils__.time import time_to_string
-from pyclarify.fields.constraints import ApiMethod, IntWeekDays, ResourceID, IntegrationID, TimeZone
+from pyclarify.fields.constraints import ApiMethod, ResourceID, IntegrationID
 from pyclarify.fields.error import Error
-from pyclarify.fields.query import SelectionFormat
-from pyclarify.query.filter import DataFilter, Filter
-from pyclarify.query.query import DataQuery, ResourceQuery
 from pyclarify.views.dataframe import DataFrameParams, InsertParams
-from pyclarify.views.generics import Request, Response
-from pyclarify.views.evaluate import Calculation, GroupAggregation, ItemAggregation
+from pyclarify.views.generics import Response
+from pyclarify.views.evaluate import EvaluateParams
 from pyclarify.views.items import PublishSignalsParams, SelectItemsParams
 from pyclarify.views.signals import SaveSignalsParams, SelectSignalsParams
 from .client import Client
-from pydantic import BaseModel, ConfigDict, model_validator, validate_arguments
+from pydantic import BaseModel, ConfigDict, model_validator
 from enum import Enum
-from typing_extensions import Literal
+from typing_extensions import deprecated
 
-from pyclarify.fields.constraints import TimeZone, IntWeekDays
 
 class ExperimentalApiMethod(str, Enum):
-    insert = "integration.Insert"
-    save_signals = "integration.SaveSignals"
-    select_items = "clarify.SelectItems"
+    # Same values as ApiMethod; the client sends the names each API version expects.
+    insert = "integration.insert"
+    save_signals = "integration.saveSignals"
+    select_items = "clarify.selectItems"
     data_frame = "clarify.dataFrame"
     evaluate = "clarify.evaluate"
-    select_signals = "admin.SelectSignals"
-    publish_signals = "admin.PublishSignals"
-    connect_signals = "admin.connectSignals"
-    disconnect_signals = "admin.disconnectSignals"
+    select_signals = "admin.selectSignals"
+    publish_signals = "admin.publishSignals"
+    connect_signals = "admin.signals.connect"
+    disconnect_signals = "admin.signals.disconnect"
 
-
-class ExperimentalDataQuery(BaseModel):
-    outsidePoints: Optional[bool] = False
-    filter: Optional[Dict] = {}
-    rollup: Optional[Union[timedelta, Literal["window"]]]
-    timeZone: Optional[TimeZone] = "UTC"
-    firstDayOfWeek: Optional[IntWeekDays] = 1
-    origin: Optional[Union[str, datetime]] = None
-    last: Optional[int] = -1
-
-    model_config = ConfigDict(extra="forbid")
-
-
-class ExperimentalEvaluateParams(BaseModel):
-    """
-    :meta private:
-    """
-
-    items: Optional[List[ItemAggregation]] = []
-    groups: Optional[List[GroupAggregation]] = []
-    calculations: List[Calculation]
-    data: ExperimentalDataQuery
-    include: List
-    format: Optional[SelectionFormat] = SelectionFormat(dataAsArray=False)
 
 
 class JSONRPCRequest(BaseModel):
@@ -63,13 +36,13 @@ class JSONRPCRequest(BaseModel):
     id: Union[str,int] = "1"
     params: Union[
         dict,
-        InsertParams, 
-        SaveSignalsParams, 
-        SelectItemsParams, 
-        SelectSignalsParams, 
-        PublishSignalsParams, 
-        DataFrameParams, 
-        ExperimentalEvaluateParams] = {}
+        InsertParams,
+        SaveSignalsParams,
+        SelectItemsParams,
+        SelectSignalsParams,
+        PublishSignalsParams,
+        DataFrameParams,
+        EvaluateParams] = {}
     # TODO[pydantic]: The following keys are deprecated: `json_encoders`.
     # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     model_config = ConfigDict(json_encoders={timedelta: timedelta_isoformat, datetime: time_to_string})
@@ -94,24 +67,27 @@ class ExperimentalRequest(JSONRPCRequest):
         elif values.method == ApiMethod.data_frame:
            values.params = DataFrameParams(**values.params)
         elif values.method == ApiMethod.evaluate:
-           values.params = ExperimentalEvaluateParams(**values.params)
+           values.params = EvaluateParams(**values.params)
         return values
 
 
 class ExperimentalResponse(Response):
-    method: ExperimentalApiMethod
+    method: Optional[ExperimentalApiMethod] = None
 
 
+@deprecated('ExperimentalClient is deprecated, use Client(..., api_version="1.2") instead.')
 class ExperimentalClient(Client):
+    """
+    Deprecated, use ``Client(..., api_version="1.2")``. Talks to the 1.2alpha1 pre-release,
+    which the API now serves as 1.2beta1.
+    """
+
     def __init__(self, clarify_credentials):
-        super().__init__(clarify_credentials)
-        self.update_headers({"X-API-Version": "1.2alpha1"})
+        super().__init__(clarify_credentials, api_version="1.2alpha1")
         self.update_headers({"User-Agent": f"PyClarify/{pyclarify.__version__}/experimental"})
-        self.authenticate(clarify_credentials)
-        self.base_url = f"{self.authentication.api_url}rpc"
         super().__post_init__()
 
-    def handle_response(self, request: ExperimentalRequest, response) -> ExperimentalResponse:
+    def handle_response(self, request, response) -> ExperimentalResponse:
         """
         :meta private:
         """
@@ -128,128 +104,48 @@ class ExperimentalClient(Client):
         response["method"] = request.method
         return ExperimentalResponse(**response)
 
-
-    def connect_signals(self, 
+    def connect_signals(self,
         filter={},
         skip: int = 0,
         limit: Optional[int] = 20,
         sort: List[str] = [],
-        total: Optional[bool] = False,            
+        total: Optional[bool] = False,
         item: ResourceID = "",
-        include: [str] = [],
+        include: List[str] = [],
         dryrun: bool = False,
         integration: IntegrationID = None
         ) -> ExperimentalResponse:
-
-        query = ResourceQuery(
-        filter=filter.to_query() if isinstance(filter, Filter) else filter,
-        sort=sort,
-        limit=limit,
-        skip=skip,
-        total=total,
-        )
-        params = {
-            "integration": integration, 
-            "query": query,
-            "item": item,
-            "include": include, 
-            "format": {"dataAsArray":True,"groupIncludedByType":False}, 
-            "dryRun": dryrun
-        }
-
-        # assert integration parameter
-        if not params["integration"]:
-            params["integration"] = self.authentication.integration_id
-
-        request_data = ExperimentalRequest(method="admin.connectSignals", params=params)
-
-        self.update_headers(
-            {"Authorization": f"Bearer {self.authentication.get_token()}"}
-        )
-        return self.iterate_requests(request_data, lambda x: False)
-
-
-    def disconnect_signals(self, 
-            filter={},
-            skip: int = 0,
-            limit: Optional[int] = 20,
-            sort: List[str] = [],
-            total: Optional[bool] = False,            
-            include: [str] = [],
-            dryrun: bool = False,
-            integration: IntegrationID = None
-            ) -> ExperimentalResponse:
-            
-            query = ResourceQuery(
-            filter=filter.to_query() if isinstance(filter, Filter) else filter,
-            sort=sort,
-            limit=limit,
+        """See Client.connect_signals, which takes ``dry_run`` instead of ``dryrun``."""
+        return super().connect_signals(
+            item=item,
+            filter=filter,
             skip=skip,
+            limit=limit,
+            sort=sort,
             total=total,
-            )
-            params = {
-                "integration": integration, 
-                "query": query,
-                "include": include, 
-                "format": {"dataAsArray":True,"groupIncludedByType":False}, 
-                "dryRun": dryrun
-            }
+            include=include,
+            dry_run=dryrun,
+            integration=integration,
+        )
 
-            # assert integration parameter
-            if not params["integration"]:
-                params["integration"] = self.authentication.integration_id
-
-            request_data = ExperimentalRequest(method="admin.disconnectSignals", params=params)
-
-            self.update_headers(
-                {"Authorization": f"Bearer {self.authentication.get_token()}"}
-            )
-            return self.iterate_requests(request_data, lambda x: False)
-
-    @validate_arguments
-    def evaluate(
-        self,
-        rollup: Union[str, timedelta],
-        timeZone: Optional[TimeZone] = None,
-        firstDayOfWeek: Optional[IntWeekDays] = None,
-        outsidePoints: Optional[bool] = False,
-        origin: Optional[Union[str, datetime]] = None,
-        items: List[Union[Dict, ItemAggregation]] = [],
-        groups: List[Union[Dict, GroupAggregation]] = [],
-        calculations: List[Union[Dict, Calculation]] = [],
-        series: List[str] = [],
-        gte: Union[datetime, str] = None,
-        lt: Union[datetime, str] = None,
-        last: int = -1,
+    def disconnect_signals(self,
+        filter={},
+        skip: int = 0,
+        limit: Optional[int] = 20,
+        sort: List[str] = [],
+        total: Optional[bool] = False,
         include: List[str] = [],
-        window_size: Union[str, timedelta] = None,
-    ) -> Response:
-        
-        data_filter = DataFilter(gte=gte, lt=lt, series=series)
-        data_query = ExperimentalDataQuery(
-            filter=data_filter.to_query(),
-            outsidePoints=outsidePoints,
-            rollup=rollup,
-            timeZone=timeZone,
-            firstDayOfWeek=firstDayOfWeek,
-            origin=origin,
-            last=last,
+        dryrun: bool = False,
+        integration: IntegrationID = None
+        ) -> ExperimentalResponse:
+        """See Client.disconnect_signals, which takes ``dry_run`` instead of ``dryrun``."""
+        return super().disconnect_signals(
+            filter=filter,
+            skip=skip,
+            limit=limit,
+            sort=sort,
+            total=total,
+            include=include,
+            dry_run=dryrun,
+            integration=integration,
         )
-        
-        params = {
-            "calculations": calculations,
-            "data": data_query,
-            "include": include,
-        }
-        if items:
-            params['items'] = items
-        if groups:
-            params['groups'] = groups
-        
-        
-        request_data = ExperimentalRequest(method=ApiMethod.evaluate, params=params)
-        self.update_headers(
-            {"Authorization": f"Bearer {self.authentication.get_token()}"}
-        )
-
-        return self.iterate_requests(request_data, lambda x: False, window_size)

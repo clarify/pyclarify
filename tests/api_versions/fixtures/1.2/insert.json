@@ -1,0 +1,15 @@
+{
+  "_provenance": "Hand-written from the API 1.2 reference (https://docs.clarify.io/api/1.2); response shapes checked against API 1.2.0 on dev and 1.2beta1 on production on 2026-09-29. Synthetic data.",
+  "response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "signalsByInput": {
+        "input-a": {
+          "id": "c5vv12btaf7d0qbk0l0g",
+          "created": true
+        }
+      }
+    }
+  }
+}

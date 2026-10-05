@@ -1,0 +1,158 @@
+{
+  "_provenance": "Hand-written from the API 1.2 reference (https://docs.clarify.io/api/1.2); response shapes checked against API 1.2.0 on dev and 1.2beta1 on production on 2026-09-29. Synthetic data.",
+  "response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "meta": {
+        "total": -1,
+        "format": {
+          "dataAsArray": true,
+          "groupIncludedByType": true,
+          "flattenResourceFields": false,
+          "includeResourceHashFields": true
+        }
+      },
+      "data": [
+        {
+          "type": "signals",
+          "id": "c5vv12btaf7d0qbk0l0g",
+          "meta": {
+            "annotations": {
+              "docs-clarify-io/example/environment": "office"
+            },
+            "attributesHash": "f6d49808e47b5996daf602342b597f2b9fb2c546",
+            "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+            "updatedAt": "2022-03-17T12:17:10.199Z",
+            "createdAt": "2021-10-07T14:11:44.897Z"
+          },
+          "attributes": {
+            "name": "Air temperature",
+            "description": "",
+            "labels": {
+              "location": [
+                "Oslo"
+              ]
+            },
+            "sourceType": "measurement",
+            "valueType": "numeric",
+            "engUnit": "°C",
+            "enumValues": {},
+            "sampleInterval": "PT1M",
+            "gapDetection": "PT2H",
+            "input": "input-a"
+          },
+          "relationships": {
+            "integration": {
+              "data": {
+                "type": "integrations",
+                "id": "01234567890123456789"
+              }
+            },
+            "item": {
+              "data": {
+                "type": "items",
+                "id": "cbpmaq6rpn52969vfl00"
+              }
+            },
+            "organization": {
+              "data": {
+                "type": "organizations",
+                "id": "c5e3u8coh8drsbpi4cvg"
+              }
+            }
+          }
+        },
+        {
+          "type": "signals",
+          "id": "c5vv12btaf7d0qbk0l10",
+          "meta": {
+            "annotations": {
+              "docs-clarify-io/example/environment": "office"
+            },
+            "attributesHash": "f6d49808e47b5996daf602342b597f2b9fb2c546",
+            "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+            "updatedAt": "2022-03-17T12:17:10.305Z",
+            "createdAt": "2021-10-07T14:11:45.001Z"
+          },
+          "attributes": {
+            "name": "Door state",
+            "description": "",
+            "labels": {},
+            "sourceType": "measurement",
+            "valueType": "enum",
+            "engUnit": "",
+            "enumValues": {
+              "0": "Closed",
+              "1": "Open"
+            },
+            "sampleInterval": null,
+            "gapDetection": null,
+            "input": "input-b"
+          },
+          "relationships": {
+            "integration": {
+              "data": {
+                "type": "integrations",
+                "id": "01234567890123456789"
+              }
+            },
+            "item": {
+              "data": null
+            },
+            "organization": {
+              "data": {
+                "type": "organizations",
+                "id": "c5e3u8coh8drsbpi4cvg"
+              }
+            }
+          }
+        }
+      ],
+      "included": {
+        "items": [
+          {
+            "type": "items",
+            "id": "cbpmaq6rpn52969vfl00",
+            "meta": {
+              "annotations": {
+                "docs-clarify-io/example/environment": "office"
+              },
+              "attributesHash": "f6d49808e47b5996daf602342b597f2b9fb2c546",
+              "relationshipsHash": "5f36b2ea290645ee34d943220a14b54ee5ea5be5",
+              "updatedAt": "2023-10-20T10:46:04.311Z",
+              "createdAt": "2022-08-10T07:59:36.448Z"
+            },
+            "attributes": {
+              "name": "Air temperature",
+              "description": "Outdoor air temperature.",
+              "labels": {
+                "location": [
+                  "Oslo"
+                ],
+                "data-source": [
+                  "Weather station"
+                ]
+              },
+              "sourceType": "measurement",
+              "valueType": "numeric",
+              "engUnit": "°C",
+              "enumValues": {},
+              "sampleInterval": "PT1M",
+              "gapDetection": "PT2H",
+              "visible": true
+            },
+            "relationships": {
+              "organization": {
+                "data": {
+                  "type": "organizations",
+                  "id": "c5e3u8coh8drsbpi4cvg"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

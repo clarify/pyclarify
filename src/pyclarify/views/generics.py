@@ -25,7 +25,7 @@ from pyclarify.fields.error import Error
 from pyclarify.fields.resource import SelectionMeta
 from pyclarify.views.evaluate import EvaluateParams
 from pyclarify.views.dataframe import InsertParams, InsertResponse, DataFrameParams
-from pyclarify.views.dataframe import DataFrame
+from pyclarify.views.dataframe import DataFrameSelectView
 from pyclarify.views.items import (
     SelectItemsParams,
     PublishSignalsParams,
@@ -33,6 +33,8 @@ from pyclarify.views.items import (
     ItemSelectView,
 )
 from pyclarify.views.signals import (
+    ConnectSignalsParams,
+    DisconnectSignalsParams,
     SelectSignalsParams,
     SaveSignalsParams,
     SaveSignalsResponse,
@@ -56,9 +58,11 @@ class JSONRPCRequest(BaseModel):
         SaveSignalsParams, 
         SelectItemsParams, 
         SelectSignalsParams, 
-        PublishSignalsParams, 
-        DataFrameParams, 
-        EvaluateParams] = {}
+        PublishSignalsParams,
+        DataFrameParams,
+        EvaluateParams,
+        ConnectSignalsParams,
+        DisconnectSignalsParams] = {}
     # TODO[pydantic]: The following keys are deprecated: `json_encoders`.
     # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     model_config = ConfigDict(json_encoders={timedelta: timedelta_isoformat, datetime: time_to_string})
@@ -84,6 +88,10 @@ class Request(JSONRPCRequest):
            values.params = DataFrameParams(**values.params)
         elif values.method == ApiMethod.evaluate:
            values.params = EvaluateParams(**values.params)
+        elif values.method == ApiMethod.connect_signals:
+           values.params = ConnectSignalsParams(**values.params)
+        elif values.method == ApiMethod.disconnect_signals:
+           values.params = DisconnectSignalsParams(**values.params)
         return values
 
 
@@ -116,7 +124,7 @@ class IncludedFieldSignals(IncludedField):
 class IncludedFieldItems(IncludedField):
     integration: Optional[IntegrationID] = None
     signals: Optional[List[SignalSelectView]] = None
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="ignore")
 
 
 class Selection(BaseModel):
@@ -136,7 +144,7 @@ class Selection(BaseModel):
             raise TypeError(source=self, other=other) from e
 
 class DataSelection(Selection):
-    data: DataFrame
+    data: DataFrameSelectView
     included: Optional[IncludedFieldSignals] = None
 
 
@@ -153,10 +161,12 @@ class SignalSelection(Selection):
 class GenericResponse(BaseModel):
     jsonrpc: str = "2.0"
     id: Union[str,int] = "1"
-    result: Optional[Union[DataSelection, SignalSelection, InsertResponse,SaveSignalsResponse,ItemSelection,PublishSignalsResponse]] = None
+    # Order matters when no method is known: save summaries also fit the (lenient) insert
+    # summary, and signal selections also fit the item selection, so they are listed first.
+    result: Optional[Union[DataSelection, SignalSelection, SaveSignalsResponse, InsertResponse, ItemSelection, PublishSignalsResponse]] = None
     error: Union[Error, List[Error], None] = None
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="ignore")
 
 
 class Response(GenericResponse):
@@ -181,7 +191,7 @@ class Response(GenericResponse):
             elif method == ApiMethod.select_items:
                 if not isinstance(result, ItemSelection):
                     self.result  = ItemSelection(**result.model_dump())
-            elif method == ApiMethod.select_signals:
+            elif method in (ApiMethod.select_signals, ApiMethod.connect_signals, ApiMethod.disconnect_signals):
                 if not isinstance(result, SignalSelection):
                     self.result  = SignalSelection(**result.model_dump())
             elif method == ApiMethod.publish_signals:

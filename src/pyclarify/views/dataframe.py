@@ -359,6 +359,16 @@ class DataFrame(BaseModel):
 DataFrame.model_rebuild()
 
 
+class DataFrameSelectView(DataFrame):
+    """
+    DataFrame as returned by the API. Fields added by newer API versions are ignored.
+
+    :meta private:
+    """
+
+    model_config = ConfigDict(extra="ignore")
+
+
 class InsertParams(BaseModel):
     """
     :meta private:
@@ -375,7 +385,7 @@ class CreateSummary(BaseModel):
 
     id: ResourceID
     created: bool
-    model_config = ConfigDict(extra="forbid") 
+    model_config = ConfigDict(extra="allow")
 
 class InsertResponse(BaseModel):
     """
@@ -383,7 +393,7 @@ class InsertResponse(BaseModel):
     """
 
     signalsByInput: Dict[InputID, CreateSummary]
-    model_config = ConfigDict(extra="forbid") 
+    model_config = ConfigDict(extra="allow")
 
 class DataFrameParams(BaseModel):
     """

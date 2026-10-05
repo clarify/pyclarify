@@ -14,9 +14,9 @@
 
 
 from datetime import timedelta
-from pydantic import ConfigDict, BaseModel
+from pydantic import AliasChoices, ConfigDict, BaseModel, Field
 from pydantic.json import timedelta_isoformat
-from typing import List, Dict, Optional
+from typing import ClassVar, FrozenSet, List, Dict, Optional, Union
 from pyclarify.fields.constraints import (
     TypeSignal,
     SourceTypeSignal,
@@ -27,11 +27,12 @@ from pyclarify.fields.constraints import (
     Annotations,
 )
 from pyclarify.fields.query import SelectionFormat
+from pyclarify.fields.request import OmitNoneModel
 from pyclarify.fields.resource import BaseResource, RelationshipsDictSignal
 from pyclarify.query.query import ResourceQuery
 
 
-class SignalInfo(BaseModel):
+class SignalInfo(OmitNoneModel):
     """
     Base attributes shared by most signal structures.
 
@@ -159,20 +160,30 @@ class Signal(SignalInfo):
         ...         "2" : "Cloudy"
         ...     }
         ...     sampleInterval="PT30S"
-        ...     gapDetection="PT5M"   
+        ...     gapDetection="PT5M"
         ... )
     """
+
+    # Annotations are merged, so leaving them out keeps the existing ones. sampleInterval and
+    # gapDetection are still sent as null when unset, as in 0.6.
+    omit_if_none: ClassVar[FrozenSet[str]] = frozenset({"annotations"})
 
     annotations: Optional[Annotations] = None
 
 
 class SavedSignal(SignalInfo):
     """
+    Signal attributes as returned by the API. Unlike Signal, it keeps fields it does not know
+    and accepts enum values added by newer API versions.
+
     :meta private:
     """
+    sourceType: Union[SourceTypeSignal, str] = Field(SourceTypeSignal.measurement, union_mode="left_to_right")
+    valueType: Union[TypeSignal, str] = Field(TypeSignal.numeric, union_mode="left_to_right")
     input: str
     integration: Optional[IntegrationID] = None
     item: Optional[ResourceID] = None
+    model_config = ConfigDict(extra="allow")
 
 
 class SignalSelectView(BaseResource):
@@ -193,12 +204,36 @@ class SelectSignalsParams(BaseModel):
     format: SelectionFormat = SelectionFormat()
 
 
+class ConnectSignalsParams(BaseModel):
+    """
+    :meta private:
+    """
+    integration: IntegrationID
+    query: ResourceQuery
+    item: ResourceID
+    dryRun: bool = False
+    include: List[str] = []
+    format: SelectionFormat = SelectionFormat()
+
+
+class DisconnectSignalsParams(BaseModel):
+    """
+    :meta private:
+    """
+    integration: IntegrationID
+    query: ResourceQuery
+    dryRun: bool = False
+    include: List[str] = []
+    format: SelectionFormat = SelectionFormat()
+
+
 class SaveSignalsParams(BaseModel):
     """
     :meta private:
     """
     integration: IntegrationID
-    inputs: Dict[InputID, Signal]
+    # "inputs" is the API 1.0 name, still accepted when building the params.
+    signalsByInput: Dict[InputID, Signal] = Field(validation_alias=AliasChoices("signalsByInput", "inputs"))
     createOnly: Optional[bool] = False
     model_config = ConfigDict(extra="forbid")
 
@@ -211,7 +246,7 @@ class SaveSummary(BaseModel):
     id: ResourceID
     created: bool
     updated: bool
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="allow")
 
 
 class SaveSignalsResponse(BaseModel):
@@ -219,4 +254,4 @@ class SaveSignalsResponse(BaseModel):
     :meta private:
     """
     signalsByInput: Dict[InputID, SaveSummary]
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="allow")

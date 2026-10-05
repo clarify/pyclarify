@@ -13,10 +13,11 @@
 # limitations under the License.
 
 
-from pydantic import Field, StringConstraints
+from pydantic import AfterValidator, Field, StringConstraints
 from typing import List, Union, Dict
 from enum import Enum
 from typing_extensions import Annotated
+from pyclarify.__utils__.time import is_calendar_duration
 
 
 State = Annotated[int, Field(ge=0, lt=10000)]
@@ -38,17 +39,32 @@ Alias = Annotated[str, Field(pattern="^[A-Za-z_][A-Za-z0-9_]{0,27}$")]
 IntWeekDays = Annotated[int, Field(ge=1, le=7)]
 
 
+def _check_calendar_duration(value: str) -> str:
+    if not is_calendar_duration(value):
+        raise ValueError(f"{value!r} is not an RFC 3339 duration such as 'PT1H' or 'P1M'")
+    return value
+
+
+# An RFC 3339 duration kept as given: months and years have no fixed length, so converting to
+# a timedelta would change them (P1M would become P30D).
+CalendarDuration = Annotated[str, AfterValidator(_check_calendar_duration)]
+
+
 TimeZone = str
 
 
 class ApiMethod(str, Enum):
-    insert = "integration.Insert"
-    save_signals = "integration.SaveSignals"
-    select_items = "clarify.SelectItems"
+    # The API 1.1 names, which API 1.2 keeps as aliases for its renamed methods.
+    insert = "integration.insert"
+    save_signals = "integration.saveSignals"
+    select_items = "clarify.selectItems"
     data_frame = "clarify.dataFrame"
     evaluate = "clarify.evaluate"
-    select_signals = "admin.SelectSignals"
-    publish_signals = "admin.PublishSignals"
+    select_signals = "admin.selectSignals"
+    publish_signals = "admin.publishSignals"
+    # New in API 1.2.
+    connect_signals = "admin.signals.connect"
+    disconnect_signals = "admin.signals.disconnect"
 
 
 class SourceTypeSignal(str, Enum):
