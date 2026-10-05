@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyclarify.views.evaluate &mdash; PyClarify 0.6.8 documentation</title>
+  <title>pyclarify.views.evaluate &mdash; PyClarify 0.7.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
@@ -95,8 +95,10 @@
 <span class="c1"># limitations under the License.</span>
 
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Extra</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">FrozenSet</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">model_validator</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">deprecated</span>
 <span class="kn">from</span> <span class="nn">pyclarify.fields.constraints</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Alias</span><span class="p">,</span>
     <span class="n">BucketOffset</span><span class="p">,</span>
@@ -107,13 +109,14 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">pyclarify.fields.query</span> <span class="kn">import</span> <span class="n">SelectionFormat</span>
+<span class="kn">from</span> <span class="nn">pyclarify.fields.request</span> <span class="kn">import</span> <span class="n">OmitNoneModel</span>
 <span class="kn">from</span> <span class="nn">pyclarify.query.query</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">DataQuery</span><span class="p">,</span>
     <span class="n">ResourceQuery</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="ItemAggregation"><a class="viewcode-back" href="../../../reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation">[docs]</a><span class="k">class</span> <span class="nc">ItemAggregation</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="ItemAggregation"><a class="viewcode-back" href="../../../reference/views/evaluate.html#pyclarify.views.evaluate.ItemAggregation">[docs]</a><span class="k">class</span> <span class="nc">ItemAggregation</span><span class="p">(</span><span class="n">OmitNoneModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for creating an item aggregation to be used with the `clarify.evaluate` method.</span>
 
@@ -124,7 +127,7 @@
 <span class="sd">        The ID of the item to be aggregated.</span>
 
 <span class="sd">    aggregation: TimeAggregationMethod | str</span>
-<span class="sd">        The aggregation type to be done. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#time-aggregation&gt;`__.</span>
+<span class="sd">        The aggregation type to be done. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.1/types/fields#time-aggregation&gt;`__.</span>
 
 <span class="sd">    state: int[0:9999]</span>
 <span class="sd">        The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</span>
@@ -164,6 +167,8 @@
 <span class="sd">        ... )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">omit_if_none</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;lead&quot;</span><span class="p">,</span> <span class="s2">&quot;lag&quot;</span><span class="p">})</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="n">ResourceID</span>
     <span class="n">aggregation</span><span class="p">:</span> <span class="n">TimeAggregationMethod</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -172,21 +177,25 @@
     <span class="n">alias</span><span class="p">:</span> <span class="n">Alias</span></div>
 
 
-<div class="viewcode-block" id="GroupAggregation"><a class="viewcode-back" href="../../../reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation">[docs]</a><span class="k">class</span> <span class="nc">GroupAggregation</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="GroupAggregation"><a class="viewcode-back" href="../../../reference/views/evaluate.html#pyclarify.views.evaluate.GroupAggregation">[docs]</a><span class="k">class</span> <span class="nc">GroupAggregation</span><span class="p">(</span><span class="n">OmitNoneModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model for creating a group aggregation to be used with the `clarify.evaluate` method.</span>
+<span class="sd">    Requires API version 1.2 or newer.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 
+<span class="sd">    filter: dict</span>
+<span class="sd">        A resource filter matching the items to aggregate, e.g. ``{&quot;labels.site&quot;: &quot;oslo&quot;}``.</span>
+
 <span class="sd">    query: ResourceQuery</span>
-<span class="sd">        A query matching items to be added to the group.</span>
+<span class="sd">        Deprecated, use ``filter``. Only the filter of the query is used.</span>
 
 <span class="sd">    timeAggregation: TimeAggregationMethod | str</span>
-<span class="sd">        The time aggregation type to be done within items. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#time-aggregation&gt;`__.</span>
+<span class="sd">        The time aggregation type to be done within items. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/time-aggregation&gt;`__.</span>
 
 <span class="sd">    groupAggregation: GroupAggregationMethod | str</span>
-<span class="sd">        The group aggregation type to be done across groups. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/fields#group-aggregation&gt;`__.</span>
+<span class="sd">        The group aggregation type to be done across groups. Current legal aggregations are found `here &lt;https://docs.clarify.io/api/1.2/types/group-aggregation&gt;`__.</span>
 
 <span class="sd">    state: int[0:9999]</span>
 <span class="sd">        The integer denoting the state to be used in the aggregation. Only necessary when using state based aggregation.</span>
@@ -209,18 +218,18 @@
 <span class="sd">        Creating a minimal group aggregation.</span>
 
 <span class="sd">        &gt;&gt;&gt; group_aggregation = GroupAggregation(</span>
-<span class="sd">        ...     query=ResourceQuery(filter={}),</span>
+<span class="sd">        ...     filter={&quot;labels.site&quot;: &quot;oslo&quot;},</span>
 <span class="sd">        ...     timeAggregation=&quot;max&quot;,</span>
-<span class="sd">        ...     groupAggregationMethod=&quot;max&quot;</span>
+<span class="sd">        ...     groupAggregation=&quot;max&quot;,</span>
 <span class="sd">        ...     alias=&quot;g1&quot;</span>
 <span class="sd">        ... )</span>
 
 <span class="sd">        Creating a group aggregation with all attributes set.</span>
 
 <span class="sd">        &gt;&gt;&gt; group_aggregation = GroupAggregation(</span>
-<span class="sd">        ...     query=ResourceQuery(filter={}),</span>
-<span class="sd">        ...     timeAggregationMethod=&quot;max&quot;,</span>
-<span class="sd">        ...     groupAggregationMethod=&quot;max&quot;,</span>
+<span class="sd">        ...     filter={&quot;labels.site&quot;: &quot;oslo&quot;},</span>
+<span class="sd">        ...     timeAggregation=&quot;max&quot;,</span>
+<span class="sd">        ...     groupAggregation=&quot;max&quot;,</span>
 <span class="sd">        ...     state=1,</span>
 <span class="sd">        ...     lead=1,</span>
 <span class="sd">        ...     lag=1,</span>
@@ -228,13 +237,42 @@
 <span class="sd">        ... )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">query</span><span class="p">:</span> <span class="n">ResourceQuery</span>
+    <span class="n">omit_if_none</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;lead&quot;</span><span class="p">,</span> <span class="s2">&quot;lag&quot;</span><span class="p">})</span>
+
+    <span class="nb">filter</span><span class="p">:</span> <span class="n">Dict</span>
     <span class="n">timeAggregation</span><span class="p">:</span> <span class="n">TimeAggregationMethod</span>
     <span class="n">groupAggregation</span><span class="p">:</span> <span class="n">GroupAggregationMethod</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">lead</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BucketOffset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">lag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BucketOffset</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">alias</span><span class="p">:</span> <span class="n">Alias</span></div>
+    <span class="n">alias</span><span class="p">:</span> <span class="n">Alias</span>
+
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">accept_deprecated_query</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;query&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">values</span>
+        <span class="k">if</span> <span class="s2">&quot;filter&quot;</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Use either filter or the deprecated query, not both.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;GroupAggregation(query=...) is deprecated, use GroupAggregation(filter=...).&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;query&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">ResourceQuery</span><span class="p">):</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+        <span class="n">values</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">query</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filter&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">values</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;GroupAggregation.query is deprecated, use GroupAggregation.filter.&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResourceQuery</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ResourceQuery</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Calculation"><a class="viewcode-back" href="../../../reference/views/evaluate.html#pyclarify.views.evaluate.Calculation">[docs]</a><span class="k">class</span> <span class="nc">Calculation</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -283,12 +321,15 @@
     <span class="n">alias</span><span class="p">:</span> <span class="n">Alias</span></div>
 
 
-<span class="k">class</span> <span class="nc">EvaluateParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">EvaluateParams</span><span class="p">(</span><span class="n">OmitNoneModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :meta private:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">omit_if_none</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;groups&quot;</span><span class="p">})</span>  <span class="c1"># API 1.1 rejects groups</span>
+
     <span class="n">items</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ItemAggregation</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">groups</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">GroupAggregation</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">calculations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Calculation</span><span class="p">]</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">DataQuery</span>
     <span class="n">include</span><span class="p">:</span> <span class="n">List</span>
@@ -305,7 +346,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Clarify.</p>
+    <p>&#169; Copyright 2026, Clarify.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

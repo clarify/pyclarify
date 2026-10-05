@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyclarify.views.dataframe &mdash; PyClarify 0.6.8 documentation</title>
+  <title>pyclarify.views.dataframe &mdash; PyClarify 0.7.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
@@ -441,6 +441,16 @@
 <span class="n">DataFrame</span><span class="o">.</span><span class="n">model_rebuild</span><span class="p">()</span>
 
 
+<span class="k">class</span> <span class="nc">DataFrameSelectView</span><span class="p">(</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DataFrame as returned by the API. Fields added by newer API versions are ignored.</span>
+
+<span class="sd">    :meta private:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+
 <span class="k">class</span> <span class="nc">InsertParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :meta private:</span>
@@ -457,7 +467,7 @@
 
     <span class="nb">id</span><span class="p">:</span> <span class="n">ResourceID</span>
     <span class="n">created</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;forbid&quot;</span><span class="p">)</span> 
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;allow&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">InsertResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -465,7 +475,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">signalsByInput</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">InputID</span><span class="p">,</span> <span class="n">CreateSummary</span><span class="p">]</span>
-    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;forbid&quot;</span><span class="p">)</span> 
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;allow&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">DataFrameParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -485,7 +495,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Clarify.</p>
+    <p>&#169; Copyright 2026, Clarify.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

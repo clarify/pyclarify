@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyclarify.views.signals &mdash; PyClarify 0.6.8 documentation</title>
+  <title>pyclarify.views.signals &mdash; PyClarify 0.7.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
@@ -96,9 +96,9 @@
 
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">ConfigDict</span><span class="p">,</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">AliasChoices</span><span class="p">,</span> <span class="n">ConfigDict</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span> <span class="nn">pydantic.json</span> <span class="kn">import</span> <span class="n">timedelta_isoformat</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">FrozenSet</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">pyclarify.fields.constraints</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">TypeSignal</span><span class="p">,</span>
     <span class="n">SourceTypeSignal</span><span class="p">,</span>
@@ -109,11 +109,12 @@
     <span class="n">Annotations</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyclarify.fields.query</span> <span class="kn">import</span> <span class="n">SelectionFormat</span>
+<span class="kn">from</span> <span class="nn">pyclarify.fields.request</span> <span class="kn">import</span> <span class="n">OmitNoneModel</span>
 <span class="kn">from</span> <span class="nn">pyclarify.fields.resource</span> <span class="kn">import</span> <span class="n">BaseResource</span><span class="p">,</span> <span class="n">RelationshipsDictSignal</span>
 <span class="kn">from</span> <span class="nn">pyclarify.query.query</span> <span class="kn">import</span> <span class="n">ResourceQuery</span>
 
 
-<span class="k">class</span> <span class="nc">SignalInfo</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SignalInfo</span><span class="p">(</span><span class="n">OmitNoneModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base attributes shared by most signal structures.</span>
 
@@ -241,20 +242,30 @@
 <span class="sd">        ...         &quot;2&quot; : &quot;Cloudy&quot;</span>
 <span class="sd">        ...     }</span>
 <span class="sd">        ...     sampleInterval=&quot;PT30S&quot;</span>
-<span class="sd">        ...     gapDetection=&quot;PT5M&quot;   </span>
+<span class="sd">        ...     gapDetection=&quot;PT5M&quot;</span>
 <span class="sd">        ... )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Annotations are merged, so leaving them out keeps the existing ones. sampleInterval and</span>
+    <span class="c1"># gapDetection are still sent as null when unset, as in 0.6.</span>
+    <span class="n">omit_if_none</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;annotations&quot;</span><span class="p">})</span>
 
     <span class="n">annotations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Annotations</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <span class="k">class</span> <span class="nc">SavedSignal</span><span class="p">(</span><span class="n">SignalInfo</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Signal attributes as returned by the API. Unlike Signal, it keeps fields it does not know</span>
+<span class="sd">    and accepts enum values added by newer API versions.</span>
+
 <span class="sd">    :meta private:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sourceType</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SourceTypeSignal</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">SourceTypeSignal</span><span class="o">.</span><span class="n">measurement</span><span class="p">,</span> <span class="n">union_mode</span><span class="o">=</span><span class="s2">&quot;left_to_right&quot;</span><span class="p">)</span>
+    <span class="n">valueType</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TypeSignal</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">TypeSignal</span><span class="o">.</span><span class="n">numeric</span><span class="p">,</span> <span class="n">union_mode</span><span class="o">=</span><span class="s2">&quot;left_to_right&quot;</span><span class="p">)</span>
     <span class="nb">input</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">integration</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IntegrationID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">item</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResourceID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;allow&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">SignalSelectView</span><span class="p">(</span><span class="n">BaseResource</span><span class="p">):</span>
@@ -275,12 +286,36 @@
     <span class="nb">format</span><span class="p">:</span> <span class="n">SelectionFormat</span> <span class="o">=</span> <span class="n">SelectionFormat</span><span class="p">()</span>
 
 
+<span class="k">class</span> <span class="nc">ConnectSignalsParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :meta private:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">integration</span><span class="p">:</span> <span class="n">IntegrationID</span>
+    <span class="n">query</span><span class="p">:</span> <span class="n">ResourceQuery</span>
+    <span class="n">item</span><span class="p">:</span> <span class="n">ResourceID</span>
+    <span class="n">dryRun</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">include</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="nb">format</span><span class="p">:</span> <span class="n">SelectionFormat</span> <span class="o">=</span> <span class="n">SelectionFormat</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">DisconnectSignalsParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :meta private:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">integration</span><span class="p">:</span> <span class="n">IntegrationID</span>
+    <span class="n">query</span><span class="p">:</span> <span class="n">ResourceQuery</span>
+    <span class="n">dryRun</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">include</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="nb">format</span><span class="p">:</span> <span class="n">SelectionFormat</span> <span class="o">=</span> <span class="n">SelectionFormat</span><span class="p">()</span>
+
+
 <span class="k">class</span> <span class="nc">SaveSignalsParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :meta private:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">integration</span><span class="p">:</span> <span class="n">IntegrationID</span>
-    <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">InputID</span><span class="p">,</span> <span class="n">Signal</span><span class="p">]</span>
+    <span class="c1"># &quot;inputs&quot; is the API 1.0 name, still accepted when building the params.</span>
+    <span class="n">signalsByInput</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">InputID</span><span class="p">,</span> <span class="n">Signal</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">validation_alias</span><span class="o">=</span><span class="n">AliasChoices</span><span class="p">(</span><span class="s2">&quot;signalsByInput&quot;</span><span class="p">,</span> <span class="s2">&quot;inputs&quot;</span><span class="p">))</span>
     <span class="n">createOnly</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;forbid&quot;</span><span class="p">)</span>
 
@@ -293,7 +328,7 @@
     <span class="nb">id</span><span class="p">:</span> <span class="n">ResourceID</span>
     <span class="n">created</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">updated</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;forbid&quot;</span><span class="p">)</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;allow&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">SaveSignalsResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -301,7 +336,7 @@
 <span class="sd">    :meta private:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">signalsByInput</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">InputID</span><span class="p">,</span> <span class="n">SaveSummary</span><span class="p">]</span>
-    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;forbid&quot;</span><span class="p">)</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">extra</span><span class="o">=</span><span class="s2">&quot;allow&quot;</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -311,7 +346,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Clarify.</p>
+    <p>&#169; Copyright 2026, Clarify.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
