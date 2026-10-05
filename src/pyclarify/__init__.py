@@ -21,9 +21,11 @@ from pyclarify.views import (
     ItemInfo,
     DataFrame,
     ItemAggregation,
+    GroupAggregation,
     Calculation,
 )
 import pyclarify.query
 
-__version__ = "0.6.8"
+__version__ = "0.7.0"
+# The API version of clients that do not choose one, see Client(..., api_version=...).
 __API_version__ = "1.1"

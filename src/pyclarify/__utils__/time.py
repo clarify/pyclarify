@@ -190,6 +190,17 @@ def parse_time(value: Union[time, StrBytesIntFloat]) -> time:
         raise ValueError
 
 
+def _from_numpy_datetime(value) -> datetime:
+    """
+    A numpy.datetime64 of any resolution as a UTC datetime. numpy datetimes have no time zone,
+    and pandas gives them in UTC.
+    """
+    if value != value:  # NaT
+        raise ValueError
+    microseconds = int(value.astype("datetime64[us]").astype("int64"))
+    return datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)
+
+
 def parse_datetime(value: Union[datetime, StrBytesIntFloat]) -> datetime:
     """
     Parse a datetime/int/float/string and return a datetime.datetime.
@@ -202,6 +213,11 @@ def parse_datetime(value: Union[datetime, StrBytesIntFloat]) -> datetime:
     """
     if isinstance(value, datetime):
         return value
+
+    # numpy datetimes, e.g. from pandas: pandas 2 uses nanoseconds and pandas 3 microseconds.
+    # Matched by name because numpy is optional.
+    if type(value).__name__ == "datetime64":
+        return _from_numpy_datetime(value)
 
     number = get_numeric(value, 'datetime')
     if number is not None:
@@ -264,6 +280,29 @@ def parse_duration(value: StrBytesIntFloat) -> timedelta:
     kw_ = {k: float(v) for k, v in kw.items() if v is not None}
 
     return sign * timedelta(**kw_)
+
+_calendar_duration_re = re.compile(
+    r"^P(?!$)(?:(?P<years>\d+)Y)?(?:(?P<months>\d+)M)?(?:(?P<weeks>\d+)W)?(?:(?P<days>\d+)D)?"
+    r"(?:T(?=\d)(?:(?P<hours>\d+)H)?(?:(?P<minutes>\d+)M)?(?:(?P<seconds>\d+(?:\.\d+)?)S)?)?$"
+)
+
+
+def is_calendar_duration(value) -> bool:
+    """Whether `value` is an RFC 3339 duration string, which may use years, months and weeks."""
+    return isinstance(value, str) and _calendar_duration_re.match(value) is not None
+
+
+def duration_lower_bound(value) -> timedelta:
+    """
+    The shortest time a duration can span. Months and years have no fixed length, so they
+    count as 28 and 365 days.
+    """
+    if isinstance(value, str) and is_calendar_duration(value):
+        parts = {k: float(v) for k, v in _calendar_duration_re.match(value).groupdict().items() if v}
+        parts["days"] = parts.get("days", 0) + parts.pop("years", 0) * 365 + parts.pop("months", 0) * 28
+        return timedelta(**parts)
+    return parse_duration(value)
+
 
 def time_to_string(time):
     return time.astimezone().isoformat()

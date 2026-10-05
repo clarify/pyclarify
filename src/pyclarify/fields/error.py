@@ -13,16 +13,23 @@
 # limitations under the License.
 
 
-from pydantic import BaseModel
-from typing import List, Union, Dict, Optional
+from pydantic import BaseModel, ConfigDict, Field
+from typing import Any, List, Union, Dict, Optional
 
 
 class ErrorData(BaseModel):
-    trace: str
+    """
+    Clarify specific error details. Fields the API adds, such as ``pathErrors``, are kept.
+    """
+
+    trace: Optional[str] = None
     params: Optional[Dict[str, List[str]]] = None
+    model_config = ConfigDict(extra="allow")
 
 
 class Error(BaseModel):
     code: int
     message: str
-    data: Optional[Union[ErrorData, str]] = None
+    # The API documents an object, but JSON RPC allows any value.
+    data: Optional[Union[ErrorData, str, Any]] = Field(None, union_mode="left_to_right")
+    model_config = ConfigDict(extra="allow")

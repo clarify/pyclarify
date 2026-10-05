@@ -43,6 +43,13 @@ jobs:
         run: |
           python3 -m unittest discover -s tests
 
+      - name: Test with the oldest supported pydantic
+        # Older pydantic-core releases have no wheels for newer Pythons.
+        if: matrix.python-version == '3.10'
+        run: |
+          pip install "pydantic==2.6.*"
+          python3 -m unittest discover -s tests
+
       - name: Build package
         if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
         run: python3 -m build

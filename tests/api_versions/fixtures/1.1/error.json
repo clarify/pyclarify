@@ -1,0 +1,19 @@
+{
+  "_provenance": "Error shape documented in the API 1.1 reference (concepts/jsonrpc).",
+  "response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "error": {
+      "code": -32602,
+      "message": "Invalid params",
+      "data": {
+        "trace": "00000000000000000000",
+        "params": {
+          "integration": [
+            "required"
+          ]
+        }
+      }
+    }
+  }
+}

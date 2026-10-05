@@ -46,7 +46,7 @@ PyClarify helps users of Clarify to easily read, write and manipulate data in Cl
 In order to start using the Python SDK, you need
 
 - To know a bit of Python. For a refresher, see the [Official Python tutorial](https://docs.python.org/tutorial/).
-- Python3 (>= 3.7) and pip.
+- Python 3.10 or newer and pip.
 - Credentials from a Clarify integration. See the [introduction notebook](https://colab.research.google.com/github/clarify/data-science-tutorials/blob/main/tutorials/Introduction.ipynb) for a complete introduction.
 
 ## Where to get it
@@ -68,7 +68,7 @@ conda install pyclarify
 
 - [requests](https://requests.readthedocs.io/en/latest/) - The most used (and trusted) HTTP library.
 - [Pydantic](https://pydantic-docs.helpmanual.io) - Allowing for strict typing and data validation.
-- [Typing Extensions](https://typing.readthedocs.io) - Brings the typing use of new type system features on older Python versions, allowing us to support python 3.7+.
+- [Typing Extensions](https://typing.readthedocs.io) - Brings new type system features, such as deprecation markers, to older Python versions.
 
 # Interact with Clarify
 
@@ -90,6 +90,14 @@ We recommend using Google Colab to quickly learn how to interact with Clarify us
 from pyclarify import Client
 
 client = Client("clarify-credentials.json")
+```
+
+### Choose the API version
+
+PyClarify uses Clarify API 1.1 unless you choose another version. Features from API 1.2, such as group aggregations in `evaluate` and connecting signals to items, need a client created for 1.2:
+
+```python
+client = Client("clarify-credentials.json", api_version="1.2")
 ```
 
 ### Create new _Signals_

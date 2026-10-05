@@ -1,0 +1,65 @@
+{
+  "_provenance": "Hand-written from the API 1.1 reference (https://docs.clarify.io/api/1.1); response shapes checked against production API 1.1.2 on 2026-09-29. Synthetic data.",
+  "response": {
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": {
+      "meta": {
+        "total": 5,
+        "format": {
+          "dataAsArray": false,
+          "groupIncludedByType": true,
+          "flattenResourceFields": false,
+          "includeResourceHashFields": true,
+          "usePathErrors": false
+        }
+      },
+      "data": {
+        "times": [
+          "2023-06-15T00:00:00Z",
+          "2023-06-16T00:00:00Z",
+          "2023-06-17T00:00:00Z",
+          "2023-06-18T00:00:00Z",
+          "2023-06-19T00:00:00Z"
+        ],
+        "series": {
+          "c1": [
+            192,
+            192,
+            192,
+            192,
+            192
+          ],
+          "c2": [
+            0.36262936708726135,
+            0.2654939498258671,
+            -0.4030798814736652,
+            -0.26349481692193893,
+            0.407358729183466
+          ],
+          "i1": [
+            69.62483848075418,
+            50.97483836656648,
+            -77.39133724294372,
+            -50.59100484901228,
+            78.21287600322547
+          ],
+          "i2": [
+            72,
+            72,
+            72,
+            72,
+            72
+          ],
+          "i3": [
+            120,
+            120,
+            120,
+            120,
+            120
+          ]
+        }
+      }
+    }
+  }
+}
